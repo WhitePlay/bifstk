@@ -9,7 +9,6 @@ import org.newdawn.slick.opengl.CursorLoader;
 
 import bifstk.BifstkException;
 
-
 public class Cursors {
 
 	public static enum Type {
@@ -40,6 +39,10 @@ public class Cursors {
 			throw new BifstkException("Invalid cursors directory: " + path);
 		}
 		for (File cur : dir.listFiles()) {
+			if (cur.isDirectory()) {
+				continue;
+			}
+
 			String[] ar = cur.getName().split("_");
 			if (ar.length != 3) {
 				throw new BifstkException("Malformed cursor filename: "

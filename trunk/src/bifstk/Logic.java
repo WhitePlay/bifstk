@@ -1,6 +1,5 @@
 package bifstk;
 
-import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -8,7 +7,7 @@ import org.lwjgl.opengl.Display;
 import bifstk.config.Cursors;
 import bifstk.config.Cursors.Type;
 import bifstk.type.Frame;
-
+import bifstk.util.Logger;
 
 public class Logic {
 
@@ -117,11 +116,7 @@ public class Logic {
 			if (dragged != null) {
 				if (!this.leftMouse.lastDragged) {
 					dragged.setDragged(true);
-					try {
-						Mouse.setNativeCursor(Cursors.getCursor(Type.move));
-					} catch (LWJGLException e) {
-						e.printStackTrace();
-					}
+					Cursors.setCursor(Type.move);
 				}
 				int nx = Mouse.getX() - (leftMouse.clickX - leftMouse.dragX);
 				int ny = Mouse.getY() - (leftMouse.clickY - leftMouse.dragY);
@@ -131,11 +126,7 @@ public class Logic {
 			Frame dragged = this.leftMouse.draggedFrame;
 			if (dragged != null) {
 				dragged.setDragged(false);
-				try {
-					Mouse.setNativeCursor(Cursors.getCursor(Type.pointer));
-				} catch (LWJGLException e) {
-					e.printStackTrace();
-				}
+				Cursors.setCursor(Type.pointer);
 			}
 		}
 	}
@@ -192,6 +183,8 @@ public class Logic {
 		} else if (!leftMouse.lastPollDown && leftMouse.down) {
 			leftMouse.lastDragged = leftMouse.dragged;
 			leftMouse.dragged = false;
+		} else {
+			leftMouse.lastDragged = false;
 		}
 	}
 }

@@ -4,10 +4,13 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.CursorLoader;
 
 import bifstk.BifstkException;
+import bifstk.util.Logger;
 
 public class Cursors {
 
@@ -77,11 +80,20 @@ public class Cursors {
 		}
 	}
 
-	public static Cursor getCursor(Type type) {
+	public static void setCursor(Type type) {
+		check();
+		try {
+			Mouse.setNativeCursor(instance.cursors.get(type));
+		} catch (LWJGLException e) {
+			Logger.error("Error setting native cursor " + e.getMessage());
+		}
+	}
+
+	private static void check() {
+		if (!Mouse.isCreated())
+			throw new IllegalStateException("Mouse is not created");
 		if (instance == null)
 			throw new IllegalStateException("Cursors have not been loaded");
-
-		return instance.cursors.get(type);
 	}
 
 	public static void load(String path) throws BifstkException {

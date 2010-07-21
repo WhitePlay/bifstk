@@ -1,15 +1,14 @@
 package bifstk;
 
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.util.Log;
 
 import bifstk.config.Config;
 import bifstk.config.Cursors;
-import bifstk.config.Property;
 import bifstk.config.Cursors.Type;
+import bifstk.config.Property;
 import bifstk.util.BifstkLogSystem;
-
+import bifstk.util.Logger;
 
 public class Bifstk {
 
@@ -26,7 +25,9 @@ public class Bifstk {
 			@Override
 			public void run() {
 
+				Logger.init(true);
 				Log.setLogSystem(new BifstkLogSystem());
+
 				Logic logic = new Logic();
 
 				Root root = null;
@@ -35,7 +36,7 @@ public class Bifstk {
 
 					// cursor needs to be created after the GL display
 					Cursors.load(Config.getValue(Property.cursorsPath));
-					Mouse.setNativeCursor(Cursors.getCursor(Type.pointer));
+					Cursors.setCursor(Type.pointer);
 				} catch (Exception e) {
 					e.printStackTrace();
 					return;

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="bifstk" default="compile" basedir="..">
+
+  <!-- default directories -->
+  <property name="root" location="." />
+  <property name="src" location="${root}/src" />
+  <property name="classes" location="${root}/classes" />
+  <property name="lib" location="${root}/lib" />
+
+  <!-- classpath -->
+  <path id="lib.path">
+	<!-- lwjgl -->
+	<fileset dir="${lib}/lwjgl-2.5/lwjgl/jar/">
+	  <include name="lwjgl.jar" />
+	  <include name="lwjgl_util.jar" />
+	  <include name="jinput.jar" />
+	</fileset>
+	<!-- slick -->
+	<fileset dir="${lib}/slick/lib/">
+	  <include name="slick.jar" />
+	</fileset>
+  </path>
+
+  <!-- creates directory structure -->
+  <target name="init">
+	<mkdir dir="${classes}" />
+  </target>
+
+  <!-- compile sources -->
+  <target name="compile" depends="init">
+	<javac debug="on" debuglevel="lines,vars,source"
+		   includeantruntime="false" encoding="UTF8"
+		   destdir="${classes}"  srcdir="${src}">
+	  <classpath refid="lib.path" />
+	</javac>
+  </target>
+
+  <!-- clean compiled sources -->
+  <target name="clean">
+	<delete failonerror="false" dir="${classes}" />
+  </target>
+
+</project>

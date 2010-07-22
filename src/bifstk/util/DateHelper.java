@@ -18,7 +18,7 @@ public class DateHelper {
 	/**
 	 * Singleton instance
 	 */
-	private static DateHelper _instance = null;
+	private static DateHelper instance = null;
 
 	/**
 	 * Constructor
@@ -33,8 +33,8 @@ public class DateHelper {
 	 * Internal init
 	 */
 	private static void init() {
-		if (_instance == null) {
-			_instance = new DateHelper();
+		if (instance == null) {
+			instance = new DateHelper();
 		}
 	}
 

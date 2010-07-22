@@ -6,11 +6,18 @@ import java.util.Deque;
 import bifstk.wm.Drawable;
 import bifstk.wm.Frame;
 
+/**
+ * Window Manager's internal state
+ * <p>
+ * Maintains the window manager's Frames in two separate collections with
+ * different visibilities
+ * 
+ */
 public class StateImpl implements State {
 
-	// frames as Frame for internal use
+	/** frames as Frame for internal use */
 	private Deque<Frame> _frames = null;
-	// frames as Drawable for API exposition
+	/** frames as Drawable for API exposition */
 	private Deque<Drawable> frames = null;
 
 	public StateImpl() {
@@ -23,6 +30,12 @@ public class StateImpl implements State {
 		return this.frames;
 	}
 
+	/**
+	 * Creates a new Frame in the WM
+	 * 
+	 * @param x
+	 * @param y
+	 */
 	public void addFrame(int x, int y) {
 		Frame f = new Frame(x, y);
 
@@ -36,6 +49,11 @@ public class StateImpl implements State {
 		f.setFocused(true);
 	}
 
+	/**
+	 * Give the focus to a frame
+	 * 
+	 * @param tofocus frame to focus
+	 */
 	public void focusFrame(Frame tofocus) {
 		if (this._frames.size() > 0) {
 			this._frames.getFirst().setFocused(false);
@@ -49,6 +67,13 @@ public class StateImpl implements State {
 		}
 	}
 
+	/**
+	 * Finds a frame in the WM
+	 * 
+	 * @param x abscissa
+	 * @param y ordinate
+	 * @return the frame under the provided coordinates, or null
+	 */
 	public Frame findFrame(int x, int y) {
 		for (Frame frame : _frames) {
 			if (frame.contains(x, y)) {

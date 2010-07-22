@@ -10,17 +10,28 @@ import bifstk.config.Property;
 import bifstk.util.BifstkLogSystem;
 import bifstk.util.Logger;
 
+/**
+ * Main class for Bifstk
+ * <p>
+ * Entry point for the whole system
+ */
 public class Bifstk {
 
+	/** thread in which the application will be run */
 	private static Thread runner = null;
 
+	/** path to the configuration file */
 	private static String config = null;
 
+	/** exit flag : thread will stop if set to true */
 	private static boolean stop = false;
 
 	private Bifstk() {
 	}
 
+	/**
+	 * Builds the runner thread and stores is statically
+	 */
 	private static void internalStart() {
 		runner = new Thread(new Runnable() {
 
@@ -88,12 +99,30 @@ public class Bifstk {
 		});
 	}
 
+	/**
+	 * Starts Bifstk in a new Thread
+	 * <p>
+	 * 
+	 * @param configFile path to a local file containing values for all the
+	 *            properties defined in {@link bifstk.config.Property}
+	 * @throws IllegalStateException Bifstk was already started
+	 */
 	public static void start(String configFile) {
+		if (Bifstk.runner != null && Bifstk.runner.isAlive()) {
+			throw new IllegalStateException(
+					"Bifsk cannot be started while running");
+		} else {
+			Bifstk.stop = false;
+		}
+
 		Bifstk.config = configFile;
 		internalStart();
 		runner.start();
 	}
 
+	/**
+	 * Asynchronously stops the Bifstk thread
+	 */
 	public static void stop() {
 		stop = true;
 	}

@@ -12,10 +12,23 @@ import bifstk.config.Property;
 import bifstk.util.Logger;
 import bifstk.wm.Drawable;
 
+/**
+ * Root of the Window Manager
+ * <p>
+ * Managed the display and renders the WM
+ * 
+ */
 public class Root {
 
+	/** immutable view of the WM's state */
 	private State state;
 
+	/**
+	 * Default constructor
+	 * 
+	 * @param state view of the WM's state
+	 * @throws BifstkException
+	 */
 	public Root(State state) throws BifstkException {
 
 		this.state = state;
@@ -80,6 +93,12 @@ public class Root {
 		Logger.info("Created display: " + Display.getDisplayMode().toString());
 	}
 
+	/**
+	 * Renders the WM
+	 * <p>
+	 * Does not perform any form of Display synchronization; this should be done
+	 * by the caller
+	 */
 	public void render() {
 		DisplayMode mode = Display.getDisplayMode();
 		int width = mode.getWidth();
@@ -100,6 +119,12 @@ public class Root {
 		}
 	}
 
+	/**
+	 * Sets up OpenGL's state for rendering: 2D ortho projection and stuff.
+	 * 
+	 * @param width
+	 * @param height
+	 */
 	private void initRender(int width, int height) {
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();

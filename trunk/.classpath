@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/lwjgl/jar/jinput.jar"/>
 	<classpathentry kind="lib" path="lib/lwjgl/jar/lwjgl_util.jar"/>
-	<classpathentry kind="lib" path="lib/lwjgl/jar/lwjgl.jar"/>
+	<classpathentry kind="lib" path="lib/lwjgl/jar/lwjgl.jar" sourcepath="/home/raide/opt/lwjgl/2.5/source/src/java"/>
 	<classpathentry kind="lib" path="lib/slick/slick.jar" sourcepath="lib/slick/slick-sources.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

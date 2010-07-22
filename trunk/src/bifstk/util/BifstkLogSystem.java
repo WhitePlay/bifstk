@@ -12,12 +12,12 @@ public class BifstkLogSystem implements LogSystem {
 
 	@Override
 	public void error(String message, Throwable e) {
-		Logger.error(prefix + message + " " + e.getMessage());
+		Logger.error(prefix + message, e);
 	}
 
 	@Override
 	public void error(Throwable e) {
-		Logger.error(prefix + e.getMessage());
+		Logger.error(prefix + e.getMessage(), e);
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class BifstkLogSystem implements LogSystem {
 
 	@Override
 	public void warn(String message, Throwable e) {
-		Logger.warn(prefix + message + " " + e.getMessage());
+		Logger.warn(prefix + message, e);
 	}
 
 	@Override

@@ -9,10 +9,13 @@ import bifstk.config.Cursors.Type;
 import bifstk.config.Property;
 import bifstk.util.BifstkLogSystem;
 import bifstk.util.Logger;
+import bifstk.util.Logger.Visibility;
 
 public class Bifstk {
 
 	private static Thread runner = null;
+
+	private static String config = null;
 
 	private static boolean stop = false;
 
@@ -25,8 +28,15 @@ public class Bifstk {
 			@Override
 			public void run() {
 
-				Logger.init(true);
+				Logger.init(Visibility.BOTH, "bifstk.log", true);
 				Log.setLogSystem(new BifstkLogSystem());
+
+				try {
+					Config.load(config);
+				} catch (BifstkException e) {
+					Logger.error(e);
+					return;
+				}
 
 				Logic logic = new Logic();
 
@@ -78,13 +88,8 @@ public class Bifstk {
 	}
 
 	public static void start(String configFile) {
+		Bifstk.config = configFile;
 		internalStart();
-		try {
-			Config.load(configFile);
-		} catch (BifstkException e) {
-			e.printStackTrace();
-			return;
-		}
 		runner.start();
 	}
 

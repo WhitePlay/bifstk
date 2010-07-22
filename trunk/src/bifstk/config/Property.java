@@ -35,6 +35,8 @@ public enum Property {
 	displayFullscreen("display.fullscreen"),
 	/** Title of the display used by the window manager */
 	displayTitle("display.title"),
+	/** refresh rate of the display in frames per second */
+	displayFps("display.fps"),
 
 	// //////////////////////////
 	// /// Graphical resources

@@ -8,7 +8,7 @@ import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
 import bifstk.type.Drawable;
-
+import bifstk.util.Logger;
 
 public class Root {
 
@@ -55,6 +55,8 @@ public class Root {
 		} catch (LWJGLException e) {
 			throw new BifstkException(e);
 		}
+
+		Logger.info("Created display: " + Display.getDisplayMode().toString());
 	}
 
 	public void render() {

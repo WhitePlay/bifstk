@@ -18,6 +18,9 @@ public class Logger {
 	/** Path to the file to which the log is appended */
 	private String outPath;
 
+	private final static String separator = System
+			.getProperty("line.separator");
+
 	/**
 	 * Determines the category and importance of a log message
 	 */
@@ -34,6 +37,8 @@ public class Logger {
 
 	/** print DEBUG level messages if true */
 	private boolean debug = false;
+	/** print trace in stdout messages */
+	private boolean trace = false;
 
 	/**
 	 * Visibility of a log event
@@ -75,11 +80,26 @@ public class Logger {
 	 * 
 	 * @param output
 	 * @param stdout
+	 * @param debug
 	 */
 	private Logger(Visibility vis, String output, boolean debug) {
+		this(vis, output, debug, false);
+	}
+
+	/**
+	 * Private constructor, access should be static only
+	 * 
+	 * @param output
+	 * @param stdout
+	 * @param debug
+	 * @param trace
+	 * @param stamps
+	 */
+	private Logger(Visibility vis, String output, boolean debug, boolean trace) {
 		this.outPath = output;
 		this.visibility = vis;
 		this.debug = debug;
+		this.trace = trace;
 
 		// log should append to file, trying to open a log file
 		if (this.visibility.isFile()) {
@@ -119,7 +139,7 @@ public class Logger {
 	}
 
 	public static void init(boolean debug) {
-		init(Visibility.STDOUT, "", debug);
+		init(Visibility.STDOUT, "", debug, false);
 	}
 
 	/**
@@ -129,8 +149,9 @@ public class Logger {
 	 * @param outputPath Path to the file to which the log will be printed
 	 * @param debug true if debug messages should be displayed
 	 */
-	public static void init(Visibility vis, String outputPath, boolean debug) {
-		Logger.instance = new Logger(vis, outputPath, debug);
+	public static void init(Visibility vis, String outputPath, boolean debug,
+			boolean trace) {
+		Logger.instance = new Logger(vis, outputPath, debug, trace);
 
 		instance.message("--- Log begins --------", Level.INFO, Visibility.FILE);
 	}
@@ -269,27 +290,40 @@ public class Logger {
 			return;
 		}
 		if (vis.isStdout()) {
-			System.out.println(message);
-			if (t != null) {
-				for (StackTraceElement el : t.getStackTrace()) {
-					System.out.println("    ` " + el.toString());
-				}
-			}
+			System.out
+					.println(getFormattedString(message, t, false, this.trace));
 		}
 		if (vis.isFile()) {
-			String prefix = "[" + DateHelper.getTimeStamps() + " "
-					+ getContext(25) + "] ";
-			this.out.println(prefix + message);
-			if (t != null) {
-				String filler = new String();
-				for (int i = 0; i < prefix.length() + 4; i++) {
-					filler += " ";
-				}
-				for (StackTraceElement el : t.getStackTrace()) {
-					this.out.println(filler + "` " + el.toString());
-				}
+			this.out.println(getFormattedString(message, t, true, true));
+		}
+	}
+
+	private static String getFormattedString(String message, Throwable t,
+			boolean stamps, boolean trace) {
+		String ret = "";
+		String prefix = "";
+
+		if (stamps) {
+			prefix += DateHelper.getTimeStamps() + " ";
+		}
+		if (trace) {
+			prefix += getContext(25);
+		}
+		if (prefix.length() != 0) {
+			prefix = "[" + prefix + "] ";
+		}
+
+		ret += prefix + message;
+		if (t != null) {
+			String filler = new String();
+			for (int i = 0; i < prefix.length() + 4; i++) {
+				filler += " ";
+			}
+			for (StackTraceElement el : t.getStackTrace()) {
+				ret += separator + filler + "` " + el.toString();
 			}
 		}
+		return ret;
 	}
 
 	/**

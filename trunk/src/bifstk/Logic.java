@@ -115,7 +115,7 @@ public class Logic {
 			if (dragged != null) {
 				if (!this.leftMouse.lastDragged) {
 					dragged.setDragged(true);
-					Cursors.setCursor(Type.move);
+					Cursors.setCursor(Type.MOVE);
 				}
 				int nx = Mouse.getX() - (leftMouse.clickX - leftMouse.dragX);
 				int ny = Mouse.getY() - (leftMouse.clickY - leftMouse.dragY);
@@ -125,7 +125,7 @@ public class Logic {
 			Frame dragged = this.leftMouse.draggedFrame;
 			if (dragged != null) {
 				dragged.setDragged(false);
-				Cursors.setCursor(Type.pointer);
+				Cursors.setCursor(Type.POINTER);
 			}
 		}
 	}

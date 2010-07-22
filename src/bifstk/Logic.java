@@ -6,7 +6,7 @@ import org.lwjgl.opengl.Display;
 
 import bifstk.config.Cursors;
 import bifstk.config.Cursors.Type;
-import bifstk.type.Frame;
+import bifstk.wm.Frame;
 
 public class Logic {
 

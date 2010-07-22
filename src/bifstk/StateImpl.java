@@ -3,8 +3,8 @@ package bifstk;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import bifstk.type.Drawable;
-import bifstk.type.Frame;
+import bifstk.wm.Drawable;
+import bifstk.wm.Frame;
 
 public class StateImpl implements State {
 

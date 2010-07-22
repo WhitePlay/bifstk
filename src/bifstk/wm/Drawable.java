@@ -1,4 +1,4 @@
-package bifstk.type;
+package bifstk.wm;
 
 public interface Drawable {
 

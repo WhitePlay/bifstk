@@ -9,8 +9,8 @@ import org.lwjgl.opengl.GL11;
 
 import bifstk.config.Config;
 import bifstk.config.Property;
-import bifstk.type.Drawable;
 import bifstk.util.Logger;
+import bifstk.wm.Drawable;
 
 public class Root {
 

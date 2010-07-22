@@ -1,5 +1,10 @@
 package bifstk.config;
 
+/**
+ * Defines a set of properties used to configure Bifstk
+ * 
+ * 
+ */
 public enum Property {
 
 	// ///////////////////
@@ -43,6 +48,9 @@ public enum Property {
 		this.property = property;
 	}
 
+	/**
+	 * @return the name of the property as a formatted String
+	 */
 	public String getProperty() {
 		return this.property;
 	}

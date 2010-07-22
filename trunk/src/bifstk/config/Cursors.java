@@ -12,8 +12,15 @@ import org.newdawn.slick.opengl.CursorLoader;
 import bifstk.BifstkException;
 import bifstk.util.Logger;
 
+/**
+ * Defines a set of {@link org.lwjgl.input.Cursor} that can be used statically
+ * by the application
+ */
 public class Cursors {
 
+	/**
+	 * Available types of cursors
+	 */
 	public static enum Type {
 		// default pointer, cannot use 'default' which is a keyword
 		POINTER("pointer"),
@@ -47,10 +54,18 @@ public class Cursors {
 		}
 	}
 
+	/** singleton instance */
 	private static Cursors instance = null;
 
+	/** actual cursor instance matching each {@link Cursors.Type} */
 	private Map<Type, Cursor> cursors = null;
 
+	/**
+	 * Default constructor
+	 * 
+	 * @param path path to the directory containing the cursors
+	 * @throws BifstkException
+	 */
 	private Cursors(String path) throws BifstkException {
 		this.cursors = new HashMap<Type, Cursor>();
 
@@ -96,6 +111,7 @@ public class Cursors {
 			}
 		}
 
+		// check all cursors are loaded
 		for (Type t : Type.values()) {
 			if (!this.cursors.containsKey(t)) {
 				throw new BifstkException("Could not find cursor " + t + " ("
@@ -104,6 +120,11 @@ public class Cursors {
 		}
 	}
 
+	/**
+	 * Changes the cursor currently displayed in the OpenGL Display
+	 * 
+	 * @param type cursor to display
+	 */
 	public static void setCursor(Type type) {
 		check();
 		try {
@@ -113,6 +134,9 @@ public class Cursors {
 		}
 	}
 
+	/**
+	 * Throws a runtime exception if cursors should not be accessed
+	 */
 	private static void check() {
 		if (!Mouse.isCreated())
 			throw new IllegalStateException("Mouse is not created");
@@ -120,6 +144,27 @@ public class Cursors {
 			throw new IllegalStateException("Cursors have not been loaded");
 	}
 
+	/**
+	 * Loads cursors from the directory denoted by the local path
+	 * <code>path</code>.
+	 * <p>
+	 * each regular file in this directory should be an image file representing
+	 * a cursor. its name should match the string: <code>type_x_y.ext</code>
+	 * where :
+	 * <ul>
+	 * <li>type is one of the names of the cursors defined in
+	 * {@link Cursors.Type}
+	 * <li>x is a positive integer denoting the cursor's hotspot abscissa
+	 * <li>y is a positive integer denoting the cursor's hotspot ordinate
+	 * </ul>
+	 * All cursors defined in {@link Cursors.Type} should have an associated
+	 * file in directory <code>path</code>, or this method will throw an
+	 * exception.
+	 * 
+	 * 
+	 * @param path path to the directory containing the cursor files
+	 * @throws BifstkException
+	 */
 	public static void load(String path) throws BifstkException {
 		Logger.debug("Loading cursors from " + path);
 		instance = new Cursors(path);

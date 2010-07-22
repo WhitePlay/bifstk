@@ -8,6 +8,12 @@ import bifstk.config.Cursors;
 import bifstk.config.Cursors.Type;
 import bifstk.wm.Frame;
 
+/**
+ * Internal logic of the WM
+ * <p>
+ * Handles input, propagates changes in the {@link State}
+ * 
+ */
 public class Logic {
 
 	// Privileged view of the WM's state
@@ -61,14 +67,23 @@ public class Logic {
 		// this.centerMouse = new MouseButton();
 	}
 
+	/**
+	 * @return true if the user inputs signified the app should exit
+	 */
 	public boolean isExitRequested() {
 		return (this.exitRequested || Display.isCloseRequested());
 	}
 
+	/**
+	 * @return an immutable view of the WM's state
+	 */
 	public State getState() {
 		return this.state;
 	}
 
+	/**
+	 * Updates the logic's state: polls input, modifies WM state
+	 */
 	public void update() {
 		updateKeyboard();
 		updateMouse();
@@ -76,6 +91,9 @@ public class Logic {
 		applyMouse();
 	}
 
+	/**
+	 * Polls keyboard events
+	 */
 	private void updateKeyboard() {
 		while (Keyboard.next()) {
 			int event = Keyboard.getEventKey();
@@ -96,40 +114,9 @@ public class Logic {
 		}
 	}
 
-	private void applyMouse() {
-		if (this.leftMouse.clicked) {
-			Frame f = this.state.findFrame(this.leftMouse.clickX,
-					this.leftMouse.clickY);
-			this.state.focusFrame(f);
-
-			if (f != null) {
-				this.leftMouse.draggedFrame = f;
-				this.leftMouse.dragX = f.getX();
-				this.leftMouse.dragY = f.getY();
-			} else {
-				this.leftMouse.draggedFrame = null;
-			}
-		}
-		if (this.leftMouse.dragged) {
-			Frame dragged = this.leftMouse.draggedFrame;
-			if (dragged != null) {
-				if (!this.leftMouse.lastDragged) {
-					dragged.setDragged(true);
-					Cursors.setCursor(Type.MOVE);
-				}
-				int nx = Mouse.getX() - (leftMouse.clickX - leftMouse.dragX);
-				int ny = Mouse.getY() - (leftMouse.clickY - leftMouse.dragY);
-				dragged.setPos(nx, ny);
-			}
-		} else if (this.leftMouse.lastDragged) {
-			Frame dragged = this.leftMouse.draggedFrame;
-			if (dragged != null) {
-				dragged.setDragged(false);
-				Cursors.setCursor(Type.POINTER);
-			}
-		}
-	}
-
+	/**
+	 * Polls mouse events
+	 */
 	private void updateMouse() {
 		this.leftMouse.clicked = false;
 		this.leftMouse.lastPollDown = this.leftMouse.down;
@@ -186,4 +173,42 @@ public class Logic {
 			leftMouse.lastDragged = false;
 		}
 	}
+
+	/**
+	 * Applies mouse events
+	 */
+	private void applyMouse() {
+		if (this.leftMouse.clicked) {
+			Frame f = this.state.findFrame(this.leftMouse.clickX,
+					this.leftMouse.clickY);
+			this.state.focusFrame(f);
+
+			if (f != null) {
+				this.leftMouse.draggedFrame = f;
+				this.leftMouse.dragX = f.getX();
+				this.leftMouse.dragY = f.getY();
+			} else {
+				this.leftMouse.draggedFrame = null;
+			}
+		}
+		if (this.leftMouse.dragged) {
+			Frame dragged = this.leftMouse.draggedFrame;
+			if (dragged != null) {
+				if (!this.leftMouse.lastDragged) {
+					dragged.setDragged(true);
+					Cursors.setCursor(Type.MOVE);
+				}
+				int nx = Mouse.getX() - (leftMouse.clickX - leftMouse.dragX);
+				int ny = Mouse.getY() - (leftMouse.clickY - leftMouse.dragY);
+				dragged.setPos(nx, ny);
+			}
+		} else if (this.leftMouse.lastDragged) {
+			Frame dragged = this.leftMouse.draggedFrame;
+			if (dragged != null) {
+				dragged.setDragged(false);
+				Cursors.setCursor(Type.POINTER);
+			}
+		}
+	}
+
 }

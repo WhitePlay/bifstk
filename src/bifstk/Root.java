@@ -57,8 +57,15 @@ public class Root {
 							+ height);
 		}
 
+		boolean fullscreen = new Boolean(
+				Config.getValue(Property.displayFullscreen));
+
 		try {
-			Display.setDisplayMode(mode);
+			if (fullscreen) {
+				Display.setFullscreen(true);
+			} else {
+				Display.setDisplayMode(mode);
+			}
 		} catch (LWJGLException e) {
 			throw new BifstkException(e);
 		}

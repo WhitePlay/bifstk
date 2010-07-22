@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
+import bifstk.config.Config;
+import bifstk.config.Property;
+
 /**
  * Simple and straightforward logging facility
  * <p>
@@ -81,21 +84,12 @@ public class Logger {
 	 * @param output
 	 * @param stdout
 	 * @param debug
-	 */
-	private Logger(Visibility vis, String output, boolean debug) {
-		this(vis, output, debug, false);
-	}
-
-	/**
-	 * Private constructor, access should be static only
-	 * 
-	 * @param output
-	 * @param stdout
-	 * @param debug
 	 * @param trace
 	 * @param stamps
+	 * @param overwrite
 	 */
-	private Logger(Visibility vis, String output, boolean debug, boolean trace) {
+	private Logger(Visibility vis, String output, boolean debug, boolean trace,
+			boolean overwrite) {
 		this.outPath = output;
 		this.visibility = vis;
 		this.debug = debug;
@@ -106,7 +100,7 @@ public class Logger {
 			try {
 				// open the specified file
 				this.out = new PrintStream(new FileOutputStream(
-						new File(output), true));
+						new File(output), overwrite));
 			} catch (Exception e) {
 				try {
 					// could not open the specified file, trying a
@@ -138,20 +132,31 @@ public class Logger {
 		}
 	}
 
-	public static void init(boolean debug) {
-		init(Visibility.STDOUT, "", debug, false);
-	}
-
 	/**
 	 * Initializes the logging facility
-	 * 
-	 * @param vis message visibility: file, stdout, both, none
-	 * @param outputPath Path to the file to which the log will be printed
-	 * @param debug true if debug messages should be displayed
 	 */
-	public static void init(Visibility vis, String outputPath, boolean debug,
-			boolean trace) {
-		Logger.instance = new Logger(vis, outputPath, debug, trace);
+	public static void init() {
+		Visibility vis = Visibility.NONE;
+
+		boolean confFile = new Boolean(
+				Config.getValue(Property.loggerFileEnabled));
+		boolean confOut = new Boolean(
+				Config.getValue(Property.loggerStdoutEnabled));
+
+		if (confFile && confOut) {
+			vis = Visibility.BOTH;
+		} else if (confFile) {
+			vis = Visibility.FILE;
+		} else if (confOut) {
+			vis = Visibility.STDOUT;
+		}
+		String out = Config.getValue(Property.loggerFilePath);
+		boolean debug = new Boolean(Config.getValue(Property.loggerStdoutDebug));
+		boolean trace = new Boolean(Config.getValue(Property.loggerStdoutTrace));
+		boolean overwrite = new Boolean(
+				Config.getValue(Property.loggerFileOverwrite));
+
+		Logger.instance = new Logger(vis, out, debug, trace, overwrite);
 
 		instance.message("--- Log begins --------", Level.INFO, Visibility.FILE);
 	}

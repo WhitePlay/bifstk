@@ -7,6 +7,8 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
+import bifstk.config.Config;
+import bifstk.config.Property;
 import bifstk.type.Drawable;
 import bifstk.util.Logger;
 
@@ -18,9 +20,21 @@ public class Root {
 
 		this.state = state;
 
-		int width = 800;
-		int height = 600;
-		String title = "Foo";
+		int width = 0;
+		try {
+			width = Integer.parseInt(Config.getValue(Property.displayWidth));
+		} catch (NumberFormatException e) {
+			throw new BifstkException("Could not parse value for property "
+					+ Property.displayWidth, e);
+		}
+		int height = 0;
+		try {
+			height = Integer.parseInt(Config.getValue(Property.displayHeight));
+		} catch (NumberFormatException e) {
+			throw new BifstkException("Could not parse value for property "
+					+ Property.displayHeight, e);
+		}
+		String title = Config.getValue(Property.displayTitle);
 
 		DisplayMode[] modes = null;
 		try {

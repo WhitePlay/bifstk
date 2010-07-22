@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import bifstk.BifstkException;
-import bifstk.util.Logger;
 
 public class Config {
 
@@ -48,8 +47,6 @@ public class Config {
 				for (Property p : Property.values()) {
 					if (p.getProperty().equals(key)) {
 						properties.put(p, (String) entry.getValue());
-						Logger.debug("Loaded property " + p.getProperty()
-								+ ": " + entry.getValue());
 					}
 				}
 			}
@@ -59,8 +56,8 @@ public class Config {
 
 		for (Property p : Property.values()) {
 			if (!this.properties.containsKey(p)) {
-				String message = "Property " + p
-						+ " is not defined in configuration";
+				String message = "Property " + p + " (" + p.getProperty()
+						+ ") is not defined in configuration";
 				throw new BifstkException(message);
 			}
 		}

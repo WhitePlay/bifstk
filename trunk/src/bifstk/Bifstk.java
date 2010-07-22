@@ -9,7 +9,6 @@ import bifstk.config.Cursors.Type;
 import bifstk.config.Property;
 import bifstk.util.BifstkLogSystem;
 import bifstk.util.Logger;
-import bifstk.util.Logger.Visibility;
 
 public class Bifstk {
 
@@ -28,15 +27,17 @@ public class Bifstk {
 			@Override
 			public void run() {
 
-				Logger.init(Visibility.BOTH, "bifstk.log", true, true);
-				Log.setLogSystem(new BifstkLogSystem());
-
 				try {
 					Config.load(config);
 				} catch (BifstkException e) {
-					Logger.error(e);
+					// the logger needs the config, can't be used yet
+					e.printStackTrace();
 					return;
 				}
+
+				Logger.init();
+				Log.setLogSystem(new BifstkLogSystem());
+				Logger.info("Config loaded from: " + config);
 
 				Logic logic = new Logic();
 

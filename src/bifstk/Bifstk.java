@@ -26,6 +26,15 @@ public class Bifstk {
 	/** exit flag : thread will stop if set to true */
 	private static boolean stop = false;
 
+	/** default fps */
+	private final static int default_fps = 60;
+
+	/** minimum refresh rate in fps */
+	private final static int min_fps = 10;
+
+	/** maximum refresh rate in fps */
+	private final static int max_fps = 100;
+
 	private Bifstk() {
 	}
 
@@ -38,6 +47,7 @@ public class Bifstk {
 			@Override
 			public void run() {
 
+				// load configuration
 				try {
 					Config.load(config);
 				} catch (BifstkException e) {
@@ -46,6 +56,7 @@ public class Bifstk {
 					return;
 				}
 
+				// create logsystem
 				Logger.init();
 				Log.setLogSystem(new BifstkLogSystem());
 				Logger.info("Config loaded from: " + config);
@@ -54,6 +65,7 @@ public class Bifstk {
 
 				Root root = null;
 				try {
+					// create the display
 					root = new Root(logic.getState());
 
 					// cursor needs to be created after the GL display
@@ -63,6 +75,9 @@ public class Bifstk {
 					Logger.error(e);
 					return;
 				}
+
+				int fps = getFps();
+				Logger.debug("Refresh rate: " + fps + "fps");
 
 				/*
 				 * main loop
@@ -76,7 +91,7 @@ public class Bifstk {
 					// foreground window: maintain framerate
 					if (Display.isActive()) {
 						root.render();
-						Display.sync(60);
+						Display.sync(fps);
 					}
 					// background window: lazy update
 					else {
@@ -127,4 +142,27 @@ public class Bifstk {
 		stop = true;
 	}
 
+	/**
+	 * Extracts FPS from config
+	 * 
+	 * @return the refresh rate of the display in frames per second
+	 */
+	private static int getFps() {
+		int fps = default_fps;
+		try {
+			fps = Integer.parseInt(Config.getValue(Property.displayFps));
+		} catch (NumberFormatException e) {
+			Logger.warn("Could not parse property for " + Property.displayFps);
+		}
+		if (fps < min_fps) {
+			Logger.warn("FPS should not be less than " + min_fps);
+			fps = min_fps;
+		}
+		if (fps > max_fps) {
+			Logger.warn("FPS should not be more than " + max_fps);
+			fps = max_fps;
+		}
+
+		return fps;
+	}
 }

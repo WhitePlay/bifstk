@@ -2,7 +2,7 @@ package bifstk;
 
 import java.util.Deque;
 
-import bifstk.type.Drawable;
+import bifstk.wm.Drawable;
 
 
 public interface State {

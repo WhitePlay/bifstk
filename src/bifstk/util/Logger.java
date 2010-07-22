@@ -146,6 +146,27 @@ public class Logger {
 	}
 
 	/**
+	 * Issue an error message
+	 * 
+	 * @param message the message to append to the log
+	 * @param t the Exception to append to the log
+	 */
+	public static void error(String message, Throwable t) {
+		check();
+		instance.message("[E] " + message, Level.ERROR, t);
+	}
+
+	/**
+	 * Issue an error message
+	 * 
+	 * @param t the Exception to append to the log
+	 */
+	public static void error(Throwable t) {
+		check();
+		instance.message("[E] " + t.getMessage(), Level.ERROR, t);
+	}
+
+	/**
 	 * Issue a warning message
 	 * 
 	 * @param message the message to append to the log
@@ -153,6 +174,16 @@ public class Logger {
 	public static void warn(String message) {
 		check();
 		instance.message("[W] " + message, Level.WARN);
+	}
+
+	/**
+	 * Issue a warning message
+	 * 
+	 * @param t the Exception to append to the log
+	 */
+	public static void warn(String message, Throwable t) {
+		check();
+		instance.message("[W] " + message, Level.WARN, t);
 	}
 
 	/**
@@ -198,9 +229,25 @@ public class Logger {
 	 * 
 	 * @param message the message to print
 	 * @param l the level of the message
+	 * @param t the Exception to append to the log
+	 */
+	private void message(String message, Level l, Throwable t) {
+		message(message, l, this.visibility, t);
+	}
+
+	/**
+	 * Append a message to the log
+	 * 
+	 * @param message the message to print
+	 * @param l the level of the message
 	 * @param vis visibility of the message
+	 * @param t the Exception to append to the log
 	 */
 	private void message(String message, Level l, Visibility vis) {
+		message(message, l, vis, null);
+	}
+
+	private void message(String message, Level l, Visibility vis, Throwable t) {
 		switch (vis) {
 		case FILE:
 			if (!this.visibility.isFile())
@@ -223,10 +270,25 @@ public class Logger {
 		}
 		if (vis.isStdout()) {
 			System.out.println(message);
+			if (t != null) {
+				for (StackTraceElement el : t.getStackTrace()) {
+					System.out.println("    ` " + el.toString());
+				}
+			}
 		}
 		if (vis.isFile()) {
-			this.out.println("[" + DateHelper.getTimeStamps() + " "
-					+ getContext(25) + "] " + message);
+			String prefix = "[" + DateHelper.getTimeStamps() + " "
+					+ getContext(25) + "] ";
+			this.out.println(prefix + message);
+			if (t != null) {
+				String filler = new String();
+				for (int i = 0; i < prefix.length() + 4; i++) {
+					filler += " ";
+				}
+				for (StackTraceElement el : t.getStackTrace()) {
+					this.out.println(filler + "` " + el.toString());
+				}
+			}
 		}
 	}
 

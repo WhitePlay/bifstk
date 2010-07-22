@@ -5,8 +5,6 @@ import java.util.Deque;
 
 import bifstk.type.Drawable;
 import bifstk.type.Frame;
-import bifstk.type.Window;
-
 
 public class StateImpl implements State {
 
@@ -26,7 +24,7 @@ public class StateImpl implements State {
 	}
 
 	public void addFrame(int x, int y) {
-		Window f = new Window(x, y);
+		Frame f = new Frame(x, y);
 
 		if (this._frames.size() > 0) {
 			this._frames.getFirst().setFocused(false);

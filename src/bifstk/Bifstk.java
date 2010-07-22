@@ -28,7 +28,7 @@ public class Bifstk {
 			@Override
 			public void run() {
 
-				Logger.init(Visibility.BOTH, "bifstk.log", true);
+				Logger.init(Visibility.BOTH, "bifstk.log", true, true);
 				Log.setLogSystem(new BifstkLogSystem());
 
 				try {
@@ -46,9 +46,9 @@ public class Bifstk {
 
 					// cursor needs to be created after the GL display
 					Cursors.load(Config.getValue(Property.cursorsPath));
-					Cursors.setCursor(Type.pointer);
+					Cursors.setCursor(Type.POINTER);
 				} catch (Exception e) {
-					e.printStackTrace();
+					Logger.error(e);
 					return;
 				}
 

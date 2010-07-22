@@ -15,9 +15,26 @@ import bifstk.util.Logger;
 public class Cursors {
 
 	public static enum Type {
-		pointer("pointer"), move("move"), left("left"), right("right"), top(
-				"top"), bot("bot"), topLeft("top-left"), topRight("top-right"), botRight(
-				"bot-right"), botLeft("bot-left");
+		// default pointer, cannot use 'default' which is a keyword
+		POINTER("pointer"),
+		// used when moving or dragging an item
+		MOVE("move"),
+		// window resize left border
+		RESIZE_LEFT("resize-left"),
+		// window resize left border
+		RESIZE_RIGHT("resize-right"),
+		// window resize top border
+		RESIZE_TOP("resize-top"),
+		// window resize bottom border
+		RESIZE_BOT("resize-bot"),
+		// window resize top left corner
+		RESIZE_TOP_LEFT("resize-top-left"),
+		// window resize top right corner
+		RESIZE_TOP_RIGHT("resize-top-right"),
+		// window resize bottom right corner
+		RESIZE_BOT_RIGHT("resize-bot-right"),
+		// window resize bottom left corner
+		RESIZE_BOT_LEFT("resize-bot-left");
 
 		private String name = null;
 
@@ -78,6 +95,13 @@ public class Cursors {
 				}
 			}
 		}
+
+		for (Type t : Type.values()) {
+			if (!this.cursors.containsKey(t)) {
+				throw new BifstkException("Could not find cursor " + t + " ("
+						+ t.getName() + ")");
+			}
+		}
 	}
 
 	public static void setCursor(Type type) {
@@ -97,6 +121,7 @@ public class Cursors {
 	}
 
 	public static void load(String path) throws BifstkException {
+		Logger.debug("Loading cursors from " + path);
 		instance = new Cursors(path);
 	}
 }

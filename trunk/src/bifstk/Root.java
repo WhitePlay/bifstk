@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 import bifstk.config.Config;
 import bifstk.config.Property;
+import bifstk.util.Color;
 import bifstk.util.Logger;
 import bifstk.wm.Drawable;
 
@@ -117,6 +118,7 @@ public class Root {
 			f = it.next();
 			f.render();
 		}
+
 	}
 
 	/**
@@ -129,19 +131,28 @@ public class Root {
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
 		// 0,0 is the bottom-left corner, like LWJGL's mouse coordinates
-		GL11.glOrtho(0.0d, width, 0.0d, height, -1.0d, 1.0d);
+		GL11.glOrtho(0.0d, width, height, 0.0d, -1.0d, 1.0d);
 
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
 		GL11.glViewport(0, 0, width, height);
 
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
-
-		GL11.glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+		// GL11.glDisable(GL11.GL_DEPTH_TEST);
 
 		// transparency
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+		// GL11.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		// GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+
+		// drawing a quad seems to be faster than glClear for some reason
+		Color.WHITE.use();
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glVertex2i(0, 0);
+		GL11.glVertex2i(width, 0);
+		GL11.glVertex2i(width, height);
+		GL11.glVertex2i(0, height);
+		GL11.glEnd();
 	}
 }

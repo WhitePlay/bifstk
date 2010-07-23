@@ -132,8 +132,8 @@ public class Logic {
 				} else {
 					this.leftMouse.down = true;
 					this.leftMouse.clicked = true;
-					this.leftMouse.clickX = Mouse.getX();
-					this.leftMouse.clickY = Mouse.getY();
+					this.leftMouse.clickX = getMouseX();
+					this.leftMouse.clickY = getMouseY();
 				}
 				break;
 			// right
@@ -148,8 +148,8 @@ public class Logic {
 		}
 
 		Mouse.poll();
-		int leftDx = Mouse.getX() - this.leftMouse.clickX;
-		int leftDy = Mouse.getY() - this.leftMouse.clickY;
+		int leftDx = getMouseX() - this.leftMouse.clickX;
+		int leftDy = getMouseY() - this.leftMouse.clickY;
 
 		boolean leftDiffPos = (leftDx != 0) && (leftDy != 0);
 
@@ -198,8 +198,8 @@ public class Logic {
 					dragged.setDragged(true);
 					Cursors.setCursor(Type.MOVE);
 				}
-				int nx = Mouse.getX() - (leftMouse.clickX - leftMouse.dragX);
-				int ny = Mouse.getY() - (leftMouse.clickY - leftMouse.dragY);
+				int nx = getMouseX() - (leftMouse.clickX - leftMouse.dragX);
+				int ny = getMouseY() - (leftMouse.clickY - leftMouse.dragY);
 				dragged.setPos(nx, ny);
 			}
 		} else if (this.leftMouse.lastDragged) {
@@ -211,4 +211,11 @@ public class Logic {
 		}
 	}
 
+	private static int getMouseX() {
+		return Mouse.getX();
+	}
+
+	private static int getMouseY() {
+		return Display.getDisplayMode().getHeight() - Mouse.getY();
+	}
 }

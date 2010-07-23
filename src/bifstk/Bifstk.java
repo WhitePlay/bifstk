@@ -1,13 +1,16 @@
 package bifstk;
 
+import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.util.Log;
 
 import bifstk.config.Config;
 import bifstk.config.Cursors;
 import bifstk.config.Cursors.Type;
+import bifstk.config.Fonts;
 import bifstk.config.Property;
 import bifstk.util.BifstkLogSystem;
+import bifstk.util.Color;
 import bifstk.util.Logger;
 
 /**
@@ -47,19 +50,7 @@ public class Bifstk {
 			@Override
 			public void run() {
 
-				// load configuration
-				try {
-					Config.load(config);
-				} catch (BifstkException e) {
-					// the logger needs the config, can't be used yet
-					e.printStackTrace();
-					return;
-				}
-
-				// create logsystem
-				Logger.init();
-				Log.setLogSystem(new BifstkLogSystem());
-				Logger.info("Config loaded from: " + config);
+				preDisplayInit();
 
 				Logic logic = new Logic();
 
@@ -68,21 +59,32 @@ public class Bifstk {
 					// create the display
 					root = new Root(logic.getState());
 
-					// cursor needs to be created after the GL display
-					Cursors.load(Config.getValue(Property.cursorsPath));
-					Cursors.setCursor(Type.POINTER);
+					postDisplayInit();
 				} catch (Exception e) {
 					Logger.error(e);
 					return;
 				}
 
-				int fps = getFps();
-				Logger.debug("Refresh rate: " + fps + "fps");
+				int fps_target = getFps();
+				Logger.debug("Refresh rate: " + fps_target + "fps");
+
+				int fps_real = 0, fps_acc = 0;
+				long dt = 0, dt2 = 0;
 
 				/*
 				 * main loop
 				 */
 				while (!logic.isExitRequested() || stop) {
+
+					// calculate actual framerate
+					dt = Sys.getTime();
+					if (dt - dt2 > 1000) {
+						fps_real = fps_acc;
+						fps_acc = 0;
+						dt2 = dt;
+					} else {
+						fps_acc++;
+					}
 
 					// poll input
 					Display.processMessages();
@@ -91,7 +93,7 @@ public class Bifstk {
 					// foreground window: maintain framerate
 					if (Display.isActive()) {
 						root.render();
-						Display.sync(fps);
+						Display.sync(fps_target);
 					}
 					// background window: lazy update
 					else {
@@ -104,6 +106,9 @@ public class Bifstk {
 							root.render();
 						}
 					}
+					// draw framerate
+					Fonts.draw("FPS: " + fps_real, 0, 0, Color.BLACK);
+
 					// swap buffers
 					Display.update(false);
 
@@ -140,6 +145,37 @@ public class Bifstk {
 	 */
 	public static void stop() {
 		stop = true;
+	}
+
+	/**
+	 * Static initialization that doesn't require display creation
+	 */
+	private static void preDisplayInit() {
+		// load configuration
+		try {
+			Config.load(config);
+		} catch (BifstkException e) {
+			// the logger needs the config, can't be used yet
+			e.printStackTrace();
+			return;
+		}
+
+		// create logsystem
+		Logger.init();
+		Log.setLogSystem(new BifstkLogSystem());
+		Logger.info("Config loaded from: " + config);
+	}
+
+	/**
+	 * Static initialization that requires display creation
+	 */
+	private static void postDisplayInit() throws BifstkException {
+		// cursor creation
+		Cursors.load(Config.getValue(Property.cursorsPath));
+		Cursors.setCursor(Type.POINTER);
+
+		// load fonts
+		Fonts.load();
 	}
 
 	/**

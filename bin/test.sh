@@ -11,13 +11,7 @@ CLASSPATH=$CLASSPATH:$(pwd)/lib/slick/slick.jar
 
 config="config/bifstk.conf"
 
-if [ $? -gt 1 ] ; then
-	if [ -f "$1" ] ; then
-		config=$1
-	fi
-fi
-
-java -cp $CLASSPATH \
+$JAVA_HOME/bin/java -cp $CLASSPATH \
 	-Djava.library.path=$(pwd)/lib/lwjgl/native/linux/ \
-	bifstk.Test $config
+	$@ bifstk.Test $config
 

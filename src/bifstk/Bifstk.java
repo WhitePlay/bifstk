@@ -65,8 +65,26 @@ public class Bifstk {
 					return;
 				}
 
-				int fps_target = getFps();
-				Logger.debug("Refresh rate: " + fps_target + "fps");
+				boolean vsync = new Boolean(
+						Config.getValue(Property.displayVsync));
+				int fps_target = 60;
+				boolean capped = isCapped();
+
+				String log = "Display refresh rate: ";
+				if (vsync) {
+					fps_target = Display.getDisplayMode().getFrequency();
+					log += fps_target + " (vsync)";
+					if (capped)
+						Logger.warn("Framerate will be capped due to VSync");
+				} else {
+					if (!capped) {
+						log += "unlimited";
+					} else {
+						fps_target = getFps();
+						log += fps_target;
+					}
+				}
+				Logger.info(log);
 
 				int fps_real = 0, fps_acc = 0;
 				long dt = 0, dt2 = 0;
@@ -93,7 +111,9 @@ public class Bifstk {
 					// foreground window: maintain framerate
 					if (Display.isActive()) {
 						root.render();
-						Display.sync(fps_target);
+						if (capped) {
+							Display.sync(fps_target);
+						}
 					}
 					// background window: lazy update
 					else {
@@ -123,9 +143,11 @@ public class Bifstk {
 	 * Starts Bifstk in a new Thread
 	 * <p>
 	 * 
-	 * @param configFile path to a local file containing values for all the
-	 *            properties defined in {@link bifstk.config.Property}
-	 * @throws IllegalStateException Bifstk was already started
+	 * @param configFile
+	 *            path to a local file containing values for all the properties
+	 *            defined in {@link bifstk.config.Property}
+	 * @throws IllegalStateException
+	 *             Bifstk was already started
 	 */
 	public static void start(String configFile) {
 		if (Bifstk.runner != null && Bifstk.runner.isAlive()) {
@@ -200,5 +222,11 @@ public class Bifstk {
 		}
 
 		return fps;
+	}
+
+	private static boolean isCapped() {
+		boolean cap = new Boolean(Config.getValue(Property.displayFpsCap));
+
+		return cap;
 	}
 }

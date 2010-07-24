@@ -27,7 +27,8 @@ public class Root {
 	/**
 	 * Default constructor
 	 * 
-	 * @param state view of the WM's state
+	 * @param state
+	 *            view of the WM's state
 	 * @throws BifstkException
 	 */
 	public Root(State state) throws BifstkException {
@@ -49,6 +50,9 @@ public class Root {
 					+ Property.displayHeight, e);
 		}
 		String title = Config.getValue(Property.displayTitle);
+
+		boolean vsync = new Boolean(Config.getValue(Property.displayVsync));
+		Display.setVSyncEnabled(vsync);
 
 		DisplayMode[] modes = null;
 		try {
@@ -137,7 +141,8 @@ public class Root {
 		GL11.glLoadIdentity();
 		GL11.glViewport(0, 0, width, height);
 
-		// GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 
 		// transparency
 		GL11.glEnable(GL11.GL_BLEND);

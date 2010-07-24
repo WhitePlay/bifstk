@@ -37,7 +37,11 @@ public enum Property {
 	displayTitle("display.title"),
 	/** refresh rate of the display in frames per second */
 	displayFps("display.fps"),
-
+	/** do not cap the framerate if false */
+	displayFpsCap("display.fps.cap"),
+	/** enable VSync */
+	displayVsync("display.vsync"),
+	
 	// //////////////////////////
 	// /// Graphical resources
 	// //////////////////////////

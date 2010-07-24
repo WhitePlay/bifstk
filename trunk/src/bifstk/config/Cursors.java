@@ -63,7 +63,8 @@ public class Cursors {
 	/**
 	 * Default constructor
 	 * 
-	 * @param path path to the directory containing the cursors
+	 * @param path
+	 *            path to the directory containing the cursors
 	 * @throws BifstkException
 	 */
 	private Cursors(String path) throws BifstkException {
@@ -88,9 +89,9 @@ public class Cursors {
 			int yHotspot = 0;
 
 			try {
-				Integer.parseInt(ar[1]);
+				xHotspot = Integer.parseInt(ar[1]);
 				String y = ar[2].split("[.]")[0];
-				Integer.parseInt(y);
+				yHotspot = Integer.parseInt(y);
 			} catch (Exception e) {
 				throw new BifstkException(
 						"Error parsing hotspot coordinates in cursor filename "
@@ -123,7 +124,8 @@ public class Cursors {
 	/**
 	 * Changes the cursor currently displayed in the OpenGL Display
 	 * 
-	 * @param type cursor to display
+	 * @param type
+	 *            cursor to display
 	 */
 	public static void setCursor(Type type) {
 		check();
@@ -162,7 +164,8 @@ public class Cursors {
 	 * exception.
 	 * 
 	 * 
-	 * @param path path to the directory containing the cursor files
+	 * @param path
+	 *            path to the directory containing the cursor files
 	 * @throws BifstkException
 	 */
 	public static void load(String path) throws BifstkException {

@@ -9,9 +9,11 @@ import bifstk.config.Cursors;
 import bifstk.config.Cursors.Type;
 import bifstk.config.Fonts;
 import bifstk.config.Property;
+import bifstk.gl.Color;
 import bifstk.util.BifstkLogSystem;
-import bifstk.util.Color;
 import bifstk.util.Logger;
+import bifstk.wm.Logic;
+import bifstk.wm.Root;
 
 /**
  * Main class for Bifstk
@@ -74,7 +76,7 @@ public class Bifstk {
 				if (vsync) {
 					fps_target = Display.getDisplayMode().getFrequency();
 					log += fps_target + " (vsync)";
-					if (capped)
+					if (!capped)
 						Logger.warn("Framerate will be capped due to VSync");
 				} else {
 					if (!capped) {

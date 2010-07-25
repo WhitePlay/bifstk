@@ -1,4 +1,4 @@
-package bifstk.wm;
+package bifstk.wm.geom;
 
 /**
  * A coordinate in 2D space, with int precision

@@ -2,6 +2,9 @@ package bifstk.wm;
 
 import org.lwjgl.opengl.GL11;
 
+import bifstk.wm.geom.Point;
+import bifstk.wm.geom.Rectangle;
+
 /**
  * a Frame is a Window in the Window Manager
  * <p>

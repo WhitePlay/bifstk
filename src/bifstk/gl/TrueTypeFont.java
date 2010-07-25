@@ -1,4 +1,4 @@
-package bifstk.util;
+package bifstk.gl;
 
 import java.awt.Color;
 import java.awt.FontMetrics;
@@ -339,12 +339,12 @@ public class TrueTypeFont {
 	 * @param color The color to draw the text
 	 */
 	public void drawString(float x, float y, String whatchars,
-			bifstk.util.Color color) {
+			bifstk.gl.Color color) {
 		drawString(x, y, whatchars, color, 0, whatchars.length() - 1);
 	}
 
 	public void drawString(float x, float y, String whatchars,
-			bifstk.util.Color color, int startIndex, int endIndex) {
+			bifstk.gl.Color color, int startIndex, int endIndex) {
 		color.use();
 
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -390,7 +390,7 @@ public class TrueTypeFont {
 	 * @param whatchars The string to draw
 	 */
 	public void drawString(float x, float y, String whatchars) {
-		drawString(x, y, whatchars, bifstk.util.Color.WHITE);
+		drawString(x, y, whatchars, bifstk.gl.Color.WHITE);
 	}
 
 }

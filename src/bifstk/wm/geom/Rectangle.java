@@ -1,4 +1,4 @@
-package bifstk.wm;
+package bifstk.wm.geom;
 
 /**
  * 2D dimension with int precision

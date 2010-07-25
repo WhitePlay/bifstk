@@ -1,4 +1,4 @@
-package bifstk.util;
+package bifstk.gl;
 
 import org.lwjgl.opengl.GL11;
 

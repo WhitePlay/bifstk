@@ -25,6 +25,11 @@ public class Frame implements Drawable {
 	/** true if the frame is currently dragged in the WM */
 	private boolean dragged = false;
 
+	/** width in pixels of the resize border outside the frame */
+	private int borderWidth = 3;
+	/** height in pixels of the titlebar */
+	private int titlebarHeight = 20;
+
 	/**
 	 * Default constructor
 	 * 
@@ -70,20 +75,42 @@ public class Frame implements Drawable {
 		} else {
 			GL11.glColor4f(0.5f, 0.5f, 0.5f, alpha);
 		}
+
+		// titlebar - includes top border
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glVertex2i(x, y);
 		GL11.glVertex2i(x + w, y);
-		GL11.glVertex2i(x + w, y + h);
+		GL11.glVertex2i(x + w, y + titlebarHeight + borderWidth);
+		GL11.glVertex2i(x, y + titlebarHeight + borderWidth);
+
+		// left border
+		GL11.glVertex2i(x, y + titlebarHeight + borderWidth);
+		GL11.glVertex2i(x + borderWidth, y + titlebarHeight + borderWidth);
+		GL11.glVertex2i(x + borderWidth, y + h);
 		GL11.glVertex2i(x, y + h);
+
+		// right border
+		GL11.glVertex2i(x + w, y + titlebarHeight + borderWidth);
+		GL11.glVertex2i(x + w - borderWidth, y + titlebarHeight + borderWidth);
+		GL11.glVertex2i(x + w - borderWidth, y + h);
+		GL11.glVertex2i(x + w, y + h);
+
+		// bottom border
+		GL11.glVertex2i(x + borderWidth, y + h);
+		GL11.glVertex2i(x + w - borderWidth, y + h);
+		GL11.glVertex2i(x + w - borderWidth, y + h - borderWidth);
+		GL11.glVertex2i(x + borderWidth, y + h - borderWidth);
 		GL11.glEnd();
 
-		GL11.glColor3f(0.0f, 0.0f, 0.0f);
-		GL11.glBegin(GL11.GL_LINE_LOOP);
-		GL11.glVertex2i(x, y);
-		GL11.glVertex2i(x + w, y);
-		GL11.glVertex2i(x + w, y + h);
-		GL11.glVertex2i(x, y + h);
+		// content
+		GL11.glColor4f(1.0f, 1.0f, 1.0f, alpha);
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glVertex2i(x + borderWidth, y + titlebarHeight + borderWidth);
+		GL11.glVertex2i(x + w - borderWidth, y + titlebarHeight + borderWidth);
+		GL11.glVertex2i(x + w - borderWidth, y + h - borderWidth);
+		GL11.glVertex2i(x + borderWidth, y + h - borderWidth);
 		GL11.glEnd();
+
 	}
 
 	/**

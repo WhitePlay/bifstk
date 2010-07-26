@@ -60,11 +60,13 @@ public class Cursors {
 	/** actual cursor instance matching each {@link Cursors.Type} */
 	private Map<Type, Cursor> cursors = null;
 
+	/** currently used cursor */
+	private Type current = Type.POINTER;
+
 	/**
 	 * Default constructor
 	 * 
-	 * @param path
-	 *            path to the directory containing the cursors
+	 * @param path path to the directory containing the cursors
 	 * @throws BifstkException
 	 */
 	private Cursors(String path) throws BifstkException {
@@ -124,13 +126,16 @@ public class Cursors {
 	/**
 	 * Changes the cursor currently displayed in the OpenGL Display
 	 * 
-	 * @param type
-	 *            cursor to display
+	 * @param type cursor to display
 	 */
 	public static void setCursor(Type type) {
 		check();
+		if (type.equals(instance.current)) {
+			return;
+		}
 		try {
 			Mouse.setNativeCursor(instance.cursors.get(type));
+			instance.current = type;
 		} catch (LWJGLException e) {
 			Logger.error("Error setting native cursor " + e.getMessage());
 		}
@@ -164,8 +169,7 @@ public class Cursors {
 	 * exception.
 	 * 
 	 * 
-	 * @param path
-	 *            path to the directory containing the cursor files
+	 * @param path path to the directory containing the cursor files
 	 * @throws BifstkException
 	 */
 	public static void load(String path) throws BifstkException {

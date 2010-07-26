@@ -94,7 +94,7 @@ public class Rectangle {
 	 * @return true if the provided point is contained in this Rectangle
 	 */
 	public boolean contains(int x, int y) {
-		return (0 < x && x < width && 0 < y && y < height);
+		return (0 < x && x <= width && 0 < y && y <= height);
 	}
 
 	@Override

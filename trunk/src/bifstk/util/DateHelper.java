@@ -4,12 +4,17 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import bifstk.config.Config;
+import bifstk.config.Property;
+
 /**
  * Utility to help manipulate dates
  * <p>
  * 
  */
 public class DateHelper {
+
+	private final static String defaultFormat = "yy-MM-dd hh:mm:ss.SSS";
 
 	/**
 	 * Timestamps formatter
@@ -26,7 +31,12 @@ public class DateHelper {
 	 * Access to non-static class members is restricted
 	 */
 	private DateHelper() {
-		timeStamps = new SimpleDateFormat("MM/dd/yy hh:mm:ss.SSS");
+		String format = Config.getValue(Property.loggerDateFormat);
+		try {
+			timeStamps = new SimpleDateFormat(format);
+		} catch (Exception e) {
+			timeStamps = new SimpleDateFormat(defaultFormat);
+		}
 	}
 
 	/**

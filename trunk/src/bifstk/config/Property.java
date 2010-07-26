@@ -16,13 +16,16 @@ public enum Property {
 	loggerFilePath("logger.file.path"),
 	/** Overwrite log file */
 	loggerFileOverwrite("logger.file.overwrite"),
-
 	/** Enable or disable printing logs to stdout */
 	loggerStdoutEnabled("logger.stdout.enabled"),
 	/** Print debug statements to stdout */
 	loggerStdoutDebug("logger.stdout.debug"),
 	/** Print caller method context to stdout */
 	loggerStdoutTrace("logger.stdout.trace"),
+	/** length of the contextual trace for each line */
+	loggerTraceLength("logger.trace.length"),
+	/** format of the date of each log element */
+	loggerDateFormat("logger.date.format"),
 
 	// ///////////////////
 	// /// Display
@@ -41,7 +44,7 @@ public enum Property {
 	displayFpsCap("display.fps.cap"),
 	/** enable VSync */
 	displayVsync("display.vsync"),
-	
+
 	// //////////////////////////
 	// /// Graphical resources
 	// //////////////////////////

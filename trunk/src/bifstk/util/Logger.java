@@ -42,6 +42,8 @@ public class Logger {
 	private boolean debug = false;
 	/** print trace in stdout messages */
 	private boolean trace = false;
+	/** trace max length */
+	private int traceLen = 25;
 
 	/**
 	 * Visibility of a log event
@@ -87,13 +89,15 @@ public class Logger {
 	 * @param trace
 	 * @param stamps
 	 * @param overwrite
+	 * @param len
 	 */
 	private Logger(Visibility vis, String output, boolean debug, boolean trace,
-			boolean overwrite) {
+			boolean overwrite, int tracelen) {
 		this.outPath = output;
 		this.visibility = vis;
 		this.debug = debug;
 		this.trace = trace;
+		this.traceLen = tracelen;
 
 		// log should append to file, trying to open a log file
 		if (this.visibility.isFile()) {
@@ -156,7 +160,14 @@ public class Logger {
 		boolean overwrite = new Boolean(
 				Config.getValue(Property.loggerFileOverwrite));
 
-		Logger.instance = new Logger(vis, out, debug, trace, overwrite);
+		int len = 0;
+		try {
+			len = Integer.parseInt(Config.getValue(Property.loggerTraceLength));
+		} catch (Throwable t) {
+		}
+		len = Math.max(Math.min(60, len), 15);
+
+		Logger.instance = new Logger(vis, out, debug, trace, overwrite, len);
 
 		instance.message("--- Log begins --------", Level.INFO, Visibility.FILE);
 	}
@@ -295,16 +306,17 @@ public class Logger {
 			return;
 		}
 		if (vis.isStdout()) {
-			System.out
-					.println(getFormattedString(message, t, false, this.trace));
+			System.out.println(getFormattedString(message, t, false,
+					this.trace, this.traceLen));
 		}
 		if (vis.isFile()) {
-			this.out.println(getFormattedString(message, t, true, true));
+			this.out.println(getFormattedString(message, t, true, true,
+					this.traceLen));
 		}
 	}
 
 	private static String getFormattedString(String message, Throwable t,
-			boolean stamps, boolean trace) {
+			boolean stamps, boolean trace, int traceLen) {
 		String ret = "";
 		String prefix = "";
 
@@ -312,7 +324,7 @@ public class Logger {
 			prefix += DateHelper.getTimeStamps() + " ";
 		}
 		if (trace) {
-			prefix += getContext(25);
+			prefix += getContext(traceLen);
 		}
 		if (prefix.length() != 0) {
 			prefix = "[" + prefix + "] ";

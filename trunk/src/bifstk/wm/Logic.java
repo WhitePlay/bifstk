@@ -87,6 +87,7 @@ public class Logic {
 		updateKeyboard();
 		updateMouse();
 
+		cursorHover();
 		applyMouse();
 	}
 
@@ -207,6 +208,56 @@ public class Logic {
 				dragged.setDragged(false);
 				Cursors.setCursor(Type.POINTER);
 			}
+		}
+	}
+
+	/**
+	 * Changes the mouse cursor depending what it's currently hovering
+	 */
+	private void cursorHover() {
+		if (this.leftMouse.dragged) {
+			return;
+		}
+
+		int mx = getMouseX();
+		int my = getMouseY();
+
+		Frame f = this.state.findFrame(mx, my);
+		if (f == null) {
+			Cursors.setCursor(Type.POINTER);
+			return;
+		}
+
+		switch (f.getRegion(mx, my)) {
+		case CONTENT:
+		case TITLE:
+		case OUT:
+			Cursors.setCursor(Type.POINTER);
+			break;
+		case TOP_LEFT:
+			Cursors.setCursor(Type.RESIZE_TOP_LEFT);
+			break;
+		case TOP:
+			Cursors.setCursor(Type.RESIZE_TOP);
+			break;
+		case TOP_RIGHT:
+			Cursors.setCursor(Type.RESIZE_TOP_RIGHT);
+			break;
+		case LEFT:
+			Cursors.setCursor(Type.RESIZE_LEFT);
+			break;
+		case RIGHT:
+			Cursors.setCursor(Type.RESIZE_RIGHT);
+			break;
+		case BOT_LEFT:
+			Cursors.setCursor(Type.RESIZE_BOT_LEFT);
+			break;
+		case BOT:
+			Cursors.setCursor(Type.RESIZE_BOT);
+			break;
+		case BOT_RIGHT:
+			Cursors.setCursor(Type.RESIZE_BOT_RIGHT);
+			break;
 		}
 	}
 

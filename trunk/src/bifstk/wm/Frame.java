@@ -26,9 +26,38 @@ public class Frame implements Drawable {
 	private boolean dragged = false;
 
 	/** width in pixels of the resize border outside the frame */
-	private int borderWidth = 3;
+	private int borderWidth = 5;
 	/** height in pixels of the titlebar */
 	private int titlebarHeight = 20;
+
+	/**
+	 * Regions that compose the frame: borders, title and content
+	 * 
+	 * <pre>
+	 *  1_________2_________3
+	 *  |_________4_________|
+	 *  |                   |
+	 *  5         6         7    11
+	 *  |                   |
+	 *  8_________9________10
+	 * </pre>
+	 * <ul>
+	 * <li>1: top left border
+	 * <li>2: top border
+	 * <li>3: top right border
+	 * <li>4: title
+	 * <li>5: left border
+	 * <li>6: content
+	 * <li>7: right border
+	 * <li>8: bottom left border
+	 * <li>9: bottom border
+	 * <li>10: bottom right border
+	 * <li>11: outside of the frame
+	 * </ul>
+	 */
+	public static enum Region {
+		TITLE, CONTENT, LEFT, TOP, RIGHT, BOT, TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT, OUT
+	}
 
 	/**
 	 * Default constructor
@@ -71,30 +100,27 @@ public class Frame implements Drawable {
 			alpha = 0.5f;
 		}
 		if (this.isFocused()) {
-			GL11.glColor4f(0.7f, 0.7f, 0.7f, alpha);
-		} else {
 			GL11.glColor4f(0.5f, 0.5f, 0.5f, alpha);
+		} else {
+			GL11.glColor4f(0.3f, 0.3f, 0.3f, alpha);
 		}
 
-		// titlebar - includes top border
 		GL11.glBegin(GL11.GL_QUADS);
+		// top border
 		GL11.glVertex2i(x, y);
 		GL11.glVertex2i(x + w, y);
-		GL11.glVertex2i(x + w, y + titlebarHeight + borderWidth);
-		GL11.glVertex2i(x, y + titlebarHeight + borderWidth);
-
+		GL11.glVertex2i(x + w, y + borderWidth);
+		GL11.glVertex2i(x, y + borderWidth);
 		// left border
-		GL11.glVertex2i(x, y + titlebarHeight + borderWidth);
-		GL11.glVertex2i(x + borderWidth, y + titlebarHeight + borderWidth);
+		GL11.glVertex2i(x, y + borderWidth);
+		GL11.glVertex2i(x + borderWidth, y + borderWidth);
 		GL11.glVertex2i(x + borderWidth, y + h);
 		GL11.glVertex2i(x, y + h);
-
 		// right border
-		GL11.glVertex2i(x + w, y + titlebarHeight + borderWidth);
-		GL11.glVertex2i(x + w - borderWidth, y + titlebarHeight + borderWidth);
+		GL11.glVertex2i(x + w, y + borderWidth);
+		GL11.glVertex2i(x + w - borderWidth, y + borderWidth);
 		GL11.glVertex2i(x + w - borderWidth, y + h);
 		GL11.glVertex2i(x + w, y + h);
-
 		// bottom border
 		GL11.glVertex2i(x + borderWidth, y + h);
 		GL11.glVertex2i(x + w - borderWidth, y + h);
@@ -102,8 +128,17 @@ public class Frame implements Drawable {
 		GL11.glVertex2i(x + borderWidth, y + h - borderWidth);
 		GL11.glEnd();
 
+		// title-bar
+		GL11.glColor4f(0.6f, 0.6f, 0.6f, alpha);
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glVertex2i(x + borderWidth, y + titlebarHeight + borderWidth);
+		GL11.glVertex2i(x + w - borderWidth, y + titlebarHeight + borderWidth);
+		GL11.glVertex2i(x + w - borderWidth, y + borderWidth);
+		GL11.glVertex2i(x + borderWidth, y + borderWidth);
+		GL11.glEnd();
+
 		// content
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, alpha);
+		GL11.glColor4f(0.9f, 0.9f, 0.9f, alpha);
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glVertex2i(x + borderWidth, y + titlebarHeight + borderWidth);
 		GL11.glVertex2i(x + w - borderWidth, y + titlebarHeight + borderWidth);
@@ -221,23 +256,90 @@ public class Frame implements Drawable {
 	 * Tests whether a specific 2D coordinate is contained in the bounds of this
 	 * frame
 	 * 
-	 * @param p a point in 2D space
-	 * @return true if the provided point is contained in this frame
-	 */
-	public boolean contains(Point p) {
-		return this.contains(p.getX(), p.getY());
-	}
-
-	/**
-	 * Tests whether a specific 2D coordinate is contained in the bounds of this
-	 * frame
-	 * 
 	 * @param x abscissa in 2D space
 	 * @param y ordinate in 2D space
 	 * @return true if the provided point is contained in this frame
 	 */
 	public boolean contains(int x, int y) {
 		return bounds.contains(x - pos.getX(), y - pos.getY());
+	}
+
+	/**
+	 * Determines what {@link Region} of the Frame corresponds to a particular
+	 * point in 2D space
+	 * 
+	 * @param mx abscissa in 2D space
+	 * @param my ordinate in 2D space
+	 * @return the Region of the frame corresponding the provided coordinates
+	 */
+	public Region getRegion(int mx, int my) {
+		int x = this.getX();
+		int y = this.getY();
+
+		int px = 0;
+		int py = 0;
+
+		if (mx < x) {
+			return Region.OUT;
+		} else if (mx < x + borderWidth) {
+			px = 1;
+		} else if (mx < x + this.getWidth() - borderWidth) {
+			px = 2;
+		} else if (mx < x + this.getWidth()) {
+			px = 3;
+		} else {
+			return Region.OUT;
+		}
+
+		if (my < y) {
+			return Region.OUT;
+		} else if (my < y + borderWidth) {
+			py = 1;
+		} else if (my < y + borderWidth + titlebarHeight) {
+			py = 2;
+		} else if (my < y + this.getHeight() - borderWidth) {
+			py = 3;
+		} else if (my < y + this.getHeight()) {
+			py = 4;
+		} else {
+			return Region.OUT;
+		}
+
+		switch (px) {
+		case 1:
+			switch (py) {
+			case 1:
+				return Region.TOP_LEFT;
+			case 2:
+			case 3:
+				return Region.LEFT;
+			case 4:
+				return Region.BOT_LEFT;
+			}
+		case 2:
+			switch (py) {
+			case 1:
+				return Region.TOP;
+			case 2:
+				return Region.TITLE;
+			case 3:
+				return Region.CONTENT;
+			case 4:
+				return Region.BOT;
+			}
+		case 3:
+			switch (py) {
+			case 1:
+				return Region.TOP_RIGHT;
+			case 2:
+			case 3:
+				return Region.RIGHT;
+			case 4:
+				return Region.BOT_RIGHT;
+			}
+		}
+
+		return Region.OUT;
 	}
 
 	@Override

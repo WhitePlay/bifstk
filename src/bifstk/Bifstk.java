@@ -75,7 +75,7 @@ public class Bifstk {
 				String log = "Display refresh rate: ";
 				if (vsync) {
 					fps_target = Display.getDisplayMode().getFrequency();
-					log += fps_target + " (vsync)";
+					log += "vsync";
 					if (!capped)
 						Logger.warn("Framerate will be capped due to VSync");
 				} else {
@@ -145,11 +145,9 @@ public class Bifstk {
 	 * Starts Bifstk in a new Thread
 	 * <p>
 	 * 
-	 * @param configFile
-	 *            path to a local file containing values for all the properties
-	 *            defined in {@link bifstk.config.Property}
-	 * @throws IllegalStateException
-	 *             Bifstk was already started
+	 * @param configFile path to a local file containing values for all the
+	 *            properties defined in {@link bifstk.config.Property}
+	 * @throws IllegalStateException Bifstk was already started
 	 */
 	public static void start(String configFile) {
 		if (Bifstk.runner != null && Bifstk.runner.isAlive()) {

@@ -25,6 +25,9 @@ public class Frame implements Drawable {
 	/** true if the frame is currently dragged in the WM */
 	private boolean dragged = false;
 
+	/** true if the frame is currently resized in the WM */
+	private boolean resized = false;
+
 	/** width in pixels of the resize border outside the frame */
 	private int borderWidth = 5;
 	/** height in pixels of the titlebar */
@@ -250,6 +253,20 @@ public class Frame implements Drawable {
 	 */
 	public void setDragged(boolean dragged) {
 		this.dragged = dragged;
+	}
+
+	/**
+	 * @return true if this frame is resized in the WM
+	 */
+	public boolean isResized() {
+		return this.resized;
+	}
+
+	/**
+	 * @param dragged the new resize state of this frame
+	 */
+	public void setResized(boolean resized) {
+		this.resized = resized;
 	}
 
 	/**

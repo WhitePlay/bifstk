@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import bifstk.wm.geom.Point;
 import bifstk.wm.geom.Rectangle;
+import bifstk.wm.geom.Region;
 
 /**
  * a Frame is a Window in the Window Manager
@@ -32,35 +33,8 @@ public class Frame implements Drawable {
 	private int borderWidth = 5;
 	/** height in pixels of the titlebar */
 	private int titlebarHeight = 20;
-
-	/**
-	 * Regions that compose the frame: borders, title and content
-	 * 
-	 * <pre>
-	 *  1_________2_________3
-	 *  |_________4_________|
-	 *  |                   |
-	 *  5         6         7    11
-	 *  |                   |
-	 *  8_________9________10
-	 * </pre>
-	 * <ul>
-	 * <li>1: top left border
-	 * <li>2: top border
-	 * <li>3: top right border
-	 * <li>4: title
-	 * <li>5: left border
-	 * <li>6: content
-	 * <li>7: right border
-	 * <li>8: bottom left border
-	 * <li>9: bottom border
-	 * <li>10: bottom right border
-	 * <li>11: outside of the frame
-	 * </ul>
-	 */
-	public static enum Region {
-		TITLE, CONTENT, LEFT, TOP, RIGHT, BOT, TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT, OUT
-	}
+	/** width of the corner in pixels for mouse corner resize */
+	private int cornerWidth = 15;
 
 	/**
 	 * Default constructor
@@ -298,26 +272,34 @@ public class Frame implements Drawable {
 
 		if (mx < x) {
 			return Region.OUT;
-		} else if (mx < x + borderWidth) {
-			px = 1;
-		} else if (mx < x + this.getWidth() - borderWidth) {
-			px = 2;
-		} else if (mx < x + this.getWidth()) {
-			px = 3;
+		} else if (mx <= x + borderWidth) {
+			px = 1; // left border
+		} else if (mx <= x + cornerWidth) {
+			px = 2; // center with left corner tolerance
+		} else if (mx <= x + this.getWidth() - cornerWidth) {
+			px = 3; // center
+		} else if (mx <= x + this.getWidth() - borderWidth) {
+			px = 4; // center with right corner tolerance
+		} else if (mx <= x + this.getWidth()) {
+			px = 5; // right border
 		} else {
 			return Region.OUT;
 		}
 
 		if (my < y) {
 			return Region.OUT;
-		} else if (my < y + borderWidth) {
-			py = 1;
-		} else if (my < y + borderWidth + titlebarHeight) {
-			py = 2;
-		} else if (my < y + this.getHeight() - borderWidth) {
-			py = 3;
-		} else if (my < y + this.getHeight()) {
-			py = 4;
+		} else if (my <= y + borderWidth) {
+			py = 1; // top border
+		} else if (my <= y + cornerWidth) {
+			py = 2; // titlebar with top corner tolerance
+		} else if (my <= y + borderWidth + titlebarHeight) {
+			py = 3; // titlebar
+		} else if (my <= y + this.getHeight() - cornerWidth) {
+			py = 4; // center
+		} else if (my <= y + this.getHeight() - borderWidth) {
+			py = 5; // center with bottom corner tolerance
+		} else if (my <= y + this.getHeight()) {
+			py = 6; // bottom border
 		} else {
 			return Region.OUT;
 		}
@@ -326,32 +308,64 @@ public class Frame implements Drawable {
 		case 1:
 			switch (py) {
 			case 1:
-				return Region.TOP_LEFT;
 			case 2:
+				return Region.TOP_LEFT;
 			case 3:
-				return Region.LEFT;
 			case 4:
+				return Region.LEFT;
+			case 5:
+			case 6:
 				return Region.BOT_LEFT;
 			}
 		case 2:
 			switch (py) {
 			case 1:
-				return Region.TOP;
+				return Region.TOP_LEFT;
 			case 2:
-				return Region.TITLE;
 			case 3:
-				return Region.CONTENT;
+				return Region.TITLE;
 			case 4:
-				return Region.BOT;
+			case 5:
+				return Region.CONTENT;
+			case 6:
+				return Region.BOT_LEFT;
 			}
 		case 3:
+			switch (py) {
+			case 1:
+				return Region.TOP;
+			case 2:
+			case 3:
+				return Region.TITLE;
+			case 4:
+			case 5:
+				return Region.CONTENT;
+			case 6:
+				return Region.BOT;
+			}
+		case 4:
 			switch (py) {
 			case 1:
 				return Region.TOP_RIGHT;
 			case 2:
 			case 3:
-				return Region.RIGHT;
+				return Region.TITLE;
 			case 4:
+			case 5:
+				return Region.CONTENT;
+			case 6:
+				return Region.BOT_RIGHT;
+			}
+		case 5:
+			switch (py) {
+			case 1:
+			case 2:
+				return Region.TOP_RIGHT;
+			case 3:
+			case 4:
+				return Region.RIGHT;
+			case 5:
+			case 6:
 				return Region.BOT_RIGHT;
 			}
 		}

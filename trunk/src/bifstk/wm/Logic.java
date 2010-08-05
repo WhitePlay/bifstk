@@ -6,12 +6,13 @@ import org.lwjgl.opengl.Display;
 
 import bifstk.config.Cursors;
 import bifstk.config.Cursors.Type;
-import bifstk.wm.Frame.Region;
+import bifstk.wm.geom.Region;
 
 /**
  * Internal logic of the WM
  * <p>
- * Handles input, propagates changes in the {@link State}
+ * Handles input, propagates changes in the {@link State} upon a call to
+ * {@link #update()}
  * 
  */
 public class Logic {

@@ -277,7 +277,10 @@ public class Logic {
 						Cursors.setCursor(Type.RESIZE_LEFT);
 					}
 					int dx = this.leftMouse.hoverX - this.leftMouse.clickX;
-					int nx = this.leftMouse.dragX + dx;
+					int nx = this.leftMouse.dragX
+							+ Math.min(
+									this.leftMouse.clickWidth
+											- dragged.getMinWidth(), dx);
 					int nw = this.leftMouse.clickWidth - dx;
 					dragged.setX(nx);
 					dragged.setWidth(nw);
@@ -299,7 +302,10 @@ public class Logic {
 						Cursors.setCursor(Type.RESIZE_TOP);
 					}
 					int dy = this.leftMouse.hoverY - this.leftMouse.clickY;
-					int ny = this.leftMouse.dragY + dy;
+					int ny = this.leftMouse.dragY
+							+ Math.min(
+									this.leftMouse.clickHeight
+											- dragged.getMinHeight(), dy);
 					int nh = this.leftMouse.clickHeight - dy;
 					dragged.setY(ny);
 					dragged.setHeight(nh);
@@ -307,7 +313,7 @@ public class Logic {
 					break;
 				case BOT_RIGHT: {
 					if (!this.leftMouse.draggedLastPoll) {
-						dragged.setResized(false);
+						dragged.setResized(true);
 						Cursors.setCursor(Type.RESIZE_BOT_RIGHT);
 					}
 					int nw = this.leftMouse.clickWidth
@@ -320,13 +326,16 @@ public class Logic {
 					break;
 				case TOP_RIGHT: {
 					if (!this.leftMouse.draggedLastPoll) {
-						dragged.setResized(false);
+						dragged.setResized(true);
 						Cursors.setCursor(Type.RESIZE_TOP_RIGHT);
 					}
 					int nw = this.leftMouse.clickWidth
 							+ (this.leftMouse.hoverX - this.leftMouse.clickX);
 					int dy = this.leftMouse.hoverY - this.leftMouse.clickY;
-					int ny = this.leftMouse.dragY + dy;
+					int ny = this.leftMouse.dragY
+							+ Math.min(
+									this.leftMouse.clickHeight
+											- dragged.getMinHeight(), dy);
 					int nh = this.leftMouse.clickHeight - dy;
 					dragged.setY(ny);
 					dragged.setWidth(nw);
@@ -335,15 +344,21 @@ public class Logic {
 					break;
 				case TOP_LEFT: {
 					if (!this.leftMouse.draggedLastPoll) {
-						dragged.setResized(false);
+						dragged.setResized(true);
 						Cursors.setCursor(Type.RESIZE_TOP_LEFT);
 					}
 
 					int dx = this.leftMouse.hoverX - this.leftMouse.clickX;
-					int nx = this.leftMouse.dragX + dx;
+					int nx = this.leftMouse.dragX
+							+ Math.min(
+									this.leftMouse.clickWidth
+											- dragged.getMinWidth(), dx);
 					int nw = this.leftMouse.clickWidth - dx;
 					int dy = this.leftMouse.hoverY - this.leftMouse.clickY;
-					int ny = this.leftMouse.dragY + dy;
+					int ny = this.leftMouse.dragY
+							+ Math.min(
+									this.leftMouse.clickHeight
+											- dragged.getMinHeight(), dy);
 					int nh = this.leftMouse.clickHeight - dy;
 					dragged.setX(nx);
 					dragged.setWidth(nw);
@@ -353,11 +368,14 @@ public class Logic {
 					break;
 				case BOT_LEFT: {
 					if (!this.leftMouse.draggedLastPoll) {
-						dragged.setResized(false);
+						dragged.setResized(true);
 						Cursors.setCursor(Type.RESIZE_BOT_LEFT);
 					}
 					int dx = this.leftMouse.hoverX - this.leftMouse.clickX;
-					int nx = this.leftMouse.dragX + dx;
+					int nx = this.leftMouse.dragX
+							+ Math.min(
+									this.leftMouse.clickWidth
+											- dragged.getMinWidth(), dx);
 					int nw = this.leftMouse.clickWidth - dx;
 					int nh = this.leftMouse.clickHeight
 							+ (this.leftMouse.hoverY - this.leftMouse.clickY);
@@ -372,6 +390,7 @@ public class Logic {
 			Frame dragged = this.leftMouse.draggedFrame;
 			if (dragged != null) {
 				dragged.setDragged(false);
+				dragged.setResized(false);
 				Cursors.setCursor(Type.POINTER);
 			}
 		}

@@ -2,6 +2,9 @@ package bifstk.wm;
 
 import org.lwjgl.opengl.GL11;
 
+import bifstk.config.Fonts;
+import bifstk.gl.Color;
+import bifstk.gl.TrueTypeFont;
 import bifstk.wm.geom.Point;
 import bifstk.wm.geom.Rectangle;
 import bifstk.wm.geom.Region;
@@ -19,6 +22,9 @@ public class Frame implements Drawable {
 
 	/** position in the WM */
 	private Point pos = null;
+
+	/** minimum dimensions */
+	private Rectangle minBounds = null;
 
 	/** true if the frame is currently focused in the WM */
 	private boolean focused = false;
@@ -44,6 +50,7 @@ public class Frame implements Drawable {
 	 */
 	public Frame(int x, int y) {
 		this.bounds = new Rectangle(100, 100);
+		this.minBounds = new Rectangle(60, 60);
 		this.pos = new Point(x, y);
 	}
 
@@ -123,6 +130,33 @@ public class Frame implements Drawable {
 		GL11.glVertex2i(x + borderWidth, y + h - borderWidth);
 		GL11.glEnd();
 
+		// draw little info area at the center of the window to display
+		// the current position/size while dragging/resizing
+		if (this.dragged || this.resized) {
+			TrueTypeFont font = Fonts.getSmall();
+			String msg = "";
+			if (this.resized) {
+				msg = w + "x" + h;
+			} else {
+				msg = x + ":" + y;
+			}
+
+			int msgW = font.getWidth(msg);
+			int msgH = font.getHeight(msg);
+			int mx = x + (w / 2) - (msgW / 2);
+			int my = y + (h / 2) - (msgH / 2);
+
+			GL11.glColor4f(0.9f, 0.9f, 0.9f, 1.0f);
+			GL11.glBegin(GL11.GL_QUADS);
+			GL11.glVertex2i(mx, my);
+			GL11.glVertex2i(mx, my + msgH);
+			GL11.glVertex2i(mx + msgW, my + msgH);
+			GL11.glVertex2i(mx + msgW, my);
+			GL11.glEnd();
+
+			font.drawString(mx, my, msg, Color.BLACK);
+		}
+
 	}
 
 	/**
@@ -183,6 +217,7 @@ public class Frame implements Drawable {
 	 * @param w the new width of this frame
 	 */
 	public void setWidth(int w) {
+		w = Math.max(w, this.minBounds.getWidth());
 		this.bounds.setWidth(w);
 	}
 
@@ -190,6 +225,7 @@ public class Frame implements Drawable {
 	 * @param h the new height of this frame
 	 */
 	public void setHeight(int h) {
+		h = Math.max(h, this.minBounds.getHeight());
 		this.bounds.setHeight(h);
 	}
 
@@ -198,7 +234,45 @@ public class Frame implements Drawable {
 	 * @param h the new height of this frame
 	 */
 	public void setBounds(int w, int h) {
+		w = Math.max(w, this.minBounds.getWidth());
+		h = Math.max(h, this.minBounds.getHeight());
 		this.bounds.setBounds(w, h);
+	}
+
+	/**
+	 * @return the minimum width of this frame
+	 */
+	public int getMinWidth() {
+		return this.minBounds.getWidth();
+	}
+
+	/**
+	 * @return the minimum height of this frame
+	 */
+	public int getMinHeight() {
+		return this.minBounds.getHeight();
+	}
+
+	/**
+	 * @param x the minimum width of this frame
+	 */
+	public void setMinWidth(int x) {
+		this.minBounds.setWidth(x);
+	}
+
+	/**
+	 * @param y the minimum width of this frame
+	 */
+	public void setMinHeight(int y) {
+		this.minBounds.setHeight(y);
+	}
+
+	/**
+	 * @param w the new minimum width of this frame
+	 * @param h the new minimum height of this frame
+	 */
+	public void setMinBounds(int w, int h) {
+		this.minBounds.setBounds(w, h);
 	}
 
 	/**

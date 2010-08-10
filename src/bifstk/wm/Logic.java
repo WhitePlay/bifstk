@@ -18,7 +18,7 @@ import bifstk.wm.geom.Region;
 public class Logic {
 
 	/** Privileged view of the WM's state */
-	private StateImpl state = null;
+	private State state = null;
 
 	/** true when an event signified the app should exit */
 	private boolean exitRequested = false;
@@ -85,7 +85,7 @@ public class Logic {
 	 * Default constructor
 	 */
 	public Logic() {
-		this.state = new StateImpl();
+		this.state = new State();
 		this.exitRequested = false;
 		this.leftMouse = new MouseButton();
 		// this.rightMouse = new MouseButton();

@@ -11,14 +11,14 @@ import bifstk.wm.geom.Region;
 /**
  * Internal logic of the WM
  * <p>
- * Handles input, propagates changes in the {@link State} upon a call to
+ * Handles input, propagates changes in the {@link InternalState} upon a call to
  * {@link #update()}
  * 
  */
 public class Logic {
 
 	/** Privileged view of the WM's state */
-	private State state = null;
+	private InternalState state = null;
 
 	/** true when an event signified the app should exit */
 	private boolean exitRequested = false;
@@ -85,7 +85,7 @@ public class Logic {
 	 * Default constructor
 	 */
 	public Logic() {
-		this.state = new State();
+		this.state = new InternalState();
 		this.exitRequested = false;
 		this.leftMouse = new MouseButton();
 		// this.rightMouse = new MouseButton();
@@ -102,7 +102,7 @@ public class Logic {
 	/**
 	 * @return an immutable view of the WM's state
 	 */
-	public State getState() {
+	public InternalState getState() {
 		return this.state;
 	}
 

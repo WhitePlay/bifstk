@@ -27,8 +27,7 @@ public class Root {
 	/**
 	 * Default constructor
 	 * 
-	 * @param state
-	 *            view of the WM's state
+	 * @param state view of the WM's state
 	 * @throws BifstkException
 	 */
 	public Root(State state) throws BifstkException {
@@ -112,12 +111,12 @@ public class Root {
 		this.initRender(width, height);
 
 		/*
-		 * draw all frames and windows
+		 * draw all windows
 		 */
-		Drawable f = null;
+		Frame f = null;
 		// reverse iteration : frames are stacked with the head of the list
 		// being the focused one
-		Iterator<Drawable> it = this.state.getFrames().descendingIterator();
+		Iterator<Frame> it = this.state.getFrames().descendingIterator();
 		while (it.hasNext()) {
 			f = it.next();
 			f.render();

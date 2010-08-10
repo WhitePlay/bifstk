@@ -21,11 +21,11 @@ import bifstk.util.Logger;
  */
 public class Root {
 
-	/** immutable view of the WM's state */
+	/** WM state */
 	private State state;
 
 	/**
-	 * Default constructor
+	 * Default constructor Creates the opengl display
 	 * 
 	 * @param state view of the WM's state
 	 * @throws BifstkException
@@ -113,15 +113,15 @@ public class Root {
 		/*
 		 * draw all windows
 		 */
-		Frame f = null;
+		Drawable f = null;
 		// reverse iteration : frames are stacked with the head of the list
 		// being the focused one
-		Iterator<Frame> it = this.state.getFrames().descendingIterator();
+		Iterator<? extends Drawable> it = this.state.getFrames()
+				.descendingIterator();
 		while (it.hasNext()) {
 			f = it.next();
 			f.render();
 		}
-
 	}
 
 	/**

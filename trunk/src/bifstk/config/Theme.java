@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import bifstk.BifstkException;
+import bifstk.gl.Color;
 
 /**
  * Configurable UI properties
@@ -17,6 +18,15 @@ import bifstk.BifstkException;
  * 
  */
 public class Theme {
+
+	private Color rootBackgroundColor = null;
+
+	/**
+	 * @return root background color
+	 */
+	public static Color getRootBackgroundColor() {
+		return instance.rootBackgroundColor;
+	}
 
 	private int frameBorderWidth;
 	private int frameBorderWidthMin = 1, frameBorderWidthMax = 10;
@@ -78,6 +88,9 @@ public class Theme {
 	 * Available (and mandatory) properties
 	 */
 	public static enum Prop {
+
+		/** COLOR root background color */
+		rootBackgroundColor("root.background.color"),
 
 		/** INT pixel width of the border around the frame */
 		frameBorderWidth("frame.border.width"),
@@ -162,6 +175,10 @@ public class Theme {
 
 			try {
 				switch (prop.getKey()) {
+				case rootBackgroundColor: {
+					this.rootBackgroundColor = Color.parse(sval);
+					break;
+				}
 				case frameBorderWidth: {
 					this.frameBorderWidth = Math.max(
 							this.frameBorderWidthMin,

@@ -49,7 +49,9 @@ public enum Property {
 	// /// Graphical resources
 	// //////////////////////////
 	/** Path to the directory containing the mouse cursor bitmaps */
-	cursorsPath("gfx.cursors.path");
+	cursorsPath("gfx.cursors.path"),
+	/** Path to the theme file */
+	themePath("gfx.theme.path");
 
 	private String property = null;
 

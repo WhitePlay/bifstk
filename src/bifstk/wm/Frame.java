@@ -3,8 +3,10 @@ package bifstk.wm;
 import org.lwjgl.opengl.GL11;
 
 import bifstk.config.Fonts;
+import bifstk.config.Theme;
 import bifstk.gl.Color;
 import bifstk.gl.TrueTypeFont;
+import bifstk.gl.Util;
 import bifstk.wm.geom.Point;
 import bifstk.wm.geom.Rectangle;
 import bifstk.wm.geom.Region;
@@ -35,12 +37,8 @@ public class Frame implements Drawable {
 	/** true if the frame is currently resized in the WM */
 	private boolean resized = false;
 
-	/** width in pixels of the resize border outside the frame */
-	private int borderWidth = 5;
-	/** height in pixels of the titlebar */
-	private int titlebarHeight = 20;
 	/** width of the corner in pixels for mouse corner resize */
-	private int cornerWidth = 15;
+	private final int cornerWidth = 15;
 
 	/**
 	 * Default constructor
@@ -79,10 +77,21 @@ public class Frame implements Drawable {
 		w = this.getWidth();
 		h = this.getHeight();
 
+		int borderWidth = Theme.getFrameBorderWidth();
+		int titlebarHeight = getTitleBarHeight();
+
 		float alpha = 1.0f;
 		if (this.isDragged()) {
-			alpha = 0.5f;
+			alpha = Theme.getFrameMovedAlpha();
+		} else if (this.isResized()) {
+			alpha = Theme.getFrameResizedAlpha();
 		}
+
+		if (Theme.isFrameShadowEnabled()) {
+			Util.drawDroppedShadow(x, y, w, h, Theme.getFrameShadowRadius(),
+					Theme.getFrameShadowAlpha() * alpha);
+		}
+
 		if (this.isFocused()) {
 			GL11.glColor4f(0.5f, 0.5f, 0.5f, alpha);
 		} else {
@@ -344,6 +353,9 @@ public class Frame implements Drawable {
 		int px = 0;
 		int py = 0;
 
+		int borderWidth = Theme.getFrameBorderWidth();
+		int titlebarHeight = getTitleBarHeight();
+
 		if (mx < x) {
 			return Region.OUT;
 		} else if (mx <= x + borderWidth) {
@@ -445,6 +457,13 @@ public class Frame implements Drawable {
 		}
 
 		return Region.OUT;
+	}
+
+	/**
+	 * @return pixel height of the titlebar
+	 */
+	private int getTitleBarHeight() {
+		return Fonts.getNormal().getHeight() + 2;
 	}
 
 	@Override

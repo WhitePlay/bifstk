@@ -1,0 +1,8 @@
+frame.border.width = 4
+
+frame.moved.alpha = 0.5
+frame.resized.alpha = 0.7
+
+frame.shadow.enabled = true
+frame.shadow.alpha = 0.2
+frame.shadow.radius = 10

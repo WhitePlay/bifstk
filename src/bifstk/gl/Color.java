@@ -18,6 +18,7 @@ public class Color {
 	public static final Color RED = new Color(1.0f, 0.0f, 0.0f, 1.0f);
 	public static final Color GREEN = new Color(0.0f, 1.0f, 0.0f, 1.0f);
 	public static final Color BLUE = new Color(0.0f, 0.0f, 1.0f, 1.0f);
+	public static final Color TRANSP_BLACK = new Color(0.0f, 0.0f, 0.0f, 0.0f);
 
 	public Color() {
 		this(1.0f, 1.0f, 1.0f, 1.0f);
@@ -29,6 +30,9 @@ public class Color {
 
 	public Color(float r, float g, float b, float a) {
 		r = Math.min(1.0f, Math.max(r, 0.0f));
+		g = Math.min(1.0f, Math.max(g, 0.0f));
+		b = Math.min(1.0f, Math.max(b, 0.0f));
+		a = Math.min(1.0f, Math.max(a, 0.0f));
 
 		this.red = r;
 		this.green = g;

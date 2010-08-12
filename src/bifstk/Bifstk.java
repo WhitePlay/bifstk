@@ -9,6 +9,7 @@ import bifstk.config.Cursors;
 import bifstk.config.Cursors.Type;
 import bifstk.config.Fonts;
 import bifstk.config.Property;
+import bifstk.config.Theme;
 import bifstk.gl.Color;
 import bifstk.util.BifstkLogSystem;
 import bifstk.util.Logger;
@@ -160,6 +161,7 @@ public class Bifstk {
 
 		Bifstk.config = configFile;
 		internalStart();
+		runner.setName("bifstk-runner");
 		runner.start();
 	}
 
@@ -180,7 +182,7 @@ public class Bifstk {
 		} catch (BifstkException e) {
 			// the logger needs the config, can't be used yet
 			e.printStackTrace();
-			return;
+			System.exit(0);
 		}
 
 		// create logsystem
@@ -199,6 +201,10 @@ public class Bifstk {
 
 		// load fonts
 		Fonts.load();
+
+		// load theme
+		String themePath = Config.getValue(Property.themePath);
+		Theme.load(themePath);
 	}
 
 	/**

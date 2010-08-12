@@ -133,7 +133,7 @@ public class Root {
 	private void initRender(int width, int height) {
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		// 0,0 is the bottom-left corner, like LWJGL's mouse coordinates
+		// 0,0 is the top-left corner, unlike LWJGL's mouse coordinates
 		GL11.glOrtho(0.0d, width, height, 0.0d, -1.0d, 1.0d);
 
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);

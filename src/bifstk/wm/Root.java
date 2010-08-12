@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
 import bifstk.BifstkException;
 import bifstk.config.Config;
 import bifstk.config.Property;
-import bifstk.gl.Color;
+import bifstk.config.Theme;
 import bifstk.util.Logger;
 
 /**
@@ -151,7 +151,7 @@ public class Root {
 		// GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
 		// drawing a quad seems to be faster than glClear for some reason
-		Color.WHITE.use();
+		Theme.getRootBackgroundColor().use();
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glVertex2i(0, 0);
 		GL11.glVertex2i(width, 0);

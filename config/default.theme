@@ -6,3 +6,5 @@ frame.resized.alpha = 0.7
 frame.shadow.enabled = true
 frame.shadow.alpha = 0.2
 frame.shadow.radius = 10
+
+root.background.color = darkGray

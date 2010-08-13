@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import bifstk.BifstkException;
 import bifstk.gl.Color;
+import bifstk.util.Logger;
 
 /**
  * Configurable UI properties
@@ -26,6 +27,34 @@ public class Theme {
 	 */
 	public static Color getRootBackgroundColor() {
 		return instance.rootBackgroundColor;
+	}
+
+	private String fontPath = "";
+
+	/**
+	 * @return path to the ttf font file
+	 */
+	public static String getFontPath() {
+		return instance.fontPath;
+	}
+
+	private int fontNormalSize = 0;
+	private int fontSizeMin = 4, fontSizeMax = 30;
+
+	/**
+	 * @return point size of the normal font size
+	 */
+	public static int getFontNormalSize() {
+		return instance.fontNormalSize;
+	}
+
+	private int fontSmallSize = 0;
+
+	/**
+	 * @return point size of the small font size
+	 */
+	public static int getFontSmallSize() {
+		return instance.fontSmallSize;
 	}
 
 	private int frameBorderWidth;
@@ -91,6 +120,13 @@ public class Theme {
 
 		/** COLOR root background color */
 		rootBackgroundColor("root.background.color"),
+
+		/** STRING path to the ttf font file */
+		fontPath("font.path"),
+		/** INT point size of the normal font size */
+		fontNormalSize("font.normal.size"),
+		/** INT point size of the small font size */
+		fontSmallSize("font.small.size"),
 
 		/** INT pixel width of the border around the frame */
 		frameBorderWidth("frame.border.width"),
@@ -179,11 +215,23 @@ public class Theme {
 					this.rootBackgroundColor = Color.parse(sval);
 					break;
 				}
+				case fontPath: {
+					this.fontPath = sval;
+					break;
+				}
+				case fontNormalSize: {
+					this.fontNormalSize = clampi(Integer.parseInt(sval),
+							fontSizeMin, fontSizeMax);
+					break;
+				}
+				case fontSmallSize: {
+					this.fontSmallSize = clampi(Integer.parseInt(sval),
+							fontSizeMin, fontSizeMax);
+					break;
+				}
 				case frameBorderWidth: {
-					this.frameBorderWidth = Math.max(
-							this.frameBorderWidthMin,
-							Math.min(this.frameBorderWidthMax,
-									Integer.parseInt(sval)));
+					this.frameBorderWidth = clampi(Integer.parseInt(sval),
+							frameBorderWidthMin, frameBorderWidthMax);
 					break;
 				}
 				case frameShadowEnabled: {
@@ -191,26 +239,24 @@ public class Theme {
 					break;
 				}
 				case frameShadowAlpha: {
-					this.frameShadowAlpha = Math.max(0.0f,
-							Math.min(1.0f, Float.parseFloat(sval)));
+					this.frameShadowAlpha = clampf(Float.parseFloat(sval),
+							0.0f, 1.0f);
 					break;
 				}
 				case frameShadowRadius: {
-					this.frameShadowRadius = Math.min(
-							this.frameShadowRadiusMax,
-							Math.max(this.frameShadowRadiusMin,
-									Integer.parseInt(sval)));
+					this.frameShadowRadius = clampi(Integer.parseInt(sval),
+							frameShadowRadiusMax, frameShadowRadiusMin);
 					break;
 				}
 				case frameMovedAlpha: {
-					this.frameMovedAlpha = Math.max(0.0f,
-							Math.min(1.0f, Float.parseFloat(sval)));
+					this.frameMovedAlpha = clampf(Float.parseFloat(sval), 0.0f,
+							1.0f);
 					break;
 
 				}
 				case frameResizedAlpha: {
-					this.frameResizedAlpha = Math.max(0.0f,
-							Math.min(1.0f, Float.parseFloat(sval)));
+					this.frameResizedAlpha = clampf(Float.parseFloat(sval),
+							0.0f, 1.0f);
 					break;
 				}
 				}
@@ -222,6 +268,30 @@ public class Theme {
 	}
 
 	/**
+	 * Clamp integer in specified range
+	 * 
+	 * @param val value to clamp
+	 * @param min min value
+	 * @param max max value
+	 * @return a value comprised between min and max
+	 */
+	private static int clampi(int val, int min, int max) {
+		return Math.max(Math.min(val, max), min);
+	}
+
+	/**
+	 * Clamp float in specified range
+	 * 
+	 * @param val value to clamp
+	 * @param min min value
+	 * @param max max value
+	 * @return a value comprised between min and max
+	 */
+	private static float clampf(float val, float min, float max) {
+		return Math.max(Math.min(val, max), min);
+	}
+
+	/**
 	 * Load a theme file
 	 * 
 	 * @param path file path to the theme descriptor
@@ -229,5 +299,6 @@ public class Theme {
 	 */
 	public static void load(String path) throws BifstkException {
 		instance = new Theme(path);
+		Logger.debug("Theme loaded from: " + path);
 	}
 }

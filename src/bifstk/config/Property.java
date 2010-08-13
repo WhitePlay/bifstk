@@ -45,6 +45,16 @@ public enum Property {
 	/** enable VSync */
 	displayVsync("display.vsync"),
 
+	// /////////////////////////
+	// /// Fonts
+	// /////////////////////////
+	/** Path to the ttf font file */
+	fontPath("font.path"),
+	/** Point size of the normal font size */
+	fontSizeSmall("font.size.small"),
+	/** point size of the small font size */
+	fontSizeNormal("font.size.normal"),
+
 	// //////////////////////////
 	// /// Graphical resources
 	// //////////////////////////

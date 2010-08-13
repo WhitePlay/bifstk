@@ -383,6 +383,13 @@ public class TrueTypeFont {
 	}
 
 	/**
+	 * @return the font size in points
+	 */
+	public int getFontSize() {
+		return this.fontSize;
+	}
+
+	/**
 	 * Draw a string
 	 * 
 	 * @param x The x position to draw the string

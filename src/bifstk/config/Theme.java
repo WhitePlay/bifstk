@@ -29,34 +29,6 @@ public class Theme {
 		return instance.rootBackgroundColor;
 	}
 
-	private String fontPath = "";
-
-	/**
-	 * @return path to the ttf font file
-	 */
-	public static String getFontPath() {
-		return instance.fontPath;
-	}
-
-	private int fontNormalSize = 0;
-	private int fontSizeMin = 4, fontSizeMax = 30;
-
-	/**
-	 * @return point size of the normal font size
-	 */
-	public static int getFontNormalSize() {
-		return instance.fontNormalSize;
-	}
-
-	private int fontSmallSize = 0;
-
-	/**
-	 * @return point size of the small font size
-	 */
-	public static int getFontSmallSize() {
-		return instance.fontSmallSize;
-	}
-
 	private int frameBorderWidth;
 	private int frameBorderWidthMin = 1, frameBorderWidthMax = 10;
 
@@ -120,13 +92,6 @@ public class Theme {
 
 		/** COLOR root background color */
 		rootBackgroundColor("root.background.color"),
-
-		/** STRING path to the ttf font file */
-		fontPath("font.path"),
-		/** INT point size of the normal font size */
-		fontNormalSize("font.normal.size"),
-		/** INT point size of the small font size */
-		fontSmallSize("font.small.size"),
 
 		/** INT pixel width of the border around the frame */
 		frameBorderWidth("frame.border.width"),
@@ -215,20 +180,6 @@ public class Theme {
 					this.rootBackgroundColor = Color.parse(sval);
 					break;
 				}
-				case fontPath: {
-					this.fontPath = sval;
-					break;
-				}
-				case fontNormalSize: {
-					this.fontNormalSize = clampi(Integer.parseInt(sval),
-							fontSizeMin, fontSizeMax);
-					break;
-				}
-				case fontSmallSize: {
-					this.fontSmallSize = clampi(Integer.parseInt(sval),
-							fontSizeMin, fontSizeMax);
-					break;
-				}
 				case frameBorderWidth: {
 					this.frameBorderWidth = clampi(Integer.parseInt(sval),
 							frameBorderWidthMin, frameBorderWidthMax);
@@ -245,7 +196,7 @@ public class Theme {
 				}
 				case frameShadowRadius: {
 					this.frameShadowRadius = clampi(Integer.parseInt(sval),
-							frameShadowRadiusMax, frameShadowRadiusMin);
+							frameShadowRadiusMin, frameShadowRadiusMax);
 					break;
 				}
 				case frameMovedAlpha: {

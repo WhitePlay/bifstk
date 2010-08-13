@@ -194,16 +194,6 @@ public class Logger {
 	}
 
 	/**
-	 * Issue an error message
-	 * 
-	 * @param t the Exception to append to the log
-	 */
-	public static void error(Throwable t) {
-		check();
-		instance.message("[E] " + t.getMessage(), Level.ERROR, t);
-	}
-
-	/**
 	 * Issue a warning message
 	 * 
 	 * @param message the message to append to the log
@@ -331,11 +321,19 @@ public class Logger {
 		}
 
 		ret += prefix + message;
+
 		if (t != null) {
 			String filler = new String();
 			for (int i = 0; i < prefix.length() + 4; i++) {
 				filler += " ";
 			}
+
+			ret += separator + filler;
+			ret += t.getClass().getName();
+			if (t.getMessage() != null && t.getMessage().trim().length() > 0) {
+				ret += ": " + t.getMessage();
+			}
+
 			for (StackTraceElement el : t.getStackTrace()) {
 				ret += separator + filler + "` " + el.toString();
 			}

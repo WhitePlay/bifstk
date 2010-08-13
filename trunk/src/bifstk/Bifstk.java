@@ -64,7 +64,7 @@ public class Bifstk {
 
 					postDisplayInit();
 				} catch (Exception e) {
-					Logger.error(e);
+					Logger.error("Display initialization failed", e);
 					return;
 				}
 
@@ -195,16 +195,16 @@ public class Bifstk {
 	 * Static initialization that requires display creation
 	 */
 	private static void postDisplayInit() throws BifstkException {
+		// load theme
+		String themePath = Config.getValue(Property.themePath);
+		Theme.load(themePath);
+
 		// cursor creation
 		Cursors.load(Config.getValue(Property.cursorsPath));
 		Cursors.setCursor(Type.POINTER);
 
 		// load fonts
 		Fonts.load();
-
-		// load theme
-		String themePath = Config.getValue(Property.themePath);
-		Theme.load(themePath);
 	}
 
 	/**

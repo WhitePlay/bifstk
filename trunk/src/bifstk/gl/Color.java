@@ -68,6 +68,14 @@ public class Color {
 		GL11.glColor4f(this.red, this.green, this.blue, this.alpha);
 	}
 
+	/**
+	 * Bind this color in the current GL context, multiplying alpha with a
+	 * custom value
+	 */
+	public void use(float alpha) {
+		GL11.glColor4f(this.red, this.green, this.blue, this.alpha * alpha);
+	}
+
 	public static Color parse(String str) {
 		if (str.equalsIgnoreCase("white")) {
 			return WHITE;

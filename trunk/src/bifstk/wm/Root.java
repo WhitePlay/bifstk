@@ -120,7 +120,7 @@ public class Root {
 				.descendingIterator();
 		while (it.hasNext()) {
 			f = it.next();
-			f.render();
+			f.render(1.0f);
 		}
 	}
 

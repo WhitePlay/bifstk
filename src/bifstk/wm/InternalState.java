@@ -30,12 +30,9 @@ public class InternalState implements State {
 	/**
 	 * Creates a new Frame in the WM
 	 * 
-	 * @param x
-	 * @param y
+	 * @param f the frame to add
 	 */
-	public void addFrame(int x, int y) {
-		Frame f = new Frame(x, y);
-
+	public void addFrame(Frame f) {
 		if (this.frames.size() > 0) {
 			this.frames.getFirst().setFocused(false);
 		}

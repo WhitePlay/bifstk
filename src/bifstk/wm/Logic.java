@@ -7,6 +7,8 @@ import org.lwjgl.opengl.Display;
 import bifstk.config.Cursors;
 import bifstk.config.Cursors.Type;
 import bifstk.wm.geom.Region;
+import bifstk.wm.ui.Box;
+import bifstk.wm.ui.Label;
 
 /**
  * Internal logic of the WM
@@ -132,7 +134,18 @@ public class Logic {
 
 			case Keyboard.KEY_C:
 				if (Keyboard.getEventKeyState()) {
-					this.state.addFrame(50, 50);
+					Frame f = new Frame(50, 50);
+					Box box = new Box(Box.Orientation.HORIZONTAL);
+
+					Label l1 = new Label("Helloooooooo");
+					box.addChild(l1);
+
+					Label l2 = new Label("Wooooooorld");
+					box.addChild(l2, 2.0f);
+
+					f.setContent(box);
+
+					this.state.addFrame(f);
 				}
 				break;
 
@@ -320,8 +333,7 @@ public class Logic {
 							+ (this.leftMouse.hoverX - this.leftMouse.clickX);
 					int nh = this.leftMouse.clickHeight
 							+ (this.leftMouse.hoverY - this.leftMouse.clickY);
-					dragged.setWidth(nw);
-					dragged.setHeight(nh);
+					dragged.setBounds(nw, nh);
 				}
 					break;
 				case TOP_RIGHT: {
@@ -338,8 +350,7 @@ public class Logic {
 											- dragged.getMinHeight(), dy);
 					int nh = this.leftMouse.clickHeight - dy;
 					dragged.setY(ny);
-					dragged.setWidth(nw);
-					dragged.setHeight(nh);
+					dragged.setBounds(nw, nh);
 				}
 					break;
 				case TOP_LEFT: {
@@ -361,9 +372,8 @@ public class Logic {
 											- dragged.getMinHeight(), dy);
 					int nh = this.leftMouse.clickHeight - dy;
 					dragged.setX(nx);
-					dragged.setWidth(nw);
 					dragged.setY(ny);
-					dragged.setHeight(nh);
+					dragged.setBounds(nw, nh);
 				}
 					break;
 				case BOT_LEFT: {
@@ -380,8 +390,7 @@ public class Logic {
 					int nh = this.leftMouse.clickHeight
 							+ (this.leftMouse.hoverY - this.leftMouse.clickY);
 					dragged.setX(nx);
-					dragged.setWidth(nw);
-					dragged.setHeight(nh);
+					dragged.setBounds(nw, nh);
 				}
 					break;
 				}

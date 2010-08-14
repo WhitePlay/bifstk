@@ -1,5 +1,6 @@
 package bifstk.wm;
 
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import bifstk.config.Fonts;
@@ -10,6 +11,7 @@ import bifstk.gl.Util;
 import bifstk.wm.geom.Point;
 import bifstk.wm.geom.Rectangle;
 import bifstk.wm.geom.Region;
+import bifstk.wm.ui.Widget;
 
 /**
  * a Frame is a Window in the Window Manager
@@ -40,6 +42,12 @@ public class Frame implements Drawable {
 	/** width of the corner in pixels for mouse corner resize */
 	private final int cornerWidth = 15;
 
+	/** height of the titlebar in pixels */
+	private final int titlebarHeight = 20;
+
+	/** content of the frame */
+	private Widget content = null;
+
 	/**
 	 * Default constructor
 	 * 
@@ -69,7 +77,7 @@ public class Frame implements Drawable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void render() {
+	public void render(float alpha) {
 		int x, y, w, h;
 
 		x = this.getX();
@@ -80,11 +88,10 @@ public class Frame implements Drawable {
 		int borderWidth = Theme.getFrameBorderWidth();
 		int titlebarHeight = getTitleBarHeight();
 
-		float alpha = 1.0f;
 		if (this.isDragged()) {
-			alpha = Theme.getFrameMovedAlpha();
+			alpha *= Theme.getFrameMovedAlpha();
 		} else if (this.isResized()) {
-			alpha = Theme.getFrameResizedAlpha();
+			alpha *= Theme.getFrameResizedAlpha();
 		}
 
 		if (Theme.isFrameShadowEnabled()) {
@@ -131,13 +138,29 @@ public class Frame implements Drawable {
 		GL11.glEnd();
 
 		// content
-		GL11.glColor4f(0.9f, 0.9f, 0.9f, alpha);
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glVertex2i(x + borderWidth, y + titlebarHeight + borderWidth);
-		GL11.glVertex2i(x + w - borderWidth, y + titlebarHeight + borderWidth);
-		GL11.glVertex2i(x + w - borderWidth, y + h - borderWidth);
-		GL11.glVertex2i(x + borderWidth, y + h - borderWidth);
-		GL11.glEnd();
+		if (this.content == null) {
+			GL11.glColor4f(0.9f, 0.9f, 0.9f, alpha);
+			GL11.glBegin(GL11.GL_QUADS);
+			GL11.glVertex2i(x + borderWidth, y + titlebarHeight + borderWidth);
+			GL11.glVertex2i(x + w - borderWidth, y + titlebarHeight
+					+ borderWidth);
+			GL11.glVertex2i(x + w - borderWidth, y + h - borderWidth);
+			GL11.glVertex2i(x + borderWidth, y + h - borderWidth);
+			GL11.glEnd();
+		} else {
+			GL11.glPushMatrix();
+			GL11.glTranslatef(x + borderWidth,
+					y + titlebarHeight + borderWidth, 0);
+			GL11.glEnable(GL11.GL_SCISSOR_TEST);
+			GL11.glScissor(x + borderWidth, Display.getDisplayMode()
+					.getHeight() - (y + h) + borderWidth, w - 2 * borderWidth,
+					h - 2 * borderWidth - titlebarHeight);
+
+			this.content.render(alpha);
+
+			GL11.glDisable(GL11.GL_SCISSOR_TEST);
+			GL11.glPopMatrix();
+		}
 
 		// draw little info area at the center of the window to display
 		// the current position/size while dragging/resizing
@@ -163,23 +186,27 @@ public class Frame implements Drawable {
 			GL11.glVertex2i(mx + msgW, my);
 			GL11.glEnd();
 
+			if (Theme.isFrameShadowEnabled()) {
+				Util.drawDroppedShadow(mx, my, msgW, msgH,
+						Theme.getFrameShadowRadius(),
+						Theme.getFrameShadowAlpha());
+			}
+
 			font.drawString(mx, my, msg, Color.BLACK);
 		}
 
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return the abscissa of the top left corner of this frame
 	 */
-	@Override
 	public int getX() {
 		return this.pos.getX();
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return the ordinate of the top left corner of this frame
 	 */
-	@Override
 	public int getY() {
 		return this.pos.getY();
 	}
@@ -207,17 +234,15 @@ public class Frame implements Drawable {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return the current width of this frame
 	 */
-	@Override
 	public int getWidth() {
 		return this.bounds.getWidth();
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return the current height of this frame
 	 */
-	@Override
 	public int getHeight() {
 		return this.bounds.getHeight();
 	}
@@ -228,6 +253,7 @@ public class Frame implements Drawable {
 	public void setWidth(int w) {
 		w = Math.max(w, this.minBounds.getWidth());
 		this.bounds.setWidth(w);
+		this.content.setWidth(w - 2 * Theme.getFrameBorderWidth());
 	}
 
 	/**
@@ -236,6 +262,8 @@ public class Frame implements Drawable {
 	public void setHeight(int h) {
 		h = Math.max(h, this.minBounds.getHeight());
 		this.bounds.setHeight(h);
+		this.content.setHeight(h - 2 * Theme.getFrameBorderWidth()
+				- this.getTitleBarHeight());
 	}
 
 	/**
@@ -246,6 +274,8 @@ public class Frame implements Drawable {
 		w = Math.max(w, this.minBounds.getWidth());
 		h = Math.max(h, this.minBounds.getHeight());
 		this.bounds.setBounds(w, h);
+		this.content.setBounds(w - 2 * Theme.getFrameBorderWidth(), h - 2
+				* Theme.getFrameBorderWidth() - this.getTitleBarHeight());
 	}
 
 	/**
@@ -324,6 +354,24 @@ public class Frame implements Drawable {
 	 */
 	public void setResized(boolean resized) {
 		this.resized = resized;
+	}
+
+	/**
+	 * @param w the content of the frame
+	 */
+	public void setContent(Widget w) {
+		this.content = w;
+		this.content.setBounds(
+				this.getWidth() - 2 * Theme.getFrameBorderWidth(),
+				this.getHeight() - 2 * Theme.getFrameBorderWidth()
+						- this.getTitleBarHeight());
+	}
+
+	/**
+	 * @return the content of the frame
+	 */
+	public Widget getContent() {
+		return this.content;
 	}
 
 	/**
@@ -463,7 +511,8 @@ public class Frame implements Drawable {
 	 * @return pixel height of the titlebar
 	 */
 	private int getTitleBarHeight() {
-		return Fonts.getNormal().getHeight() + 2;
+		// return Fonts.getNormal().getHeight() + 2;
+		return titlebarHeight;
 	}
 
 	@Override

@@ -10,6 +10,13 @@ import org.lwjgl.opengl.GL11;
 import bifstk.gl.Color;
 import bifstk.wm.geom.Rectangle;
 
+/**
+ * Container that stacks widgets horizontally or vertically
+ * <p>
+ * Each widget will fill a given percentage of the total available space
+ * depending the specified weight upon insertion
+ * 
+ */
 public class Box implements Widget {
 
 	/**
@@ -20,6 +27,9 @@ public class Box implements Widget {
 		HORIZONTAL, VERTICAL;
 	}
 
+	/**
+	 * Associates a widget with its weight
+	 */
 	private static class Entry {
 		Widget widget = null;
 		float weight = 1.0f;
@@ -34,20 +44,36 @@ public class Box implements Widget {
 		}
 	}
 
+	/** widgets contained by this box along with their weight */
 	private List<Entry> children = null;
 
+	/** dimension of the box */
 	private Rectangle bounds = null;
 
+	/** width of the border between each element */
 	private int borderWidth = 2;
 
+	// TODO REMOVE this should be handled by the theme, only used for debug
 	private Color backgroundColor = Color.WHITE;
 
+	/** orientation of the box: vertical or horizontal */
 	private Orientation orientation;
 
+	/**
+	 * Default constructor
+	 * 
+	 * @param orientation orientation of the box
+	 */
 	public Box(Orientation orientation) {
 		this(orientation, 2);
 	}
 
+	/**
+	 * Default constructor
+	 * 
+	 * @param orientation orientation of the box
+	 * @param borderWidth pixel border between each element
+	 */
 	public Box(Orientation orientation, int borderWidth) {
 		this.children = new ArrayList<Entry>();
 		this.borderWidth = borderWidth;
@@ -55,12 +81,14 @@ public class Box implements Widget {
 		this.bounds = new Rectangle();
 	}
 
+	/**
+	 * Called when the geometry of the box has changed: need to subsequently
+	 * resize all children widgets
+	 */
 	private void resize() {
 		if (!this.hasChildren()) {
 			return;
 		}
-		List<Entry> children = this.getChildren();
-
 		int a, b;
 
 		if (this.orientation.equals(Orientation.HORIZONTAL)) {
@@ -140,16 +168,21 @@ public class Box implements Widget {
 			GL11.glEnd();
 
 			int acc = border;
-			for (Entry child : this.getChildren()) {
+			for (Entry child : this.children) {
 				Widget c = child.widget;
 
+				// get the current scissor box ; clumsy but no other way since
+				// at this point we have been glTranslate and the scissor has to
+				// be specified in absolute screen coordinates
 				IntBuffer buf = BufferUtils.createIntBuffer(16);
 				GL11.glGetInteger(GL11.GL_SCISSOR_BOX, buf);
-				int bx = buf.get(), by = buf.get(), bw = buf.get(), bh = buf
-						.get();
+				int bx = buf.get(), by = buf.get();
+				int bw = buf.get(), bh = buf.get();
+
 				GL11.glPushMatrix();
 				if (this.orientation.equals(Orientation.HORIZONTAL)) {
 					GL11.glTranslatef(acc, border, 0);
+					// scissors use bot-left as origin as opposed to us..
 					GL11.glScissor(bx + acc, by + border, c.getWidth(),
 							c.getHeight());
 				} else {
@@ -200,22 +233,44 @@ public class Box implements Widget {
 		GL11.glEnd();
 	}
 
+	/**
+	 * @param b width in pixels of the border between contained widgets
+	 */
 	public void setBorderWidth(int b) {
 		this.borderWidth = b;
 	}
 
+	/**
+	 * @return the width in pixels of the border between contained widgets
+	 */
 	public int getBorderWidth() {
 		return this.borderWidth;
 	}
 
+	/**
+	 * Append a widget to the container; will be added at the end of the box
+	 * 
+	 * @param w new widget to append to the box
+	 */
 	public void addChild(Widget w) {
 		this.children.add(new Entry(w));
 	}
 
+	/**
+	 * Append a widget to the container; will be added at the end of the box
+	 * 
+	 * @param w new widget to append to the box
+	 * @param weight weight of the new widget
+	 */
 	public void addChild(Widget w, float weight) {
 		this.children.add(new Entry(w, weight));
 	}
 
+	/**
+	 * Remove a given widget from the container
+	 * 
+	 * @param w widget to remove
+	 */
 	public void removeChild(Widget w) {
 		Entry torem = null;
 		for (Entry e : this.children) {
@@ -228,8 +283,18 @@ public class Box implements Widget {
 		}
 	}
 
-	protected List<Entry> getChildren() {
-		return this.children;
+	/**
+	 * @return true if this Box contains widgets, or false
+	 */
+	public boolean hasChildren() {
+		return this.children != null && this.children.size() > 0;
+	}
+
+	/**
+	 * Remove all widgets contained in this box
+	 */
+	public void clearChildren() {
+		this.children.clear();
 	}
 
 	@Override
@@ -260,18 +325,12 @@ public class Box implements Widget {
 		resize();
 	}
 
-	public boolean hasChildren() {
-		return this.children != null && this.children.size() > 0;
-	}
-
-	public void clearChildren() {
-		this.children.clear();
-	}
-
+	// TODO REMOVE this should be handled by the theme, only used for debug
 	public void setBackgroundColor(Color c) {
 		this.backgroundColor = c;
 	}
 
+	// TODO REMOVE this should be handled by the theme, only used for debug
 	public Color getBackgroundColor() {
 		return this.backgroundColor;
 	}

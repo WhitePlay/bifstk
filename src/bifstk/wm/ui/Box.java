@@ -98,14 +98,12 @@ public class Box implements Container {
 			b = this.getWidth();
 		}
 
-		int border = this.getBorderWidth();
-
 		float totalWeight = 0;
 		for (Entry entry : children) {
 			totalWeight += entry.weight;
 		}
 
-		int pixels = a - border * (children.size() + 1);
+		int pixels = a - this.borderWidth * (children.size() - 1);
 		int usedPixels = 0;
 		float usedPixels2 = 0.0f;
 		for (Entry ent : children) {
@@ -120,10 +118,10 @@ public class Box implements Container {
 			}
 			if (this.orientation.equals(Orientation.HORIZONTAL)) {
 				ent.widget.setWidth(px);
-				ent.widget.setHeight(b - border * 2);
+				ent.widget.setHeight(b);
 			} else {
 				ent.widget.setHeight(px);
-				ent.widget.setWidth(b - border * 2);
+				ent.widget.setWidth(b);
 			}
 		}
 	}
@@ -135,38 +133,8 @@ public class Box implements Container {
 		int h = this.getHeight();
 
 		if (this.hasChildren()) {
-			int border = this.getBorderWidth();
 
-			this.getBackgroundColor().use(alpha);
-			GL11.glBegin(GL11.GL_QUADS);
-			// top border
-			GL11.glVertex2i(border, 0);
-			GL11.glVertex2i(w, 0);
-			GL11.glVertex2i(w, border);
-			GL11.glVertex2i(border, border);
-
-			if (this.orientation.equals(Orientation.HORIZONTAL)) {
-				// bot border
-				GL11.glVertex2i(w, h);
-				GL11.glVertex2i(border, h);
-				GL11.glVertex2i(border, h - border);
-				GL11.glVertex2i(w, h - border);
-			} else {
-				// right border
-				GL11.glVertex2i(w, border);
-				GL11.glVertex2i(w, h);
-				GL11.glVertex2i(w - border, h);
-				GL11.glVertex2i(w - border, border);
-			}
-
-			// left border
-			GL11.glVertex2i(0, 0);
-			GL11.glVertex2i(0, h);
-			GL11.glVertex2i(border, h);
-			GL11.glVertex2i(border, 0);
-			GL11.glEnd();
-
-			int acc = border;
+			int acc = 0;
 			for (Entry child : this.children) {
 				Widget c = child.widget;
 
@@ -180,13 +148,12 @@ public class Box implements Container {
 
 				GL11.glPushMatrix();
 				if (this.orientation.equals(Orientation.HORIZONTAL)) {
-					GL11.glTranslatef(acc, border, 0);
+					GL11.glTranslatef(acc, 0, 0);
 					// scissors use bot-left as origin as opposed to us..
-					GL11.glScissor(bx + acc, by + border, c.getWidth(),
-							c.getHeight());
+					GL11.glScissor(bx + acc, by, c.getWidth(), c.getHeight());
 				} else {
-					GL11.glTranslatef(border, acc, 0);
-					GL11.glScissor(bx + border, by + h - acc - c.getHeight(),
+					GL11.glTranslatef(0, acc, 0);
+					GL11.glScissor(bx, by + h - acc - c.getHeight(),
 							c.getWidth(), c.getHeight());
 				}
 
@@ -200,22 +167,22 @@ public class Box implements Container {
 				if (this.orientation.equals(Orientation.HORIZONTAL)) {
 					// right border
 					acc += c.getWidth();
-					GL11.glVertex2i(acc, border);
-					GL11.glVertex2i(acc, h - border);
-					GL11.glVertex2i(acc + border, h - border);
-					GL11.glVertex2i(acc + border, border);
+					GL11.glVertex2i(acc, 0);
+					GL11.glVertex2i(acc, h);
+					GL11.glVertex2i(acc + this.borderWidth, h);
+					GL11.glVertex2i(acc + this.borderWidth, 0);
 				} else {
 					// bot border
 					acc += c.getHeight();
-					GL11.glVertex2i(border, acc);
-					GL11.glVertex2i(w - border, acc);
-					GL11.glVertex2i(w - border, acc + border);
-					GL11.glVertex2i(border, acc + border);
+					GL11.glVertex2i(0, acc);
+					GL11.glVertex2i(w, acc);
+					GL11.glVertex2i(w, acc + this.borderWidth);
+					GL11.glVertex2i(0, acc + this.borderWidth);
 
 				}
 				GL11.glEnd();
 
-				acc += border;
+				acc += this.borderWidth;
 
 			}
 		} else {

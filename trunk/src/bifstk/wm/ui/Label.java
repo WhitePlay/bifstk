@@ -24,6 +24,8 @@ public class Label implements Widget {
 	private int textWidth = 0;
 	/** pixel height of the string when rendered */
 	private int textHeight = 0;
+	/** Container containing this label */
+	private Container parent = null;
 
 	/**
 	 * Default constructor
@@ -98,6 +100,16 @@ public class Label implements Widget {
 	// TODO REMOVE this should be handled by the theme, only used for debug
 	public Color getBackgroundColor() {
 		return this.backgroundColor;
+	}
+
+	@Override
+	public void setParent(Container c) {
+		this.parent = c;
+	}
+
+	@Override
+	public Container getParent() {
+		return this.parent;
 	}
 
 }

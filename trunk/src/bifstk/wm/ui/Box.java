@@ -17,7 +17,7 @@ import bifstk.wm.geom.Rectangle;
  * depending the specified weight upon insertion
  * 
  */
-public class Box implements Widget {
+public class Box implements Container {
 
 	/**
 	 * Orientation of the widgets contained by the box: left to right if
@@ -33,10 +33,6 @@ public class Box implements Widget {
 	private static class Entry {
 		Widget widget = null;
 		float weight = 1.0f;
-
-		public Entry(Widget widget) {
-			this(widget, 1.0f);
-		}
 
 		public Entry(Widget widget, float weight) {
 			this.widget = widget;
@@ -58,6 +54,9 @@ public class Box implements Widget {
 
 	/** orientation of the box: vertical or horizontal */
 	private Orientation orientation;
+
+	/** Container containing this box */
+	private Container parent = null;
 
 	/**
 	 * Default constructor
@@ -249,11 +248,13 @@ public class Box implements Widget {
 
 	/**
 	 * Append a widget to the container; will be added at the end of the box
+	 * with a weight of 1.
 	 * 
 	 * @param w new widget to append to the box
 	 */
+	@Override
 	public void addChild(Widget w) {
-		this.children.add(new Entry(w));
+		addChild(w, 1.0f);
 	}
 
 	/**
@@ -263,6 +264,13 @@ public class Box implements Widget {
 	 * @param weight weight of the new widget
 	 */
 	public void addChild(Widget w, float weight) {
+		// ensure w is not shared among 2 containers
+		Container parent = w.getParent();
+		if (parent != null) {
+			parent.removeChild(w);
+		}
+		w.setParent(this);
+
 		this.children.add(new Entry(w, weight));
 	}
 
@@ -271,6 +279,7 @@ public class Box implements Widget {
 	 * 
 	 * @param w widget to remove
 	 */
+	@Override
 	public void removeChild(Widget w) {
 		Entry torem = null;
 		for (Entry e : this.children) {
@@ -283,16 +292,12 @@ public class Box implements Widget {
 		}
 	}
 
-	/**
-	 * @return true if this Box contains widgets, or false
-	 */
+	@Override
 	public boolean hasChildren() {
 		return this.children != null && this.children.size() > 0;
 	}
 
-	/**
-	 * Remove all widgets contained in this box
-	 */
+	@Override
 	public void clearChildren() {
 		this.children.clear();
 	}
@@ -333,5 +338,16 @@ public class Box implements Widget {
 	// TODO REMOVE this should be handled by the theme, only used for debug
 	public Color getBackgroundColor() {
 		return this.backgroundColor;
+	}
+
+	@Override
+	public void setParent(Container c) {
+		this.parent = c;
+
+	}
+
+	@Override
+	public Container getParent() {
+		return this.parent;
 	}
 }

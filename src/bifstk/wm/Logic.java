@@ -135,15 +135,23 @@ public class Logic {
 			case Keyboard.KEY_C:
 				if (Keyboard.getEventKeyState()) {
 					Frame f = new Frame(50, 50);
-					Box box = new Box(Box.Orientation.HORIZONTAL);
+					Box b1 = new Box(Box.Orientation.HORIZONTAL);
+					Box b2 = new Box(Box.Orientation.VERTICAL);
+					Box b3 = new Box(Box.Orientation.VERTICAL);
 
-					Label l1 = new Label("Helloooooooo");
-					box.addChild(l1);
+					b1.addChild(b2);
+					b1.addChild(b3);
 
-					Label l2 = new Label("Wooooooorld");
-					box.addChild(l2, 2.0f);
+					Label l1 = new Label("one");
+					Label l2 = new Label("two");
+					Label l3 = new Label("three");
 
-					f.setContent(box);
+					b2.addChild(l1);
+					b2.addChild(l2);
+					b3.addChild(l3);
+					b3.addChild(l2);
+
+					f.setContent(b1);
 
 					this.state.addFrame(f);
 				}

@@ -77,4 +77,22 @@ public interface Widget extends Drawable {
 	 */
 	public int getHeight();
 
+	/**
+	 * Widgets can be put in containers, which have to maintain a Widget ->
+	 * Container dependency. A Widget cannot be inserted in two Container
+	 * simultaneously.
+	 * 
+	 * @param c the Container containing this widget
+	 */
+	public void setParent(Container c);
+
+	/**
+	 * Widgets can be put in containers, which have to maintain a Widget ->
+	 * Container dependency. A Widget cannot be inserted in two Container
+	 * simultaneously.
+	 * 
+	 * @return the Container containing this widget, or null
+	 */
+	public Container getParent();
+
 }

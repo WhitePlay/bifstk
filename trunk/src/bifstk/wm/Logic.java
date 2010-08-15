@@ -9,6 +9,7 @@ import bifstk.config.Cursors.Type;
 import bifstk.wm.geom.Region;
 import bifstk.wm.ui.Box;
 import bifstk.wm.ui.Label;
+import bifstk.wm.ui.TitleBorder;
 
 /**
  * Internal logic of the WM
@@ -140,7 +141,7 @@ public class Logic {
 					Box b3 = new Box(Box.Orientation.VERTICAL);
 
 					b1.addChild(b2);
-					b1.addChild(b3);
+					b1.addChild(new TitleBorder(b3, "Foo"));
 
 					Label l1 = new Label("one");
 					Label l2 = new Label("two");
@@ -148,7 +149,7 @@ public class Logic {
 
 					b2.addChild(l1);
 					b2.addChild(l2);
-					b3.addChild(l3);
+					b3.addChild(new TitleBorder(l3, "Haha :)"));
 					b3.addChild(l2);
 
 					f.setContent(b1);

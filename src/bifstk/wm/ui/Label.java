@@ -6,16 +6,30 @@ import bifstk.config.Fonts;
 import bifstk.gl.Color;
 import bifstk.wm.geom.Rectangle;
 
+/**
+ * Display text in a Widget
+ * 
+ */
 public class Label implements Widget {
 
+	/** dimensions of the label */
 	private Rectangle bounds = null;
 
+	// TODO REMOVE this should be handled by the theme, only used for debug
 	private Color backgroundColor = Color.RED;
 
+	/** text to display in the label */
 	private String text = null;
+	/** pixel width of the string when rendered */
 	private int textWidth = 0;
+	/** pixel height of the string when rendered */
 	private int textHeight = 0;
 
+	/**
+	 * Default constructor
+	 * 
+	 * @param text text to display in the label
+	 */
 	public Label(String text) {
 		this.text = text;
 		this.bounds = new Rectangle();
@@ -76,10 +90,12 @@ public class Label implements Widget {
 		return this.bounds.getHeight();
 	}
 
+	// TODO REMOVE this should be handled by the theme, only used for debug
 	public void setBackgroundColor(Color c) {
 		this.backgroundColor = c;
 	}
 
+	// TODO REMOVE this should be handled by the theme, only used for debug
 	public Color getBackgroundColor() {
 		return this.backgroundColor;
 	}

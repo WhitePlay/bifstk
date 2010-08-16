@@ -39,60 +39,75 @@ public class TitleBorder extends Border {
 	public void render(float alpha) {
 		int strW = Fonts.getNormal().getWidth(this.title);
 		int strH = Fonts.getNormal().getHeight();
-		int w = this.getWidth();
-		int h = this.getHeight();
+		int w = Math.max(this.getWidth(), 2 * border);
+		int h = Math.max(this.getHeight(), border + strH);
 
-		Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
-		// fill outline: top
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glVertex2i(0, 0);
-		GL11.glVertex2i(w, 0);
-		GL11.glVertex2i(w, strH);
-		GL11.glVertex2i(0, strH);
-		// fill outline: right
-		GL11.glVertex2i(w, strH);
-		GL11.glVertex2i(w, h - border);
-		GL11.glVertex2i(w - border, h - border);
-		GL11.glVertex2i(w - border, strH);
-		// fill outline: bot
-		GL11.glVertex2i(w, h - border);
-		GL11.glVertex2i(w, h);
-		GL11.glVertex2i(0, h);
-		GL11.glVertex2i(0, h - border);
-		// fill outline: left
-		GL11.glVertex2i(0, strH);
-		GL11.glVertex2i(border, strH);
-		GL11.glVertex2i(border, h - border);
-		GL11.glVertex2i(0, h - border);
-		GL11.glEnd();
+		if (this.hasChildren()) {
 
-		int b2 = border / 2;
-		int h2 = 2 * strH / 3;
-		Color.BLACK.use(alpha);
-		GL11.glLineWidth(1.0f);
-		// outline frame
-		GL11.glBegin(GL11.GL_LINE_STRIP);
-		GL11.glVertex2i(b2 + 3 * border + strW, h2);
-		GL11.glVertex2i(w - b2, h2);
-		GL11.glVertex2i(w - b2, h - b2);
-		GL11.glVertex2i(b2, h - b2);
-		GL11.glVertex2i(b2, h2);
-		GL11.glVertex2i(b2 + 2 * border, h2);
-		GL11.glEnd();
+			Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
+			// fill outline: top
+			GL11.glBegin(GL11.GL_QUADS);
+			GL11.glVertex2i(0, 0);
+			GL11.glVertex2i(w, 0);
+			GL11.glVertex2i(w, strH);
+			GL11.glVertex2i(0, strH);
+			// fill outline: right
+			GL11.glVertex2i(w, strH);
+			GL11.glVertex2i(w, h - border);
+			GL11.glVertex2i(w - border, h - border);
+			GL11.glVertex2i(w - border, strH);
+			// fill outline: bot
+			GL11.glVertex2i(w, h - border);
+			GL11.glVertex2i(w, h);
+			GL11.glVertex2i(0, h);
+			GL11.glVertex2i(0, h - border);
+			// fill outline: left
+			GL11.glVertex2i(0, strH);
+			GL11.glVertex2i(border, strH);
+			GL11.glVertex2i(border, h - border);
+			GL11.glVertex2i(0, h - border);
+			GL11.glEnd();
 
-		// title string
-		Fonts.getNormal().drawString(border * 3, 0, this.title, Color.BLACK,
-				alpha);
+			int b2 = border / 2;
+			int h2 = 2 * strH / 3;
+			Color.BLACK.use(alpha);
+			GL11.glLineWidth(1.0f);
+			// outline frame
+			GL11.glBegin(GL11.GL_LINE_STRIP);
+			GL11.glVertex2i(b2 + 3 * border + strW, h2);
+			GL11.glVertex2i(w - b2, h2);
+			GL11.glVertex2i(w - b2, h - b2);
+			GL11.glVertex2i(b2, h - b2);
+			GL11.glVertex2i(b2, h2);
+			GL11.glVertex2i(b2 + 2 * border, h2);
+			GL11.glEnd();
 
-		// content
-		Util.pushScissor(border, border, w - border * 2, h - border - strH);
-		GL11.glPushMatrix();
-		GL11.glTranslatef(border, strH, 0);
+			int nw = w - border * 2;
+			int nh = h - border - strH;
+			if (nw > 0 && nh > 0) {
+				// title string
+				Fonts.getNormal().drawString(border * 3, 0, this.title,
+						Color.BLACK, alpha);
 
-		this.getContent().render(alpha);
+				// content
+				Util.pushScissor(border, border, nw, nh);
+				GL11.glPushMatrix();
+				GL11.glTranslatef(border, strH, 0);
 
-		GL11.glPopMatrix();
-		Util.popScissor();
+				this.getContent().render(alpha);
+
+				GL11.glPopMatrix();
+				Util.popScissor();
+			}
+		} else {
+			Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
+			GL11.glBegin(GL11.GL_QUADS);
+			GL11.glVertex2i(0, 0);
+			GL11.glVertex2i(w, 0);
+			GL11.glVertex2i(w, h);
+			GL11.glVertex2i(0, h);
+			GL11.glEnd();
+		}
 	}
 
 	@Override

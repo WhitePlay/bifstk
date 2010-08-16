@@ -6,8 +6,10 @@ import bifstk.Bifstk;
 import bifstk.BifstkException;
 import bifstk.Handler;
 import bifstk.Root;
+import bifstk.gl.Color;
 import bifstk.wm.Frame;
 import bifstk.wm.ui.Box;
+import bifstk.wm.ui.CustomBorder;
 import bifstk.wm.ui.Label;
 import bifstk.wm.ui.TitleBorder;
 
@@ -48,7 +50,7 @@ public class Test implements Handler, Root {
 				b2.addChild(l1);
 				b2.addChild(l2);
 				b3.addChild(new TitleBorder(l3, "Haha :)"));
-				b3.addChild(l2);
+				b3.addChild(new CustomBorder(l2, 10, Color.RED));
 
 				f.setContent(b1);
 

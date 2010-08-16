@@ -19,7 +19,7 @@ public abstract class Border implements Container {
 	 * @param content content of the Border
 	 */
 	public Border(Widget content) {
-		this.content = content;
+		this.setContent(content);
 	}
 
 	/**

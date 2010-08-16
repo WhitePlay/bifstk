@@ -13,5 +13,5 @@ config="config/bifstk.conf"
 
 $JAVA_HOME/bin/java -cp $CLASSPATH \
 	-Djava.library.path=$(pwd)/lib/lwjgl/native/linux/ \
-	$@ bifstk.Test $config
+	$@ test.Test $config
 

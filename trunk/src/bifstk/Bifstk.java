@@ -137,7 +137,7 @@ public class Bifstk {
 					}
 					// draw framerate
 					Fonts.getNormal().drawString(0, 0, "FPS: " + fps_real,
-							Color.BLACK);
+							Color.BLACK, 1.0f);
 
 					// swap buffers
 					Display.update(false);

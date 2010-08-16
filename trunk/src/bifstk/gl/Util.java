@@ -1,5 +1,9 @@
 package bifstk.gl;
 
+import java.nio.IntBuffer;
+import java.util.LinkedList;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -129,6 +133,66 @@ public class Util {
 		Util.drawFilledArc((float) x, (float) y + h, (float) radius,
 				(float) Math.PI / 2.0f, (float) Math.PI / 2.0f, precision,
 				shadowCol, Color.TRANSP_BLACK);
+	}
+
+	/**
+	 * Abscissa, ordinate, width and height in pixels
+	 * <p>
+	 * Used for scissor boxes
+	 */
+	private static class Coord {
+		public int x;
+		public int y;
+		public int w;
+		public int h;
+
+		public Coord(int x, int y, int w, int h) {
+			this.x = x;
+			this.y = y;
+			this.w = w;
+			this.h = h;
+		}
+	}
+
+	/** stack of scissor boxes */
+	private static LinkedList<Coord> scissors = new LinkedList<Coord>();
+
+	/**
+	 * Push a new Scissor box in the OpenGL context
+	 * <p>
+	 * This call can be reverted with a subsequent call to {@link #popScissor()}
+	 * <p>
+	 * This is useful since glScissor does not into take account the current
+	 * MODELVIEW transformations and uses absolute screen coordinates which can
+	 * be unknown in some contexts
+	 * 
+	 * 
+	 * @param ax value to add to the current scissor abscissa value
+	 * @param ay value to add to the current scissor ordinate value, in absolute
+	 *            screen coordinates, ie with the origin at the bottom
+	 * @param w new scissor box width
+	 * @param h new scissor box height
+	 */
+	public static void pushScissor(int ax, int ay, int w, int h) {
+		IntBuffer buf = BufferUtils.createIntBuffer(16);
+		GL11.glGetInteger(GL11.GL_SCISSOR_BOX, buf);
+		int bx = buf.get(), by = buf.get();
+		int bw = buf.get(), bh = buf.get();
+
+		Coord sci = new Coord(bx, by, bw, bh);
+		scissors.push(sci);
+
+		GL11.glScissor(bx + ax, by + ay, w, h);
+
+	}
+
+	/**
+	 * Reset the scissor box as it was last time
+	 * {@link #pushScissor(int, int, int, int)} was called
+	 */
+	public static void popScissor() {
+		Coord sci = scissors.pop();
+		GL11.glScissor(sci.x, sci.y, sci.w, sci.h);
 	}
 
 }

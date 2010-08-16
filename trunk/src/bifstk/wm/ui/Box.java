@@ -1,13 +1,12 @@
 package bifstk.wm.ui;
 
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import bifstk.gl.Color;
+import bifstk.config.Theme;
+import bifstk.gl.Util;
 import bifstk.wm.geom.Rectangle;
 
 /**
@@ -48,9 +47,6 @@ public class Box implements Container {
 
 	/** width of the border between each element */
 	private int borderWidth = 2;
-
-	// TODO REMOVE this should be handled by the theme, only used for debug
-	private Color backgroundColor = Color.WHITE;
 
 	/** orientation of the box: vertical or horizontal */
 	private Orientation orientation;
@@ -138,31 +134,22 @@ public class Box implements Container {
 			for (Entry child : this.children) {
 				Widget c = child.widget;
 
-				// get the current scissor box ; clumsy but no other way since
-				// at this point we have been glTranslate and the scissor has to
-				// be specified in absolute screen coordinates
-				IntBuffer buf = BufferUtils.createIntBuffer(16);
-				GL11.glGetInteger(GL11.GL_SCISSOR_BOX, buf);
-				int bx = buf.get(), by = buf.get();
-				int bw = buf.get(), bh = buf.get();
-
 				GL11.glPushMatrix();
 				if (this.orientation.equals(Orientation.HORIZONTAL)) {
 					GL11.glTranslatef(acc, 0, 0);
-					// scissors use bot-left as origin as opposed to us..
-					GL11.glScissor(bx + acc, by, c.getWidth(), c.getHeight());
+					Util.pushScissor(acc, 0, c.getWidth(), c.getHeight());
 				} else {
 					GL11.glTranslatef(0, acc, 0);
-					GL11.glScissor(bx, by + h - acc - c.getHeight(),
-							c.getWidth(), c.getHeight());
+					Util.pushScissor(0, h - acc - c.getHeight(), c.getWidth(),
+							c.getHeight());
 				}
 
 				c.render(alpha);
 
-				GL11.glScissor(bx, by, bw, bh);
+				Util.popScissor();
 				GL11.glPopMatrix();
 
-				this.getBackgroundColor().use(alpha);
+				Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
 				GL11.glBegin(GL11.GL_QUADS);
 				if (this.orientation.equals(Orientation.HORIZONTAL)) {
 					// right border
@@ -186,7 +173,7 @@ public class Box implements Container {
 
 			}
 		} else {
-			this.getBackgroundColor().use(alpha);
+			Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
 			GL11.glBegin(GL11.GL_QUADS);
 			GL11.glVertex2i(0, 0);
 			GL11.glVertex2i(w, 0);
@@ -295,16 +282,6 @@ public class Box implements Container {
 	public void setBounds(int w, int h) {
 		this.bounds.setBounds(w, h);
 		resize();
-	}
-
-	// TODO REMOVE this should be handled by the theme, only used for debug
-	public void setBackgroundColor(Color c) {
-		this.backgroundColor = c;
-	}
-
-	// TODO REMOVE this should be handled by the theme, only used for debug
-	public Color getBackgroundColor() {
-		return this.backgroundColor;
 	}
 
 	@Override

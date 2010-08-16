@@ -192,7 +192,7 @@ public class Frame implements Drawable {
 						Theme.getFrameShadowAlpha());
 			}
 
-			font.drawString(mx, my, msg, Color.BLACK);
+			font.drawString(mx, my, msg, Color.BLACK, 1.0f);
 		}
 
 	}

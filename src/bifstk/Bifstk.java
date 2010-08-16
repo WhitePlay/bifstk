@@ -161,10 +161,28 @@ public class Bifstk {
 		start(configFile, null, null);
 	}
 
+	/**
+	 * Starts Bifstk in a new Thread
+	 * <p>
+	 * 
+	 * @param configFile path to a local file containing values for all the
+	 *            properties defined in {@link bifstk.config.Property}
+	 * @param r root renderer for WM background, can be null
+	 * @throws IllegalStateException Bifstk was already started
+	 */
 	public static void start(String configFile, Root r) {
 		start(configFile, null, r);
 	}
 
+	/**
+	 * Starts Bifstk in a new Thread
+	 * <p>
+	 * 
+	 * @param configFile path to a local file containing values for all the
+	 *            properties defined in {@link bifstk.config.Property}
+	 * @param h handler for keyboard and mouse inputs, can be null
+	 * @throws IllegalStateException Bifstk was already started
+	 */
 	public static void start(String configFile, Handler h) {
 		start(configFile, h, null);
 	}
@@ -176,7 +194,7 @@ public class Bifstk {
 	 * @param configFile path to a local file containing values for all the
 	 *            properties defined in {@link bifstk.config.Property}
 	 * @param h handler for keyboard and mouse inputs, can be null
-	 * @param h handler for keyboard and mouse inputs, can be null
+	 * @param r root renderer for WM background, can be null
 	 * @throws IllegalStateException Bifstk was already started
 	 */
 	public static void start(String configFile, Handler h, Root r) {

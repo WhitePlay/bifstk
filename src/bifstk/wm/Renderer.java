@@ -8,6 +8,7 @@ import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
 import bifstk.BifstkException;
+import bifstk.Root;
 import bifstk.config.Config;
 import bifstk.config.Property;
 import bifstk.config.Theme;
@@ -19,10 +20,13 @@ import bifstk.util.Logger;
  * Managed the display and renders the WM
  * 
  */
-public class Root {
+public class Renderer {
 
 	/** WM state */
-	private State state;
+	private State state = null;
+
+	/** Client-side root renderer */
+	private Root root = null;
 
 	/**
 	 * Default constructor Creates the opengl display
@@ -30,9 +34,21 @@ public class Root {
 	 * @param state view of the WM's state
 	 * @throws BifstkException
 	 */
-	public Root(State state) throws BifstkException {
+	public Renderer(State state) throws BifstkException {
+		this(state, null);
+	}
+
+	/**
+	 * Default constructor Creates the opengl display
+	 * 
+	 * @param state view of the WM's state
+	 * @param root Client-side root renderer, can be null
+	 * @throws BifstkException
+	 */
+	public Renderer(State state, Root root) throws BifstkException {
 
 		this.state = state;
+		this.root = root;
 
 		int width = 0;
 		try {
@@ -108,6 +124,21 @@ public class Root {
 		int width = mode.getWidth();
 		int height = mode.getHeight();
 
+		/*
+		 * clear display
+		 */
+		this.clear(width, height);
+
+		/*
+		 * draw user content
+		 */
+		if (this.root != null) {
+			this.root.render();
+		}
+
+		/*
+		 * init rendering context
+		 */
 		this.initRender(width, height);
 
 		/*
@@ -122,6 +153,20 @@ public class Root {
 			f = it.next();
 			f.render(1.0f);
 		}
+	}
+
+	private void clear(int width, int height) {
+		// GL11.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		// GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+
+		// drawing a quad seems to be faster than glClear for some reason
+		Theme.getRootBackgroundColor().use();
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glVertex2i(0, 0);
+		GL11.glVertex2i(width, 0);
+		GL11.glVertex2i(width, height);
+		GL11.glVertex2i(0, height);
+		GL11.glEnd();
 	}
 
 	/**
@@ -146,17 +191,5 @@ public class Root {
 		// transparency
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-		// GL11.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		// GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-
-		// drawing a quad seems to be faster than glClear for some reason
-		Theme.getRootBackgroundColor().use();
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glVertex2i(0, 0);
-		GL11.glVertex2i(width, 0);
-		GL11.glVertex2i(width, height);
-		GL11.glVertex2i(0, height);
-		GL11.glEnd();
 	}
 }

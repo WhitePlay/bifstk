@@ -13,8 +13,9 @@ import bifstk.config.Theme;
 import bifstk.gl.Color;
 import bifstk.util.BifstkLogSystem;
 import bifstk.util.Logger;
+import bifstk.wm.Frame;
 import bifstk.wm.Logic;
-import bifstk.wm.Root;
+import bifstk.wm.Renderer;
 
 /**
  * Main class for Bifstk
@@ -41,13 +42,18 @@ public class Bifstk {
 	/** maximum refresh rate in fps */
 	private final static int max_fps = 100;
 
+	/** static pointer to the WM's logic, used by the API */
+	private static Logic logic = null;
+
 	private Bifstk() {
 	}
 
 	/**
 	 * Builds the runner thread and stores is statically
+	 * 
+	 * @param h the user event handler
 	 */
-	private static void internalStart() {
+	private static void internalStart(final Handler h, final Root r) {
 		runner = new Thread(new Runnable() {
 
 			@Override
@@ -55,12 +61,12 @@ public class Bifstk {
 
 				preDisplayInit();
 
-				Logic logic = new Logic();
+				logic = new Logic(h);
 
-				Root root = null;
+				Renderer renderer = null;
 				try {
 					// create the display
-					root = new Root(logic.getState());
+					renderer = new Renderer(logic.getState(), r);
 
 					postDisplayInit();
 				} catch (Exception e) {
@@ -95,7 +101,7 @@ public class Bifstk {
 				/*
 				 * main loop
 				 */
-				while (!logic.isExitRequested() || stop) {
+				while (!(logic.isExitRequested() || stop)) {
 
 					// calculate actual framerate
 					dt = Sys.getTime();
@@ -113,7 +119,7 @@ public class Bifstk {
 
 					// foreground window: maintain framerate
 					if (Display.isActive()) {
-						root.render();
+						renderer.render();
 						if (capped) {
 							Display.sync(fps_target);
 						}
@@ -126,7 +132,7 @@ public class Bifstk {
 						}
 						// do not repaint if window is not visible
 						if (Display.isVisible() || Display.isDirty()) {
-							root.render();
+							renderer.render();
 						}
 					}
 					// draw framerate
@@ -152,6 +158,28 @@ public class Bifstk {
 	 * @throws IllegalStateException Bifstk was already started
 	 */
 	public static void start(String configFile) {
+		start(configFile, null, null);
+	}
+
+	public static void start(String configFile, Root r) {
+		start(configFile, null, r);
+	}
+
+	public static void start(String configFile, Handler h) {
+		start(configFile, h, null);
+	}
+
+	/**
+	 * Starts Bifstk in a new Thread
+	 * <p>
+	 * 
+	 * @param configFile path to a local file containing values for all the
+	 *            properties defined in {@link bifstk.config.Property}
+	 * @param h handler for keyboard and mouse inputs, can be null
+	 * @param h handler for keyboard and mouse inputs, can be null
+	 * @throws IllegalStateException Bifstk was already started
+	 */
+	public static void start(String configFile, Handler h, Root r) {
 		if (Bifstk.runner != null && Bifstk.runner.isAlive()) {
 			throw new IllegalStateException(
 					"Bifsk cannot be started while running");
@@ -160,7 +188,7 @@ public class Bifstk {
 		}
 
 		Bifstk.config = configFile;
-		internalStart();
+		internalStart(h, r);
 		runner.setName("bifstk-runner");
 		runner.start();
 	}
@@ -170,6 +198,20 @@ public class Bifstk {
 	 */
 	public static void stop() {
 		stop = true;
+	}
+
+	/**
+	 * Adds a new Frame in the Bifstk Window Manager
+	 * 
+	 * @param f the frame to add in the WM
+	 * @throws BifstkException method was called outside the Bifstk thread
+	 */
+	public static void addFrame(Frame f) throws BifstkException {
+		if (!Thread.currentThread().equals(Bifstk.runner)) {
+			throw new BifstkException(
+					"This method cannot be called outside the Bifstk thread");
+		}
+		Bifstk.logic.getState().addFrame(f);
 	}
 
 	/**
@@ -231,9 +273,11 @@ public class Bifstk {
 		return fps;
 	}
 
+	/**
+	 * @return true if the fsp is capped
+	 */
 	private static boolean isCapped() {
 		boolean cap = new Boolean(Config.getValue(Property.displayFpsCap));
-
 		return cap;
 	}
 }

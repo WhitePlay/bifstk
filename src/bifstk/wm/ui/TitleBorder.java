@@ -1,12 +1,11 @@
 package bifstk.wm.ui;
 
-import java.nio.IntBuffer;
-
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import bifstk.config.Fonts;
+import bifstk.config.Theme;
 import bifstk.gl.Color;
+import bifstk.gl.Util;
 import bifstk.wm.geom.Rectangle;
 
 /**
@@ -43,7 +42,7 @@ public class TitleBorder extends Border {
 		int w = this.getWidth();
 		int h = this.getHeight();
 
-		Color.LIGHT_BLUE.use(alpha);
+		Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
 		// fill outline: top
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glVertex2i(0, 0);
@@ -82,22 +81,18 @@ public class TitleBorder extends Border {
 		GL11.glEnd();
 
 		// title string
-		Fonts.getNormal().drawString(border * 3, 0, this.title, Color.BLACK);
+		Fonts.getNormal().drawString(border * 3, 0, this.title, Color.BLACK,
+				alpha);
 
 		// content
-		IntBuffer buf = BufferUtils.createIntBuffer(16);
-		GL11.glGetInteger(GL11.GL_SCISSOR_BOX, buf);
-		int bx = buf.get(), by = buf.get();
-		int bw = buf.get(), bh = buf.get();
-		GL11.glScissor(bx + border, by + border, w - border * 2, h - border
-				- strH);
+		Util.pushScissor(border, border, w - border * 2, h - border - strH);
 		GL11.glPushMatrix();
 		GL11.glTranslatef(border, strH, 0);
 
 		this.getContent().render(alpha);
 
 		GL11.glPopMatrix();
-		GL11.glScissor(bx, by, bw, bh);
+		Util.popScissor();
 	}
 
 	@Override

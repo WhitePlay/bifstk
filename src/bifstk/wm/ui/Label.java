@@ -3,6 +3,7 @@ package bifstk.wm.ui;
 import org.lwjgl.opengl.GL11;
 
 import bifstk.config.Fonts;
+import bifstk.config.Theme;
 import bifstk.gl.Color;
 import bifstk.wm.geom.Rectangle;
 
@@ -14,10 +15,6 @@ public class Label implements Widget {
 
 	/** dimensions of the label */
 	private Rectangle bounds = null;
-
-	// TODO REMOVE this should be handled by the theme, only used for debug
-	private Color backgroundColor = Color.RED;
-
 	/** text to display in the label */
 	private String text = null;
 	/** pixel width of the string when rendered */
@@ -46,7 +43,7 @@ public class Label implements Widget {
 		int w = this.getWidth();
 		int h = this.getHeight();
 
-		this.backgroundColor.use(alpha);
+		Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glVertex2i(0, 0);
 		GL11.glVertex2i(w, 0);
@@ -65,7 +62,7 @@ public class Label implements Widget {
 		} else {
 			ly = 0;
 		}
-		Fonts.getNormal().drawString(lx, ly, this.text, Color.BLACK);
+		Fonts.getNormal().drawString(lx, ly, this.text, Color.BLACK, alpha);
 	}
 
 	@Override
@@ -90,16 +87,6 @@ public class Label implements Widget {
 	@Override
 	public int getHeight() {
 		return this.bounds.getHeight();
-	}
-
-	// TODO REMOVE this should be handled by the theme, only used for debug
-	public void setBackgroundColor(Color c) {
-		this.backgroundColor = c;
-	}
-
-	// TODO REMOVE this should be handled by the theme, only used for debug
-	public Color getBackgroundColor() {
-		return this.backgroundColor;
 	}
 
 	@Override

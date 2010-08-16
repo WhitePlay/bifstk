@@ -85,6 +85,21 @@ public class Theme {
 		return instance.frameShadowRadius;
 	}
 
+	private Color uiBgColor = null;
+
+	/**
+	 * @return the background color of the ui
+	 */
+	public static Color getUiBgColor() {
+		return instance.uiBgColor;
+	}
+
+	private float uiBgAlpha = 1.0f;
+
+	public static float getUiBgAlpha() {
+		return instance.uiBgAlpha;
+	}
+
 	/**
 	 * Available (and mandatory) properties
 	 */
@@ -106,7 +121,12 @@ public class Theme {
 		/** FLOAT opacity of the frame shadow */
 		frameShadowAlpha("frame.shadow.alpha"),
 		/** INT pixel radius of the frame shadow */
-		frameShadowRadius("frame.shadow.radius");
+		frameShadowRadius("frame.shadow.radius"),
+
+		/** COLOR background color of the ui */
+		uiBgColor("ui.bg.color"),
+		/** FLOAT opacity of the background of the ui */
+		uiBgAlpha("ui.bg.alpha");
 
 		private String name = "";
 
@@ -208,6 +228,14 @@ public class Theme {
 				case frameResizedAlpha: {
 					this.frameResizedAlpha = clampf(Float.parseFloat(sval),
 							0.0f, 1.0f);
+					break;
+				}
+				case uiBgColor: {
+					this.uiBgColor = Color.parse(sval);
+					break;
+				}
+				case uiBgAlpha: {
+					this.uiBgAlpha = clampf(Float.parseFloat(sval), 0.0f, 1.0f);
 					break;
 				}
 				}

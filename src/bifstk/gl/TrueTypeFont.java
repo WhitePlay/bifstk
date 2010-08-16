@@ -337,15 +337,11 @@ public class TrueTypeFont {
 	 * @param y The y position to draw the string
 	 * @param whatchars The string to draw
 	 * @param color The color to draw the text
+	 * @param alpha opacity
 	 */
 	public void drawString(float x, float y, String whatchars,
-			bifstk.gl.Color color) {
-		drawString(x, y, whatchars, color, 0, whatchars.length() - 1);
-	}
-
-	public void drawString(float x, float y, String whatchars,
-			bifstk.gl.Color color, int startIndex, int endIndex) {
-		color.use();
+			bifstk.gl.Color color, float alpha) {
+		color.use(alpha);
 
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.fontTexture);
@@ -366,14 +362,11 @@ public class TrueTypeFont {
 			}
 
 			if (intObject != null) {
-				if ((i >= startIndex) || (i <= endIndex)) {
-					drawQuad((x + totalwidth), y,
-							(x + totalwidth + intObject.width),
-							(y + intObject.height), intObject.storedX,
-							intObject.storedY, intObject.storedX
-									+ intObject.width, intObject.storedY
-									+ intObject.height);
-				}
+				drawQuad((x + totalwidth), y,
+						(x + totalwidth + intObject.width),
+						(y + intObject.height), intObject.storedX,
+						intObject.storedY, intObject.storedX + intObject.width,
+						intObject.storedY + intObject.height);
 				totalwidth += intObject.width;
 			}
 		}
@@ -388,16 +381,4 @@ public class TrueTypeFont {
 	public int getFontSize() {
 		return this.fontSize;
 	}
-
-	/**
-	 * Draw a string
-	 * 
-	 * @param x The x position to draw the string
-	 * @param y The y position to draw the string
-	 * @param whatchars The string to draw
-	 */
-	public void drawString(float x, float y, String whatchars) {
-		drawString(x, y, whatchars, bifstk.gl.Color.WHITE);
-	}
-
 }

@@ -180,7 +180,6 @@ public class Box implements Container {
 			GL11.glVertex2i(w, h);
 			GL11.glVertex2i(0, h);
 			GL11.glEnd();
-
 		}
 
 		GL11.glEnd();
@@ -243,6 +242,7 @@ public class Box implements Container {
 		}
 		if (torem != null) {
 			this.children.remove(torem);
+			resize();
 		}
 	}
 
@@ -254,6 +254,7 @@ public class Box implements Container {
 	@Override
 	public void clearChildren() {
 		this.children.clear();
+		resize();
 	}
 
 	@Override

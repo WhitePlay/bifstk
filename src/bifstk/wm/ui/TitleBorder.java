@@ -113,21 +113,27 @@ public class TitleBorder extends Border {
 	@Override
 	public void setWidth(int w) {
 		this.bounds.setWidth(w);
-		this.getContent().setWidth(w - this.border * 2);
+		if (this.getContent() != null) {
+			this.getContent().setWidth(w - this.border * 2);
+		}
 	}
 
 	@Override
 	public void setHeight(int h) {
 		this.bounds.setHeight(h);
-		this.getContent().setHeight(
-				h - this.border - Fonts.getNormal().getHeight());
+		if (this.getContent() != null) {
+			this.getContent().setHeight(
+					h - this.border - Fonts.getNormal().getHeight());
+		}
 	}
 
 	@Override
 	public void setBounds(int w, int h) {
 		this.bounds.setBounds(w, h);
-		this.getContent().setBounds(w - this.border * 2,
-				h - this.border - Fonts.getNormal().getHeight());
+		if (this.getContent() != null) {
+			this.getContent().setBounds(w - this.border * 2,
+					h - this.border - Fonts.getNormal().getHeight());
+		}
 	}
 
 	@Override

@@ -253,7 +253,9 @@ public class Frame implements Drawable {
 	public void setWidth(int w) {
 		w = Math.max(w, this.minBounds.getWidth());
 		this.bounds.setWidth(w);
-		this.content.setWidth(w - 2 * Theme.getFrameBorderWidth());
+		if (this.content != null) {
+			this.content.setWidth(w - 2 * Theme.getFrameBorderWidth());
+		}
 	}
 
 	/**
@@ -262,8 +264,10 @@ public class Frame implements Drawable {
 	public void setHeight(int h) {
 		h = Math.max(h, this.minBounds.getHeight());
 		this.bounds.setHeight(h);
-		this.content.setHeight(h - 2 * Theme.getFrameBorderWidth()
-				- this.getTitleBarHeight());
+		if (this.content != null) {
+			this.content.setHeight(h - 2 * Theme.getFrameBorderWidth()
+					- this.getTitleBarHeight());
+		}
 	}
 
 	/**
@@ -274,8 +278,10 @@ public class Frame implements Drawable {
 		w = Math.max(w, this.minBounds.getWidth());
 		h = Math.max(h, this.minBounds.getHeight());
 		this.bounds.setBounds(w, h);
-		this.content.setBounds(w - 2 * Theme.getFrameBorderWidth(), h - 2
-				* Theme.getFrameBorderWidth() - this.getTitleBarHeight());
+		if (this.content != null) {
+			this.content.setBounds(w - 2 * Theme.getFrameBorderWidth(), h - 2
+					* Theme.getFrameBorderWidth() - this.getTitleBarHeight());
+		}
 	}
 
 	/**

@@ -5,8 +5,10 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
 import bifstk.Handler;
+import bifstk.config.Config;
 import bifstk.config.Cursors;
 import bifstk.config.Cursors.Type;
+import bifstk.config.Property;
 import bifstk.wm.geom.Region;
 
 /**
@@ -223,9 +225,19 @@ public class Logic {
 	 * Applies mouse events
 	 */
 	private void applyMouse() {
+		boolean focusFollowMouse = new Boolean(
+				Config.getValue(Property.wmFocuseFollowmouse));
+
+		if (focusFollowMouse && !this.leftMouse.clicked
+				&& !this.leftMouse.dragged) {
+			if (this.leftMouse.hoverFrame != null) {
+				this.state.focusFrame(this.leftMouse.hoverFrame);
+			}
+		}
+
 		if (this.leftMouse.clicked) {
 			Frame f = this.leftMouse.clickedFrame;
-			this.state.focusFrame(f);
+			this.state.foregroundFrame(f);
 
 			if (f != null) {
 				this.leftMouse.draggedFrame = f;

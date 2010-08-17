@@ -62,7 +62,10 @@ public class Label implements Widget {
 		} else {
 			ly = 0;
 		}
+		Fonts.getNormal().drawString(lx + 1, ly + 1, this.text, Color.WHITE,
+				alpha);
 		Fonts.getNormal().drawString(lx, ly, this.text, Color.BLACK, alpha);
+
 	}
 
 	@Override

@@ -7,6 +7,9 @@ import bifstk.BifstkException;
 import bifstk.Handler;
 import bifstk.Root;
 import bifstk.wm.Frame;
+import bifstk.wm.ui.Box;
+import bifstk.wm.ui.Box.Orientation;
+import bifstk.wm.ui.Label;
 
 public class Test implements Handler, Root {
 
@@ -31,6 +34,18 @@ public class Test implements Handler, Root {
 		case Keyboard.KEY_C:
 			if (Keyboard.getEventKeyState()) {
 				final Frame f = new Frame(50, 50);
+
+				Box b1 = new Box(Orientation.VERTICAL);
+				Box b2 = new Box(Orientation.HORIZONTAL);
+
+				b1.addChild(new Label("This is"));
+
+				b2.addChild(new Label("some"));
+				b2.addChild(new Label("text."));
+
+				b1.addChild(b2);
+
+				f.setContent(b1);
 
 				try {
 					Bifstk.addFrame(f);

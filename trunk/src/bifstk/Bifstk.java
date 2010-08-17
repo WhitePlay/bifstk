@@ -103,44 +103,52 @@ public class Bifstk {
 				 */
 				while (!(logic.isExitRequested() || stop)) {
 
-					// calculate actual framerate
-					dt = Sys.getTime();
-					if (dt - dt2 > 1000) {
-						fps_real = fps_acc;
-						fps_acc = 0;
-						dt2 = dt;
-					} else {
-						fps_acc++;
-					}
+					try {
 
-					// poll input
-					Display.processMessages();
-					logic.update();
+						// calculate actual framerate
+						dt = Sys.getTime();
+						if (dt - dt2 > 1000) {
+							fps_real = fps_acc;
+							fps_acc = 0;
+							dt2 = dt;
+						} else {
+							fps_acc++;
+						}
 
-					// foreground window: maintain framerate
-					if (Display.isActive()) {
-						renderer.render();
-						if (capped) {
-							Display.sync(fps_target);
-						}
-					}
-					// background window: lazy update
-					else {
-						try {
-							Thread.sleep(100);
-						} catch (InterruptedException e) {
-						}
-						// do not repaint if window is not visible
-						if (Display.isVisible() || Display.isDirty()) {
+						// poll input
+						Display.processMessages();
+						logic.update();
+
+						// foreground window: maintain framerate
+						if (Display.isActive()) {
 							renderer.render();
+							if (capped) {
+								Display.sync(fps_target);
+							}
 						}
-					}
-					// draw framerate
-					Fonts.getNormal().drawString(0, 0, "FPS: " + fps_real,
-							Color.BLACK, 1.0f);
+						// background window: lazy update
+						else {
+							try {
+								Thread.sleep(100);
+							} catch (InterruptedException e) {
+							}
+							// do not repaint if window is not visible
+							if (Display.isVisible() || Display.isDirty()) {
+								renderer.render();
+							}
+						}
+						// draw framerate
+						Fonts.getNormal().drawString(0, 0, "FPS: " + fps_real,
+								Color.BLACK, 1.0f);
 
-					// swap buffers
-					Display.update(false);
+						// swap buffers
+						Display.update(false);
+
+					} catch (Throwable t) {
+						Logger.error("Fatal error, exiting", t);
+						Display.destroy();
+						System.exit(0);
+					}
 
 				}
 

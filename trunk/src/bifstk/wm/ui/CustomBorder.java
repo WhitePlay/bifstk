@@ -140,20 +140,26 @@ public class CustomBorder extends Border {
 	@Override
 	public void setWidth(int w) {
 		this.bounds.setWidth(w);
-		this.getContent().setWidth(w - this.left - this.right);
+		if (this.getContent() != null) {
+			this.getContent().setWidth(w - this.left - this.right);
+		}
 	}
 
 	@Override
 	public void setHeight(int h) {
 		this.bounds.setHeight(h);
-		this.getContent().setHeight(h - this.top - this.bot);
+		if (this.getContent() != null) {
+			this.getContent().setHeight(h - this.top - this.bot);
+		}
 	}
 
 	@Override
 	public void setBounds(int w, int h) {
 		this.bounds.setBounds(w, h);
-		this.getContent().setBounds(w - this.left - this.right,
-				h - this.top - this.bot);
+		if (this.getContent() != null) {
+			this.getContent().setBounds(w - this.left - this.right,
+					h - this.top - this.bot);
+		}
 	}
 
 	@Override

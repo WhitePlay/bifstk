@@ -1,6 +1,11 @@
 package bifstk.gl;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.lwjgl.opengl.GL11;
+
+import bifstk.util.Logger;
 
 public class Color {
 
@@ -31,6 +36,16 @@ public class Color {
 	public static final Color BLUE = new Color(0.0f, 0.0f, 1.0f, 1.0f);
 	public static final Color LIGHT_BLUE = new Color(0.5f, 0.5f, 1.0f, 1.0f);
 	public static final Color DARK_BLUE = new Color(0.0f, 0.0f, 0.5f, 1.0f);
+
+	/** regexp that parses [0.0, 1.0] colors from strings */
+	private final static String fMatcher = "([01](?:[.][0-9]+)?) ([01](?:[.][0-9]+)?) ([01](?:[.][0-9]+)?)";
+	/** compiled regexp for [0.0, 1.0] */
+	private static Pattern fPattern = Pattern.compile(fMatcher);
+
+	/** regexp that parses [0, 255] colors from strings */
+	private final static String iMatcher = "([0-9]{1,2}|1[0-9]{2}|2[0-4][0-9]|25[0-5]) ([0-9]{1,2}|1[0-9]{2}|2[0-4][0-9]|25[0-5]) ([0-9]{1,2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])";
+	/** compiled regexp for [0, 255] */
+	private static Pattern iPattern = Pattern.compile(iMatcher);
 
 	/**
 	 * Default constructor
@@ -105,8 +120,23 @@ public class Color {
 			return LIGHT_BLUE;
 		} else if (str.equalsIgnoreCase("darkblue")) {
 			return DARK_BLUE;
+		} else {
+			Matcher mat = fPattern.matcher(str.trim());
+			if (mat.matches() && mat.groupCount() == 3) {
+				float r = Float.parseFloat(mat.group(1));
+				float g = Float.parseFloat(mat.group(2));
+				float b = Float.parseFloat(mat.group(3));
+				return new Color(r, g, b);
+			}
+			mat = iPattern.matcher(str.trim());
+			if (mat.matches() && mat.groupCount() == 3) {
+				int r = Integer.parseInt(mat.group(1));
+				int g = Integer.parseInt(mat.group(2));
+				int b = Integer.parseInt(mat.group(3));
+				return new Color(r / 255.0f, g / 255.0f, b / 255.0f);
+			}
 		}
+		Logger.warn("Could not read color: " + str);
 		return WHITE;
 	}
-
 }

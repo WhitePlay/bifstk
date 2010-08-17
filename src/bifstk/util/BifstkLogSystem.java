@@ -37,7 +37,7 @@ public class BifstkLogSystem implements LogSystem {
 
 	@Override
 	public void info(String message) {
-		Logger.info(prefix + message);
+		Logger.debug(prefix + message);
 	}
 
 	@Override

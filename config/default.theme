@@ -13,4 +13,4 @@ frame.shadow.radius = 10
 root.background.color = darkGray
 
 ui.bg.color = 212 212 212
-ui.bg.alpha = 1.0f
+ui.bg.alpha = 1.0

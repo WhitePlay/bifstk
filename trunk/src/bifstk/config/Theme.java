@@ -41,24 +41,36 @@ public class Theme {
 
 	private Color frameBorderFocusedColor = null;
 
+	/**
+	 * @return frame border color when focused
+	 */
 	public static Color getFrameBorderFocusedColor() {
 		return instance.frameBorderFocusedColor;
 	}
 
 	private Color frameBorderUnfocusedColor = null;
 
+	/**
+	 * @return frame border color when not focused
+	 */
 	public static Color getFrameBorderUnfocusedColor() {
 		return instance.frameBorderUnfocusedColor;
 	}
 
 	private Color frameTitlebarFocusedColor = null;
 
+	/**
+	 * @return frame titlebar color when focused
+	 */
 	public static Color getFrameTitlebarFocusedColor() {
 		return instance.frameTitlebarFocusedColor;
 	}
 
 	private Color frameTitlebarUnfocusedColor = null;
 
+	/**
+	 * @return frame titlebar color when not focused
+	 */
 	public static Color getFrameTitlebarUnfocusedColor() {
 		return instance.frameTitlebarUnfocusedColor;
 	}

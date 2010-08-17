@@ -94,15 +94,19 @@ public class Frame implements Drawable {
 			alpha *= Theme.getFrameResizedAlpha();
 		}
 
+		if (!this.isFocused()) {
+			alpha *= Theme.getFrameUnfocusedAlpha();
+		}
+
 		if (Theme.isFrameShadowEnabled()) {
 			Util.drawDroppedShadow(x, y, w, h, Theme.getFrameShadowRadius(),
 					Theme.getFrameShadowAlpha() * alpha);
 		}
 
 		if (this.isFocused()) {
-			GL11.glColor4f(0.5f, 0.5f, 0.5f, alpha);
+			Theme.getFrameBorderFocusedColor().use(alpha);
 		} else {
-			GL11.glColor4f(0.3f, 0.3f, 0.3f, alpha);
+			Theme.getFrameBorderUnfocusedColor().use(alpha);
 		}
 
 		GL11.glBegin(GL11.GL_QUADS);
@@ -128,8 +132,13 @@ public class Frame implements Drawable {
 		GL11.glVertex2i(x + borderWidth, y + h - borderWidth);
 		GL11.glEnd();
 
+		if (this.isFocused()) {
+			Theme.getFrameTitlebarFocusedColor().use(alpha);
+		} else {
+			Theme.getFrameTitlebarUnfocusedColor().use(alpha);
+		}
+
 		// title-bar
-		GL11.glColor4f(0.6f, 0.6f, 0.6f, alpha);
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glVertex2i(x + borderWidth, y + titlebarHeight + borderWidth);
 		GL11.glVertex2i(x + w - borderWidth, y + titlebarHeight + borderWidth);

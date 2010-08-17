@@ -1,13 +1,16 @@
 frame.border.width = 4
-
+frame.border.focused.color = 135 178 204
+frame.border.unfocused.color = 212 212 212
+frame.titlebar.focused.color = 135 178 204
+frame.titlebar.unfocused.color = 212 212 212
 frame.moved.alpha = 0.5
 frame.resized.alpha = 0.7
-
+frame.unfocused.alpha = 0.8
 frame.shadow.enabled = true
 frame.shadow.alpha = 0.2
 frame.shadow.radius = 10
 
 root.background.color = darkGray
 
-ui.bg.color = lightGray
+ui.bg.color = 212 212 212
 ui.bg.alpha = 1.0f

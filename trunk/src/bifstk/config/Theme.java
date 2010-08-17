@@ -39,6 +39,30 @@ public class Theme {
 		return instance.frameBorderWidth;
 	}
 
+	private Color frameBorderFocusedColor = null;
+
+	public static Color getFrameBorderFocusedColor() {
+		return instance.frameBorderFocusedColor;
+	}
+
+	private Color frameBorderUnfocusedColor = null;
+
+	public static Color getFrameBorderUnfocusedColor() {
+		return instance.frameBorderUnfocusedColor;
+	}
+
+	private Color frameTitlebarFocusedColor = null;
+
+	public static Color getFrameTitlebarFocusedColor() {
+		return instance.frameTitlebarFocusedColor;
+	}
+
+	private Color frameTitlebarUnfocusedColor = null;
+
+	public static Color getFrameTitlebarUnfocusedColor() {
+		return instance.frameTitlebarUnfocusedColor;
+	}
+
 	private float frameMovedAlpha;
 
 	/**
@@ -55,6 +79,15 @@ public class Theme {
 	 */
 	public static float getFrameResizedAlpha() {
 		return instance.frameResizedAlpha;
+	}
+
+	private float frameUnfocusedAlpha;
+
+	/**
+	 * @return frame opacity when not focused
+	 */
+	public static float getFrameUnfocusedAlpha() {
+		return instance.frameUnfocusedAlpha;
 	}
 
 	private boolean frameShadowEnabled;
@@ -110,11 +143,21 @@ public class Theme {
 
 		/** INT pixel width of the border around the frame */
 		frameBorderWidth("frame.border.width"),
+		/** COLOR frame border color when focused */
+		frameBorderFocusedColor("frame.border.focused.color"),
+		/** COLOR frame border color when not focused */
+		frameBorderUnfocusedColor("frame.border.unfocused.color"),
+		/** COLOR frame titlebar color when focused */
+		frameTitlebarFocusedColor("frame.titlebar.focused.color"),
+		/** COLOR frame titlebar color when not focused */
+		frameTitlebarUnfocusedColor("frame.titlebar.unfocused.color"),
 
 		/** FLOAT frame opacity when moved */
 		frameMovedAlpha("frame.moved.alpha"),
 		/** FLOAT frame opacity when resized */
 		frameResizedAlpha("frame.resized.alpha"),
+		/** FLOAT frame opacity when not focused */
+		frameUnfocusedAlpha("frame.unfocused.alpha"),
 
 		/** BOOL true to enable dropped shadows around frames */
 		frameShadowEnabled("frame.shadow.enabled"),
@@ -205,6 +248,22 @@ public class Theme {
 							frameBorderWidthMin, frameBorderWidthMax);
 					break;
 				}
+				case frameBorderFocusedColor: {
+					this.frameBorderFocusedColor = Color.parse(sval);
+					break;
+				}
+				case frameBorderUnfocusedColor: {
+					this.frameBorderUnfocusedColor = Color.parse(sval);
+					break;
+				}
+				case frameTitlebarFocusedColor: {
+					this.frameTitlebarFocusedColor = Color.parse(sval);
+					break;
+				}
+				case frameTitlebarUnfocusedColor: {
+					this.frameTitlebarUnfocusedColor = Color.parse(sval);
+					break;
+				}
 				case frameShadowEnabled: {
 					this.frameShadowEnabled = Boolean.parseBoolean(sval);
 					break;
@@ -223,10 +282,14 @@ public class Theme {
 					this.frameMovedAlpha = clampf(Float.parseFloat(sval), 0.0f,
 							1.0f);
 					break;
-
 				}
 				case frameResizedAlpha: {
 					this.frameResizedAlpha = clampf(Float.parseFloat(sval),
+							0.0f, 1.0f);
+					break;
+				}
+				case frameUnfocusedAlpha: {
+					this.frameUnfocusedAlpha = clampf(Float.parseFloat(sval),
 							0.0f, 1.0f);
 					break;
 				}

@@ -10,10 +10,15 @@ import java.util.Deque;
 public class InternalState implements State {
 
 	/**
-	 * ordered collection of frames: head of the list is the focused frame, the
-	 * others are stacked in order
+	 * ordered collection of frames: head of the list is the foreground frame,
+	 * the others are stacked in order
 	 */
 	private Deque<Frame> frames = null;
+
+	/**
+	 * Currently focused frame
+	 */
+	private Frame focusedFrame = null;
 
 	/**
 	 * Default constructor
@@ -33,28 +38,36 @@ public class InternalState implements State {
 	 * @param f the frame to add
 	 */
 	public void addFrame(Frame f) {
-		if (this.frames.size() > 0) {
-			this.frames.getFirst().setFocused(false);
-		}
-		// frame is added on top of the stack: focused
+		// frame is added on top of the stack: foreground
 		this.frames.addFirst(f);
-
-		f.setFocused(true);
+		focusFrame(f);
 	}
 
 	/**
-	 * Give the focus to a frame
+	 * Puts a frame in the foreground and focus it
 	 * 
-	 * @param tofocus frame to focus
+	 * @param tofocus frame to put in foreground, can be null
 	 */
-	public void focusFrame(Frame tofocus) {
-		if (this.frames.size() > 0) {
-			this.frames.getFirst().setFocused(false);
-		}
+	public void foregroundFrame(Frame tofocus) {
+		focusFrame(tofocus);
 		if (tofocus != null) {
-			tofocus.setFocused(true);
 			this.frames.remove(tofocus);
 			this.frames.addFirst(tofocus);
+		}
+	}
+
+	/**
+	 * Focus a frame ; do not put if in the foreground
+	 * 
+	 * @param tofocus frame to focus, can be null
+	 */
+	public void focusFrame(Frame tofocus) {
+		if (this.focusedFrame != null) {
+			this.focusedFrame.setFocused(false);
+		}
+		this.focusedFrame = tofocus;
+		if (tofocus != null) {
+			tofocus.setFocused(true);
 		}
 	}
 

@@ -61,7 +61,13 @@ public enum Property {
 	/** Path to the directory containing the mouse cursor bitmaps */
 	cursorsPath("gfx.cursors.path"),
 	/** Path to the theme file */
-	themePath("gfx.theme.path");
+	themePath("gfx.theme.path"),
+
+	// ///////////////////////////
+	// //// Window manager
+	// ///////////////////////////
+	/** true if frame focus follows the mouse or if click is required */
+	wmFocuseFollowmouse("wm.focus.followmouse");
 
 	private String property = null;
 

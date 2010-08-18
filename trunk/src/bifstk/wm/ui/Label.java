@@ -11,7 +11,7 @@ import bifstk.wm.geom.Rectangle;
  * Display text in a Widget
  * 
  */
-public class Label implements Widget {
+public class Label extends Widget {
 
 	/** dimensions of the label */
 	private Rectangle bounds = null;
@@ -21,8 +21,6 @@ public class Label implements Widget {
 	private int textWidth = 0;
 	/** pixel height of the string when rendered */
 	private int textHeight = 0;
-	/** Container containing this label */
-	private Container parent = null;
 
 	/**
 	 * Default constructor
@@ -91,15 +89,4 @@ public class Label implements Widget {
 	public int getHeight() {
 		return this.bounds.getHeight();
 	}
-
-	@Override
-	public void setParent(Container c) {
-		this.parent = c;
-	}
-
-	@Override
-	public Container getParent() {
-		return this.parent;
-	}
-
 }

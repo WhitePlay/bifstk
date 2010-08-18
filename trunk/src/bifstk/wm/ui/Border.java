@@ -5,7 +5,7 @@ package bifstk.wm.ui;
  * content
  * 
  */
-public abstract class Border implements Container {
+public abstract class Border extends Container {
 
 	/** content */
 	private Widget content = null;
@@ -27,11 +27,6 @@ public abstract class Border implements Container {
 	 */
 	protected Widget getContent() {
 		return this.content;
-	}
-
-	@Override
-	public void addChild(Widget w) {
-		this.setContent(w);
 	}
 
 	/**

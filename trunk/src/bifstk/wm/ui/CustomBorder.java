@@ -15,7 +15,7 @@ public class CustomBorder extends Border {
 
 	/** dimensions of the label */
 	private Rectangle bounds = null;
-
+	
 	private int top = 0;
 	private int right = 0;
 	private int bot = 0;

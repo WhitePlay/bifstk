@@ -14,9 +14,12 @@ import bifstk.wm.geom.Rectangle;
  * <p>
  * Each widget will fill a given percentage of the total available space
  * depending the specified weight upon insertion
+ * <p>
+ * This Container ignores {@link Widget#getPreferredHeight()} and
+ * {@link Widget#getPreferredWidth()} to layout its children.
  * 
  */
-public class Box extends Container {
+public class GridBox extends Container {
 
 	/**
 	 * Orientation of the widgets contained by the box: left to right if
@@ -56,7 +59,7 @@ public class Box extends Container {
 	 * 
 	 * @param orientation orientation of the box
 	 */
-	public Box(Orientation orientation) {
+	public GridBox(Orientation orientation) {
 		this(orientation, 2);
 	}
 
@@ -66,7 +69,7 @@ public class Box extends Container {
 	 * @param orientation orientation of the box
 	 * @param borderWidth pixel border between each element
 	 */
-	public Box(Orientation orientation, int borderWidth) {
+	public GridBox(Orientation orientation, int borderWidth) {
 		this.children = new ArrayList<Entry>();
 		this.borderWidth = borderWidth;
 		this.orientation = orientation;
@@ -213,14 +216,9 @@ public class Box extends Container {
 	 * @param weight weight of the new widget
 	 */
 	public void addChild(Widget w, float weight) {
-		// ensure w is not shared among 2 containers
-		Container parent = w.getParent();
-		if (parent != null) {
-			parent.removeChild(w);
-		}
-		w.setParent(this);
-
+		super.add(w);
 		this.children.add(new Entry(w, weight));
+		resize();
 	}
 
 	/**
@@ -237,6 +235,7 @@ public class Box extends Container {
 			}
 		}
 		if (torem != null) {
+			torem.widget.setParent(null);
 			this.children.remove(torem);
 			resize();
 		}
@@ -249,6 +248,9 @@ public class Box extends Container {
 
 	@Override
 	public void clearChildren() {
+		for (Entry ent : this.children) {
+			ent.widget.setParent(null);
+		}
 		this.children.clear();
 		resize();
 	}

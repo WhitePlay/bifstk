@@ -34,7 +34,9 @@ public abstract class Border extends Container {
 	 */
 	public void setContent(Widget w) {
 		super.add(w);
-		this.content.setParent(null);
+		if (this.content != null) {
+			this.content.setParent(null);
+		}
 		this.content = w;
 	}
 

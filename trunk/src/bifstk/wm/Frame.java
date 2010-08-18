@@ -383,6 +383,21 @@ public class Frame implements Drawable {
 	}
 
 	/**
+	 * Resize this frame to fit the preferred size
+	 * of its content
+	 */
+	public void pack() {
+		if (this.content != null) {
+			int w = this.content.getPreferredWidth();
+			int h = this.content.getPreferredHeight();
+			this.setBounds(w + Theme.getFrameBorderWidth() * 2,
+					h + Theme.getFrameBorderWidth() + this.getTitleBarHeight());
+		} else {
+			this.setBounds(20, 20);
+		}
+	}
+
+	/**
 	 * @return the content of the frame
 	 */
 	public Widget getContent() {

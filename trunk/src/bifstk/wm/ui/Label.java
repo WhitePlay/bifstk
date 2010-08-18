@@ -37,7 +37,7 @@ public class Label extends Widget {
 
 	@Override
 	public void render(float alpha) {
-
+		
 		int w = this.getWidth();
 		int h = this.getHeight();
 
@@ -64,6 +64,16 @@ public class Label extends Widget {
 				alpha);
 		Fonts.getNormal().drawString(lx, ly, this.text, Color.BLACK, alpha);
 
+	}
+
+	@Override
+	public int getPreferredWidth() {
+		return Fonts.getNormal().getWidth(this.text);
+	}
+
+	@Override
+	public int getPreferredHeight() {
+		return Fonts.getNormal().getHeight();
 	}
 
 	@Override

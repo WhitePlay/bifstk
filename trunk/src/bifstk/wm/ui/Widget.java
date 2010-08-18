@@ -14,7 +14,7 @@ public abstract class Widget implements Drawable {
 	private Container parent = null;
 
 	/** dimension to attain if possible */
-	private Rectangle preferredBounds = null;
+	private Rectangle preferredBounds = new Rectangle();
 
 	/**
 	 * The geometry of a Widget is handled by the frame holding it, or its

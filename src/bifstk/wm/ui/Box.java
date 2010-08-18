@@ -16,7 +16,7 @@ import bifstk.wm.geom.Rectangle;
  * depending the specified weight upon insertion
  * 
  */
-public class Box implements Container {
+public class Box extends Container {
 
 	/**
 	 * Orientation of the widgets contained by the box: left to right if
@@ -50,9 +50,6 @@ public class Box implements Container {
 
 	/** orientation of the box: vertical or horizontal */
 	private Orientation orientation;
-
-	/** Container containing this box */
-	private Container parent = null;
 
 	/**
 	 * Default constructor
@@ -205,7 +202,6 @@ public class Box implements Container {
 	 * 
 	 * @param w new widget to append to the box
 	 */
-	@Override
 	public void addChild(Widget w) {
 		addChild(w, 1.0f);
 	}
@@ -285,14 +281,4 @@ public class Box implements Container {
 		resize();
 	}
 
-	@Override
-	public void setParent(Container c) {
-		this.parent = c;
-
-	}
-
-	@Override
-	public Container getParent() {
-		return this.parent;
-	}
 }

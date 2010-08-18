@@ -1,13 +1,20 @@
 package bifstk.wm.ui;
 
 import bifstk.wm.Drawable;
+import bifstk.wm.geom.Rectangle;
 
 /**
  * Widgets are used to compose the UI held by a Frame
  * <p>
  * 
  */
-public interface Widget extends Drawable {
+public abstract class Widget implements Drawable {
+
+	/** Container containing this box, or null */
+	private Container parent = null;
+
+	/** dimension to attain if possible */
+	private Rectangle preferredBounds = null;
 
 	/**
 	 * The geometry of a Widget is handled by the frame holding it, or its
@@ -26,7 +33,7 @@ public interface Widget extends Drawable {
 	 * 
 	 * @param w new width in pixels for this Widget
 	 */
-	public void setWidth(int w);
+	public abstract void setWidth(int w);
 
 	/**
 	 * The geometry of a Widget is handled by the frame holding it, or its
@@ -45,7 +52,7 @@ public interface Widget extends Drawable {
 	 * 
 	 * @param h new height in pixels for this Widget
 	 */
-	public void setHeight(int h);
+	public abstract void setHeight(int h);
 
 	/**
 	 * The geometry of a Widget is handled by the frame holding it, or its
@@ -65,17 +72,71 @@ public interface Widget extends Drawable {
 	 * @param w new width in pixels for this Widget
 	 * @param h new height in pixels for this Widget
 	 */
-	public void setBounds(int w, int h);
+	public abstract void setBounds(int w, int h);
 
 	/**
 	 * @return the current width in pixels of this Widget
 	 */
-	public int getWidth();
+	public abstract int getWidth();
 
 	/**
 	 * @return the current height in pixels of this Widget
 	 */
-	public int getHeight();
+	public abstract int getHeight();
+
+	/**
+	 * Request for a preferred width for this Widget
+	 * <p>
+	 * This Widget's container will try its best to satisfy this request, but
+	 * there is no guarantee that the actual size (see {@link #getWidth()} will
+	 * be the one specified here
+	 * 
+	 * @param w the preferred width for this widget
+	 */
+	public void setPreferredWidth(int w) {
+		this.preferredBounds.setWidth(w);
+	}
+
+	/**
+	 * Request for a preferred height for this Widget
+	 * <p>
+	 * This Widget's container will try its best to satisfy this request, but
+	 * there is no guarantee that the actual size (see {@link #getHeight()} will
+	 * be the one specified here
+	 * 
+	 * @param h the preferred height for this widget
+	 */
+	public void setPreferredHeight(int h) {
+		this.preferredBounds.setHeight(h);
+	}
+
+	/**
+	 * Request for a preferred size for this Widget
+	 * <p>
+	 * This Widget's container will try its best to satisfy this request, but
+	 * there is no guarantee that the actual size (see {@link #getWidth()},
+	 * {@link #getHeight()}) will be the one specified here
+	 * 
+	 * @param w the preferred width for this widget
+	 * @param h the preferred height for this widget
+	 */
+	public void setPreferredBounds(int w, int h) {
+		this.preferredBounds.setBounds(w, h);
+	}
+
+	/**
+	 * @return the preferred width for this widget
+	 */
+	public int getPreferredWidth() {
+		return this.preferredBounds.getWidth();
+	}
+
+	/**
+	 * @return the preferred height for this widget
+	 */
+	public int getPreferredHeight() {
+		return this.preferredBounds.getHeight();
+	}
 
 	/**
 	 * Widgets can be put in containers, which have to maintain a Widget ->
@@ -84,7 +145,9 @@ public interface Widget extends Drawable {
 	 * 
 	 * @param c the Container containing this widget
 	 */
-	public void setParent(Container c);
+	public void setParent(Container c) {
+		this.parent = c;
+	}
 
 	/**
 	 * Widgets can be put in containers, which have to maintain a Widget ->
@@ -93,6 +156,7 @@ public interface Widget extends Drawable {
 	 * 
 	 * @return the Container containing this widget, or null
 	 */
-	public Container getParent();
-
+	public Container getParent() {
+		return this.parent;
+	}
 }

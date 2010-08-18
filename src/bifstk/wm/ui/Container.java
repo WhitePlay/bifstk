@@ -33,6 +33,9 @@ public abstract class Container extends Widget {
 	 * @param w Widget to make unique among Container
 	 */
 	public void add(Widget w) {
+		if (w == null) {
+			return;
+		}
 		Container parent = w.getParent();
 		if (parent != null) {
 			parent.removeChild(w);

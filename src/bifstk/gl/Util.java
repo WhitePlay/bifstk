@@ -165,7 +165,9 @@ public class Util {
 	 * This is useful since glScissor does not into take account the current
 	 * MODELVIEW transformations and uses absolute screen coordinates which can
 	 * be unknown in some contexts
-	 * 
+	 * <p>
+	 * The new scissor box can be clamped so that it is contained in the
+	 * previous one
 	 * 
 	 * @param ax value to add to the current scissor abscissa value
 	 * @param ay value to add to the current scissor ordinate value, in absolute
@@ -178,6 +180,11 @@ public class Util {
 		GL11.glGetInteger(GL11.GL_SCISSOR_BOX, buf);
 		int bx = buf.get(), by = buf.get();
 		int bw = buf.get(), bh = buf.get();
+
+		ax = Math.min(ax, bw);
+		ay = Math.min(ay, bh);
+		w = Math.min(w, bw - ax);
+		h = Math.min(h, bh - ay);
 
 		Coord sci = new Coord(bx, by, bw, bh);
 		scissors.push(sci);

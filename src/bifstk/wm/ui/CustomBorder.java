@@ -169,6 +169,24 @@ public class CustomBorder extends Border {
 	}
 
 	@Override
+	public int getPreferredWidth() {
+		int cw = 0;
+		if (this.getContent() != null) {
+			cw = this.getContent().getPreferredWidth();
+		}
+		return this.left + this.right + cw;
+	}
+
+	@Override
+	public int getPreferredHeight() {
+		int ch = 0;
+		if (this.getContent() != null) {
+			ch = this.getContent().getPreferredHeight();
+		}
+		return this.top + this.bot + ch;
+	}
+
+	@Override
 	public int getWidth() {
 		return this.bounds.getWidth();
 	}

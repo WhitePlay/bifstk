@@ -33,18 +33,15 @@ public abstract class Border extends Container {
 	 * @param w the Widget contained by this border
 	 */
 	public void setContent(Widget w) {
-		Container parent = w.getParent();
-		if (parent != null) {
-			parent.removeChild(w);
-		}
-		w.setParent(this);
-
+		super.add(w);
+		this.content.setParent(null);
 		this.content = w;
 	}
 
 	@Override
 	public void removeChild(Widget w) {
 		if (this.content != null && this.content.equals(w)) {
+			this.content.setParent(null);
 			this.content = null;
 		}
 	}
@@ -56,6 +53,7 @@ public abstract class Border extends Container {
 
 	@Override
 	public void clearChildren() {
+		this.content.setParent(null);
 		this.content = null;
 	}
 

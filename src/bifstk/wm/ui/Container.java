@@ -2,6 +2,9 @@ package bifstk.wm.ui;
 
 /**
  * Contains multiple widgets and organizes their layout
+ * <p>
+ * Upon insertion, a Container should ensure that a Widget is not contained in
+ * multiple Container, using {@link #add(Widget)}
  * 
  */
 public abstract class Container extends Widget {
@@ -22,5 +25,19 @@ public abstract class Container extends Widget {
 	 * Remove all widgets contained
 	 */
 	public abstract void clearChildren();
+
+	/**
+	 * Should be called by all Container upon insertion of a new widget to
+	 * ensure a Widget is not shared among several Container
+	 * 
+	 * @param w Widget to make unique among Container
+	 */
+	public void add(Widget w) {
+		Container parent = w.getParent();
+		if (parent != null) {
+			parent.removeChild(w);
+		}
+		w.setParent(this);
+	}
 
 }

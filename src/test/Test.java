@@ -7,8 +7,8 @@ import bifstk.BifstkException;
 import bifstk.Handler;
 import bifstk.Root;
 import bifstk.wm.Frame;
-import bifstk.wm.ui.Box;
-import bifstk.wm.ui.Box.Orientation;
+import bifstk.wm.ui.GridBox;
+import bifstk.wm.ui.GridBox.Orientation;
 import bifstk.wm.ui.Label;
 
 public class Test implements Handler, Root {
@@ -35,8 +35,8 @@ public class Test implements Handler, Root {
 			if (Keyboard.getEventKeyState()) {
 				final Frame f = new Frame(50, 50);
 
-				Box b1 = new Box(Orientation.VERTICAL);
-				Box b2 = new Box(Orientation.HORIZONTAL);
+				GridBox b1 = new GridBox(Orientation.VERTICAL);
+				GridBox b2 = new GridBox(Orientation.HORIZONTAL);
 
 				b1.addChild(new Label("This is"));
 

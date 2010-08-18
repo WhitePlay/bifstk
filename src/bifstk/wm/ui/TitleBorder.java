@@ -112,27 +112,33 @@ public class TitleBorder extends Border {
 
 	@Override
 	public void setWidth(int w) {
-		this.bounds.setWidth(w);
-		if (this.getContent() != null) {
-			this.getContent().setWidth(w - this.border * 2);
+		if (this.bounds.getWidth() != w) {
+			this.bounds.setWidth(w);
+			if (this.getContent() != null) {
+				this.getContent().setWidth(w - this.border * 2);
+			}
 		}
 	}
 
 	@Override
 	public void setHeight(int h) {
-		this.bounds.setHeight(h);
-		if (this.getContent() != null) {
-			this.getContent().setHeight(
-					h - this.border - Fonts.getNormal().getHeight());
+		if (this.bounds.getHeight() != h) {
+			this.bounds.setHeight(h);
+			if (this.getContent() != null) {
+				this.getContent().setHeight(
+						h - this.border - Fonts.getNormal().getHeight());
+			}
 		}
 	}
 
 	@Override
 	public void setBounds(int w, int h) {
-		this.bounds.setBounds(w, h);
-		if (this.getContent() != null) {
-			this.getContent().setBounds(w - this.border * 2,
-					h - this.border - Fonts.getNormal().getHeight());
+		if (this.bounds.getWidth() != w || this.bounds.getHeight() != h) {
+			this.bounds.setBounds(w, h);
+			if (this.getContent() != null) {
+				this.getContent().setBounds(w - this.border * 2,
+						h - this.border - Fonts.getNormal().getHeight());
+			}
 		}
 	}
 

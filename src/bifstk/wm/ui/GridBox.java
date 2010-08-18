@@ -257,8 +257,10 @@ public class GridBox extends Container {
 
 	@Override
 	public void setWidth(int w) {
-		this.bounds.setWidth(w);
-		resize();
+		if (this.bounds.getWidth() != w) {
+			this.bounds.setWidth(w);
+			resize();
+		}
 	}
 
 	@Override
@@ -268,8 +270,10 @@ public class GridBox extends Container {
 
 	@Override
 	public void setHeight(int h) {
-		this.bounds.setHeight(h);
-		resize();
+		if (this.bounds.getHeight() != h) {
+			this.bounds.setHeight(h);
+			resize();
+		}
 	}
 
 	@Override
@@ -279,8 +283,10 @@ public class GridBox extends Container {
 
 	@Override
 	public void setBounds(int w, int h) {
-		this.bounds.setBounds(w, h);
-		resize();
+		if (this.bounds.getWidth() != w || this.bounds.getHeight() != h) {
+			this.bounds.setBounds(w, h);
+			resize();
+		}
 	}
 
 }

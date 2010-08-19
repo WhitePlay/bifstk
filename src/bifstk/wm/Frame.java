@@ -161,12 +161,11 @@ public class Frame implements Drawable {
 			GL11.glTranslatef(x + borderWidth,
 					y + titlebarHeight + borderWidth, 0);
 			GL11.glEnable(GL11.GL_SCISSOR_TEST);
-			GL11.glScissor(x + borderWidth, Display.getDisplayMode()
+			Util.pushScissor(x + borderWidth, Display.getDisplayMode()
 					.getHeight() - (y + h) + borderWidth, w - 2 * borderWidth,
 					h - 2 * borderWidth - titlebarHeight);
-
 			this.content.render(alpha);
-
+			Util.popScissor();
 			GL11.glDisable(GL11.GL_SCISSOR_TEST);
 			GL11.glPopMatrix();
 		}
@@ -383,8 +382,7 @@ public class Frame implements Drawable {
 	}
 
 	/**
-	 * Resize this frame to fit the preferred size
-	 * of its content
+	 * Resize this frame to fit the preferred size of its content
 	 */
 	public void pack() {
 		if (this.content != null) {

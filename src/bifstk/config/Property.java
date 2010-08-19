@@ -67,7 +67,9 @@ public enum Property {
 	// //// Window manager
 	// ///////////////////////////
 	/** true if frame focus follows the mouse or if click is required */
-	wmFocuseFollowmouse("wm.focus.followmouse");
+	wmFocuseFollowmouse("wm.focus.followmouse"),
+	/** displays some visual debug info in the UI layout when true */
+	wmDebugLayout("wm.debug.layout");
 
 	private String property = null;
 

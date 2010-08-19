@@ -38,11 +38,11 @@ public class Test implements Handler, Root {
 			if (Keyboard.getEventKeyState()) {
 				final Frame f = new Frame(50, 50);
 
-				FlowBox b1 = new FlowBox(Orientation.HORIZONTAL);
+				FlowBox b1 = new FlowBox(Orientation.VERTICAL);
 
 				Widget w1 = new Label("wéééééé1");
 				Widget wc = new Label("center");
-				Widget w2 = new Label("w2");
+				Widget w2 = new Label("w2 could be longer for testing purposes");
 
 				b1.addBefore(new CustomBorder(w1, 30, Color.GRAY));
 				b1.setExpand(new CustomBorder(wc, 10, Color.GREEN));

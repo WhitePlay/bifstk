@@ -167,7 +167,10 @@ public class FlowBox extends Container {
 			wiz.addAll(this.rightChildren);
 
 			for (Widget widg : wiz) {
-				if (acc > w) {
+				if (this.orientation.equals(Orientation.HORIZONTAL) && acc > w) {
+					break;
+				} else if (this.orientation.equals(Orientation.HORIZONTAL)
+						&& acc > h) {
 					break;
 				}
 				GL11.glPushMatrix();
@@ -178,30 +181,36 @@ public class FlowBox extends Container {
 				} else {
 					GL11.glTranslatef(0, acc, 0);
 					Util.pushScissor(0, h - acc - widg.getHeight(),
-							Math.min(widg.getWidth(), w - acc),
-							widg.getHeight());
+							widg.getWidth(), widg.getHeight());
 				}
 				widg.render(alpha);
 				Util.popScissor();
 				GL11.glPopMatrix();
-				if (widg.getHeight() < h) {
-					Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
-					GL11.glBegin(GL11.GL_QUADS);
-					if (this.orientation.equals(Orientation.HORIZONTAL)) {
+				Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
+				GL11.glBegin(GL11.GL_QUADS);
+				if (this.orientation.equals(Orientation.HORIZONTAL)) {
+					if (widg.getHeight() < h) {
 						GL11.glVertex2i(acc, widg.getHeight());
 						GL11.glVertex2i(acc + widg.getWidth(), widg.getHeight());
 						GL11.glVertex2i(acc + widg.getWidth(), h);
 						GL11.glVertex2i(acc, h);
-					} else {
+					}
+				} else {
+					if (widg.getWidth() < w) {
 						GL11.glVertex2i(widg.getWidth(), acc);
 						GL11.glVertex2i(w, acc);
 						GL11.glVertex2i(w, acc + widg.getHeight());
 						GL11.glVertex2i(widg.getWidth(), acc + widg.getHeight());
 					}
-					GL11.glEnd();
-				}
 
-				acc += widg.getWidth();
+				}
+				GL11.glEnd();
+
+				if (this.orientation.equals(Orientation.HORIZONTAL)) {
+					acc += widg.getWidth();
+				} else {
+					acc += widg.getHeight();
+				}
 			}
 
 		}
@@ -333,7 +342,7 @@ public class FlowBox extends Container {
 			if (this.orientation.equals(Orientation.HORIZONTAL)) {
 				cw += w.getPreferredWidth();
 			} else {
-				cw = Math.max(cw, expandChild.getPreferredWidth());
+				cw = Math.max(cw, w.getPreferredWidth());
 			}
 		}
 		return cw;

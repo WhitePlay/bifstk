@@ -10,8 +10,7 @@ import bifstk.gl.Color;
 import bifstk.wm.Frame;
 import bifstk.wm.ui.CustomBorder;
 import bifstk.wm.ui.FlowBox;
-import bifstk.wm.ui.GridBox;
-import bifstk.wm.ui.GridBox.Orientation;
+import bifstk.wm.ui.FlowBox.Orientation;
 import bifstk.wm.ui.Label;
 import bifstk.wm.ui.Widget;
 
@@ -39,34 +38,22 @@ public class Test implements Handler, Root {
 			if (Keyboard.getEventKeyState()) {
 				final Frame f = new Frame(50, 50);
 
-				FlowBox b1 = new FlowBox();
+				FlowBox b1 = new FlowBox(Orientation.HORIZONTAL);
 
 				Widget w1 = new Label("wéééééé1");
 				Widget wc = new Label("center");
 				Widget w2 = new Label("w2");
 
-				b1.addLeft(new CustomBorder(w1, 3, Color.RED));
-				b1.setExpand(new CustomBorder(wc, 3, Color.GREEN));
-				b1.addRight(new CustomBorder(w2, 3, Color.BLUE));
+				b1.addBefore(new CustomBorder(w1, 30, Color.GRAY));
+				b1.setExpand(new CustomBorder(wc, 10, Color.GREEN));
+				b1.addAfter(new CustomBorder(w2, 30, Color.BLUE));
 
 				f.setContent(b1);
 
-				final Frame f2 = new Frame(200, 200);
-
-				GridBox b2 = new GridBox(Orientation.HORIZONTAL);
-				GridBox b3 = new GridBox(Orientation.VERTICAL);
-				b2.addChild(new CustomBorder(new Label("foo"), 3, Color.RED));
-				b3.addChild(new Label("lol"));
-				b3.addChild(new CustomBorder(new Label("dongs"), 1, Color.GREEN));
-				b2.addChild(b3);
-				f2.setContent(b2);
-
 				f.pack();
-				f2.pack();
 
 				try {
 					Bifstk.addFrame(f);
-					Bifstk.addFrame(f2);
 				} catch (BifstkException e) {
 					e.printStackTrace();
 				}

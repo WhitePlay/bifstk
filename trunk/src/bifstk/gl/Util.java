@@ -1,10 +1,12 @@
 package bifstk.gl;
 
-import java.nio.IntBuffer;
 import java.util.LinkedList;
 
-import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
+
+import bifstk.config.Config;
+import bifstk.config.Property;
 
 /**
  * Misc GL utilities
@@ -141,8 +143,8 @@ public class Util {
 	 * Used for scissor boxes
 	 */
 	private static class Coord {
-		public int x;
-		public int y;
+		public int x, cx = 0;
+		public int y, cy = 0;
 		public int w;
 		public int h;
 
@@ -176,21 +178,68 @@ public class Util {
 	 * @param h new scissor box height
 	 */
 	public static void pushScissor(int ax, int ay, int w, int h) {
-		IntBuffer buf = BufferUtils.createIntBuffer(16);
-		GL11.glGetInteger(GL11.GL_SCISSOR_BOX, buf);
-		int bx = buf.get(), by = buf.get();
-		int bw = buf.get(), bh = buf.get();
+		int bx = 0;
+		int by = 0;
+		int bw = Display.getDisplayMode().getWidth();
+		int bh = Display.getDisplayMode().getHeight();
 
-		ax = Math.min(ax, bw);
-		ay = Math.min(ay, bh);
-		w = Math.min(w, bw - ax);
-		h = Math.min(h, bh - ay);
+		if (scissors.size() > 0) {
+			Coord last = scissors.getFirst();
+			bx = last.x;
+			by = last.y;
+			bw = last.w;
+			bh = last.h;
 
-		Coord sci = new Coord(bx, by, bw, bh);
+			if (ay < (-last.cy)) {
+				h += (ay + last.cy);
+			}
+			ay += last.cy;
+
+			if (ax < (-last.cx)) {
+				h += (ax + last.cx);
+			}
+			ax += last.cx;
+
+		}
+
+		int nx = clamp(ax, 0, bw);
+		int ny = clamp(ay, 0, bh);
+		int nw = clamp(w, 0, bw - nx);
+		int nh = clamp(h, 0, bh - ny);
+
+		Coord sci = new Coord(bx + nx, by + ny, nw, nh);
 		scissors.push(sci);
 
-		GL11.glScissor(bx + ax, by + ay, w, h);
+		sci.cx = ax - nx;
+		sci.cy = ay - ny;
 
+		if (new Boolean(Config.getValue(Property.wmDebugLayout))) {
+			int dh = Display.getDisplayMode().getHeight();
+			GL11.glDisable(GL11.GL_SCISSOR_TEST);
+			GL11.glPushMatrix();
+			GL11.glLoadIdentity();
+			GL11.glBegin(GL11.GL_LINE_LOOP);
+			bifstk.gl.Color.RED.use();
+			GL11.glVertex2i(sci.x, dh - sci.y - sci.h);
+			GL11.glVertex2i(sci.x + sci.w, dh - sci.y - sci.h);
+			GL11.glVertex2i(sci.x + sci.w, dh - sci.y);
+			GL11.glVertex2i(sci.x, dh - sci.y);
+			GL11.glEnd();
+			GL11.glPopMatrix();
+			GL11.glEnable(GL11.GL_SCISSOR_TEST);
+		}
+
+		GL11.glScissor(sci.x, sci.y, sci.w, sci.h);
+
+	}
+
+	private static int clamp(int val, int min, int max) {
+		if (val < min)
+			return min;
+		else if (val > max)
+			return max;
+		else
+			return val;
 	}
 
 	/**
@@ -198,8 +247,15 @@ public class Util {
 	 * {@link #pushScissor(int, int, int, int)} was called
 	 */
 	public static void popScissor() {
-		Coord sci = scissors.pop();
-		GL11.glScissor(sci.x, sci.y, sci.w, sci.h);
+		scissors.pop();
+		if (scissors.size() > 0) {
+			Coord sci = scissors.getFirst();
+			GL11.glScissor(sci.x, sci.y, sci.w, sci.h);
+		} else {
+			GL11.glScissor(0, 0, Display.getDisplayMode().getWidth(), Display
+					.getDisplayMode().getHeight());
+		}
+
 	}
 
 }

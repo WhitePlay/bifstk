@@ -37,7 +37,7 @@ public class Label extends Widget {
 
 	@Override
 	public void render(float alpha) {
-		
+
 		int w = this.getWidth();
 		int h = this.getHeight();
 

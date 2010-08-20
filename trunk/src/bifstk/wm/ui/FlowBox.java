@@ -65,6 +65,8 @@ public class FlowBox extends Container {
 	/** width of the border between each element */
 	private int borderWidth = 2;
 
+	private Widget widgetHover = null;
+
 	/**
 	 * Default constructor
 	 */
@@ -412,6 +414,71 @@ public class FlowBox extends Container {
 	 */
 	public int getBorderWidth() {
 		return this.borderWidth;
+	}
+
+	@Override
+	public void mouseHover(int x, int y) {
+		int acc = 0;
+		for (Widget wid : this.leftChildren) {
+			acc = _mouseHover(wid, acc, x, y);
+			if (acc < 0)
+				return;
+		}
+
+		acc += this.ew;
+		if (this.expandChild != null) {
+			acc = _mouseHover(expandChild, acc, x, y);
+			if (acc < 0)
+				return;
+		}
+
+		for (Widget wid : this.rightChildren) {
+			acc = _mouseHover(wid, acc, x, y);
+			if (acc < 0)
+				return;
+		}
+		if (widgetHover != null) {
+			this.widgetHover.mouseOut();
+			widgetHover = null;
+		}
+	}
+
+	/**
+	 * Internal mouseHover
+	 */
+	private int _mouseHover(Widget wid, int acc, int x, int y) {
+		if (this.orientation.equals(Orientation.HORIZONTAL)) {
+			if (acc < x && x < acc + wid.getWidth() && x < this.getWidth()
+					&& 0 < y && y < wid.getHeight() && y < this.getHeight()) {
+				wid.mouseHover(x - acc, y);
+				if (widgetHover != null && !widgetHover.equals(wid)) {
+					widgetHover.mouseOut();
+				}
+				widgetHover = wid;
+				return -1;
+			}
+			acc += wid.getWidth();
+		} else {
+			if (0 < x && x < wid.getWidth() && x < this.getWidth() && acc < y
+					&& y < acc + wid.getHeight() && y < this.getHeight()) {
+				wid.mouseHover(x, y - acc);
+				if (widgetHover != null && !widgetHover.equals(wid)) {
+					widgetHover.mouseOut();
+				}
+				widgetHover = wid;
+				return -1;
+			}
+			acc += wid.getHeight();
+		}
+		return acc;
+	}
+
+	@Override
+	public void mouseOut() {
+		if (this.widgetHover != null) {
+			this.widgetHover.mouseOut();
+			this.widgetHover = null;
+		}
 	}
 
 }

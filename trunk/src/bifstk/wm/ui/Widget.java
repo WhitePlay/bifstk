@@ -1,5 +1,6 @@
 package bifstk.wm.ui;
 
+import bifstk.wm.Clickable;
 import bifstk.wm.Drawable;
 import bifstk.wm.geom.Rectangle;
 
@@ -8,7 +9,7 @@ import bifstk.wm.geom.Rectangle;
  * <p>
  * 
  */
-public abstract class Widget implements Drawable {
+public abstract class Widget implements Drawable, Clickable {
 
 	/** Container containing this box, or null */
 	private Container parent = null;

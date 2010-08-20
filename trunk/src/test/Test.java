@@ -7,6 +7,7 @@ import bifstk.BifstkException;
 import bifstk.Handler;
 import bifstk.Root;
 import bifstk.wm.Frame;
+import bifstk.wm.ui.Button;
 import bifstk.wm.ui.FlowBox;
 import bifstk.wm.ui.FlowBox.Orientation;
 import bifstk.wm.ui.Label;
@@ -35,38 +36,19 @@ public class Test implements Handler, Root {
 			if (Keyboard.getEventKeyState()) {
 				final Frame f = new Frame(50, 50);
 
-				FlowBox b1 = new FlowBox(Orientation.HORIZONTAL);
+				FlowBox b1 = new FlowBox(Orientation.VERTICAL);
 
-				FlowBox top = new FlowBox(Orientation.VERTICAL);
-				top.addBefore(new Label("File"));
-				top.addBefore(new Label("Edit"));
-				top.addBefore(new Label("Help"));
-				top.addAfter(new Label("~"));
+				FlowBox b2 = new FlowBox(Orientation.HORIZONTAL);
+				b2.addBefore(new Label("Foo"));
+				b2.addAfter(new Button("Bar"));
 
-				FlowBox tools = new FlowBox(Orientation.VERTICAL);
-				tools.addBefore(new Label("1"));
-				tools.addBefore(new Label("2"));
-				tools.addBefore(new Label("3"));
-				tools.addBefore(new Label("4"));
+				FlowBox b3 = new FlowBox(Orientation.HORIZONTAL);
+				b3.addBefore(new Label("Baz"));
+				b3.addAfter(new Button("Gee"));
 
-				FlowBox status = new FlowBox(Orientation.VERTICAL);
-				status.addBefore(new Label("Ready"));
-				status.addAfter(new Label(":)"));
+				b1.addBefore(b2);
+				b1.addAfter(b3);
 
-				b1.addBefore(top);
-				b1.addBefore(tools);
-				b1.addAfter(status);
-
-				/*
-				 * 
-				 * Widget w1 = new Label("wéééééé1"); Widget wc = new
-				 * Label("center"); Widget w2 = new
-				 * Label("w2 could be longer for testing purposes");
-				 * 
-				 * b1.addBefore(new CustomBorder(w1, 30, Color.GRAY));
-				 * b1.setExpand(new CustomBorder(wc, 10, Color.GREEN));
-				 * b1.addAfter(new CustomBorder(w2, 30, Color.BLUE));
-				 */
 				f.setContent(b1);
 
 				f.pack();

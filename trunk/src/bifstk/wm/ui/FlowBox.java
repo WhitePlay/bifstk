@@ -88,52 +88,65 @@ public class FlowBox extends Container {
 
 	// true if expandChild has room to be rendered
 	private boolean drawExpanded = false;
+	private int ew = 0;
 
 	/**
 	 * Called when the geometry of the box has changed: need to subsequently
 	 * resize children widgets
 	 */
 	private void resize() {
+		int w = this.getWidth();
+		int h = this.getHeight();
+		ew = 0;
 		int tacc = 0;
 
-		for (Widget w : this.leftChildren) {
+		for (Widget widg : this.leftChildren) {
+			int nw, nh;
 			if (this.orientation.equals(Orientation.HORIZONTAL)) {
-				tacc += w.getPreferredWidth();
+				nw = Util.clamp(widg.getPreferredWidth(), 0, w - tacc);
+				nh = Util.clamp(widg.getPreferredHeight(), 0, h);
+				tacc += nw;
 			} else {
-				tacc += w.getPreferredHeight();
+				nw = Util.clamp(widg.getPreferredWidth(), 0, w);
+				nh = Util.clamp(widg.getPreferredHeight(), 0, h - tacc);
+				tacc += nh;
 			}
-			w.setBounds(w.getPreferredWidth(), w.getPreferredHeight());
+			widg.setBounds(nw, nh);
 		}
 
-		for (Widget w : this.rightChildren) {
+		for (Widget widg : this.rightChildren) {
+			int nw, nh;
 			if (this.orientation.equals(Orientation.HORIZONTAL)) {
-				tacc += w.getPreferredWidth();
+				nw = Util.clamp(widg.getPreferredWidth(), 0, w - tacc);
+				nh = Util.clamp(widg.getPreferredHeight(), 0, h);
+				tacc += nw;
 			} else {
-				tacc += w.getPreferredHeight();
+				nw = Util.clamp(widg.getPreferredWidth(), 0, w);
+				nh = Util.clamp(widg.getPreferredHeight(), 0, h - tacc);
+				tacc += nh;
 			}
-			w.setBounds(w.getPreferredWidth(), w.getPreferredHeight());
+			widg.setBounds(nw, nh);
 		}
 
-		int ea = 0;
 		if (this.orientation.equals(Orientation.HORIZONTAL)) {
-			ea = this.getWidth() - tacc;
+			ew = Math.max(0, w - tacc);
 		} else {
-			ea = this.getHeight() - tacc;
+			ew = Math.max(0, h - tacc);
 		}
-		if (this.expandChild != null && ea > 0) {
+		if (this.expandChild != null && ew > 0) {
 			int exPw, exPh;
 			if (this.orientation.equals(Orientation.HORIZONTAL)) {
-				exPh = expandChild.getPreferredHeight();
+				exPh = Util.clamp(expandChild.getPreferredHeight(), 0, h);
 				if (exPh <= 0) {
-					exPh = this.getHeight();
+					exPh = h;
 				}
-				exPw = ea;
+				exPw = ew;
 			} else {
-				exPw = expandChild.getPreferredWidth();
+				exPw = Util.clamp(expandChild.getPreferredWidth(), 0, w);
 				if (exPw <= 0) {
-					exPw = this.getWidth();
+					exPw = w;
 				}
-				exPh = ea;
+				exPh = ew;
 			}
 			this.expandChild.setBounds(exPw, exPh);
 			this.drawExpanded = true;
@@ -163,53 +176,76 @@ public class FlowBox extends Container {
 			wiz.addAll(this.leftChildren);
 			if (drawExpanded && this.expandChild != null) {
 				wiz.add(this.expandChild);
+			} else {
+				wiz.add(null);
 			}
 			wiz.addAll(this.rightChildren);
 
 			for (Widget widg : wiz) {
 				if (this.orientation.equals(Orientation.HORIZONTAL) && acc > w) {
 					break;
-				} else if (this.orientation.equals(Orientation.HORIZONTAL)
+				} else if (this.orientation.equals(Orientation.VERTICAL)
 						&& acc > h) {
 					break;
 				}
-				GL11.glPushMatrix();
-				if (this.orientation.equals(Orientation.HORIZONTAL)) {
-					GL11.glTranslatef(acc, 0, 0);
-					Util.pushScissor(acc, h - widg.getHeight(),
-							widg.getWidth(), widg.getHeight());
-				} else {
-					GL11.glTranslatef(0, acc, 0);
-					Util.pushScissor(0, h - acc - widg.getHeight(),
-							widg.getWidth(), widg.getHeight());
-				}
-				widg.render(alpha);
-				Util.popScissor();
-				GL11.glPopMatrix();
-				Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
-				GL11.glBegin(GL11.GL_QUADS);
-				if (this.orientation.equals(Orientation.HORIZONTAL)) {
-					if (widg.getHeight() < h) {
-						GL11.glVertex2i(acc, widg.getHeight());
-						GL11.glVertex2i(acc + widg.getWidth(), widg.getHeight());
-						GL11.glVertex2i(acc + widg.getWidth(), h);
+				if (widg == null) {
+					Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
+					GL11.glBegin(GL11.GL_QUADS);
+					if (this.orientation.equals(Orientation.HORIZONTAL)) {
+						GL11.glVertex2i(acc, 0);
+						GL11.glVertex2i(acc + ew, 0);
+						GL11.glVertex2i(acc + ew, h);
 						GL11.glVertex2i(acc, h);
-					}
-				} else {
-					if (widg.getWidth() < w) {
-						GL11.glVertex2i(widg.getWidth(), acc);
+					} else {
+						GL11.glVertex2i(0, acc);
+						GL11.glVertex2i(0, acc + ew);
+						GL11.glVertex2i(w, acc + ew);
 						GL11.glVertex2i(w, acc);
-						GL11.glVertex2i(w, acc + widg.getHeight());
-						GL11.glVertex2i(widg.getWidth(), acc + widg.getHeight());
 					}
+					GL11.glEnd();
 
-				}
-				GL11.glEnd();
-
-				if (this.orientation.equals(Orientation.HORIZONTAL)) {
-					acc += widg.getWidth();
+					acc += ew;
 				} else {
-					acc += widg.getHeight();
+					GL11.glPushMatrix();
+					if (this.orientation.equals(Orientation.HORIZONTAL)) {
+						GL11.glTranslatef(acc, 0, 0);
+						Util.pushScissor(acc, h - widg.getHeight(),
+								widg.getWidth(), widg.getHeight());
+					} else {
+						GL11.glTranslatef(0, acc, 0);
+						Util.pushScissor(0, h - acc - widg.getHeight(),
+								widg.getWidth(), widg.getHeight());
+					}
+					widg.render(alpha);
+					Util.popScissor();
+					GL11.glPopMatrix();
+					Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
+					GL11.glBegin(GL11.GL_QUADS);
+					if (this.orientation.equals(Orientation.HORIZONTAL)) {
+						if (widg.getHeight() < h) {
+							GL11.glVertex2i(acc, widg.getHeight());
+							GL11.glVertex2i(acc + widg.getWidth(),
+									widg.getHeight());
+							GL11.glVertex2i(acc + widg.getWidth(), h);
+							GL11.glVertex2i(acc, h);
+						}
+					} else {
+						if (widg.getWidth() < w) {
+							GL11.glVertex2i(widg.getWidth(), acc);
+							GL11.glVertex2i(w, acc);
+							GL11.glVertex2i(w, acc + widg.getHeight());
+							GL11.glVertex2i(widg.getWidth(),
+									acc + widg.getHeight());
+						}
+
+					}
+					GL11.glEnd();
+
+					if (this.orientation.equals(Orientation.HORIZONTAL)) {
+						acc += widg.getWidth();
+					} else {
+						acc += widg.getHeight();
+					}
 				}
 			}
 
@@ -223,6 +259,9 @@ public class FlowBox extends Container {
 	 * @param w new widget to append to the left or top flow
 	 */
 	public void addBefore(Widget w) {
+		if (w == null) {
+			return;
+		}
 		super.add(w);
 		this.leftChildren.add(w);
 		resize();
@@ -235,6 +274,9 @@ public class FlowBox extends Container {
 	 * @param w new widget to append to the right or bottom flow
 	 */
 	public void addAfter(Widget w) {
+		if (w == null) {
+			return;
+		}
 		super.add(w);
 		this.rightChildren.add(w);
 		resize();
@@ -242,7 +284,7 @@ public class FlowBox extends Container {
 
 	/**
 	 * @param w the Widget to put in expand mode between the left/top and
-	 *            right/bottom flow
+	 *            right/bottom flow; can be null
 	 */
 	public void setExpand(Widget w) {
 		super.add(w);
@@ -322,55 +364,38 @@ public class FlowBox extends Container {
 
 	@Override
 	public int getPreferredWidth() {
+		if (this.orientation.equals(Orientation.HORIZONTAL)) {
+			return Integer.MAX_VALUE;
+		}
 
 		int cw = 0;
 		for (Widget w : this.leftChildren) {
-			if (this.orientation.equals(Orientation.HORIZONTAL)) {
-				cw += w.getPreferredWidth();
-			} else {
-				cw = Math.max(cw, w.getPreferredWidth());
-			}
+			cw = Math.max(cw, w.getPreferredWidth());
 		}
 		if (this.expandChild != null) {
-			if (this.orientation.equals(Orientation.HORIZONTAL)) {
-				cw += this.expandChild.getPreferredWidth();
-			} else {
-				cw = Math.max(cw, expandChild.getPreferredWidth());
-			}
+			cw += this.expandChild.getPreferredWidth();
 		}
 		for (Widget w : this.rightChildren) {
-			if (this.orientation.equals(Orientation.HORIZONTAL)) {
-				cw += w.getPreferredWidth();
-			} else {
-				cw = Math.max(cw, w.getPreferredWidth());
-			}
+			cw = Math.max(cw, w.getPreferredWidth());
 		}
 		return cw;
 	}
 
 	@Override
 	public int getPreferredHeight() {
+		if (this.orientation.equals(Orientation.VERTICAL)) {
+			return Integer.MAX_VALUE;
+		}
+
 		int mh = 0;
 		for (Widget w : this.leftChildren) {
-			if (this.orientation.equals(Orientation.HORIZONTAL)) {
-				mh = Math.max(mh, w.getPreferredHeight());
-			} else {
-				mh += w.getPreferredHeight();
-			}
+			mh = Math.max(mh, w.getPreferredHeight());
 		}
 		if (this.expandChild != null) {
-			if (this.orientation.equals(Orientation.HORIZONTAL)) {
-				mh = Math.max(mh, this.expandChild.getPreferredHeight());
-			} else {
-				mh += expandChild.getPreferredHeight();
-			}
+			mh = Math.max(mh, this.expandChild.getPreferredHeight());
 		}
 		for (Widget w : this.rightChildren) {
-			if (this.orientation.equals(Orientation.HORIZONTAL)) {
-				mh = Math.max(mh, w.getPreferredHeight());
-			} else {
-				mh += w.getPreferredHeight();
-			}
+			mh = Math.max(mh, w.getPreferredHeight());
 		}
 		return mh;
 	}

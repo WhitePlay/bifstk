@@ -233,7 +233,7 @@ public class Util {
 
 	}
 
-	private static int clamp(int val, int min, int max) {
+	public static int clamp(int val, int min, int max) {
 		if (val < min)
 			return min;
 		else if (val > max)

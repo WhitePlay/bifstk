@@ -374,7 +374,7 @@ public class FlowBox extends Container {
 	@Override
 	public int getPreferredWidth() {
 		if (this.orientation.equals(Orientation.HORIZONTAL)) {
-			return Integer.MAX_VALUE;
+			return Integer.MAX_VALUE / 2;
 		}
 
 		int cw = 0;
@@ -393,7 +393,7 @@ public class FlowBox extends Container {
 	@Override
 	public int getPreferredHeight() {
 		if (this.orientation.equals(Orientation.VERTICAL)) {
-			return Integer.MAX_VALUE;
+			return Integer.MAX_VALUE / 2;
 		}
 
 		int mh = 0;

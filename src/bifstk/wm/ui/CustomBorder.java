@@ -203,12 +203,14 @@ public class CustomBorder extends Border {
 
 	@Override
 	public void mouseHover(int x, int y) {
-		if (left < x && x < left + right + this.getWidth() && top < y
-				&& y < top + bot + this.getHeight()) {
+		if (left < x && x < this.getWidth() - right && top < y
+				&& y < this.getHeight() - bot) {
 			if (this.getContent() != null) {
 				this.getContent().mouseHover(x - left, y - top);
 				this.mouseHoverContent = true;
 			}
+		} else {
+			mouseOut();
 		}
 	}
 

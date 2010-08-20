@@ -157,14 +157,6 @@ public class Logic {
 		if (this.leftMouse.hoverFrame != null) {
 			this.leftMouse.hoverRegion = this.leftMouse.hoverFrame.getRegion(
 					mx, my);
-			this.leftMouse.hoverFrame.mouseHover(
-					mx - this.leftMouse.hoverFrame.getX(), my
-							- this.leftMouse.hoverFrame.getY());
-			if (this.leftMouse.lastHoverFrame != null
-					&& !this.leftMouse.lastHoverFrame
-							.equals(this.leftMouse.hoverFrame)) {
-				this.leftMouse.lastHoverFrame.mouseOut();
-			}
 		}
 
 		// for each mouse event since last call
@@ -186,12 +178,6 @@ public class Logic {
 					this.leftMouse.clickY = my;
 					this.leftMouse.clickedFrame = this.leftMouse.hoverFrame;
 					this.leftMouse.clickedRegion = this.leftMouse.hoverRegion;
-					if (this.leftMouse.clickedFrame != null) {
-						this.leftMouse.clickWidth = this.leftMouse.clickedFrame
-								.getWidth();
-						this.leftMouse.clickHeight = this.leftMouse.clickedFrame
-								.getHeight();
-					}
 				}
 				break;
 			// right
@@ -238,12 +224,25 @@ public class Logic {
 	private void applyMouse() {
 		boolean focusFollowMouse = new Boolean(
 				Config.getValue(Property.wmFocuseFollowmouse));
-
+		// apply sloppy focus
 		if (focusFollowMouse && !this.leftMouse.clicked
 				&& !this.leftMouse.dragged) {
 			if (this.leftMouse.hoverFrame != null) {
 				this.state.focusFrame(this.leftMouse.hoverFrame);
 			}
+		}
+
+		// propagate mouseHover to the frame and its content
+		if (!this.leftMouse.down && this.leftMouse.hoverFrame != null) {
+			this.leftMouse.hoverFrame.mouseHover(this.leftMouse.hoverX
+					- this.leftMouse.hoverFrame.getX(), this.leftMouse.hoverY
+					- this.leftMouse.hoverFrame.getY());
+		}
+		// propagate mouseOut to the frame
+		if (this.leftMouse.lastHoverFrame != null
+				&& !this.leftMouse.lastHoverFrame
+						.equals(this.leftMouse.hoverFrame)) {
+			this.leftMouse.lastHoverFrame.mouseOut();
 		}
 
 		if (this.leftMouse.clicked) {
@@ -256,6 +255,24 @@ public class Logic {
 				this.leftMouse.dragY = f.getY();
 			} else {
 				this.leftMouse.draggedFrame = null;
+			}
+			// propagate click to frame and content
+			if (this.leftMouse.clickedFrame != null) {
+				this.leftMouse.clickWidth = this.leftMouse.clickedFrame
+						.getWidth();
+				this.leftMouse.clickHeight = this.leftMouse.clickedFrame
+						.getHeight();
+				this.leftMouse.clickedFrame.mouseDown(0);
+			}
+		} else if (!this.leftMouse.down) {
+			if (this.leftMouse.clickedFrame != null) {
+				// propagate mouse up to frame and content
+				this.leftMouse.clickedFrame.mouseUp(
+						0,
+						this.leftMouse.hoverX
+								- this.leftMouse.clickedFrame.getX(),
+						this.leftMouse.hoverY
+								- this.leftMouse.clickedFrame.getY());
 			}
 		}
 

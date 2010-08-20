@@ -107,4 +107,12 @@ public class Label extends Widget {
 	@Override
 	public void mouseOut() {
 	}
+
+	@Override
+	public void mouseDown(int button) {
+	}
+
+	@Override
+	public void mouseUp(int button, int x, int y) {
+	}
 }

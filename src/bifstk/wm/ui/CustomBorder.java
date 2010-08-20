@@ -21,6 +21,11 @@ public class CustomBorder extends Border {
 	private int bot = 0;
 	private int left = 0;
 
+	/** true when the mouse is hovering the content */
+	private boolean mouseHoverContent = false;
+	/** true when LBM is down on the content */
+	private boolean contentMouseDown = false;
+
 	/** bgcolor, uses uiBgColor if null */
 	private Color color = null;
 
@@ -202,13 +207,39 @@ public class CustomBorder extends Border {
 				&& y < top + bot + this.getHeight()) {
 			if (this.getContent() != null) {
 				this.getContent().mouseHover(x - left, y - top);
+				this.mouseHoverContent = true;
 			}
 		}
 	}
 
 	@Override
 	public void mouseOut() {
-		this.getContent().mouseOut();
+		if (mouseHoverContent) {
+			mouseHoverContent = false;
+		}
+		if (this.getContent() != null) {
+			this.getContent().mouseOut();
+		}
+	}
+
+	@Override
+	public void mouseDown(int button) {
+		if (mouseHoverContent) {
+			this.contentMouseDown = true;
+		}
+		if (this.getContent() != null) {
+			this.getContent().mouseDown(button);
+		}
+	}
+
+	@Override
+	public void mouseUp(int button, int x, int y) {
+		if (this.contentMouseDown) {
+			this.contentMouseDown = false;
+		}
+		if (this.getContent() != null) {
+			this.getContent().mouseUp(button, x - left, y - top);
+		}
 	}
 
 }

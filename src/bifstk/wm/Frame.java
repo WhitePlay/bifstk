@@ -386,8 +386,11 @@ public class Frame implements Drawable {
 	 */
 	public void pack() {
 		if (this.content != null) {
-			int w = this.content.getPreferredWidth();
-			int h = this.content.getPreferredHeight();
+			int w = Util.clamp(this.content.getPreferredWidth(), 0,
+					this.getWidth() - 2 * Theme.getFrameBorderWidth());
+			int h = Util.clamp(this.content.getPreferredHeight(), 0,
+					2 * Theme.getFrameBorderWidth() + this.getTitleBarHeight());
+
 			this.setBounds(
 					w + Theme.getFrameBorderWidth() * 2,
 					h + 2 * Theme.getFrameBorderWidth()

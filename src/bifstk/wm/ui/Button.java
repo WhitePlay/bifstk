@@ -8,26 +8,28 @@ import bifstk.gl.Color;
 import bifstk.wm.geom.Rectangle;
 
 /**
- * Display text in a Widget
+ * Default clickable widget
  * 
  */
-public class Label extends Widget {
+public class Button extends Widget {
 
-	/** dimensions of the label */
+	/** dimensions of the button */
 	private Rectangle bounds = null;
-	/** text to display in the label */
+	/** text to display in the button */
 	private String text = null;
 	/** pixel width of the string when rendered */
 	private int textWidth = 0;
 	/** pixel height of the string when rendered */
 	private int textHeight = 0;
 
+	private boolean mouseHover = false;
+
 	/**
 	 * Default constructor
 	 * 
-	 * @param text text to display in the label
+	 * @param text text to display in the button
 	 */
-	public Label(String text) {
+	public Button(String text) {
 		this.text = text;
 		this.bounds = new Rectangle();
 
@@ -41,7 +43,11 @@ public class Label extends Widget {
 		int w = this.getWidth();
 		int h = this.getHeight();
 
-		Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
+		if (this.mouseHover) {
+			Color.LIGHT_RED.use(alpha * Theme.getUiBgAlpha());
+		} else {
+			Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
+		}
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glVertex2i(0, 0);
 		GL11.glVertex2i(w, 0);
@@ -102,9 +108,11 @@ public class Label extends Widget {
 
 	@Override
 	public void mouseHover(int x, int y) {
+		this.mouseHover = true;
 	}
 
 	@Override
 	public void mouseOut() {
+		this.mouseHover = false;
 	}
 }

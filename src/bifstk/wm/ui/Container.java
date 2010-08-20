@@ -32,7 +32,7 @@ public abstract class Container extends Widget {
 	 * 
 	 * @param w Widget to make unique among Container
 	 */
-	public void add(Widget w) {
+	protected void add(Widget w) {
 		if (w == null) {
 			return;
 		}

@@ -47,6 +47,8 @@ public class Logic {
 		int hoverX = 0;
 		/** Y position of the mouse cursor currently hovered */
 		int hoverY = 0;
+		/** hovered frame last time update was called */
+		Frame lastHoverFrame = null;
 
 		/** true when the left mouse button just went from up to down */
 		boolean clicked = false;
@@ -150,10 +152,19 @@ public class Logic {
 		// hovering state: prevents multiple calls for clicks/drags
 		int mx = this.leftMouse.hoverX = getMouseX();
 		int my = this.leftMouse.hoverY = getMouseY();
+		this.leftMouse.lastHoverFrame = this.leftMouse.hoverFrame;
 		this.leftMouse.hoverFrame = this.state.findFrame(mx, my);
 		if (this.leftMouse.hoverFrame != null) {
 			this.leftMouse.hoverRegion = this.leftMouse.hoverFrame.getRegion(
 					mx, my);
+			this.leftMouse.hoverFrame.mouseHover(
+					mx - this.leftMouse.hoverFrame.getX(), my
+							- this.leftMouse.hoverFrame.getY());
+			if (this.leftMouse.lastHoverFrame != null
+					&& !this.leftMouse.lastHoverFrame
+							.equals(this.leftMouse.hoverFrame)) {
+				this.leftMouse.lastHoverFrame.mouseOut();
+			}
 		}
 
 		// for each mouse event since last call

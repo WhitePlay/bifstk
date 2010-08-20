@@ -19,7 +19,7 @@ import bifstk.wm.ui.Widget;
  * It has a title bar and contains widgets
  * 
  */
-public class Frame implements Drawable {
+public class Frame implements Drawable, Clickable {
 
 	/** dimensions */
 	private Rectangle bounds = null;
@@ -47,6 +47,8 @@ public class Frame implements Drawable {
 
 	/** content of the frame */
 	private Widget content = null;
+
+	private boolean contentHover = false;
 
 	/**
 	 * Default constructor
@@ -400,6 +402,30 @@ public class Frame implements Drawable {
 		}
 	}
 
+	@Override
+	public void mouseHover(int x, int y) {
+		int border = Theme.getFrameBorderWidth();
+		if (border < x && x < this.getWidth() - border
+				&& border + getTitleBarHeight() < y
+				&& y < this.getHeight() - border) {
+			if (this.content != null) {
+				this.content.mouseHover(x - border, y - border
+						- getTitleBarHeight());
+				this.contentHover = true;
+			}
+		} else if (this.contentHover && this.content != null) {
+			this.content.mouseOut();
+		}
+	}
+
+	@Override
+	public void mouseOut() {
+		if (contentHover && this.content != null) {
+			this.content.mouseOut();
+			this.contentHover = false;
+		}
+	}
+
 	/**
 	 * @return the content of the frame
 	 */
@@ -552,5 +578,4 @@ public class Frame implements Drawable {
 	public String toString() {
 		return bounds.toString() + pos.toString();
 	}
-
 }

@@ -195,4 +195,20 @@ public class CustomBorder extends Border {
 	public int getHeight() {
 		return this.bounds.getHeight();
 	}
+
+	@Override
+	public void mouseHover(int x, int y) {
+		if (left < x && x < left + right + this.getWidth() && top < y
+				&& y < top + bot + this.getHeight()) {
+			if (this.getContent() != null) {
+				this.getContent().mouseHover(x - left, y - top);
+			}
+		}
+	}
+
+	@Override
+	public void mouseOut() {
+		this.getContent().mouseOut();
+	}
+
 }

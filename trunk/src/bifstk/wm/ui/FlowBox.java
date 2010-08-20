@@ -65,7 +65,14 @@ public class FlowBox extends Container {
 	/** width of the border between each element */
 	private int borderWidth = 2;
 
+	/** widget currently hovered by mouse */
 	private Widget widgetHover = null;
+	/** horizontal/vertical offset of the hovered widget */
+	private int widgetHoverDecal = 0;
+	/** widget LMB is clicking */
+	private Widget widgetMouseDown = null;
+	/** hor/vert offset of the widget clicked by LMB */
+	private int widgetMouseDownDecal = 0;
 
 	/**
 	 * Default constructor
@@ -455,6 +462,7 @@ public class FlowBox extends Container {
 					widgetHover.mouseOut();
 				}
 				widgetHover = wid;
+				widgetHoverDecal = acc;
 				return -1;
 			}
 			acc += wid.getWidth();
@@ -466,6 +474,7 @@ public class FlowBox extends Container {
 					widgetHover.mouseOut();
 				}
 				widgetHover = wid;
+				widgetHoverDecal = acc;
 				return -1;
 			}
 			acc += wid.getHeight();
@@ -478,6 +487,29 @@ public class FlowBox extends Container {
 		if (this.widgetHover != null) {
 			this.widgetHover.mouseOut();
 			this.widgetHover = null;
+		}
+	}
+
+	@Override
+	public void mouseDown(int button) {
+		if (this.widgetHover != null) {
+			this.widgetHover.mouseDown(button);
+			this.widgetMouseDownDecal = this.widgetHoverDecal;
+			this.widgetMouseDown = this.widgetHover;
+		}
+	}
+
+	@Override
+	public void mouseUp(int button, int x, int y) {
+		if (this.widgetMouseDown != null) {
+			if (this.orientation.equals(Orientation.HORIZONTAL)) {
+				this.widgetMouseDown.mouseUp(button, x
+						- this.widgetMouseDownDecal, y);
+			} else {
+				this.widgetMouseDown.mouseUp(button, x, y
+						- this.widgetMouseDownDecal);
+			}
+			this.widgetMouseDown = null;
 		}
 	}
 

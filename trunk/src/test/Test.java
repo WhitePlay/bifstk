@@ -6,8 +6,10 @@ import bifstk.Bifstk;
 import bifstk.BifstkException;
 import bifstk.Handler;
 import bifstk.Root;
+import bifstk.gl.Color;
 import bifstk.wm.Frame;
 import bifstk.wm.ui.Button;
+import bifstk.wm.ui.CustomBorder;
 import bifstk.wm.ui.FlowBox;
 import bifstk.wm.ui.FlowBox.Orientation;
 import bifstk.wm.ui.Label;
@@ -44,7 +46,7 @@ public class Test implements Handler, Root {
 
 				FlowBox b3 = new FlowBox(Orientation.HORIZONTAL);
 				b3.addBefore(new Label("Baz"));
-				b3.addAfter(new Button("Gee"));
+				b3.addAfter(new CustomBorder(new Button("Gee"), 20, Color.GRAY));
 
 				b1.addBefore(b2);
 				b1.addAfter(b3);

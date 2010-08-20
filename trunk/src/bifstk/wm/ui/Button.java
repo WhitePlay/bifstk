@@ -21,8 +21,10 @@ public class Button extends Widget {
 	private int textWidth = 0;
 	/** pixel height of the string when rendered */
 	private int textHeight = 0;
-
+	/** true when the button is being hovered by LMB */
 	private boolean mouseHover = false;
+	/** true when the button is being clicked by LMB */
+	private boolean mouseClicked = false;
 
 	/**
 	 * Default constructor
@@ -43,7 +45,9 @@ public class Button extends Widget {
 		int w = this.getWidth();
 		int h = this.getHeight();
 
-		if (this.mouseHover) {
+		if (this.mouseClicked) {
+			Color.LIGHT_BLUE.use(alpha * Theme.getUiBgAlpha());
+		} else if (this.mouseHover) {
 			Color.LIGHT_RED.use(alpha * Theme.getUiBgAlpha());
 		} else {
 			Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
@@ -114,5 +118,24 @@ public class Button extends Widget {
 	@Override
 	public void mouseOut() {
 		this.mouseHover = false;
+	}
+
+	@Override
+	public void mouseDown(int button) {
+		if (button == 0) {
+			this.mouseClicked = true;
+		}
+	}
+
+	@Override
+	public void mouseUp(int button, int x, int y) {
+		if (button == 0) {
+			this.mouseClicked = false;
+			if (this.bounds.contains(x, y)) {
+				// fire click
+			} else {
+				// nothing happened
+			}
+		}
 	}
 }

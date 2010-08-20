@@ -48,7 +48,10 @@ public class Frame implements Drawable, Clickable {
 	/** content of the frame */
 	private Widget content = null;
 
+	/** true if the content of the frame is hovered by the mouse */
 	private boolean contentHover = false;
+	/** true if the content is clicked by LMB */
+	private boolean contentMouseDown = false;
 
 	/**
 	 * Default constructor
@@ -388,10 +391,8 @@ public class Frame implements Drawable, Clickable {
 	 */
 	public void pack() {
 		if (this.content != null) {
-			int w = Util.clamp(this.content.getPreferredWidth(), 0,
-					this.getWidth() - 2 * Theme.getFrameBorderWidth());
-			int h = Util.clamp(this.content.getPreferredHeight(), 0,
-					2 * Theme.getFrameBorderWidth() + this.getTitleBarHeight());
+			int w = this.content.getPreferredWidth();
+			int h = this.content.getPreferredHeight();
 
 			this.setBounds(
 					w + Theme.getFrameBorderWidth() * 2,
@@ -423,6 +424,24 @@ public class Frame implements Drawable, Clickable {
 		if (contentHover && this.content != null) {
 			this.content.mouseOut();
 			this.contentHover = false;
+		}
+	}
+
+	@Override
+	public void mouseDown(int button) {
+		if (contentHover && this.content != null) {
+			this.content.mouseDown(button);
+			this.contentMouseDown = true;
+		}
+	}
+
+	@Override
+	public void mouseUp(int button, int x, int y) {
+		int border = Theme.getFrameBorderWidth();
+		if (this.contentMouseDown && this.content != null) {
+			this.content.mouseUp(button, x - border, y - border
+					- getTitleBarHeight());
+			this.contentMouseDown = false;
 		}
 	}
 

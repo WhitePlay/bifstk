@@ -46,14 +46,12 @@ public class Test implements Handler, Root {
 
 				FlowBox b3 = new FlowBox(Orientation.HORIZONTAL);
 				b3.addBefore(new Label("Baz"));
-				b3.addAfter(new CustomBorder(new Button("Gee"), 20, Color.GRAY));
+				b3.addAfter(new CustomBorder(new Button("Gee"), 10, Color.GRAY));
 
 				b1.addBefore(b2);
 				b1.addAfter(b3);
 
 				f.setContent(b1);
-
-				f.pack();
 
 				try {
 					Bifstk.addFrame(f);

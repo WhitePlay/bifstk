@@ -8,6 +8,7 @@ import bifstk.Handler;
 import bifstk.Root;
 import bifstk.gl.Color;
 import bifstk.wm.Frame;
+import bifstk.wm.ui.Actionable;
 import bifstk.wm.ui.Button;
 import bifstk.wm.ui.CustomBorder;
 import bifstk.wm.ui.FlowBox;
@@ -44,9 +45,13 @@ public class Test implements Handler, Root {
 				b2.addBefore(new Label("Foo"));
 				b2.addAfter(new Button("Bar"));
 
+				Button b = new Button("Gee");
+				b.setHandler(this);
+				b.setAction("bouton");
+
 				FlowBox b3 = new FlowBox(Orientation.HORIZONTAL);
 				b3.addBefore(new Label("Baz"));
-				b3.addAfter(new CustomBorder(new Button("Gee"), 10, Color.GRAY));
+				b3.addAfter(new CustomBorder(b, 10, Color.GRAY));
 
 				b1.addBefore(b2);
 				b1.addAfter(b3);
@@ -66,7 +71,11 @@ public class Test implements Handler, Root {
 
 	@Override
 	public void mouseEvent(int button, int x, int y, boolean state) {
-		System.out.println(button + " " + state);
+	}
+
+	@Override
+	public void actionPerformed(String command, Actionable source) {
+		System.out.println(command + " " + source);
 	}
 
 	public static void main(String[] args) {

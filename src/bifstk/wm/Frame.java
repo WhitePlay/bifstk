@@ -228,6 +228,8 @@ public class Frame implements Drawable, Clickable {
 	 * @param x the new abscissa position of this frame in the WM
 	 */
 	public void setX(int x) {
+		x = Util.clamp(x, 0,
+				Display.getDisplayMode().getWidth() - this.getWidth());
 		this.pos.setX(x);
 	}
 
@@ -235,6 +237,8 @@ public class Frame implements Drawable, Clickable {
 	 * @param y the new ordinate position of this frame in the WM
 	 */
 	public void setY(int y) {
+		y = Util.clamp(y, 0,
+				Display.getDisplayMode().getHeight() - this.getHeight());
 		this.pos.setY(y);
 	}
 
@@ -243,6 +247,10 @@ public class Frame implements Drawable, Clickable {
 	 * @param y the new ordinate position of this frame in the WM
 	 */
 	public void setPos(int x, int y) {
+		x = Util.clamp(x, 0,
+				Display.getDisplayMode().getWidth() - this.getWidth());
+		y = Util.clamp(y, 0,
+				Display.getDisplayMode().getHeight() - this.getHeight());
 		this.pos.setPos(x, y);
 	}
 
@@ -264,7 +272,8 @@ public class Frame implements Drawable, Clickable {
 	 * @param w the new width of this frame
 	 */
 	public void setWidth(int w) {
-		w = Math.max(w, this.minBounds.getWidth());
+		w = Util.clamp(w, this.minBounds.getWidth(), Display.getDisplayMode()
+				.getWidth() - this.getX());
 		this.bounds.setWidth(w);
 		if (this.content != null) {
 			this.content.setWidth(w - 2 * Theme.getFrameBorderWidth());
@@ -275,7 +284,8 @@ public class Frame implements Drawable, Clickable {
 	 * @param h the new height of this frame
 	 */
 	public void setHeight(int h) {
-		h = Math.max(h, this.minBounds.getHeight());
+		h = Util.clamp(h, this.minBounds.getHeight(), Display.getDisplayMode()
+				.getHeight() - this.getY());
 		this.bounds.setHeight(h);
 		if (this.content != null) {
 			this.content.setHeight(h - 2 * Theme.getFrameBorderWidth()
@@ -288,8 +298,10 @@ public class Frame implements Drawable, Clickable {
 	 * @param h the new height of this frame
 	 */
 	public void setBounds(int w, int h) {
-		w = Math.max(w, this.minBounds.getWidth());
-		h = Math.max(h, this.minBounds.getHeight());
+		w = Util.clamp(w, this.minBounds.getWidth(), Display.getDisplayMode()
+				.getWidth() - this.getX());
+		h = Util.clamp(h, this.minBounds.getHeight(), Display.getDisplayMode()
+				.getHeight() - this.getY());
 		this.bounds.setBounds(w, h);
 		if (this.content != null) {
 			this.content.setBounds(w - 2 * Theme.getFrameBorderWidth(), h - 2

@@ -66,7 +66,7 @@ public class Test implements Handler, Root {
 
 	@Override
 	public void mouseEvent(int button, int x, int y, boolean state) {
-
+		System.out.println(button + " " + state);
 	}
 
 	public static void main(String[] args) {

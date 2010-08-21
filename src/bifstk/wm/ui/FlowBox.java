@@ -69,10 +69,21 @@ public class FlowBox extends Container {
 	private Widget widgetHover = null;
 	/** horizontal/vertical offset of the hovered widget */
 	private int widgetHoverDecal = 0;
+
 	/** widget LMB is clicking */
-	private Widget widgetMouseDown = null;
+	private Widget widgetLeftMouseDown = null;
 	/** hor/vert offset of the widget clicked by LMB */
-	private int widgetMouseDownDecal = 0;
+	private int widgetLeftMouseDownDecal = 0;
+
+	/** widget LMB is clicking */
+	private Widget widgetRightMouseDown = null;
+	/** hor/vert offset of the widget clicked by LMB */
+	private int widgetRightMouseDownDecal = 0;
+
+	/** widget LMB is clicking */
+	private Widget widgetCenterMouseDown = null;
+	/** hor/vert offset of the widget clicked by LMB */
+	private int widgetCenterMouseDownDecal = 0;
 
 	/**
 	 * Default constructor
@@ -494,23 +505,44 @@ public class FlowBox extends Container {
 	public void mouseDown(int button) {
 		if (this.widgetHover != null) {
 			this.widgetHover.mouseDown(button);
-			this.widgetMouseDownDecal = this.widgetHoverDecal;
-			this.widgetMouseDown = this.widgetHover;
+			if (this.widgetLeftMouseDown == null && button == 0) {
+				this.widgetLeftMouseDownDecal = this.widgetHoverDecal;
+				this.widgetLeftMouseDown = this.widgetHover;
+			} else if (this.widgetRightMouseDown == null && button == 1) {
+				this.widgetRightMouseDownDecal = this.widgetHoverDecal;
+				this.widgetRightMouseDown = this.widgetHover;
+			} else if (this.widgetCenterMouseDown == null && button == 2) {
+				this.widgetCenterMouseDownDecal = this.widgetHoverDecal;
+				this.widgetCenterMouseDown = this.widgetHover;
+			}
 		}
 	}
 
 	@Override
 	public void mouseUp(int button, int x, int y) {
-		if (this.widgetMouseDown != null) {
-			if (this.orientation.equals(Orientation.HORIZONTAL)) {
-				this.widgetMouseDown.mouseUp(button, x
-						- this.widgetMouseDownDecal, y);
-			} else {
-				this.widgetMouseDown.mouseUp(button, x, y
-						- this.widgetMouseDownDecal);
-			}
-			this.widgetMouseDown = null;
+		int offset = 0;
+		Widget wid = null;
+		if (this.widgetLeftMouseDown != null && button == 0) {
+			wid = widgetLeftMouseDown;
+			this.widgetLeftMouseDown = null;
+			offset = this.widgetLeftMouseDownDecal;
+		} else if (this.widgetRightMouseDown != null && button == 1) {
+			wid = widgetRightMouseDown;
+			this.widgetRightMouseDown = null;
+			offset = this.widgetRightMouseDownDecal;
+		} else if (this.widgetCenterMouseDown != null && button == 2) {
+			wid = widgetCenterMouseDown;
+			this.widgetCenterMouseDown = null;
+			offset = this.widgetCenterMouseDownDecal;
 		}
+		if (wid != null) {
+			if (this.orientation.equals(Orientation.HORIZONTAL)) {
+				wid.mouseUp(button, x - offset, y);
+			} else {
+				wid.mouseUp(button, x, y - offset);
+			}
+		}
+
 	}
 
 }

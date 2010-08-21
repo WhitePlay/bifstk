@@ -51,7 +51,11 @@ public class Frame implements Drawable, Clickable {
 	/** true if the content of the frame is hovered by the mouse */
 	private boolean contentHover = false;
 	/** true if the content is clicked by LMB */
-	private boolean contentMouseDown = false;
+	private boolean contentLeftMouseDown = false;
+	/** true if the content is clicked by RMB */
+	private boolean contentRightMouseDown = false;
+	/** true if the content is clicked by CMB */
+	private boolean contentCenterMouseDown = false;
 
 	/**
 	 * Default constructor
@@ -405,11 +409,6 @@ public class Frame implements Drawable, Clickable {
 		if (this.content != null) {
 			int w = this.content.getPreferredWidth();
 			int h = this.content.getPreferredHeight();
-			System.out.println("request "
-					+ (w + Theme.getFrameBorderWidth() * 2)
-					+ " "
-					+ (h + 2 * Theme.getFrameBorderWidth() + this
-							.getTitleBarHeight()));
 			this.setBounds(
 					w + Theme.getFrameBorderWidth() * 2,
 					h + 2 * Theme.getFrameBorderWidth()
@@ -446,18 +445,35 @@ public class Frame implements Drawable, Clickable {
 	@Override
 	public void mouseDown(int button) {
 		if (contentHover && this.content != null) {
+			if (button == 0) {
+				this.contentLeftMouseDown = true;
+			} else if (button == 1) {
+				this.contentRightMouseDown = true;
+			} else if (button == 2) {
+				this.contentCenterMouseDown = true;
+			}
 			this.content.mouseDown(button);
-			this.contentMouseDown = true;
 		}
 	}
 
 	@Override
 	public void mouseUp(int button, int x, int y) {
 		int border = Theme.getFrameBorderWidth();
-		if (this.contentMouseDown && this.content != null) {
+		boolean hadOne = false;
+		if (this.contentLeftMouseDown && button == 0) {
+			hadOne = true;
+			this.contentLeftMouseDown = false;
+		} else if (this.contentRightMouseDown && button == 1) {
+			hadOne = true;
+			this.contentRightMouseDown = false;
+		} else if (this.contentCenterMouseDown && button == 2) {
+			hadOne = true;
+			this.contentCenterMouseDown = false;
+		}
+
+		if (hadOne && this.content != null) {
 			this.content.mouseUp(button, x - border, y - border
 					- getTitleBarHeight());
-			this.contentMouseDown = false;
 		}
 	}
 

@@ -11,7 +11,7 @@ import bifstk.wm.geom.Rectangle;
  * Default clickable widget
  * 
  */
-public class Button extends Widget {
+public class Button extends Actionable {
 
 	/** dimensions of the button */
 	private Rectangle bounds = null;
@@ -131,10 +131,8 @@ public class Button extends Widget {
 	public void mouseUp(int button, int x, int y) {
 		if (button == 0) {
 			this.mouseClicked = false;
-			if (this.bounds.contains(x, y)) {
-				// fire click
-			} else {
-				// nothing happened
+			if (this.bounds.contains(x, y) && this.getHandler() != null) {
+				this.getHandler().actionPerformed(this.getAction(), this);
 			}
 		}
 	}

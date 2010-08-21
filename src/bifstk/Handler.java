@@ -3,6 +3,8 @@ package bifstk;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
+import bifstk.wm.ui.Actionable;
+
 /**
  * Client-side event handler
  * <p>
@@ -46,5 +48,16 @@ public interface Handler {
 	 *            {@link Mouse#getEventButtonState()}
 	 */
 	public void mouseEvent(int button, int x, int y, boolean state);
+
+	/**
+	 * Called by an Actionable Widget when an action has been performed
+	 * <p>
+	 * Sends a command to distinguish itself as well as a reference to itself
+	 * 
+	 * @param action action command as specified by
+	 *            {@link Actionable#setAction(String)}
+	 * @param source source of the action
+	 */
+	public void actionPerformed(String action, Actionable source);
 
 }

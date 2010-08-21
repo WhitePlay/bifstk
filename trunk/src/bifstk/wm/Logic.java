@@ -47,6 +47,8 @@ public class Logic {
 		int hoverX = 0;
 		/** Y position of the mouse cursor currently hovered */
 		int hoverY = 0;
+		/** last X and Y position of the mouse cursor */
+		int lastHoverX = 0, lastHoverY = 0;
 		/** hovered frame last time update was called */
 		Frame lastHoverFrame = null;
 
@@ -83,11 +85,10 @@ public class Logic {
 
 	/** state of the left mouse button */
 	private MouseButton leftMouse = null;
-
-	// state of the right mouse button
-	// private MouseButton rightMouse = null;
-	// state of the center mouse button
-	// private MouseButton centerMouse = null;
+	/** state of the right mouse button */
+	private MouseButton rightMouse = null;
+	/** state of the center mouse button */
+	private MouseButton centerMouse = null;
 
 	/**
 	 * Default constructor
@@ -99,8 +100,8 @@ public class Logic {
 		this.state = new InternalState();
 		this.exitRequested = false;
 		this.leftMouse = new MouseButton();
-		// this.rightMouse = new MouseButton();
-		// this.centerMouse = new MouseButton();
+		this.rightMouse = new MouseButton();
+		this.centerMouse = new MouseButton();
 	}
 
 	/**
@@ -148,8 +149,14 @@ public class Logic {
 		// reset temporary values
 		this.leftMouse.clicked = false;
 		this.leftMouse.downLastPoll = this.leftMouse.down;
+		this.centerMouse.clicked = false;
+		this.centerMouse.downLastPoll = this.centerMouse.down;
+		this.rightMouse.clicked = false;
+		this.rightMouse.downLastPoll = this.rightMouse.down;
 
 		// hovering state: prevents multiple calls for clicks/drags
+		this.leftMouse.lastHoverX = this.leftMouse.hoverX;
+		this.leftMouse.lastHoverY = this.leftMouse.hoverY;
 		int mx = this.leftMouse.hoverX = getMouseX();
 		int my = this.leftMouse.hoverY = getMouseY();
 		this.leftMouse.lastHoverFrame = this.leftMouse.hoverFrame;
@@ -166,12 +173,9 @@ public class Logic {
 			switch (button) {
 			// left
 			case 0:
-				// mouse down
 				if (this.leftMouse.down) {
 					this.leftMouse.down = false;
-				}
-				// mouse clicked
-				else {
+				} else {
 					this.leftMouse.down = true;
 					this.leftMouse.clicked = true;
 					this.leftMouse.clickX = mx;
@@ -182,11 +186,29 @@ public class Logic {
 				break;
 			// right
 			case 1:
-
+				if (this.rightMouse.down) {
+					this.rightMouse.down = false;
+				} else {
+					this.rightMouse.down = true;
+					this.rightMouse.clicked = true;
+					this.rightMouse.clickX = mx;
+					this.rightMouse.clickY = my;
+					this.rightMouse.clickedFrame = this.leftMouse.hoverFrame;
+					this.rightMouse.clickedRegion = this.leftMouse.hoverRegion;
+				}
 				break;
 			// middle
 			case 2:
-
+				if (this.centerMouse.down) {
+					this.centerMouse.down = false;
+				} else {
+					this.centerMouse.down = true;
+					this.centerMouse.clicked = true;
+					this.centerMouse.clickX = mx;
+					this.centerMouse.clickY = my;
+					this.centerMouse.clickedFrame = this.leftMouse.hoverFrame;
+					this.centerMouse.clickedRegion = this.leftMouse.hoverRegion;
+				}
 				break;
 			}
 		}
@@ -233,7 +255,8 @@ public class Logic {
 		}
 
 		// propagate mouseHover to the frame and its content
-		if (!this.leftMouse.down && this.leftMouse.hoverFrame != null) {
+		if (this.leftMouse.hoverFrame != null
+				&& (this.leftMouse.lastHoverX != this.leftMouse.hoverX || this.leftMouse.lastHoverY != this.leftMouse.hoverY)) {
 			this.leftMouse.hoverFrame.mouseHover(this.leftMouse.hoverX
 					- this.leftMouse.hoverFrame.getX(), this.leftMouse.hoverY
 					- this.leftMouse.hoverFrame.getY());
@@ -245,6 +268,7 @@ public class Logic {
 			this.leftMouse.lastHoverFrame.mouseOut();
 		}
 
+		// LMB click
 		if (this.leftMouse.clicked) {
 			Frame f = this.leftMouse.clickedFrame;
 			this.state.foregroundFrame(f);
@@ -264,7 +288,9 @@ public class Logic {
 						.getHeight();
 				this.leftMouse.clickedFrame.mouseDown(0);
 			}
-		} else if (!this.leftMouse.down) {
+		}
+		// LMB unclick
+		else if (this.leftMouse.downLastPoll && !this.leftMouse.down) {
 			if (this.leftMouse.clickedFrame != null) {
 				// propagate mouse up to frame and content
 				this.leftMouse.clickedFrame.mouseUp(
@@ -273,6 +299,42 @@ public class Logic {
 								- this.leftMouse.clickedFrame.getX(),
 						this.leftMouse.hoverY
 								- this.leftMouse.clickedFrame.getY());
+			}
+		}
+
+		// RMB click
+		if (this.rightMouse.clicked) {
+			if (this.rightMouse.clickedFrame != null) {
+				this.rightMouse.clickedFrame.mouseDown(1);
+			}
+		}
+		// RMB unclick
+		else if (!this.rightMouse.down && this.rightMouse.downLastPoll) {
+			if (this.rightMouse.clickedFrame != null) {
+				this.rightMouse.clickedFrame.mouseUp(
+						1,
+						this.rightMouse.hoverX
+								- this.rightMouse.clickedFrame.getX(),
+						this.rightMouse.hoverY
+								- this.rightMouse.clickedFrame.getY());
+			}
+		}
+
+		// CMB click
+		if (this.centerMouse.clicked) {
+			if (this.centerMouse.clickedFrame != null) {
+				this.centerMouse.clickedFrame.mouseDown(2);
+			}
+		}
+		// CMB unclick
+		else if (!this.centerMouse.down && this.centerMouse.downLastPoll) {
+			if (this.centerMouse.clickedFrame != null) {
+				this.centerMouse.clickedFrame.mouseUp(
+						2,
+						this.centerMouse.hoverX
+								- this.centerMouse.clickedFrame.getX(),
+						this.centerMouse.hoverY
+								- this.centerMouse.clickedFrame.getY());
 			}
 		}
 

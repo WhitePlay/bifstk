@@ -23,8 +23,13 @@ public class CustomBorder extends Border {
 
 	/** true when the mouse is hovering the content */
 	private boolean mouseHoverContent = false;
+
 	/** true when LBM is down on the content */
-	private boolean contentMouseDown = false;
+	private boolean contentLeftMouseDown = false;
+	/** true when RBM is down on the content */
+	private boolean contentRightMouseDown = false;
+	/** true when CBM is down on the content */
+	private boolean contentCenterMouseDown = false;
 
 	/** bgcolor, uses uiBgColor if null */
 	private Color color = null;
@@ -227,19 +232,34 @@ public class CustomBorder extends Border {
 	@Override
 	public void mouseDown(int button) {
 		if (mouseHoverContent) {
-			this.contentMouseDown = true;
-		}
-		if (this.getContent() != null) {
-			this.getContent().mouseDown(button);
+			if (!contentLeftMouseDown && button == 0) {
+				this.contentLeftMouseDown = true;
+			} else if (!contentRightMouseDown && button == 1) {
+				this.contentRightMouseDown = true;
+			} else if (!contentCenterMouseDown && button == 2) {
+				this.contentCenterMouseDown = true;
+			}
+			if (this.getContent() != null) {
+				this.getContent().mouseDown(button);
+			}
 		}
 	}
 
 	@Override
 	public void mouseUp(int button, int x, int y) {
-		if (this.contentMouseDown) {
-			this.contentMouseDown = false;
+		boolean hadOne = false;
+		if (this.contentLeftMouseDown && button == 0) {
+			this.contentLeftMouseDown = false;
+			hadOne = true;
+		} else if (this.contentRightMouseDown && button == 1) {
+			this.contentRightMouseDown = false;
+			hadOne = true;
+		} else if (this.contentCenterMouseDown && button == 2) {
+			this.contentCenterMouseDown = false;
+			hadOne = true;
 		}
-		if (this.getContent() != null) {
+
+		if (hadOne && this.getContent() != null) {
 			this.getContent().mouseUp(button, x - left, y - top);
 		}
 	}

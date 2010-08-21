@@ -288,6 +288,11 @@ public class Logic {
 						.getHeight();
 				this.leftMouse.clickedFrame.mouseDown(0);
 			}
+			// propagate click to user handler
+			else if (this.handler != null) {
+				this.handler.mouseEvent(0, this.leftMouse.hoverX,
+						this.leftMouse.hoverY, true);
+			}
 		}
 		// LMB unclick
 		else if (this.leftMouse.downLastPoll && !this.leftMouse.down) {
@@ -300,6 +305,11 @@ public class Logic {
 						this.leftMouse.hoverY
 								- this.leftMouse.clickedFrame.getY());
 			}
+			// propagate click to user handler
+			else if (this.handler != null) {
+				this.handler.mouseEvent(0, this.leftMouse.hoverX,
+						this.leftMouse.hoverY, false);
+			}
 		}
 
 		// RMB click
@@ -307,6 +317,12 @@ public class Logic {
 			if (this.rightMouse.clickedFrame != null) {
 				this.rightMouse.clickedFrame.mouseDown(1);
 			}
+			// propagate click to user handler
+			else if (this.handler != null) {
+				this.handler.mouseEvent(1, this.leftMouse.hoverX,
+						this.leftMouse.hoverY, true);
+			}
+
 		}
 		// RMB unclick
 		else if (!this.rightMouse.down && this.rightMouse.downLastPoll) {
@@ -318,12 +334,22 @@ public class Logic {
 						this.rightMouse.hoverY
 								- this.rightMouse.clickedFrame.getY());
 			}
+			// propagate click to user handler
+			else if (this.handler != null) {
+				this.handler.mouseEvent(1, this.leftMouse.hoverX,
+						this.leftMouse.hoverY, false);
+			}
 		}
 
 		// CMB click
 		if (this.centerMouse.clicked) {
 			if (this.centerMouse.clickedFrame != null) {
 				this.centerMouse.clickedFrame.mouseDown(2);
+			}
+			// propagate click to user handler
+			else if (this.handler != null) {
+				this.handler.mouseEvent(2, this.leftMouse.hoverX,
+						this.leftMouse.hoverY, true);
 			}
 		}
 		// CMB unclick
@@ -335,6 +361,11 @@ public class Logic {
 								- this.centerMouse.clickedFrame.getX(),
 						this.centerMouse.hoverY
 								- this.centerMouse.clickedFrame.getY());
+			}
+			// propagate click to user handler
+			else if (this.handler != null) {
+				this.handler.mouseEvent(2, this.leftMouse.hoverX,
+						this.leftMouse.hoverY, false);
 			}
 		}
 

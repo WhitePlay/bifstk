@@ -19,7 +19,6 @@ public class Test implements Handler, Root {
 
 	@Override
 	public void init() {
-
 	}
 
 	@Override

@@ -54,6 +54,7 @@ public class Bifstk {
 	 * Builds the runner thread and stores is statically
 	 * 
 	 * @param h the user event handler
+	 * @param r the user root renderer
 	 */
 	private static void internalStart(final Handler h, final Root r) {
 		runner = new Thread(new Runnable() {
@@ -99,6 +100,9 @@ public class Bifstk {
 
 				int fps_real = 0, fps_acc = 0;
 				long dt = 0, dt2 = 0;
+
+				// user initialization
+				h.init();
 
 				/*
 				 * main loop

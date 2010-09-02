@@ -221,7 +221,7 @@ public class Frame implements Drawable, Clickable {
 				} else {
 					switch (c) {
 					case CLOSE:
-						if (this.controlCloseDown)
+						if (this.controlCloseDown && this.controlCloseHover)
 							Color.RED.use(alpha);
 						else if (this.controlCloseHover)
 							Color.LIGHT_RED.use(alpha);
@@ -229,7 +229,8 @@ public class Frame implements Drawable, Clickable {
 							Color.WHITE.use(alpha);
 						break;
 					case MAXIMIZE:
-						if (this.controlMaximizeDown)
+						if (this.controlMaximizeDown
+								&& this.controlMaximizeHover)
 							Color.BLUE.use(alpha);
 						else if (this.controlMaximizeHover)
 							Color.LIGHT_BLUE.use(alpha);

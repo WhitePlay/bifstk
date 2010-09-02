@@ -3,10 +3,10 @@ package test;
 import org.lwjgl.input.Keyboard;
 
 import bifstk.Bifstk;
-import bifstk.BifstkException;
 import bifstk.Handler;
 import bifstk.Root;
 import bifstk.gl.Color;
+import bifstk.util.BifstkException;
 import bifstk.wm.Frame;
 import bifstk.wm.ui.Actionable;
 import bifstk.wm.ui.Button;
@@ -57,12 +57,9 @@ public class Test implements Handler, Root {
 				b1.addAfter(b3);
 
 				f.setContent(b1);
+				f.setTitle("Frame title");
+				Bifstk.addFrame(f);
 
-				try {
-					Bifstk.addFrame(f);
-				} catch (BifstkException e) {
-					e.printStackTrace();
-				}
 			}
 			break;
 

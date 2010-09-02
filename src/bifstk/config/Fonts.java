@@ -3,8 +3,8 @@ package bifstk.config;
 import java.awt.Font;
 import java.io.File;
 
-import bifstk.BifstkException;
 import bifstk.gl.TrueTypeFont;
+import bifstk.util.BifstkException;
 import bifstk.util.Logger;
 
 public class Fonts {

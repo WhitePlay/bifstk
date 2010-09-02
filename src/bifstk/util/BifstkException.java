@@ -1,4 +1,4 @@
-package bifstk;
+package bifstk.util;
 
 public class BifstkException extends Exception {
 

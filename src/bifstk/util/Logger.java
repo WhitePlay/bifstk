@@ -322,7 +322,7 @@ public class Logger {
 
 		ret += prefix + message;
 
-		if (t != null) {
+		while (t != null) {
 			String filler = new String();
 			for (int i = 0; i < prefix.length() + 4; i++) {
 				filler += " ";
@@ -337,6 +337,8 @@ public class Logger {
 			for (StackTraceElement el : t.getStackTrace()) {
 				ret += separator + filler + "` " + el.toString();
 			}
+
+			t = t.getCause();
 		}
 		return ret;
 	}

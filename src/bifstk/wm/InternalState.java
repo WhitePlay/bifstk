@@ -38,9 +38,22 @@ public class InternalState implements State {
 	 * @param f the frame to add
 	 */
 	public void addFrame(Frame f) {
-		// frame is added on top of the stack: foreground
-		this.frames.addFirst(f);
-		focusFrame(f);
+		if (f != null) {
+			// frame is added on top of the stack: foreground
+			this.frames.addFirst(f);
+			focusFrame(f);
+		}
+	}
+
+	/**
+	 * Remove an existing Frame from the WM
+	 * 
+	 * @param f frame to remove
+	 */
+	public void removeFrame(Frame f) {
+		if (f != null) {
+			this.frames.remove(f);
+		}
 	}
 
 	/**

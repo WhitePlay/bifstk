@@ -1,5 +1,7 @@
 package bifstk.wm;
 
+import java.util.List;
+
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
@@ -44,6 +46,42 @@ public class Frame implements Drawable, Clickable {
 
 	/** height of the titlebar in pixels */
 	private final int titlebarHeight = 20;
+	/** title of the frame */
+	private String title = "";
+	/** frame has no titlebar if false */
+	private boolean hasTitlebar = true;
+
+	/**
+	 * Frame controls and elements to put in the titlebar
+	 */
+	public static enum Controls {
+		/** contains the title displayed in the titlebar */
+		TITLE("Title"),
+		/** control that closes the frame */
+		CLOSE("Close"),
+		/** control that toggles maximize / windowed */
+		MAXIMIZE("Maximize");
+
+		private String name;
+
+		private Controls(String name) {
+			this.name = name;
+		}
+
+		public String getName() {
+			return this.name;
+		}
+	};
+
+	/** true if the Close Control button is hovered by the mouse */
+	private boolean controlCloseHover = false;
+	/** true if the Close Control button is clicked by the mouse */
+	private boolean controlCloseDown = false;
+
+	/** true if the Maximize Control button is hovered by the mouse */
+	private boolean controlMaximizeHover = false;
+	/** true if the Maximize Control button is clicked by the mouse */
+	private boolean controlMaximizeDown = false;
 
 	/** content of the frame */
 	private Widget content = null;
@@ -64,9 +102,7 @@ public class Frame implements Drawable, Clickable {
 	 * @param y ordinate in the WM
 	 */
 	public Frame(int x, int y) {
-		this.bounds = new Rectangle(100, 100);
-		this.minBounds = new Rectangle(60, 60);
-		this.pos = new Point(x, y);
+		this(x, y, 100, 100);
 	}
 
 	/**
@@ -79,6 +115,7 @@ public class Frame implements Drawable, Clickable {
 	 */
 	public Frame(int x, int y, int w, int h) {
 		this.bounds = new Rectangle(w, h);
+		this.minBounds = new Rectangle(60, 60);
 		this.pos = new Point(x, y);
 	}
 
@@ -148,12 +185,73 @@ public class Frame implements Drawable, Clickable {
 		}
 
 		// title-bar
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glVertex2i(x + borderWidth, y + titlebarHeight + borderWidth);
-		GL11.glVertex2i(x + w - borderWidth, y + titlebarHeight + borderWidth);
-		GL11.glVertex2i(x + w - borderWidth, y + borderWidth);
-		GL11.glVertex2i(x + borderWidth, y + borderWidth);
-		GL11.glEnd();
+		if (this.hasTitlebar) {
+			// background
+			GL11.glBegin(GL11.GL_QUADS);
+			GL11.glVertex2i(x + borderWidth, y + titlebarHeight + borderWidth);
+			GL11.glVertex2i(x + w - borderWidth, y + titlebarHeight
+					+ borderWidth);
+			GL11.glVertex2i(x + w - borderWidth, y + borderWidth);
+			GL11.glVertex2i(x + borderWidth, y + borderWidth);
+			GL11.glEnd();
+
+			int controlWidth = Theme.getFrameControlsWidth();
+			int controlHeight = Theme.getFrameControlsHeight();
+			int controlBorder = Theme.getFrameControlsBorder();
+			int spaceLeft = w - 2 * borderWidth;
+			int acc = 0;
+			int controlsNum = 2;
+
+			// title & controls
+			List<Controls> controls = Theme.getFrameControlsOrder();
+			for (Controls c : controls) {
+				if (c.equals(Controls.TITLE)) {
+					int titleWidth = spaceLeft - controlsNum
+							* (controlWidth + controlBorder);
+					GL11.glEnable(GL11.GL_SCISSOR_TEST);
+					Util.pushScissor(x + borderWidth + acc, Display
+							.getDisplayMode().getHeight() - y - titlebarHeight,
+							titleWidth, titlebarHeight - borderWidth);
+					Fonts.getNormal().drawString(x + borderWidth + acc,
+							y + borderWidth, this.title, Color.WHITE, alpha);
+					Util.popScissor();
+					GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
+					acc += titleWidth + controlBorder;
+				} else {
+					switch (c) {
+					case CLOSE:
+						if (this.controlCloseDown)
+							Color.RED.use(alpha);
+						else if (this.controlCloseHover)
+							Color.LIGHT_RED.use(alpha);
+						else
+							Color.WHITE.use(alpha);
+						break;
+					case MAXIMIZE:
+						if (this.controlMaximizeDown)
+							Color.BLUE.use(alpha);
+						else if (this.controlMaximizeHover)
+							Color.LIGHT_BLUE.use(alpha);
+						else
+							Color.WHITE.use(alpha);
+						break;
+					}
+					GL11.glBegin(GL11.GL_QUADS);
+					GL11.glVertex2i(x + borderWidth + acc, y + borderWidth);
+					GL11.glVertex2i(x + borderWidth + acc, y + borderWidth
+							+ controlHeight);
+					GL11.glVertex2i(x + borderWidth + acc + controlWidth, y
+							+ borderWidth + controlHeight);
+					GL11.glVertex2i(x + borderWidth + acc + controlWidth, y
+							+ borderWidth);
+					GL11.glEnd();
+					acc += controlWidth + controlBorder;
+					spaceLeft -= controlWidth + controlBorder;
+					controlsNum--;
+				}
+			}
+		}
 
 		// content
 		if (this.content == null) {
@@ -350,6 +448,20 @@ public class Frame implements Drawable, Clickable {
 	}
 
 	/**
+	 * @param title the new title of the frame as displayed in the titlebar
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	/**
+	 * @return the title of the frame as displayed in the titlebar
+	 */
+	public String getTitle() {
+		return this.title;
+	}
+
+	/**
 	 * @return true if this frame is currently focused in the WM
 	 */
 	public boolean isFocused() {
@@ -477,6 +589,22 @@ public class Frame implements Drawable, Clickable {
 		}
 	}
 
+	public void setControlCloseHover(boolean h) {
+		this.controlCloseHover = h;
+	}
+
+	public void setControlCloseDown(boolean d) {
+		this.controlCloseDown = d;
+	}
+
+	public void setControlMaximizeHover(boolean h) {
+		this.controlMaximizeHover = h;
+	}
+
+	public void setControlMaximizeDown(boolean d) {
+		this.controlMaximizeDown = d;
+	}
+
 	/**
 	 * @return the content of the frame
 	 */
@@ -513,6 +641,8 @@ public class Frame implements Drawable, Clickable {
 
 		int borderWidth = Theme.getFrameBorderWidth();
 		int titlebarHeight = getTitleBarHeight();
+
+		boolean isTitle = false;
 
 		if (mx < x) {
 			return Region.OUT;
@@ -561,45 +691,52 @@ public class Frame implements Drawable, Clickable {
 			case 6:
 				return Region.BOT_LEFT;
 			}
+			break;
 		case 2:
 			switch (py) {
 			case 1:
 				return Region.TOP_LEFT;
 			case 2:
 			case 3:
-				return Region.TITLE;
+				isTitle = true;
+				break;
 			case 4:
 			case 5:
 				return Region.CONTENT;
 			case 6:
 				return Region.BOT_LEFT;
 			}
+			break;
 		case 3:
 			switch (py) {
 			case 1:
 				return Region.TOP;
 			case 2:
 			case 3:
-				return Region.TITLE;
+				isTitle = true;
+				break;
 			case 4:
 			case 5:
 				return Region.CONTENT;
 			case 6:
 				return Region.BOT;
 			}
+			break;
 		case 4:
 			switch (py) {
 			case 1:
 				return Region.TOP_RIGHT;
 			case 2:
 			case 3:
-				return Region.TITLE;
+				isTitle = true;
+				break;
 			case 4:
 			case 5:
 				return Region.CONTENT;
 			case 6:
 				return Region.BOT_RIGHT;
 			}
+			break;
 		case 5:
 			switch (py) {
 			case 1:
@@ -614,15 +751,62 @@ public class Frame implements Drawable, Clickable {
 			}
 		}
 
-		return Region.OUT;
+		if (isTitle) {
+			int controlWidth = Theme.getFrameControlsWidth();
+			int controlHeight = Theme.getFrameControlsHeight();
+			int controlBorder = Theme.getFrameControlsBorder();
+			int spaceLeft = this.getWidth() - 2 * borderWidth;
+			int acc = 0;
+			int controlsNum = 2;
+
+			if (y + borderWidth + controlHeight < my) {
+				return Region.TITLE;
+			}
+
+			List<Controls> controls = Theme.getFrameControlsOrder();
+			for (Controls c : controls) {
+				if (c.equals(Controls.TITLE)) {
+					int titleWidth = spaceLeft - controlsNum
+							* (controlWidth + controlBorder);
+
+					if (x + borderWidth + acc < mx
+							&& mx < x + borderWidth + acc + titleWidth) {
+						return Region.TITLE;
+					}
+
+					acc += titleWidth + controlBorder;
+				} else {
+					if (x + borderWidth + acc < mx
+							&& mx < x + borderWidth + acc + controlWidth) {
+						switch (c) {
+						case CLOSE:
+							return Region.CLOSE;
+						case MAXIMIZE:
+							return Region.MAXIMIZE;
+						}
+					}
+
+					acc += controlWidth + controlBorder;
+					spaceLeft -= controlWidth + controlBorder;
+					controlsNum--;
+				}
+			}
+
+			return Region.TITLE;
+		} else {
+			return Region.OUT;
+		}
 	}
 
 	/**
 	 * @return pixel height of the titlebar
 	 */
 	private int getTitleBarHeight() {
-		// return Fonts.getNormal().getHeight() + 2;
-		return titlebarHeight;
+		if (this.hasTitlebar) {
+			return titlebarHeight;
+		} else {
+			return 0;
+		}
 	}
 
 	@Override

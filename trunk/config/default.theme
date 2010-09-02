@@ -9,6 +9,10 @@ frame.unfocused.alpha = 0.8
 frame.shadow.enabled = true
 frame.shadow.alpha = 0.2
 frame.shadow.radius = 10
+frame.controls.order = Title Maximize Close
+frame.controls.border = 2
+frame.controls.width = 16
+frame.controls.height = 16
 
 root.background.color = darkGray
 

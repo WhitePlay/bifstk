@@ -7,11 +7,11 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
-import bifstk.BifstkException;
 import bifstk.Root;
 import bifstk.config.Config;
 import bifstk.config.Property;
 import bifstk.config.Theme;
+import bifstk.util.BifstkException;
 import bifstk.util.Logger;
 
 /**

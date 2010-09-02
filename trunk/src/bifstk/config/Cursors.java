@@ -9,7 +9,7 @@ import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.CursorLoader;
 
-import bifstk.BifstkException;
+import bifstk.util.BifstkException;
 import bifstk.util.Logger;
 
 /**

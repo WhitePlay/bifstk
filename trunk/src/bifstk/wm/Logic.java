@@ -4,6 +4,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
+import bifstk.Bifstk;
 import bifstk.Handler;
 import bifstk.config.Config;
 import bifstk.config.Cursors;
@@ -254,6 +255,16 @@ public class Logic {
 			}
 		}
 
+		// frame controls hovering
+		if (this.leftMouse.hoverFrame != null) {
+			this.leftMouse.hoverFrame
+					.setControlCloseHover(this.leftMouse.hoverRegion
+							.equals(Region.CLOSE));
+			this.leftMouse.hoverFrame
+					.setControlMaximizeHover(this.leftMouse.hoverRegion
+							.equals(Region.MAXIMIZE));
+		}
+
 		// propagate mouseHover to the frame and its content
 		if (this.leftMouse.hoverFrame != null
 				&& (this.leftMouse.lastHoverX != this.leftMouse.hoverX || this.leftMouse.lastHoverY != this.leftMouse.hoverY)) {
@@ -293,6 +304,17 @@ public class Logic {
 				this.handler.mouseEvent(0, this.leftMouse.hoverX,
 						this.leftMouse.hoverY, true);
 			}
+
+			// close frame control
+			if (this.leftMouse.clickedRegion.equals(Region.CLOSE)) {
+				this.leftMouse.clickedFrame.setControlCloseDown(true);
+			}
+
+			// maximize frame control
+			if (this.leftMouse.clickedRegion.equals(Region.MAXIMIZE)) {
+				this.leftMouse.clickedFrame.setControlMaximizeDown(true);
+			}
+
 		}
 		// LMB unclick
 		else if (this.leftMouse.downLastPoll && !this.leftMouse.down) {
@@ -309,6 +331,25 @@ public class Logic {
 			else if (this.handler != null) {
 				this.handler.mouseEvent(0, this.leftMouse.hoverX,
 						this.leftMouse.hoverY, false);
+			}
+
+			// close frame control
+			if (this.leftMouse.clickedRegion.equals(Region.CLOSE)) {
+				if (this.leftMouse.hoverRegion.equals(Region.CLOSE)
+						&& this.leftMouse.hoverFrame
+								.equals(this.leftMouse.clickedFrame)) {
+					Bifstk.removeFrame(this.leftMouse.clickedFrame);
+					this.leftMouse.clickedFrame = null;
+					this.leftMouse.hoverFrame = null;
+					this.leftMouse.hoverRegion = Region.OUT;
+				} else {
+					this.leftMouse.clickedFrame.setControlCloseDown(false);
+				}
+			}
+
+			// maximize frame control
+			if (this.leftMouse.clickedRegion.equals(Region.MAXIMIZE)) {
+				this.leftMouse.clickedFrame.setControlMaximizeDown(false);
 			}
 		}
 
@@ -540,6 +581,8 @@ public class Logic {
 		case CONTENT:
 		case TITLE:
 		case OUT:
+		case CLOSE:
+		case MAXIMIZE:
 			Cursors.setCursor(Type.POINTER);
 			break;
 		case TOP_LEFT:

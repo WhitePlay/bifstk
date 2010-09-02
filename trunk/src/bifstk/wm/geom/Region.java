@@ -26,9 +26,10 @@ package bifstk.wm.geom;
  * <li>10: bottom right border
  * <li>11: outside of the frame
  * </ul>
+ * CLOSE and MAXIMIZE are the frame controls located in the titlebar
  */
 public enum Region {
 
-	TITLE, CONTENT, LEFT, TOP, RIGHT, BOT, TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT, OUT;
+	TITLE, CLOSE, MAXIMIZE, CONTENT, LEFT, TOP, RIGHT, BOT, TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT, OUT;
 
 }

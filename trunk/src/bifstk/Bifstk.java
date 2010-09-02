@@ -11,8 +11,10 @@ import bifstk.config.Fonts;
 import bifstk.config.Property;
 import bifstk.config.Theme;
 import bifstk.gl.Color;
+import bifstk.util.BifstkException;
 import bifstk.util.BifstkLogSystem;
 import bifstk.util.Logger;
+import bifstk.util.ThreadAccessException;
 import bifstk.wm.Frame;
 import bifstk.wm.Logic;
 import bifstk.wm.Renderer;
@@ -220,7 +222,8 @@ public class Bifstk {
 	}
 
 	/**
-	 * Asynchronously stops the Bifstk thread
+	 * Asynchronously stops the Bifstk thread, can be called from outside the
+	 * Bifstk thread
 	 */
 	public static void stop() {
 		stop = true;
@@ -230,14 +233,22 @@ public class Bifstk {
 	 * Adds a new Frame in the Bifstk Window Manager
 	 * 
 	 * @param f the frame to add in the WM
-	 * @throws BifstkException method was called outside the Bifstk thread
+	 * @throws ThreadAccessException method was called outside the Bifstk thread
 	 */
-	public static void addFrame(Frame f) throws BifstkException {
+	public static void addFrame(Frame f) throws ThreadAccessException {
 		if (!Thread.currentThread().equals(Bifstk.runner)) {
-			throw new BifstkException(
+			throw new ThreadAccessException(
 					"This method cannot be called outside the Bifstk thread");
 		}
 		Bifstk.logic.getState().addFrame(f);
+	}
+
+	public static void removeFrame(Frame f) throws ThreadAccessException {
+		if (!Thread.currentThread().equals(Bifstk.runner)) {
+			throw new ThreadAccessException(
+					"This method cannot be called outside the Bifstk thread");
+		}
+		Bifstk.logic.getState().removeFrame(f);
 	}
 
 	/**

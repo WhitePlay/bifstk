@@ -3,14 +3,17 @@ package bifstk.config;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import bifstk.BifstkException;
 import bifstk.gl.Color;
+import bifstk.util.BifstkException;
 import bifstk.util.Logger;
+import bifstk.wm.Frame.Controls;
 
 /**
  * Configurable UI properties
@@ -130,6 +133,45 @@ public class Theme {
 		return instance.frameShadowRadius;
 	}
 
+	private List<Controls> frameControlsOrder = null;
+
+	/**
+	 * @return title frame controls order
+	 */
+	public static List<Controls> getFrameControlsOrder() {
+		return instance.frameControlsOrder;
+	}
+
+	private int frameControlsWidth;
+	private int frameControlsWidthMin = 10, frameControlsWidthMax = 32;
+
+	/**
+	 * @return width of the frame controls
+	 */
+	public static int getFrameControlsWidth() {
+		return instance.frameControlsWidth;
+	}
+
+	private int frameControlsHeight;
+	private int frameControlsHeightMin = 10, frameControlsHeightMax = 32;
+
+	/**
+	 * @return height of the frame controls
+	 */
+	public static int getFrameControlsHeight() {
+		return instance.frameControlsHeight;
+	}
+
+	private int frameControlsBorder;
+	private int frameControlsBorderMin = 0, frameControlsBorderMax = 10;
+
+	/**
+	 * @return width of the frame controls
+	 */
+	public static int getFrameControlsBorder() {
+		return instance.frameControlsBorder;
+	}
+
 	private Color uiBgColor = null;
 
 	/**
@@ -141,6 +183,9 @@ public class Theme {
 
 	private float uiBgAlpha = 1.0f;
 
+	/**
+	 * @return opacity of the background of the ui
+	 */
 	public static float getUiBgAlpha() {
 		return instance.uiBgAlpha;
 	}
@@ -177,6 +222,15 @@ public class Theme {
 		frameShadowAlpha("frame.shadow.alpha"),
 		/** INT pixel radius of the frame shadow */
 		frameShadowRadius("frame.shadow.radius"),
+
+		/** List<bifstk.wm.Frame.Controls> title frame controls order */
+		frameControlsOrder("frame.controls.order"),
+		/** INT width of the frame controls */
+		frameControlsWidth("frame.controls.width"),
+		/** INT height of the frame controls */
+		frameControlsHeight("frame.controls.height"),
+		/** INT spacing border between frame controls */
+		frameControlsBorder("frame.controls.border"),
 
 		/** COLOR background color of the ui */
 		uiBgColor("ui.bg.color"),
@@ -303,6 +357,55 @@ public class Theme {
 				case frameUnfocusedAlpha: {
 					this.frameUnfocusedAlpha = clampf(Float.parseFloat(sval),
 							0.0f, 1.0f);
+					break;
+				}
+				case frameControlsOrder: {
+					Controls[] controls = Controls.values();
+					this.frameControlsOrder = new ArrayList<Controls>(
+							controls.length);
+					String[] str = sval.trim().split(" ");
+					if (str.length != controls.length) {
+						throw new BifstkException("Expected " + controls.length
+								+ " controls in string: " + sval);
+					}
+					for (int i = 0; i < controls.length; i++) {
+						for (int j = 0; j < controls.length; j++) {
+							if (str[i].equalsIgnoreCase(controls[j].getName())) {
+								if (this.frameControlsOrder
+										.contains(controls[j])) {
+									throw new BifstkException(
+											"Multiple definitions of frame control: "
+													+ controls[j].getName());
+								} else {
+									this.frameControlsOrder.add(controls[j]);
+								}
+							}
+						}
+					}
+					for (int i = 0; i < controls.length; i++) {
+						if (!this.frameControlsOrder.contains(controls[i])) {
+							throw new BifstkException("Missing frame control: "
+									+ controls[i].getName());
+						}
+					}
+					break;
+				}
+				case frameControlsWidth: {
+					this.frameControlsWidth = clampi(Integer.parseInt(sval),
+							this.frameControlsWidthMin,
+							this.frameControlsWidthMax);
+					break;
+				}
+				case frameControlsHeight: {
+					this.frameControlsHeight = clampi(Integer.parseInt(sval),
+							this.frameControlsHeightMin,
+							this.frameControlsHeightMax);
+					break;
+				}
+				case frameControlsBorder: {
+					this.frameControlsBorder = clampi(Integer.parseInt(sval),
+							this.frameControlsBorderMin,
+							this.frameControlsBorderMax);
 					break;
 				}
 				case uiBgColor: {

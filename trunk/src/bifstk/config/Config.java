@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import bifstk.BifstkException;
+import bifstk.util.BifstkException;
 
 /**
  * Bifstk's Configuration facility

@@ -13,6 +13,8 @@ frame.controls.order = Title Maximize Close
 frame.controls.border = 2
 frame.controls.width = 16
 frame.controls.height = 16
+frame.controls.maximize.image = default_maximize.png
+frame.controls.close.image = default_close.png
 
 root.background.color = darkGray
 

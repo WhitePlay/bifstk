@@ -1,5 +1,6 @@
 package bifstk.config;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+
+import org.newdawn.slick.Image;
 
 import bifstk.gl.Color;
 import bifstk.util.BifstkException;
@@ -172,6 +175,24 @@ public class Theme {
 		return instance.frameControlsBorder;
 	}
 
+	private Image frameControlCloseImage;
+
+	/**
+	 * @return the image for the close frame control
+	 */
+	public static Image getFrameControlCloseImage() {
+		return instance.frameControlCloseImage;
+	}
+
+	private Image frameControlMaximizeImage;
+
+	/**
+	 * @return the image for the maximize frame control
+	 */
+	public static Image getFrameControlMaximizeImage() {
+		return instance.frameControlMaximizeImage;
+	}
+
 	private Color uiBgColor = null;
 
 	/**
@@ -231,6 +252,10 @@ public class Theme {
 		frameControlsHeight("frame.controls.height"),
 		/** INT spacing border between frame controls */
 		frameControlsBorder("frame.controls.border"),
+		/** STRING path to the image for the close frame control */
+		frameControlsCloseImage("frame.controls.close.image"),
+		/** STRING path to the image for the maximize frame control */
+		frameControlsMaximizeImage("frame.controls.maximize.image"),
 
 		/** COLOR background color of the ui */
 		uiBgColor("ui.bg.color"),
@@ -251,6 +276,9 @@ public class Theme {
 	/** singleton instance */
 	private static Theme instance = null;
 
+	/** path to this file */
+	private String path = "";
+
 	/**
 	 * Default constructor
 	 * 
@@ -258,12 +286,15 @@ public class Theme {
 	 * @throws BifstkException theme could not be opened
 	 */
 	private Theme(String path) throws BifstkException {
+		File f = null;
 		FileInputStream in = null;
 		try {
-			in = new FileInputStream(path);
+			f = new File(path);
+			in = new FileInputStream(f);
 		} catch (FileNotFoundException e) {
 			throw new BifstkException("Could not find theme file", e);
 		}
+		this.path = f.getParent();
 
 		Properties props = new Properties();
 		try {
@@ -406,6 +437,16 @@ public class Theme {
 					this.frameControlsBorder = clampi(Integer.parseInt(sval),
 							this.frameControlsBorderMin,
 							this.frameControlsBorderMax);
+					break;
+				}
+				case frameControlsCloseImage: {
+					this.frameControlCloseImage = new Image(this.path + "/"
+							+ sval);
+					break;
+				}
+				case frameControlsMaximizeImage: {
+					this.frameControlMaximizeImage = new Image(this.path + "/"
+							+ sval);
 					break;
 				}
 				case uiBgColor: {

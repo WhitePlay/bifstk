@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.opengl.Texture;
 
 import bifstk.config.Fonts;
 import bifstk.config.Theme;
@@ -219,34 +221,53 @@ public class Frame implements Drawable, Clickable {
 
 					acc += titleWidth + controlBorder;
 				} else {
+					Image img = null;
+					Color col = null;
+
 					switch (c) {
 					case CLOSE:
+						img = Theme.getFrameControlCloseImage();
 						if (this.controlCloseDown && this.controlCloseHover)
-							Color.RED.use(alpha);
+							col = Color.RED;
 						else if (this.controlCloseHover)
-							Color.LIGHT_RED.use(alpha);
+							col = Color.LIGHT_RED;
 						else
-							Color.WHITE.use(alpha);
+							col = Color.WHITE;
 						break;
 					case MAXIMIZE:
+						img = Theme.getFrameControlMaximizeImage();
 						if (this.controlMaximizeDown
 								&& this.controlMaximizeHover)
-							Color.BLUE.use(alpha);
+							col = Color.BLUE;
 						else if (this.controlMaximizeHover)
-							Color.LIGHT_BLUE.use(alpha);
+							col = Color.LIGHT_BLUE;
 						else
-							Color.WHITE.use(alpha);
+							col = Color.WHITE;
 						break;
 					}
+
+					Texture tex = img.getTexture();
+					GL11.glEnable(GL11.GL_TEXTURE_2D);
+					GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex.getTextureID());
+					col.use(alpha);
 					GL11.glBegin(GL11.GL_QUADS);
+					GL11.glTexCoord2f(0.0f, 0.0f);
 					GL11.glVertex2i(x + borderWidth + acc, y + borderWidth);
+					GL11.glTexCoord2f(0.0f, 1.0f);
 					GL11.glVertex2i(x + borderWidth + acc, y + borderWidth
-							+ controlHeight);
-					GL11.glVertex2i(x + borderWidth + acc + controlWidth, y
-							+ borderWidth + controlHeight);
-					GL11.glVertex2i(x + borderWidth + acc + controlWidth, y
-							+ borderWidth);
+							+ tex.getTextureHeight());
+					GL11.glTexCoord2f(1.0f, 1.0f);
+					GL11.glVertex2i(
+							x + borderWidth + acc + tex.getTextureWidth(), y
+									+ borderWidth + tex.getTextureHeight());
+					GL11.glTexCoord2f(1.0f, 0.0f);
+					GL11.glVertex2i(
+							x + borderWidth + acc + tex.getTextureWidth(), y
+									+ borderWidth);
 					GL11.glEnd();
+
+					GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+
 					acc += controlWidth + controlBorder;
 					spaceLeft -= controlWidth + controlBorder;
 					controlsNum--;

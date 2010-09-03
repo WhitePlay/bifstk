@@ -37,7 +37,7 @@ public class Test implements Handler, Root {
 		case Keyboard.KEY_C:
 			if (Keyboard.getEventKeyState()) {
 				final Frame f = new Frame(50, 50);
-
+				/*
 				FlowBox b1 = new FlowBox(Orientation.VERTICAL);
 
 				FlowBox b2 = new FlowBox(Orientation.HORIZONTAL);
@@ -56,6 +56,7 @@ public class Test implements Handler, Root {
 				b1.addAfter(b3);
 
 				f.setContent(b1);
+				*/
 				f.setTitle("Frame title");
 				Bifstk.addFrame(f);
 

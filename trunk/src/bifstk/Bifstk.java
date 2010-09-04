@@ -247,6 +247,12 @@ public class Bifstk {
 		Bifstk.logic.getState().addFrame(f);
 	}
 
+	/**
+	 * Removes a Frame from the Bifstk Window Manager
+	 * 
+	 * @param f the Frame to remove from the WM
+	 * @throws ThreadAccessException method was called outside the Bifstk thread
+	 */
 	public static void removeFrame(Frame f) throws ThreadAccessException {
 		if (!Thread.currentThread().equals(Bifstk.runner)) {
 			throw new ThreadAccessException(

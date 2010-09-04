@@ -255,7 +255,7 @@ public class Frame implements Drawable, Clickable {
 					GL11.glEnable(GL11.GL_SCISSOR_TEST);
 					Util.pushScissor(x + borderWidth + acc, Display
 							.getDisplayMode().getHeight() - y - titlebarHeight,
-							img.getWidth(), img.getHeight());
+							controlWidth, controlHeight);
 
 					GL11.glEnable(GL11.GL_TEXTURE_2D);
 					GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex.getTextureID());

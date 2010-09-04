@@ -223,50 +223,64 @@ public class Frame implements Drawable, Clickable {
 				} else {
 					Image img = null;
 					Color col = null;
+					int yClickDec = 0;
 
 					switch (c) {
 					case CLOSE:
 						img = Theme.getFrameControlCloseImage();
-						if (this.controlCloseDown && this.controlCloseHover)
-							col = Color.RED;
-						else if (this.controlCloseHover)
-							col = Color.LIGHT_RED;
-						else
-							col = Color.WHITE;
+						if (this.controlCloseDown && this.controlCloseHover) {
+							col = Theme.getFrameControlsCloseClickColor();
+							yClickDec = 1;
+						} else if (this.controlCloseHover) {
+							col = Theme.getFrameControlsCloseHoverColor();
+						} else {
+							col = Theme.getFrameControlsCloseColor();
+						}
 						break;
 					case MAXIMIZE:
 						img = Theme.getFrameControlMaximizeImage();
 						if (this.controlMaximizeDown
-								&& this.controlMaximizeHover)
-							col = Color.BLUE;
-						else if (this.controlMaximizeHover)
-							col = Color.LIGHT_BLUE;
-						else
-							col = Color.WHITE;
+								&& this.controlMaximizeHover) {
+							col = Theme.getFrameControlsMaximizeClickColor();
+							yClickDec = 1;
+						} else if (this.controlMaximizeHover) {
+							col = Theme.getFrameControlsMaximizeHoverColor();
+						} else {
+							col = Theme.getFrameControlsMaximizeColor();
+						}
 						break;
 					}
-
 					Texture tex = img.getTexture();
+
+					GL11.glEnable(GL11.GL_SCISSOR_TEST);
+					Util.pushScissor(x + borderWidth + acc, Display
+							.getDisplayMode().getHeight() - y - titlebarHeight,
+							img.getWidth(), img.getHeight());
+
 					GL11.glEnable(GL11.GL_TEXTURE_2D);
 					GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex.getTextureID());
 					col.use(alpha);
 					GL11.glBegin(GL11.GL_QUADS);
 					GL11.glTexCoord2f(0.0f, 0.0f);
-					GL11.glVertex2i(x + borderWidth + acc, y + borderWidth);
+					GL11.glVertex2i(x + borderWidth + acc, y + yClickDec
+							+ borderWidth);
 					GL11.glTexCoord2f(0.0f, 1.0f);
-					GL11.glVertex2i(x + borderWidth + acc, y + borderWidth
-							+ tex.getTextureHeight());
+					GL11.glVertex2i(x + borderWidth + acc, y + yClickDec
+							+ borderWidth + tex.getTextureHeight());
 					GL11.glTexCoord2f(1.0f, 1.0f);
 					GL11.glVertex2i(
-							x + borderWidth + acc + tex.getTextureWidth(), y
-									+ borderWidth + tex.getTextureHeight());
+							x + borderWidth + acc + tex.getTextureWidth(),
+							y + yClickDec + borderWidth
+									+ tex.getTextureHeight());
 					GL11.glTexCoord2f(1.0f, 0.0f);
 					GL11.glVertex2i(
 							x + borderWidth + acc + tex.getTextureWidth(), y
-									+ borderWidth);
+									+ yClickDec + borderWidth);
 					GL11.glEnd();
 
 					GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+
+					Util.popScissor();
 
 					acc += controlWidth + controlBorder;
 					spaceLeft -= controlWidth + controlBorder;

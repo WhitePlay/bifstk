@@ -193,6 +193,60 @@ public class Theme {
 		return instance.frameControlMaximizeImage;
 	}
 
+	private Color frameControlsCloseColor;
+
+	/**
+	 * @return frame close control color
+	 */
+	public static Color getFrameControlsCloseColor() {
+		return instance.frameControlsCloseColor;
+	}
+
+	private Color frameControlsCloseHoverColor;
+
+	/**
+	 * @return close frame control color when hovered
+	 */
+	public static Color getFrameControlsCloseHoverColor() {
+		return instance.frameControlsCloseHoverColor;
+	}
+
+	private Color frameControlsCloseClickColor;
+
+	/**
+	 * @return close frame control color when clicked
+	 */
+	public static Color getFrameControlsCloseClickColor() {
+		return instance.frameControlsCloseClickColor;
+	}
+
+	private Color frameControlsMaximizeColor;
+
+	/**
+	 * @return frame Maximize control color
+	 */
+	public static Color getFrameControlsMaximizeColor() {
+		return instance.frameControlsMaximizeColor;
+	}
+
+	private Color frameControlsMaximizeHoverColor;
+
+	/**
+	 * @return Maximize frame control color when hovered
+	 */
+	public static Color getFrameControlsMaximizeHoverColor() {
+		return instance.frameControlsMaximizeHoverColor;
+	}
+
+	private Color frameControlsMaximizeClickColor;
+
+	/**
+	 * @return Maximize frame control color when clicked
+	 */
+	public static Color getFrameControlsMaximizeClickColor() {
+		return instance.frameControlsMaximizeClickColor;
+	}
+
 	private Color uiBgColor = null;
 
 	/**
@@ -254,8 +308,20 @@ public class Theme {
 		frameControlsBorder("frame.controls.border"),
 		/** STRING path to the image for the close frame control */
 		frameControlsCloseImage("frame.controls.close.image"),
+		/** COLOR close frame control color */
+		frameControlsCloseColor("frame.controls.close.color"),
+		/** COLOR close frame control color when hovered */
+		frameControlsCloseHoverColor("frame.controls.close.hover.color"),
+		/** COLOR close frame control color when clicked */
+		frameControlsCloseClickColor("frame.controls.close.click.color"),
 		/** STRING path to the image for the maximize frame control */
 		frameControlsMaximizeImage("frame.controls.maximize.image"),
+		/** COLOR maximize frame control color */
+		frameControlsMaximizeColor("frame.controls.maximize.color"),
+		/** COLOR maximize frame control color when hovered */
+		frameControlsMaximizeHoverColor("frame.controls.maximize.hover.color"),
+		/** COLOR maximize frame control color when hovered */
+		frameControlsMaximizeClickColor("frame.controls.maximize.click.color"),
 
 		/** COLOR background color of the ui */
 		uiBgColor("ui.bg.color"),
@@ -447,6 +513,30 @@ public class Theme {
 				case frameControlsMaximizeImage: {
 					this.frameControlMaximizeImage = new Image(this.path + "/"
 							+ sval);
+					break;
+				}
+				case frameControlsCloseColor: {
+					this.frameControlsCloseColor = Color.parse(sval);
+					break;
+				}
+				case frameControlsCloseHoverColor: {
+					this.frameControlsCloseHoverColor = Color.parse(sval);
+					break;
+				}
+				case frameControlsCloseClickColor: {
+					this.frameControlsCloseClickColor = Color.parse(sval);
+					break;
+				}
+				case frameControlsMaximizeColor: {
+					this.frameControlsMaximizeColor = Color.parse(sval);
+					break;
+				}
+				case frameControlsMaximizeHoverColor: {
+					this.frameControlsMaximizeHoverColor = Color.parse(sval);
+					break;
+				}
+				case frameControlsMaximizeClickColor: {
+					this.frameControlsMaximizeClickColor = Color.parse(sval);
 					break;
 				}
 				case uiBgColor: {

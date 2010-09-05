@@ -63,6 +63,15 @@ public class Theme {
 		return instance.frameBorderUnfocusedColor;
 	}
 
+	private boolean frameBorderRounded;
+
+	/**
+	 * @return true if frame border corners should be rounded
+	 */
+	public static boolean isFrameBorderRounded() {
+		return instance.frameBorderRounded;
+	}
+
 	private Color frameTitlebarFocusedColor = null;
 
 	/**
@@ -279,6 +288,8 @@ public class Theme {
 		frameBorderFocusedColor("frame.border.focused.color"),
 		/** COLOR frame border color when not focused */
 		frameBorderUnfocusedColor("frame.border.unfocused.color"),
+		/** BOOL true for rounded frame corners */
+		frameBorderRounded("frame.border.rounded"),
 		/** COLOR frame titlebar color when focused */
 		frameTitlebarFocusedColor("frame.titlebar.focused.color"),
 		/** COLOR frame titlebar color when not focused */
@@ -417,6 +428,10 @@ public class Theme {
 				}
 				case frameBorderUnfocusedColor: {
 					this.frameBorderUnfocusedColor = Color.parse(sval);
+					break;
+				}
+				case frameBorderRounded: {
+					this.frameBorderRounded = Boolean.parseBoolean(sval);
 					break;
 				}
 				case frameTitlebarFocusedColor: {

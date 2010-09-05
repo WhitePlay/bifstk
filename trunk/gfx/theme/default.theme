@@ -1,6 +1,7 @@
 frame.border.width = 4
 frame.border.focused.color = 135 178 204
 frame.border.unfocused.color = 212 212 212
+frame.border.rounded = true
 frame.titlebar.focused.color = 135 178 204
 frame.titlebar.unfocused.color = 212 212 212
 frame.moved.alpha = 0.5

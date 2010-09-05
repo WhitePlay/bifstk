@@ -436,122 +436,218 @@ public class Logic {
 					// TODO delegate to embedded component
 					break;
 				case RIGHT: {
-					if (!this.leftMouse.draggedLastPoll) {
-						dragged.setResized(true);
-						Cursors.setCursor(Type.RESIZE_RIGHT);
+					if (!dragged.isResizable()) {
+						if (!this.leftMouse.draggedLastPoll) {
+							dragged.setDragged(true);
+							Cursors.setCursor(Type.MOVE);
+						}
+						int nx = this.leftMouse.hoverX
+								- (leftMouse.clickX - leftMouse.dragX);
+						int ny = this.leftMouse.hoverY
+								- (leftMouse.clickY - leftMouse.dragY);
+						dragged.setPos(nx, ny);
+					} else {
+						if (!this.leftMouse.draggedLastPoll) {
+							dragged.setResized(true);
+							Cursors.setCursor(Type.RESIZE_RIGHT);
+						}
+						int nw = this.leftMouse.clickWidth
+								+ (this.leftMouse.hoverX - this.leftMouse.clickX);
+						dragged.setWidth(nw);
 					}
-					int nw = this.leftMouse.clickWidth
-							+ (this.leftMouse.hoverX - this.leftMouse.clickX);
-					dragged.setWidth(nw);
 				}
 					break;
 				case LEFT: {
-					if (!this.leftMouse.draggedLastPoll) {
-						dragged.setResized(true);
-						Cursors.setCursor(Type.RESIZE_LEFT);
+					if (!dragged.isResizable()) {
+						if (!this.leftMouse.draggedLastPoll) {
+							dragged.setDragged(true);
+							Cursors.setCursor(Type.MOVE);
+						}
+						int nx = this.leftMouse.hoverX
+								- (leftMouse.clickX - leftMouse.dragX);
+						int ny = this.leftMouse.hoverY
+								- (leftMouse.clickY - leftMouse.dragY);
+						dragged.setPos(nx, ny);
+					} else {
+						if (!this.leftMouse.draggedLastPoll) {
+							dragged.setResized(true);
+							Cursors.setCursor(Type.RESIZE_LEFT);
+						}
+						int dx = this.leftMouse.hoverX - this.leftMouse.clickX;
+						int nx = this.leftMouse.dragX
+								+ Math.min(
+										this.leftMouse.clickWidth
+												- dragged.getMinWidth(), dx);
+						int nw = this.leftMouse.clickWidth - dx;
+						dragged.setX(nx);
+						dragged.setWidth(nw);
 					}
-					int dx = this.leftMouse.hoverX - this.leftMouse.clickX;
-					int nx = this.leftMouse.dragX
-							+ Math.min(
-									this.leftMouse.clickWidth
-											- dragged.getMinWidth(), dx);
-					int nw = this.leftMouse.clickWidth - dx;
-					dragged.setX(nx);
-					dragged.setWidth(nw);
 				}
 					break;
 				case BOT: {
-					if (!this.leftMouse.draggedLastPoll) {
-						dragged.setResized(true);
-						Cursors.setCursor(Type.RESIZE_BOT);
+					if (!dragged.isResizable()) {
+						if (!this.leftMouse.draggedLastPoll) {
+							dragged.setDragged(true);
+							Cursors.setCursor(Type.MOVE);
+						}
+						int nx = this.leftMouse.hoverX
+								- (leftMouse.clickX - leftMouse.dragX);
+						int ny = this.leftMouse.hoverY
+								- (leftMouse.clickY - leftMouse.dragY);
+						dragged.setPos(nx, ny);
+					} else {
+						if (!this.leftMouse.draggedLastPoll) {
+							dragged.setResized(true);
+							Cursors.setCursor(Type.RESIZE_BOT);
+						}
+						int nh = this.leftMouse.clickHeight
+								+ (this.leftMouse.hoverY - this.leftMouse.clickY);
+						dragged.setHeight(nh);
 					}
-					int nh = this.leftMouse.clickHeight
-							+ (this.leftMouse.hoverY - this.leftMouse.clickY);
-					dragged.setHeight(nh);
 				}
 					break;
 				case TOP: {
-					if (!this.leftMouse.draggedLastPoll) {
-						dragged.setResized(true);
-						Cursors.setCursor(Type.RESIZE_TOP);
+					if (!dragged.isResizable()) {
+						if (!this.leftMouse.draggedLastPoll) {
+							dragged.setDragged(true);
+							Cursors.setCursor(Type.MOVE);
+						}
+						int nx = this.leftMouse.hoverX
+								- (leftMouse.clickX - leftMouse.dragX);
+						int ny = this.leftMouse.hoverY
+								- (leftMouse.clickY - leftMouse.dragY);
+						dragged.setPos(nx, ny);
+					} else {
+						if (!this.leftMouse.draggedLastPoll) {
+							dragged.setResized(true);
+							Cursors.setCursor(Type.RESIZE_TOP);
+						}
+						int dy = this.leftMouse.hoverY - this.leftMouse.clickY;
+						int ny = this.leftMouse.dragY
+								+ Math.min(
+										this.leftMouse.clickHeight
+												- dragged.getMinHeight(), dy);
+						int nh = this.leftMouse.clickHeight - dy;
+						dragged.setY(ny);
+						dragged.setHeight(nh);
 					}
-					int dy = this.leftMouse.hoverY - this.leftMouse.clickY;
-					int ny = this.leftMouse.dragY
-							+ Math.min(
-									this.leftMouse.clickHeight
-											- dragged.getMinHeight(), dy);
-					int nh = this.leftMouse.clickHeight - dy;
-					dragged.setY(ny);
-					dragged.setHeight(nh);
 				}
 					break;
 				case BOT_RIGHT: {
-					if (!this.leftMouse.draggedLastPoll) {
-						dragged.setResized(true);
-						Cursors.setCursor(Type.RESIZE_BOT_RIGHT);
+					if (!dragged.isResizable()) {
+						if (!this.leftMouse.draggedLastPoll) {
+							dragged.setDragged(true);
+							Cursors.setCursor(Type.MOVE);
+						}
+						int nx = this.leftMouse.hoverX
+								- (leftMouse.clickX - leftMouse.dragX);
+						int ny = this.leftMouse.hoverY
+								- (leftMouse.clickY - leftMouse.dragY);
+						dragged.setPos(nx, ny);
+					} else {
+						if (!this.leftMouse.draggedLastPoll) {
+							dragged.setResized(true);
+							Cursors.setCursor(Type.RESIZE_BOT_RIGHT);
+						}
+						int nw = this.leftMouse.clickWidth
+								+ (this.leftMouse.hoverX - this.leftMouse.clickX);
+						int nh = this.leftMouse.clickHeight
+								+ (this.leftMouse.hoverY - this.leftMouse.clickY);
+						dragged.setBounds(nw, nh);
 					}
-					int nw = this.leftMouse.clickWidth
-							+ (this.leftMouse.hoverX - this.leftMouse.clickX);
-					int nh = this.leftMouse.clickHeight
-							+ (this.leftMouse.hoverY - this.leftMouse.clickY);
-					dragged.setBounds(nw, nh);
 				}
 					break;
 				case TOP_RIGHT: {
-					if (!this.leftMouse.draggedLastPoll) {
-						dragged.setResized(true);
-						Cursors.setCursor(Type.RESIZE_TOP_RIGHT);
+					if (!dragged.isResizable()) {
+						if (!this.leftMouse.draggedLastPoll) {
+							dragged.setDragged(true);
+							Cursors.setCursor(Type.MOVE);
+						}
+						int nx = this.leftMouse.hoverX
+								- (leftMouse.clickX - leftMouse.dragX);
+						int ny = this.leftMouse.hoverY
+								- (leftMouse.clickY - leftMouse.dragY);
+						dragged.setPos(nx, ny);
+					} else {
+						if (!this.leftMouse.draggedLastPoll) {
+							dragged.setResized(true);
+							Cursors.setCursor(Type.RESIZE_TOP_RIGHT);
+						}
+						int nw = this.leftMouse.clickWidth
+								+ (this.leftMouse.hoverX - this.leftMouse.clickX);
+						int dy = this.leftMouse.hoverY - this.leftMouse.clickY;
+						int ny = this.leftMouse.dragY
+								+ Math.min(
+										this.leftMouse.clickHeight
+												- dragged.getMinHeight(), dy);
+						int nh = this.leftMouse.clickHeight - dy;
+						dragged.setY(ny);
+						dragged.setBounds(nw, nh);
 					}
-					int nw = this.leftMouse.clickWidth
-							+ (this.leftMouse.hoverX - this.leftMouse.clickX);
-					int dy = this.leftMouse.hoverY - this.leftMouse.clickY;
-					int ny = this.leftMouse.dragY
-							+ Math.min(
-									this.leftMouse.clickHeight
-											- dragged.getMinHeight(), dy);
-					int nh = this.leftMouse.clickHeight - dy;
-					dragged.setY(ny);
-					dragged.setBounds(nw, nh);
 				}
 					break;
 				case TOP_LEFT: {
-					if (!this.leftMouse.draggedLastPoll) {
-						dragged.setResized(true);
-						Cursors.setCursor(Type.RESIZE_TOP_LEFT);
-					}
+					if (!dragged.isResizable()) {
+						if (!this.leftMouse.draggedLastPoll) {
+							dragged.setDragged(true);
+							Cursors.setCursor(Type.MOVE);
+						}
+						int nx = this.leftMouse.hoverX
+								- (leftMouse.clickX - leftMouse.dragX);
+						int ny = this.leftMouse.hoverY
+								- (leftMouse.clickY - leftMouse.dragY);
+						dragged.setPos(nx, ny);
+					} else {
+						if (!this.leftMouse.draggedLastPoll) {
+							dragged.setResized(true);
+							Cursors.setCursor(Type.RESIZE_TOP_LEFT);
+						}
 
-					int dx = this.leftMouse.hoverX - this.leftMouse.clickX;
-					int nx = this.leftMouse.dragX
-							+ Math.min(
-									this.leftMouse.clickWidth
-											- dragged.getMinWidth(), dx);
-					int nw = this.leftMouse.clickWidth - dx;
-					int dy = this.leftMouse.hoverY - this.leftMouse.clickY;
-					int ny = this.leftMouse.dragY
-							+ Math.min(
-									this.leftMouse.clickHeight
-											- dragged.getMinHeight(), dy);
-					int nh = this.leftMouse.clickHeight - dy;
-					dragged.setX(nx);
-					dragged.setY(ny);
-					dragged.setBounds(nw, nh);
+						int dx = this.leftMouse.hoverX - this.leftMouse.clickX;
+						int nx = this.leftMouse.dragX
+								+ Math.min(
+										this.leftMouse.clickWidth
+												- dragged.getMinWidth(), dx);
+						int nw = this.leftMouse.clickWidth - dx;
+						int dy = this.leftMouse.hoverY - this.leftMouse.clickY;
+						int ny = this.leftMouse.dragY
+								+ Math.min(
+										this.leftMouse.clickHeight
+												- dragged.getMinHeight(), dy);
+						int nh = this.leftMouse.clickHeight - dy;
+						dragged.setX(nx);
+						dragged.setY(ny);
+						dragged.setBounds(nw, nh);
+					}
 				}
 					break;
 				case BOT_LEFT: {
-					if (!this.leftMouse.draggedLastPoll) {
-						dragged.setResized(true);
-						Cursors.setCursor(Type.RESIZE_BOT_LEFT);
+					if (!dragged.isResizable()) {
+						if (!this.leftMouse.draggedLastPoll) {
+							dragged.setDragged(true);
+							Cursors.setCursor(Type.MOVE);
+						}
+						int nx = this.leftMouse.hoverX
+								- (leftMouse.clickX - leftMouse.dragX);
+						int ny = this.leftMouse.hoverY
+								- (leftMouse.clickY - leftMouse.dragY);
+						dragged.setPos(nx, ny);
+					} else {
+						if (!this.leftMouse.draggedLastPoll) {
+							dragged.setResized(true);
+							Cursors.setCursor(Type.RESIZE_BOT_LEFT);
+						}
+						int dx = this.leftMouse.hoverX - this.leftMouse.clickX;
+						int nx = this.leftMouse.dragX
+								+ Math.min(
+										this.leftMouse.clickWidth
+												- dragged.getMinWidth(), dx);
+						int nw = this.leftMouse.clickWidth - dx;
+						int nh = this.leftMouse.clickHeight
+								+ (this.leftMouse.hoverY - this.leftMouse.clickY);
+						dragged.setX(nx);
+						dragged.setBounds(nw, nh);
 					}
-					int dx = this.leftMouse.hoverX - this.leftMouse.clickX;
-					int nx = this.leftMouse.dragX
-							+ Math.min(
-									this.leftMouse.clickWidth
-											- dragged.getMinWidth(), dx);
-					int nw = this.leftMouse.clickWidth - dx;
-					int nh = this.leftMouse.clickHeight
-							+ (this.leftMouse.hoverY - this.leftMouse.clickY);
-					dragged.setX(nx);
-					dragged.setBounds(nw, nh);
 				}
 					break;
 				}

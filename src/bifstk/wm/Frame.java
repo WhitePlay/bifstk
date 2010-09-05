@@ -54,6 +54,8 @@ public class Frame implements Drawable, Clickable {
 	private boolean hasTitlebar = true;
 	/** frame occupies all the space of the display */
 	private boolean maximized = false;
+	/** frame cannot be resized */
+	private boolean resizable = false;
 
 	/**
 	 * Frame controls and elements to put in the titlebar
@@ -310,6 +312,10 @@ public class Frame implements Drawable, Clickable {
 			int acc = 0;
 			int controlsNum = 2;
 
+			if (!this.isResizable()) {
+				controlsNum = 1;
+			}
+
 			// title & controls
 			List<Controls> controls = Theme.getFrameControlsOrder();
 			for (Controls c : controls) {
@@ -346,55 +352,62 @@ public class Frame implements Drawable, Clickable {
 						}
 						break;
 					case MAXIMIZE:
-						img = Theme.getFrameControlMaximizeImage();
-						if (this.controlMaximizeDown
-								&& this.controlMaximizeHover) {
-							col = Theme.getFrameControlsMaximizeClickColor();
-							yClickDec = 1;
-						} else if (this.controlMaximizeHover) {
-							col = Theme.getFrameControlsMaximizeHoverColor();
-						} else {
-							col = Theme.getFrameControlsMaximizeColor();
+						if (this.isResizable()) {
+							img = Theme.getFrameControlMaximizeImage();
+							if (this.controlMaximizeDown
+									&& this.controlMaximizeHover) {
+								col = Theme
+										.getFrameControlsMaximizeClickColor();
+								yClickDec = 1;
+							} else if (this.controlMaximizeHover) {
+								col = Theme
+										.getFrameControlsMaximizeHoverColor();
+							} else {
+								col = Theme.getFrameControlsMaximizeColor();
+							}
 						}
 						break;
 					}
-					Texture tex = img.getTexture();
+					if (img != null) {
+						Texture tex = img.getTexture();
 
-					GL11.glEnable(GL11.GL_SCISSOR_TEST);
-					Util.pushScissor(x + borderWidth + acc, Display
-							.getDisplayMode().getHeight()
-							- y
-							- controlHeight
-							- borderWidth, controlWidth, controlHeight);
+						GL11.glEnable(GL11.GL_SCISSOR_TEST);
+						Util.pushScissor(x + borderWidth + acc, Display
+								.getDisplayMode().getHeight()
+								- y
+								- controlHeight - borderWidth, controlWidth,
+								controlHeight);
 
-					GL11.glEnable(GL11.GL_TEXTURE_2D);
-					GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex.getTextureID());
-					col.use(alpha);
-					GL11.glBegin(GL11.GL_QUADS);
-					GL11.glTexCoord2f(0.0f, 0.0f);
-					GL11.glVertex2i(x + borderWidth + acc, y + yClickDec
-							+ borderWidth);
-					GL11.glTexCoord2f(0.0f, 1.0f);
-					GL11.glVertex2i(x + borderWidth + acc, y + yClickDec
-							+ borderWidth + tex.getTextureHeight());
-					GL11.glTexCoord2f(1.0f, 1.0f);
-					GL11.glVertex2i(
-							x + borderWidth + acc + tex.getTextureWidth(),
-							y + yClickDec + borderWidth
-									+ tex.getTextureHeight());
-					GL11.glTexCoord2f(1.0f, 0.0f);
-					GL11.glVertex2i(
-							x + borderWidth + acc + tex.getTextureWidth(), y
-									+ yClickDec + borderWidth);
-					GL11.glEnd();
+						GL11.glEnable(GL11.GL_TEXTURE_2D);
+						GL11.glBindTexture(GL11.GL_TEXTURE_2D,
+								tex.getTextureID());
+						col.use(alpha);
+						GL11.glBegin(GL11.GL_QUADS);
+						GL11.glTexCoord2f(0.0f, 0.0f);
+						GL11.glVertex2i(x + borderWidth + acc, y + yClickDec
+								+ borderWidth);
+						GL11.glTexCoord2f(0.0f, 1.0f);
+						GL11.glVertex2i(x + borderWidth + acc, y + yClickDec
+								+ borderWidth + tex.getTextureHeight());
+						GL11.glTexCoord2f(1.0f, 1.0f);
+						GL11.glVertex2i(
+								x + borderWidth + acc + tex.getTextureWidth(),
+								y + yClickDec + borderWidth
+										+ tex.getTextureHeight());
+						GL11.glTexCoord2f(1.0f, 0.0f);
+						GL11.glVertex2i(
+								x + borderWidth + acc + tex.getTextureWidth(),
+								y + yClickDec + borderWidth);
+						GL11.glEnd();
 
-					GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+						GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
 
-					Util.popScissor();
+						Util.popScissor();
 
-					acc += controlWidth + controlBorder;
-					spaceLeft -= controlWidth + controlBorder;
-					controlsNum--;
+						acc += controlWidth + controlBorder;
+						spaceLeft -= controlWidth + controlBorder;
+						controlsNum--;
+					}
 				}
 			}
 		}
@@ -520,6 +533,9 @@ public class Frame implements Drawable, Clickable {
 	 * @param w the new width of this frame
 	 */
 	public void setWidth(int w) {
+		if (!this.isResizable()) {
+			return;
+		}
 		w = Util.clamp(w, this.minBounds.getWidth(), Display.getDisplayMode()
 				.getWidth() - this.getX());
 		this.bounds.setWidth(w);
@@ -532,6 +548,9 @@ public class Frame implements Drawable, Clickable {
 	 * @param h the new height of this frame
 	 */
 	public void setHeight(int h) {
+		if (!this.isResizable()) {
+			return;
+		}
 		h = Util.clamp(h, this.minBounds.getHeight(), Display.getDisplayMode()
 				.getHeight() - this.getY());
 		this.bounds.setHeight(h);
@@ -546,6 +565,9 @@ public class Frame implements Drawable, Clickable {
 	 * @param h the new height of this frame
 	 */
 	public void setBounds(int w, int h) {
+		if (!this.isResizable()) {
+			return;
+		}
 		w = Util.clamp(w, this.minBounds.getWidth(), Display.getDisplayMode()
 				.getWidth() - this.getX());
 		h = Util.clamp(h, this.minBounds.getHeight(), Display.getDisplayMode()
@@ -682,6 +704,20 @@ public class Frame implements Drawable, Clickable {
 		} else {
 			this.setBounds(this.getWidth(), this.getHeight());
 		}
+	}
+
+	/**
+	 * @return true if this frame is resizable
+	 */
+	public boolean isResizable() {
+		return this.resizable;
+	}
+
+	/**
+	 * @param r true to make this frame resizable
+	 */
+	public void setResizable(boolean r) {
+		this.resizable = r;
 	}
 
 	/**
@@ -934,15 +970,10 @@ public class Frame implements Drawable, Clickable {
 
 		if (isTitle) {
 			int controlWidth = Theme.getFrameControlsWidth();
-			int controlHeight = Theme.getFrameControlsHeight();
 			int controlBorder = Theme.getFrameControlsBorder();
 			int spaceLeft = w - 2 * borderWidth;
 			int acc = 0;
 			int controlsNum = 2;
-
-			if (y + borderWidth + controlHeight < my) {
-				return Region.TITLE;
-			}
 
 			List<Controls> controls = Theme.getFrameControlsOrder();
 			for (Controls c : controls) {
@@ -963,7 +994,10 @@ public class Frame implements Drawable, Clickable {
 						case CLOSE:
 							return Region.CLOSE;
 						case MAXIMIZE:
-							return Region.MAXIMIZE;
+							if (this.isResizable())
+								return Region.MAXIMIZE;
+							else
+								return Region.TITLE;
 						}
 					}
 

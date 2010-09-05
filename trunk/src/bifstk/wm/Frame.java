@@ -162,13 +162,15 @@ public class Frame implements Drawable, Clickable {
 		}
 
 		Color borderCol = null;
+		Color borderBorderCol = null;
 		if (this.isFocused()) {
 			borderCol = Theme.getFrameBorderFocusedColor();
+			borderBorderCol = Theme.getFrameBorderBorderFocusedColor();
 		} else {
 			borderCol = Theme.getFrameBorderUnfocusedColor();
+			borderBorderCol = Theme.getFrameBorderBorderUnfocusedColor();
 		}
 		borderCol.use(alpha);
-
 		GL11.glBegin(GL11.GL_QUADS);
 		// top border
 		GL11.glVertex2i(x + borderWidth, y);
@@ -212,6 +214,43 @@ public class Frame implements Drawable, Clickable {
 					(float) Math.PI / 2.0f, precision, borderCol, alpha,
 					borderCol, alpha);
 
+			if (borderWidth > 1) {
+				// metaborder
+				Util.drawLineArc(x + borderWidth, y + borderWidth, borderWidth,
+						(float) Math.PI, (float) Math.PI / 2.0f, precision,
+						borderBorderCol, alpha);
+
+				Util.drawLineArc(x + w - borderWidth, y + borderWidth,
+						borderWidth, (float) -Math.PI / 2.0f,
+						(float) Math.PI / 2.0f, precision, borderBorderCol,
+						alpha);
+
+				Util.drawLineArc(x + w - borderWidth, y + h - borderWidth,
+						borderWidth, 0.0f, (float) Math.PI / 2.0f, precision,
+						borderBorderCol, alpha);
+
+				Util.drawLineArc(x + borderWidth, y + h - borderWidth,
+						borderWidth, (float) Math.PI / 2.0f,
+						(float) Math.PI / 2.0f, precision, borderBorderCol,
+						alpha);
+
+				GL11.glBegin(GL11.GL_LINES);
+				borderBorderCol.use(alpha);
+
+				GL11.glVertex2i(x + borderWidth, y + 1);
+				GL11.glVertex2i(x + w - borderWidth, y + 1);
+
+				GL11.glVertex2i(x + w, y + borderWidth);
+				GL11.glVertex2i(x + w, y + h - borderWidth);
+
+				GL11.glVertex2i(x + borderWidth, y + h);
+				GL11.glVertex2i(x + w - borderWidth, y + h);
+
+				GL11.glVertex2i(x + 1, y + borderWidth);
+				GL11.glVertex2i(x + 1, y + h - borderWidth);
+
+				GL11.glEnd();
+			}
 		} else {
 			GL11.glBegin(GL11.GL_QUADS);
 			GL11.glVertex2i(x, y);
@@ -234,6 +273,17 @@ public class Frame implements Drawable, Clickable {
 			GL11.glVertex2i(x + w - borderWidth, y + h - borderWidth);
 			GL11.glVertex2i(x + w, y + h - borderWidth);
 			GL11.glEnd();
+
+			if (borderWidth > 1) {
+				// metaborder
+				borderBorderCol.use(alpha);
+				GL11.glBegin(GL11.GL_LINE_LOOP);
+				GL11.glVertex2i(x + 2, y + 2);
+				GL11.glVertex2i(x + w - 1, y + 2);
+				GL11.glVertex2i(x + w - 1, y + h - 1);
+				GL11.glVertex2i(x + 2, y + h - 1);
+				GL11.glEnd();
+			}
 		}
 
 		if (this.isFocused()) {

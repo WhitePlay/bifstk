@@ -52,6 +52,26 @@ public class Util {
 	}
 
 	/**
+	 * Draws an arc circle as a colored line segment
+	 * 
+	 * @param cx abscissa center of the circle
+	 * @param cy ordinate center of the circle
+	 * @param r radius of the circle
+	 * @param startAngle starting angle of the arc
+	 * @param arcAngle angular length of the arc
+	 * @param edges number of edge segments to draw the arc
+	 * @param col line color
+	 * @param alpha line opacity
+	 */
+	public static void drawLineArc(float cx, float cy, float r,
+			float startAngle, float endAngle, int edges, Color col, float alpha) {
+		GL11.glBegin(GL11.GL_LINE_STRIP);
+		col.use(alpha);
+		drawArc(cx, cy, r, startAngle, endAngle, edges);
+		GL11.glEnd();
+	}
+
+	/**
 	 * Draws a filled arc circle
 	 * 
 	 * @param cx abscissa center of the circle

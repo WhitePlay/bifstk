@@ -72,6 +72,24 @@ public class Theme {
 		return instance.frameBorderRounded;
 	}
 
+	private Color frameBorderBorderFocusedColor;
+
+	/**
+	 * @return the color of the 1px border of the frame border when focused
+	 */
+	public static Color getFrameBorderBorderFocusedColor() {
+		return instance.frameBorderBorderFocusedColor;
+	}
+
+	private Color frameBorderBorderUnfocusedColor;
+
+	/**
+	 * @return the color of the 1px border of the frame border when not focused
+	 */
+	public static Color getFrameBorderBorderUnfocusedColor() {
+		return instance.frameBorderBorderUnfocusedColor;
+	}
+
 	private Color frameTitlebarFocusedColor = null;
 
 	/**
@@ -290,6 +308,10 @@ public class Theme {
 		frameBorderUnfocusedColor("frame.border.unfocused.color"),
 		/** BOOL true for rounded frame corners */
 		frameBorderRounded("frame.border.rounded"),
+		/** COLOR color of the border of the frame border */
+		frameBorderBorderFocusedColor("frame.border.border.focused.color"),
+		/** COLOR color of the border of the frame border */
+		frameBorderBorderUnfocusedColor("frame.border.border.unfocused.color"),
 		/** COLOR frame titlebar color when focused */
 		frameTitlebarFocusedColor("frame.titlebar.focused.color"),
 		/** COLOR frame titlebar color when not focused */
@@ -432,6 +454,14 @@ public class Theme {
 				}
 				case frameBorderRounded: {
 					this.frameBorderRounded = Boolean.parseBoolean(sval);
+					break;
+				}
+				case frameBorderBorderFocusedColor: {
+					this.frameBorderBorderFocusedColor = Color.parse(sval);
+					break;
+				}
+				case frameBorderBorderUnfocusedColor: {
+					this.frameBorderBorderUnfocusedColor = Color.parse(sval);
 					break;
 				}
 				case frameTitlebarFocusedColor: {

@@ -350,6 +350,9 @@ public class Logic {
 			// maximize frame control
 			if (this.leftMouse.clickedRegion.equals(Region.MAXIMIZE)) {
 				this.leftMouse.clickedFrame.setControlMaximizeDown(false);
+				this.leftMouse.clickedFrame.toggleMaximize();
+				this.leftMouse.hoverFrame.setControlMaximizeHover(false);
+
 			}
 		}
 

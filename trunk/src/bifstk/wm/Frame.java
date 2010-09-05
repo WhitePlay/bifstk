@@ -52,6 +52,8 @@ public class Frame implements Drawable, Clickable {
 	private String title = "";
 	/** frame has no titlebar if false */
 	private boolean hasTitlebar = true;
+	/** frame occupies all the space of the display */
+	private boolean maximized = false;
 
 	/**
 	 * Frame controls and elements to put in the titlebar
@@ -128,13 +130,21 @@ public class Frame implements Drawable, Clickable {
 	public void render(float alpha) {
 		int x, y, w, h;
 
+		int borderWidth = Theme.getFrameBorderWidth();
+		int titlebarHeight = getTitleBarHeight();
+
 		x = this.getX();
 		y = this.getY();
 		w = this.getWidth();
 		h = this.getHeight();
 
-		int borderWidth = Theme.getFrameBorderWidth();
-		int titlebarHeight = getTitleBarHeight();
+		if (this.isMaximized()) {
+			x = 0;
+			y = 0;
+			w = Display.getDisplayMode().getWidth();
+			h = Display.getDisplayMode().getHeight();
+			borderWidth = 0;
+		}
 
 		if (this.isDragged()) {
 			alpha *= Theme.getFrameMovedAlpha();
@@ -146,7 +156,7 @@ public class Frame implements Drawable, Clickable {
 			alpha *= Theme.getFrameUnfocusedAlpha();
 		}
 
-		if (Theme.isFrameShadowEnabled()) {
+		if (Theme.isFrameShadowEnabled() && !this.isMaximized()) {
 			Util.drawDroppedShadow(x, y, w, h, Theme.getFrameShadowRadius(),
 					Theme.getFrameShadowAlpha() * alpha);
 		}
@@ -601,6 +611,30 @@ public class Frame implements Drawable, Clickable {
 	}
 
 	/**
+	 * @return true if this frame is maximized
+	 */
+	public boolean isMaximized() {
+		return this.maximized;
+	}
+
+	/**
+	 * Maximize / unmaximize this frame
+	 */
+	public void toggleMaximize() {
+		this.maximized = !this.maximized;
+
+		if (this.maximized) {
+			if (this.content != null) {
+				this.content.setBounds(Display.getDisplayMode().getWidth(),
+						Display.getDisplayMode().getHeight()
+								- getTitleBarHeight());
+			}
+		} else {
+			this.setBounds(this.getWidth(), this.getHeight());
+		}
+	}
+
+	/**
 	 * Resize this frame to fit the preferred size of its content
 	 */
 	public void pack() {
@@ -707,7 +741,8 @@ public class Frame implements Drawable, Clickable {
 	 * @return true if the provided point is contained in this frame
 	 */
 	public boolean contains(int x, int y) {
-		return bounds.contains(x - pos.getX(), y - pos.getY());
+		return this.isMaximized()
+				|| bounds.contains(x - pos.getX(), y - pos.getY());
 	}
 
 	/**
@@ -721,12 +756,22 @@ public class Frame implements Drawable, Clickable {
 	public Region getRegion(int mx, int my) {
 		int x = this.getX();
 		int y = this.getY();
+		int w = this.getWidth();
+		int h = this.getHeight();
 
 		int px = 0;
 		int py = 0;
 
 		int borderWidth = Theme.getFrameBorderWidth();
 		int titlebarHeight = getTitleBarHeight();
+
+		if (this.isMaximized()) {
+			x = 0;
+			y = 0;
+			w = Display.getDisplayMode().getWidth();
+			h = Display.getDisplayMode().getHeight();
+			borderWidth = 0;
+		}
 
 		boolean isTitle = false;
 
@@ -736,11 +781,11 @@ public class Frame implements Drawable, Clickable {
 			px = 1; // left border
 		} else if (mx <= x + cornerWidth) {
 			px = 2; // center with left corner tolerance
-		} else if (mx <= x + this.getWidth() - cornerWidth) {
+		} else if (mx <= x + w - cornerWidth) {
 			px = 3; // center
-		} else if (mx <= x + this.getWidth() - borderWidth) {
+		} else if (mx <= x + w - borderWidth) {
 			px = 4; // center with right corner tolerance
-		} else if (mx <= x + this.getWidth()) {
+		} else if (mx <= x + w) {
 			px = 5; // right border
 		} else {
 			return Region.OUT;
@@ -754,11 +799,11 @@ public class Frame implements Drawable, Clickable {
 			py = 2; // titlebar with top corner tolerance
 		} else if (my <= y + borderWidth + titlebarHeight) {
 			py = 3; // titlebar
-		} else if (my <= y + this.getHeight() - cornerWidth) {
+		} else if (my <= y + h - cornerWidth) {
 			py = 4; // center
-		} else if (my <= y + this.getHeight() - borderWidth) {
+		} else if (my <= y + h - borderWidth) {
 			py = 5; // center with bottom corner tolerance
-		} else if (my <= y + this.getHeight()) {
+		} else if (my <= y + h) {
 			py = 6; // bottom border
 		} else {
 			return Region.OUT;
@@ -841,7 +886,7 @@ public class Frame implements Drawable, Clickable {
 			int controlWidth = Theme.getFrameControlsWidth();
 			int controlHeight = Theme.getFrameControlsHeight();
 			int controlBorder = Theme.getFrameControlsBorder();
-			int spaceLeft = this.getWidth() - 2 * borderWidth;
+			int spaceLeft = w - 2 * borderWidth;
 			int acc = 0;
 			int controlsNum = 2;
 

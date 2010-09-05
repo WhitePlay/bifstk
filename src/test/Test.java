@@ -6,16 +6,14 @@ import bifstk.Bifstk;
 import bifstk.Handler;
 import bifstk.Root;
 import bifstk.gl.Color;
-import bifstk.util.BifstkException;
 import bifstk.wm.Frame;
 import bifstk.wm.ui.Actionable;
-import bifstk.wm.ui.Button;
 import bifstk.wm.ui.CustomBorder;
-import bifstk.wm.ui.FlowBox;
-import bifstk.wm.ui.FlowBox.Orientation;
 import bifstk.wm.ui.Label;
 
 public class Test implements Handler, Root {
+
+	private int frameCount = 1;
 
 	@Override
 	public void init() {
@@ -37,29 +35,10 @@ public class Test implements Handler, Root {
 		case Keyboard.KEY_C:
 			if (Keyboard.getEventKeyState()) {
 				final Frame f = new Frame(50, 50);
-				/*
-				FlowBox b1 = new FlowBox(Orientation.VERTICAL);
-
-				FlowBox b2 = new FlowBox(Orientation.HORIZONTAL);
-				b2.addBefore(new Label("Foo"));
-				b2.addAfter(new Button("Bar"));
-
-				Button b = new Button("Gee");
-				b.setHandler(this);
-				b.setAction("bouton");
-
-				FlowBox b3 = new FlowBox(Orientation.HORIZONTAL);
-				b3.addBefore(new Label("Baz"));
-				b3.addAfter(new CustomBorder(b, 10, Color.GRAY));
-
-				b1.addBefore(b2);
-				b1.addAfter(b3);
-
-				f.setContent(b1);
-				*/
-				f.setTitle("Frame title");
+				f.setTitle("Frame #" + frameCount++);
+				// f.setContent(new CustomBorder(new Label("Lala"), 20,
+				// Color.BLUE));
 				Bifstk.addFrame(f);
-
 			}
 			break;
 

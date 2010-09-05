@@ -151,34 +151,80 @@ public class Frame implements Drawable, Clickable {
 					Theme.getFrameShadowAlpha() * alpha);
 		}
 
+		Color borderCol = null;
 		if (this.isFocused()) {
-			Theme.getFrameBorderFocusedColor().use(alpha);
+			borderCol = Theme.getFrameBorderFocusedColor();
 		} else {
-			Theme.getFrameBorderUnfocusedColor().use(alpha);
+			borderCol = Theme.getFrameBorderUnfocusedColor();
 		}
+		borderCol.use(alpha);
 
 		GL11.glBegin(GL11.GL_QUADS);
 		// top border
-		GL11.glVertex2i(x, y);
-		GL11.glVertex2i(x + w, y);
-		GL11.glVertex2i(x + w, y + borderWidth);
-		GL11.glVertex2i(x, y + borderWidth);
+		GL11.glVertex2i(x + borderWidth, y);
+		GL11.glVertex2i(x + w - borderWidth, y);
+		GL11.glVertex2i(x + w - borderWidth, y + borderWidth);
+		GL11.glVertex2i(x + borderWidth, y + borderWidth);
 		// left border
 		GL11.glVertex2i(x, y + borderWidth);
 		GL11.glVertex2i(x + borderWidth, y + borderWidth);
-		GL11.glVertex2i(x + borderWidth, y + h);
-		GL11.glVertex2i(x, y + h);
+		GL11.glVertex2i(x + borderWidth, y + h - borderWidth);
+		GL11.glVertex2i(x, y + h - borderWidth);
 		// right border
 		GL11.glVertex2i(x + w, y + borderWidth);
 		GL11.glVertex2i(x + w - borderWidth, y + borderWidth);
-		GL11.glVertex2i(x + w - borderWidth, y + h);
-		GL11.glVertex2i(x + w, y + h);
+		GL11.glVertex2i(x + w - borderWidth, y + h - borderWidth);
+		GL11.glVertex2i(x + w, y + h - borderWidth);
 		// bottom border
 		GL11.glVertex2i(x + borderWidth, y + h);
 		GL11.glVertex2i(x + w - borderWidth, y + h);
 		GL11.glVertex2i(x + w - borderWidth, y + h - borderWidth);
 		GL11.glVertex2i(x + borderWidth, y + h - borderWidth);
 		GL11.glEnd();
+
+		int precision = 5;
+		if (Theme.isFrameBorderRounded()) {
+			Util.drawFilledArc(x + borderWidth, y + borderWidth, borderWidth,
+					(float) Math.PI, (float) Math.PI / 2.0f, precision,
+					borderCol, alpha, borderCol, alpha);
+
+			Util.drawFilledArc(x + w - borderWidth, y + borderWidth,
+					borderWidth, (float) -Math.PI / 2.0f,
+					(float) Math.PI / 2.0f, precision, borderCol, alpha,
+					borderCol, alpha);
+
+			Util.drawFilledArc(x + w - borderWidth, y + h - borderWidth,
+					borderWidth, 0.0f, (float) Math.PI / 2.0f, precision,
+					borderCol, alpha, borderCol, alpha);
+
+			Util.drawFilledArc(x + borderWidth, y + h - borderWidth,
+					borderWidth, (float) Math.PI / 2.0f,
+					(float) Math.PI / 2.0f, precision, borderCol, alpha,
+					borderCol, alpha);
+
+		} else {
+			GL11.glBegin(GL11.GL_QUADS);
+			GL11.glVertex2i(x, y);
+			GL11.glVertex2i(x + borderWidth, y);
+			GL11.glVertex2i(x + borderWidth, y + borderWidth);
+			GL11.glVertex2i(x, y + borderWidth);
+
+			GL11.glVertex2i(x + w, y);
+			GL11.glVertex2i(x + w - borderWidth, y);
+			GL11.glVertex2i(x + w - borderWidth, y + borderWidth);
+			GL11.glVertex2i(x + w, y + borderWidth);
+
+			GL11.glVertex2i(x, y + h);
+			GL11.glVertex2i(x + borderWidth, y + h);
+			GL11.glVertex2i(x + borderWidth, y + h - borderWidth);
+			GL11.glVertex2i(x, y + h - borderWidth);
+
+			GL11.glVertex2i(x + w, y + h);
+			GL11.glVertex2i(x + w - borderWidth, y + h);
+			GL11.glVertex2i(x + w - borderWidth, y + h - borderWidth);
+			GL11.glVertex2i(x + w, y + h - borderWidth);
+			GL11.glEnd();
+		}
 
 		if (this.isFocused()) {
 			Theme.getFrameTitlebarFocusedColor().use(alpha);
@@ -212,8 +258,10 @@ public class Frame implements Drawable, Clickable {
 							* (controlWidth + controlBorder);
 					GL11.glEnable(GL11.GL_SCISSOR_TEST);
 					Util.pushScissor(x + borderWidth + acc, Display
-							.getDisplayMode().getHeight() - y - titlebarHeight,
-							titleWidth, titlebarHeight - borderWidth);
+							.getDisplayMode().getHeight()
+							- y
+							- titlebarHeight
+							- borderWidth, titleWidth, titlebarHeight);
 					Fonts.getNormal().drawString(x + borderWidth + acc,
 							y + borderWidth, this.title, Color.WHITE, alpha);
 					Util.popScissor();
@@ -254,8 +302,10 @@ public class Frame implements Drawable, Clickable {
 
 					GL11.glEnable(GL11.GL_SCISSOR_TEST);
 					Util.pushScissor(x + borderWidth + acc, Display
-							.getDisplayMode().getHeight() - y - titlebarHeight,
-							controlWidth, controlHeight);
+							.getDisplayMode().getHeight()
+							- y
+							- controlHeight
+							- borderWidth, controlWidth, controlHeight);
 
 					GL11.glEnable(GL11.GL_TEXTURE_2D);
 					GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex.getTextureID());

@@ -61,15 +61,17 @@ public class Util {
 	 * @param arcAngle angular length of the arc
 	 * @param edges number of edge segments to draw the arc
 	 * @param inColor color of the center of the circle
+	 * @param inAlpha opacity for inColor
 	 * @param outColor color of the edge of the circle
+	 * @param outAlpha opacity for outColor
 	 */
 	public static void drawFilledArc(float cx, float cy, float r,
 			float startAngle, float arcAngle, int edges, Color inColor,
-			Color outColor) {
+			float inAlpha, Color outColor, float outAlpha) {
 		GL11.glBegin(GL11.GL_TRIANGLE_FAN);
-		inColor.use();
+		inColor.use(inAlpha);
 		GL11.glVertex2f(cx, cy);
-		outColor.use();
+		outColor.use(outAlpha);
 		drawArc(cx, cy, r, startAngle, arcAngle, edges);
 		GL11.glEnd();
 	}
@@ -87,54 +89,59 @@ public class Util {
 	 */
 	public static void drawDroppedShadow(int x, int y, int w, int h,
 			int radius, float alpha) {
-		Color shadowCol = new Color(0.0f, 0.0f, 0.0f, alpha);
+		Color shadowCol = Color.BLACK;
 
 		GL11.glBegin(GL11.GL_QUADS);
 		// shadow: top
-		Color.TRANSP_BLACK.use();
+		shadowCol.use(0.0f);
 		GL11.glVertex2i(x, y - radius);
 		GL11.glVertex2i(x + w, y - radius);
-		shadowCol.use();
+		shadowCol.use(alpha);
 		GL11.glVertex2i(x + w, y);
 		GL11.glVertex2i(x, y);
 		// shadow: right
-		Color.TRANSP_BLACK.use();
+		shadowCol.use(0.0f);
 		GL11.glVertex2i(x + w + radius, y);
 		GL11.glVertex2i(x + w + radius, y + h);
-		shadowCol.use();
+		shadowCol.use(alpha);
 		GL11.glVertex2i(x + w, y + h);
 		GL11.glVertex2i(x + w, y);
 		// shadow: bot
-		Color.TRANSP_BLACK.use();
+		shadowCol.use(0.0f);
 		GL11.glVertex2i(x + w, y + h + radius);
 		GL11.glVertex2i(x, y + h + radius);
-		shadowCol.use();
+		shadowCol.use(alpha);
 		GL11.glVertex2i(x, y + h);
 		GL11.glVertex2i(x + w, y + h);
 		// shadow: left
-		Color.TRANSP_BLACK.use();
+		shadowCol.use(0.0f);
 		GL11.glVertex2i(x - radius, y + h);
 		GL11.glVertex2i(x - radius, y);
-		shadowCol.use();
+		shadowCol.use(alpha);
 		GL11.glVertex2i(x, y);
 		GL11.glVertex2i(x, y + h);
-
+		// center
+		shadowCol.use(alpha);
+		GL11.glVertex2i(x, y);
+		GL11.glVertex2i(x, y + h);
+		GL11.glVertex2i(x + w, y + h);
+		GL11.glVertex2i(x + w, y);
 		GL11.glEnd();
 
 		int precision = 5;
 
 		Util.drawFilledArc((float) x, (float) y, (float) radius,
 				(float) Math.PI, (float) Math.PI / 2.0f, precision, shadowCol,
-				Color.TRANSP_BLACK);
+				alpha, shadowCol, 0.0f);
 		Util.drawFilledArc((float) x + w, (float) y, (float) radius,
 				(float) -Math.PI / 2.0f, (float) Math.PI / 2.0f, precision,
-				shadowCol, Color.TRANSP_BLACK);
+				shadowCol, alpha, shadowCol, 0.0f);
 		Util.drawFilledArc((float) x + w, (float) y + h, (float) radius, 0.0f,
-				(float) Math.PI / 2.0f, precision, shadowCol,
-				Color.TRANSP_BLACK);
+				(float) Math.PI / 2.0f, precision, shadowCol, alpha, shadowCol,
+				0.0f);
 		Util.drawFilledArc((float) x, (float) y + h, (float) radius,
 				(float) Math.PI / 2.0f, (float) Math.PI / 2.0f, precision,
-				shadowCol, Color.TRANSP_BLACK);
+				shadowCol, alpha, shadowCol, 0.0f);
 	}
 
 	/**

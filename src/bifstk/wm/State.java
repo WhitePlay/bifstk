@@ -17,4 +17,12 @@ public interface State {
 	 */
 	public Deque<? extends Drawable> getFrames();
 
+	/**
+	 * The modal frame is always focused and on the foreground,
+	 * if present, it is the only frame that receives user input
+	 * 
+	 * @return the modal frame if there is one, or null
+	 */
+	public Drawable getModalFrame();
+	
 }

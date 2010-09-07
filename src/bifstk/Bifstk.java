@@ -262,6 +262,27 @@ public class Bifstk {
 	}
 
 	/**
+	 * Sets the current modal frame of the WM
+	 * <p>
+	 * If the WM has a modal frame, it becomes the only frame the user can
+	 * interact with, and stays focused in the foreground until closed using
+	 * setModalFrame(null)
+	 * <p>
+	 * Setting a modal frame when the WM already holds a modal frame causes the
+	 * old one to be replaced
+	 * 
+	 * @param f the Frame to define as modal, or null
+	 * @throws ThreadAccessException method was called outside the Bifstk thread
+	 */
+	public static void setModalFrame(Frame f) throws ThreadAccessException {
+		if (!Thread.currentThread().equals(Bifstk.runner)) {
+			throw new ThreadAccessException(
+					"This method cannot be called outside the Bifstk thread");
+		}
+		Bifstk.logic.getState().setModalFrame(f);
+	}
+
+	/**
 	 * Static initialization that doesn't require display creation
 	 */
 	private static void preDisplayInit() {

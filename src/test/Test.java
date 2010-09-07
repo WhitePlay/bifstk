@@ -14,6 +14,7 @@ import bifstk.wm.ui.Label;
 public class Test implements Handler, Root {
 
 	private int frameCount = 1;
+	private int modalCount = 1;
 
 	@Override
 	public void init() {
@@ -32,12 +33,19 @@ public class Test implements Handler, Root {
 			Bifstk.stop();
 			break;
 
+		case Keyboard.KEY_M:
+			if (Keyboard.getEventKeyState()) {
+				Frame f = new Frame(300, 240, 100, 70);
+				f.setContent(new Label("Boo!"));
+				f.setResizable(false);
+				// f.setTitlebar(false);
+				Bifstk.setModalFrame(f);
+			}
+			break;
 		case Keyboard.KEY_C:
 			if (Keyboard.getEventKeyState()) {
-				final Frame f = new Frame(50, 50);
+				Frame f = new Frame(100, 100);
 				f.setTitle("Frame #" + frameCount++);
-				// f.setContent(new CustomBorder(new Label("Lala"), 20,
-				// Color.BLUE));
 				Bifstk.addFrame(f);
 			}
 			break;
@@ -51,7 +59,7 @@ public class Test implements Handler, Root {
 
 	@Override
 	public void actionPerformed(String command, Actionable source) {
-		System.out.println(command + " " + source);
+
 	}
 
 	public static void main(String[] args) {

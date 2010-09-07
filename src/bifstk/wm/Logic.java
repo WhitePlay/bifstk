@@ -245,18 +245,24 @@ public class Logic {
 	 * Applies mouse events
 	 */
 	private void applyMouse() {
+		Drawable modalFrame = this.state.getModalFrame();
+		boolean modalIsHoverOrNull = (modalFrame == null || modalFrame == this.leftMouse.hoverFrame);
+		boolean modalIsLClickOrNull = (modalFrame == null || modalFrame == this.leftMouse.clickedFrame);
+		boolean modalIsRClickOrNull = (modalFrame == null || modalFrame == this.rightMouse.clickedFrame);
+		boolean modalIsCClickOrNull = (modalFrame == null || modalFrame == this.centerMouse.clickedFrame);
+
 		boolean focusFollowMouse = new Boolean(
 				Config.getValue(Property.wmFocuseFollowmouse));
 		// apply sloppy focus
 		if (focusFollowMouse && !this.leftMouse.clicked
 				&& !this.leftMouse.dragged) {
-			if (this.leftMouse.hoverFrame != null) {
+			if (this.leftMouse.hoverFrame != null && modalFrame == null) {
 				this.state.focusFrame(this.leftMouse.hoverFrame);
 			}
 		}
 
 		// frame controls hovering
-		if (this.leftMouse.hoverFrame != null) {
+		if (this.leftMouse.hoverFrame != null && modalIsHoverOrNull) {
 			this.leftMouse.hoverFrame
 					.setControlCloseHover(this.leftMouse.hoverRegion
 							.equals(Region.CLOSE));
@@ -267,6 +273,7 @@ public class Logic {
 
 		// propagate mouseHover to the frame and its content
 		if (this.leftMouse.hoverFrame != null
+				&& modalIsHoverOrNull
 				&& (this.leftMouse.lastHoverX != this.leftMouse.hoverX || this.leftMouse.lastHoverY != this.leftMouse.hoverY)) {
 			this.leftMouse.hoverFrame.mouseHover(this.leftMouse.hoverX
 					- this.leftMouse.hoverFrame.getX(), this.leftMouse.hoverY
@@ -274,13 +281,14 @@ public class Logic {
 		}
 		// propagate mouseOut to the frame
 		if (this.leftMouse.lastHoverFrame != null
+				&& modalIsHoverOrNull
 				&& !this.leftMouse.lastHoverFrame
 						.equals(this.leftMouse.hoverFrame)) {
 			this.leftMouse.lastHoverFrame.mouseOut();
 		}
 
 		// LMB click
-		if (this.leftMouse.clicked) {
+		if (this.leftMouse.clicked && modalIsLClickOrNull) {
 			Frame f = this.leftMouse.clickedFrame;
 			this.state.foregroundFrame(f);
 
@@ -317,7 +325,8 @@ public class Logic {
 
 		}
 		// LMB unclick
-		else if (this.leftMouse.downLastPoll && !this.leftMouse.down) {
+		else if (this.leftMouse.downLastPoll && !this.leftMouse.down
+				&& modalIsLClickOrNull) {
 			if (this.leftMouse.clickedFrame != null) {
 				// propagate mouse up to frame and content
 				this.leftMouse.clickedFrame.mouseUp(
@@ -338,7 +347,11 @@ public class Logic {
 				if (this.leftMouse.hoverRegion.equals(Region.CLOSE)
 						&& this.leftMouse.hoverFrame
 								.equals(this.leftMouse.clickedFrame)) {
-					Bifstk.removeFrame(this.leftMouse.clickedFrame);
+					if (modalFrame == this.leftMouse.clickedFrame) {
+						Bifstk.setModalFrame(null);
+					} else {
+						Bifstk.removeFrame(this.leftMouse.clickedFrame);
+					}
 					this.leftMouse.clickedFrame = null;
 					this.leftMouse.hoverFrame = null;
 					this.leftMouse.hoverRegion = Region.OUT;
@@ -357,7 +370,7 @@ public class Logic {
 		}
 
 		// RMB click
-		if (this.rightMouse.clicked) {
+		if (this.rightMouse.clicked && modalIsRClickOrNull) {
 			if (this.rightMouse.clickedFrame != null) {
 				this.rightMouse.clickedFrame.mouseDown(1);
 			}
@@ -369,7 +382,8 @@ public class Logic {
 
 		}
 		// RMB unclick
-		else if (!this.rightMouse.down && this.rightMouse.downLastPoll) {
+		else if (!this.rightMouse.down && this.rightMouse.downLastPoll
+				&& modalIsRClickOrNull) {
 			if (this.rightMouse.clickedFrame != null) {
 				this.rightMouse.clickedFrame.mouseUp(
 						1,
@@ -386,7 +400,7 @@ public class Logic {
 		}
 
 		// CMB click
-		if (this.centerMouse.clicked) {
+		if (this.centerMouse.clicked && modalIsCClickOrNull) {
 			if (this.centerMouse.clickedFrame != null) {
 				this.centerMouse.clickedFrame.mouseDown(2);
 			}
@@ -397,7 +411,8 @@ public class Logic {
 			}
 		}
 		// CMB unclick
-		else if (!this.centerMouse.down && this.centerMouse.downLastPoll) {
+		else if (!this.centerMouse.down && this.centerMouse.downLastPoll
+				&& modalIsCClickOrNull) {
 			if (this.centerMouse.clickedFrame != null) {
 				this.centerMouse.clickedFrame.mouseUp(
 						2,
@@ -414,7 +429,7 @@ public class Logic {
 		}
 
 		// mouse drag: window move/resize or delegate to child component
-		if (this.leftMouse.dragged) {
+		if (this.leftMouse.dragged && modalIsLClickOrNull) {
 			Frame dragged = this.leftMouse.draggedFrame;
 			if (dragged != null) {
 
@@ -670,8 +685,9 @@ public class Logic {
 			return;
 		}
 
+		Drawable modal = this.state.getModalFrame();
 		Frame f = this.leftMouse.hoverFrame;
-		if (f == null) {
+		if (f == null || (modal != null && modal != this.leftMouse.hoverFrame)) {
 			Cursors.setCursor(Type.POINTER);
 			return;
 		}

@@ -21,6 +21,11 @@ public class InternalState implements State {
 	private Frame focusedFrame = null;
 
 	/**
+	 * Modal frame: user can interact only with it while not null
+	 */
+	private Frame modalFrame = null;
+
+	/**
 	 * Default constructor
 	 */
 	public InternalState() {
@@ -30,6 +35,27 @@ public class InternalState implements State {
 	@Override
 	public Deque<? extends Drawable> getFrames() {
 		return this.frames;
+	}
+
+	@Override
+	public Drawable getModalFrame() {
+		return this.modalFrame;
+	}
+
+	/**
+	 * The modal frame is always focused and on the foreground, if present, it
+	 * is the only frame that receives user input
+	 * 
+	 * @param the modal frame if there should be one, or null
+	 */
+	public void setModalFrame(Frame f) {
+		if (this.modalFrame != null) {
+			removeFrame(modalFrame);
+		}
+		if (f != null) {
+			addFrame(f);
+		}
+		this.modalFrame = f;
 	}
 
 	/**

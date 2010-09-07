@@ -11,6 +11,7 @@ import bifstk.Root;
 import bifstk.config.Config;
 import bifstk.config.Property;
 import bifstk.config.Theme;
+import bifstk.gl.Color;
 import bifstk.util.BifstkException;
 import bifstk.util.Logger;
 
@@ -151,6 +152,16 @@ public class Renderer {
 				.descendingIterator();
 		while (it.hasNext()) {
 			f = it.next();
+
+			if (this.state.getModalFrame() == f) {
+				Color.BLACK.use(0.5f);
+				GL11.glBegin(GL11.GL_QUADS);
+				GL11.glVertex2i(0, 0);
+				GL11.glVertex2i(width, 0);
+				GL11.glVertex2i(width, height);
+				GL11.glVertex2i(0, height);
+				GL11.glEnd();
+			}
 			f.render(1.0f);
 		}
 	}

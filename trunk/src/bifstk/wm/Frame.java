@@ -55,7 +55,7 @@ public class Frame implements Drawable, Clickable {
 	/** frame occupies all the space of the display */
 	private boolean maximized = false;
 	/** frame cannot be resized */
-	private boolean resizable = false;
+	private boolean resizable = true;
 
 	/**
 	 * Frame controls and elements to put in the titlebar
@@ -718,6 +718,26 @@ public class Frame implements Drawable, Clickable {
 	 */
 	public void setResizable(boolean r) {
 		this.resizable = r;
+	}
+
+	/**
+	 * @return true if this frame has a titlebar
+	 */
+	public boolean hasTitlebar() {
+		return this.hasTitlebar;
+	}
+
+	/**
+	 * @param t true for this frame to have a titlebar
+	 */
+	public void setTitlebar(boolean t) {
+		this.hasTitlebar = t;
+		if (this.content != null) {
+			this.content.setBounds(
+					this.getWidth() - 2 * Theme.getFrameBorderWidth(),
+					this.getHeight() - 2 * Theme.getFrameBorderWidth()
+							- this.getTitleBarHeight());
+		}
 	}
 
 	/**

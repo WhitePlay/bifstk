@@ -27,6 +27,13 @@ frame.controls.close.hover.color = white
 frame.controls.close.click.color = 255 200 200
 
 root.background.color = darkGray
+root.background.modal.color = black
+root.background.modal.alpha = 0.5
 
 ui.bg.color = 212 212 212
 ui.bg.alpha = 1.0
+
+ui.button.color = 190 190 190
+ui.button.hover.color = 210 210 210
+ui.button.click.color = 130 130 130
+ui.button.border.color = 160 160 160

@@ -2,6 +2,7 @@ package bifstk.wm.ui;
 
 import bifstk.wm.Clickable;
 import bifstk.wm.Drawable;
+import bifstk.wm.Frame;
 import bifstk.wm.geom.Rectangle;
 
 /**
@@ -16,6 +17,9 @@ public abstract class Widget implements Drawable, Clickable {
 
 	/** dimension to attain if possible */
 	private Rectangle preferredBounds = new Rectangle();
+
+	/** frame this widget is the content of, or null */
+	private Frame frame = null;
 
 	/**
 	 * The geometry of a Widget is handled by the frame holding it, or its
@@ -159,5 +163,32 @@ public abstract class Widget implements Drawable, Clickable {
 	 */
 	public Container getParent() {
 		return this.parent;
+	}
+
+	/**
+	 * A widget added to a Frame as {@link Frame#setContent(Widget)} holds a
+	 * reference to its Frame. Other widgets this widget may contain do not hold
+	 * this reference, but it can be inferred through the {@link #getParent()}
+	 * and {@link #getFrame()}
+	 * 
+	 * @param f the Frame holding this Widget as content
+	 */
+	public void setFrame(Frame f) {
+		this.frame = f;
+	}
+
+	/**
+	 * @return the Frame containing this Widget
+	 */
+	public Frame getFrame() {
+		if (this.frame == null) {
+			if (this.getParent() == null) {
+				return null;
+			} else {
+				return this.getParent().getFrame();
+			}
+		} else {
+			return this.frame;
+		}
 	}
 }

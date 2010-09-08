@@ -675,7 +675,11 @@ public class Frame implements Drawable, Clickable {
 	 * @param w the content of the frame
 	 */
 	public void setContent(Widget w) {
+		if (this.content != null) {
+			this.content.setFrame(null);
+		}
 		this.content = w;
+		this.content.setFrame(this);
 		this.content.setBounds(
 				this.getWidth() - 2 * Theme.getFrameBorderWidth(),
 				this.getHeight() - 2 * Theme.getFrameBorderWidth()
@@ -693,6 +697,10 @@ public class Frame implements Drawable, Clickable {
 	 * Maximize / unmaximize this frame
 	 */
 	public void toggleMaximize() {
+		if (!this.hasTitlebar) {
+			return;
+		}
+
 		this.maximized = !this.maximized;
 
 		if (this.maximized) {
@@ -731,6 +739,10 @@ public class Frame implements Drawable, Clickable {
 	 * @param t true for this frame to have a titlebar
 	 */
 	public void setTitlebar(boolean t) {
+		if (this.isMaximized()) {
+			return;
+		}
+
 		this.hasTitlebar = t;
 		if (this.content != null) {
 			this.content.setBounds(
@@ -759,9 +771,10 @@ public class Frame implements Drawable, Clickable {
 	@Override
 	public void mouseHover(int x, int y) {
 		int border = Theme.getFrameBorderWidth();
-		if (border < x && x < this.getWidth() - border
+		boolean inside = border < x && x < this.getWidth() - border
 				&& border + getTitleBarHeight() < y
-				&& y < this.getHeight() - border) {
+				&& y < this.getHeight() - border;
+		if (inside || this.isMaximized()) {
 			if (this.content != null) {
 				this.content.mouseHover(x - border, y - border
 						- getTitleBarHeight());
@@ -988,7 +1001,9 @@ public class Frame implements Drawable, Clickable {
 			}
 		}
 
-		if (isTitle) {
+		if (isTitle && !this.hasTitlebar()) {
+			return Region.CONTENT;
+		} else if (isTitle) {
 			int controlWidth = Theme.getFrameControlsWidth();
 			int controlBorder = Theme.getFrameControlsBorder();
 			int spaceLeft = w - 2 * borderWidth;

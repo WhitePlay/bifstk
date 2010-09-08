@@ -11,7 +11,6 @@ import bifstk.Root;
 import bifstk.config.Config;
 import bifstk.config.Property;
 import bifstk.config.Theme;
-import bifstk.gl.Color;
 import bifstk.util.BifstkException;
 import bifstk.util.Logger;
 
@@ -153,8 +152,10 @@ public class Renderer {
 		while (it.hasNext()) {
 			f = it.next();
 
+			// display a mask when a modal is shown
 			if (this.state.getModalFrame() == f) {
-				Color.BLACK.use(0.5f);
+				float modalAlpha = Theme.getRootBackgroundModalAlpha();
+				Theme.getRootBackgroundModalColor().use(modalAlpha);
 				GL11.glBegin(GL11.GL_QUADS);
 				GL11.glVertex2i(0, 0);
 				GL11.glVertex2i(width, 0);
@@ -162,6 +163,8 @@ public class Renderer {
 				GL11.glVertex2i(0, height);
 				GL11.glEnd();
 			}
+
+			// render the frame
 			f.render(1.0f);
 		}
 	}

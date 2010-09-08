@@ -44,19 +44,29 @@ public class Button extends Actionable {
 
 		int w = this.getWidth();
 		int h = this.getHeight();
+		float a = Theme.getUiBgAlpha() * alpha;
 
-		if (this.mouseClicked) {
-			Color.LIGHT_BLUE.use(alpha * Theme.getUiBgAlpha());
+		if (this.mouseClicked && this.mouseHover) {
+			Theme.getUiButtonClickColor().use(a);
 		} else if (this.mouseHover) {
-			Color.LIGHT_RED.use(alpha * Theme.getUiBgAlpha());
+			Theme.getUiButtonHoverColor().use(a);
 		} else {
-			Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
+			Theme.getUiButtonColor().use(a);
 		}
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glVertex2i(0, 0);
 		GL11.glVertex2i(w, 0);
 		GL11.glVertex2i(w, h);
 		GL11.glVertex2i(0, h);
+		GL11.glEnd();
+
+		Theme.getUiButtonBorderColor().use(a);
+		GL11.glBegin(GL11.GL_LINE_LOOP);
+		GL11.glVertex2i(1, 1);
+		GL11.glVertex2i(w, 1);
+		GL11.glVertex2i(w, h);
+		GL11.glVertex2i(1, h);
+
 		GL11.glEnd();
 
 		int lx, ly;
@@ -70,20 +80,18 @@ public class Button extends Actionable {
 		} else {
 			ly = 0;
 		}
-		Fonts.getNormal().drawString(lx + 1, ly + 1, this.text, Color.WHITE,
-				alpha);
 		Fonts.getNormal().drawString(lx, ly, this.text, Color.BLACK, alpha);
 
 	}
 
 	@Override
 	public int getPreferredWidth() {
-		return Fonts.getNormal().getWidth(this.text);
+		return Fonts.getNormal().getWidth(this.text + "  ");
 	}
 
 	@Override
 	public int getPreferredHeight() {
-		return Fonts.getNormal().getHeight();
+		return Fonts.getNormal().getHeight() + 4;
 	}
 
 	@Override

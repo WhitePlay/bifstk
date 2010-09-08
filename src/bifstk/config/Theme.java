@@ -35,6 +35,24 @@ public class Theme {
 		return instance.rootBackgroundColor;
 	}
 
+	private Color rootBackgroundModalColor = null;
+
+	/**
+	 * @return color of the mask displayed when a modal is shown
+	 */
+	public static Color getRootBackgroundModalColor() {
+		return instance.rootBackgroundModalColor;
+	}
+
+	private float rootBackgroundModalAlpha;
+
+	/**
+	 * @return opacity of the mask displayed when a modal is shown
+	 */
+	public static float getRootBackgroundModalAlpha() {
+		return instance.rootBackgroundModalAlpha;
+	}
+
 	private int frameBorderWidth;
 	private int frameBorderWidthMin = 1, frameBorderWidthMax = 10;
 
@@ -292,6 +310,42 @@ public class Theme {
 		return instance.uiBgAlpha;
 	}
 
+	private Color uiButtonColor = null;
+
+	/**
+	 * @return the background color of a Button
+	 */
+	public static Color getUiButtonColor() {
+		return instance.uiButtonColor;
+	}
+
+	private Color uiButtonHoverColor = null;
+
+	/**
+	 * @return the background color of a Button when hovered
+	 */
+	public static Color getUiButtonHoverColor() {
+		return instance.uiButtonHoverColor;
+	}
+
+	private Color uiButtonClickColor = null;
+
+	/**
+	 * @return the background color of a Button when clicked
+	 */
+	public static Color getUiButtonClickColor() {
+		return instance.uiButtonClickColor;
+	}
+
+	private Color uiButtonBorderColor = null;
+
+	/**
+	 * @return the border color of a Button
+	 */
+	public static Color getUiButtonBorderColor() {
+		return instance.uiButtonBorderColor;
+	}
+
 	/**
 	 * Available (and mandatory) properties
 	 */
@@ -299,6 +353,10 @@ public class Theme {
 
 		/** COLOR root background color */
 		rootBackgroundColor("root.background.color"),
+		/** COLOR color superposed to the root bg when a modal frame is shown */
+		rootBackgroundModalColor("root.background.modal.color"),
+		/** FLOAT opacity of the color layered when a modal is shown */
+		rootBackgroundModalAlpha("root.background.modal.alpha"),
 
 		/** INT pixel width of the border around the frame */
 		frameBorderWidth("frame.border.width"),
@@ -359,7 +417,16 @@ public class Theme {
 		/** COLOR background color of the ui */
 		uiBgColor("ui.bg.color"),
 		/** FLOAT opacity of the background of the ui */
-		uiBgAlpha("ui.bg.alpha");
+		uiBgAlpha("ui.bg.alpha"),
+
+		/** COLOR color of the ui button border */
+		uiButtonBorderColor("ui.button.border.color"),
+		/** COLOR color of the ui button background */
+		uiButtonColor("ui.button.color"),
+		/** COLOR color of the ui button background when focused */
+		uiButtonHoverColor("ui.button.hover.color"),
+		/** COLOR color of the ui button background when clicked */
+		uiButtonClickColor("ui.button.click.color");
 
 		private String name = "";
 
@@ -437,6 +504,15 @@ public class Theme {
 				switch (prop.getKey()) {
 				case rootBackgroundColor: {
 					this.rootBackgroundColor = Color.parse(sval);
+					break;
+				}
+				case rootBackgroundModalColor: {
+					this.rootBackgroundModalColor = Color.parse(sval);
+					break;
+				}
+				case rootBackgroundModalAlpha: {
+					this.rootBackgroundModalAlpha = clampf(
+							Float.parseFloat(sval), 0.0f, 1.0f);
 					break;
 				}
 				case frameBorderWidth: {
@@ -590,6 +666,22 @@ public class Theme {
 				}
 				case uiBgAlpha: {
 					this.uiBgAlpha = clampf(Float.parseFloat(sval), 0.0f, 1.0f);
+					break;
+				}
+				case uiButtonColor: {
+					this.uiButtonColor = Color.parse(sval);
+					break;
+				}
+				case uiButtonHoverColor: {
+					this.uiButtonHoverColor = Color.parse(sval);
+					break;
+				}
+				case uiButtonClickColor: {
+					this.uiButtonClickColor = Color.parse(sval);
+					break;
+				}
+				case uiButtonBorderColor: {
+					this.uiButtonBorderColor = Color.parse(sval);
 					break;
 				}
 				}

@@ -40,11 +40,11 @@ public class Button extends Actionable {
 	}
 
 	@Override
-	public void render(float alpha) {
+	public void render(float alpha, Color uiBg, float uiAlpha) {
 
 		int w = this.getWidth();
 		int h = this.getHeight();
-		float a = Theme.getUiBgAlpha() * alpha;
+		float a = uiAlpha * alpha;
 
 		if (this.mouseClicked && this.mouseHover) {
 			Theme.getUiButtonClickColor().use(a);

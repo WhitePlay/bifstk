@@ -3,7 +3,6 @@ package bifstk.wm.ui;
 import org.lwjgl.opengl.GL11;
 
 import bifstk.config.Fonts;
-import bifstk.config.Theme;
 import bifstk.gl.Color;
 import bifstk.wm.geom.Rectangle;
 
@@ -36,12 +35,12 @@ public class Label extends Widget {
 	}
 
 	@Override
-	public void render(float alpha) {
+	public void render(float alpha, Color uiBg, float uiAlpha) {
 
 		int w = this.getWidth();
 		int h = this.getHeight();
 
-		Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
+		uiBg.use(alpha * uiAlpha);
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glVertex2i(0, 0);
 		GL11.glVertex2i(w, 0);

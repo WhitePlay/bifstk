@@ -134,7 +134,7 @@ public class Frame implements Drawable, Clickable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void render(float alpha) {
+	public void render(float alpha, Color uiColor, float uiAlpha) {
 		int x, y, w, h;
 
 		int borderWidth = getBorderWidth();
@@ -163,11 +163,11 @@ public class Frame implements Drawable, Clickable {
 		Color borderCol = null;
 		Color borderBorderCol = null;
 		if (this.isFocused()) {
-			borderCol = Theme.getFrameBorderFocusedColor();
-			borderBorderCol = Theme.getFrameBorderBorderFocusedColor();
+			borderCol = getBorderFocusedColor();
+			borderBorderCol = getBorderBorderFocusedColor();
 		} else {
-			borderCol = Theme.getFrameBorderUnfocusedColor();
-			borderBorderCol = Theme.getFrameBorderBorderUnfocusedColor();
+			borderCol = getBorderUnfocusedColor();
+			borderBorderCol = getBorderBorderUnfocusedColor();
 		}
 		borderCol.use(alpha);
 		GL11.glBegin(GL11.GL_QUADS);
@@ -427,7 +427,7 @@ public class Frame implements Drawable, Clickable {
 			Util.pushScissor(x + borderWidth, Display.getDisplayMode()
 					.getHeight() - (y + h) + borderWidth, w - 2 * borderWidth,
 					h - 2 * borderWidth - titlebarHeight);
-			this.content.render(alpha);
+			this.content.render(alpha, uiColor, uiAlpha);
 			Util.popScissor();
 			GL11.glDisable(GL11.GL_SCISSOR_TEST);
 			GL11.glPopMatrix();
@@ -1053,12 +1053,32 @@ public class Frame implements Drawable, Clickable {
 	/**
 	 * @return pixel width of the frame border
 	 */
-	private int getBorderWidth() {
+	protected int getBorderWidth() {
 		if (this.isMaximized()) {
 			return 0;
 		} else {
 			return Theme.getFrameBorderWidth();
 		}
+	}
+
+	protected Color getUiBgColor() {
+		return Theme.getUiBgColor();
+	}
+
+	protected Color getBorderFocusedColor() {
+		return Theme.getFrameBorderFocusedColor();
+	}
+
+	protected Color getBorderUnfocusedColor() {
+		return Theme.getFrameBorderUnfocusedColor();
+	}
+
+	protected Color getBorderBorderFocusedColor() {
+		return Theme.getFrameBorderBorderFocusedColor();
+	}
+
+	protected Color getBorderBorderUnfocusedColor() {
+		return Theme.getFrameBorderBorderUnfocusedColor();
 	}
 
 	@Override

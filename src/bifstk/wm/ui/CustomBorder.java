@@ -90,15 +90,15 @@ public class CustomBorder extends Border {
 	}
 
 	@Override
-	public void render(float alpha) {
+	public void render(float alpha, Color uiBg, float uiAlpha) {
 		int w = Math.max(left + right, this.getWidth());
 		int h = Math.max(top + bot, this.getHeight());
 
 		if (this.hasChildren()) {
 			if (this.color == null) {
-				Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
+				uiBg.use(alpha * uiAlpha);
 			} else {
-				this.color.use(alpha * Theme.getUiBgAlpha());
+				this.color.use(alpha * uiAlpha);
 			}
 			// top
 			GL11.glBegin(GL11.GL_QUADS);
@@ -131,7 +131,7 @@ public class CustomBorder extends Border {
 				GL11.glPushMatrix();
 				GL11.glTranslatef(left, top, 0);
 
-				this.getContent().render(alpha);
+				this.getContent().render(alpha, uiBg, uiAlpha);
 
 				GL11.glPopMatrix();
 				Util.popScissor();

@@ -165,7 +165,7 @@ public class Renderer {
 			}
 
 			// render the frame
-			f.render(1.0f);
+			f.render(1.0f, Theme.getUiBgColor(), Theme.getUiBgAlpha());
 		}
 	}
 

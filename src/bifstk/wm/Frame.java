@@ -31,6 +31,11 @@ public class Frame implements Drawable, Clickable {
 	/** position in the WM */
 	private Point pos = null;
 
+	/** backup bounds for switching back from maximized mode */
+	private Rectangle windowedBounds = null;
+	/** backup position for switching back from maximized mode */
+	private Point windowedPos = null;
+
 	/** minimum dimensions */
 	private Rectangle minBounds = null;
 
@@ -132,21 +137,13 @@ public class Frame implements Drawable, Clickable {
 	public void render(float alpha) {
 		int x, y, w, h;
 
-		int borderWidth = Theme.getFrameBorderWidth();
+		int borderWidth = getBorderWidth();
 		int titlebarHeight = getTitleBarHeight();
 
 		x = this.getX();
 		y = this.getY();
 		w = this.getWidth();
 		h = this.getHeight();
-
-		if (this.isMaximized()) {
-			x = 0;
-			y = 0;
-			w = Display.getDisplayMode().getWidth();
-			h = Display.getDisplayMode().getHeight();
-			borderWidth = 0;
-		}
 
 		if (this.isDragged()) {
 			alpha *= Theme.getFrameMovedAlpha();
@@ -540,7 +537,7 @@ public class Frame implements Drawable, Clickable {
 				.getWidth() - this.getX());
 		this.bounds.setWidth(w);
 		if (this.content != null) {
-			this.content.setWidth(w - 2 * Theme.getFrameBorderWidth());
+			this.content.setWidth(w - 2 * getBorderWidth());
 		}
 	}
 
@@ -555,7 +552,7 @@ public class Frame implements Drawable, Clickable {
 				.getHeight() - this.getY());
 		this.bounds.setHeight(h);
 		if (this.content != null) {
-			this.content.setHeight(h - 2 * Theme.getFrameBorderWidth()
+			this.content.setHeight(h - 2 * getBorderWidth()
 					- this.getTitleBarHeight());
 		}
 	}
@@ -574,8 +571,8 @@ public class Frame implements Drawable, Clickable {
 				.getHeight() - this.getY());
 		this.bounds.setBounds(w, h);
 		if (this.content != null) {
-			this.content.setBounds(w - 2 * Theme.getFrameBorderWidth(), h - 2
-					* Theme.getFrameBorderWidth() - this.getTitleBarHeight());
+			this.content.setBounds(w - 2 * getBorderWidth(), h - 2
+					* getBorderWidth() - this.getTitleBarHeight());
 		}
 	}
 
@@ -681,8 +678,8 @@ public class Frame implements Drawable, Clickable {
 		this.content = w;
 		this.content.setFrame(this);
 		this.content.setBounds(
-				this.getWidth() - 2 * Theme.getFrameBorderWidth(),
-				this.getHeight() - 2 * Theme.getFrameBorderWidth()
+				this.getWidth() - 2 * getBorderWidth(),
+				this.getHeight() - 2 * getBorderWidth()
 						- this.getTitleBarHeight());
 	}
 
@@ -704,13 +701,18 @@ public class Frame implements Drawable, Clickable {
 		this.maximized = !this.maximized;
 
 		if (this.maximized) {
-			if (this.content != null) {
-				this.content.setBounds(Display.getDisplayMode().getWidth(),
-						Display.getDisplayMode().getHeight()
-								- getTitleBarHeight());
-			}
+			this.windowedBounds = new Rectangle(this.bounds);
+			this.windowedPos = new Point(this.pos);
+
+			int w = Display.getDisplayMode().getWidth();
+			int h = Display.getDisplayMode().getHeight();
+			this.setPos(0, 0);
+			this.setBounds(w, h);
+
 		} else {
-			this.setBounds(this.getWidth(), this.getHeight());
+			this.setBounds(this.windowedBounds.getWidth(),
+					this.windowedBounds.getWidth());
+			this.setPos(this.windowedPos.getX(), this.windowedPos.getY());
 		}
 	}
 
@@ -746,8 +748,8 @@ public class Frame implements Drawable, Clickable {
 		this.hasTitlebar = t;
 		if (this.content != null) {
 			this.content.setBounds(
-					this.getWidth() - 2 * Theme.getFrameBorderWidth(),
-					this.getHeight() - 2 * Theme.getFrameBorderWidth()
+					this.getWidth() - 2 * getBorderWidth(),
+					this.getHeight() - 2 * getBorderWidth()
 							- this.getTitleBarHeight());
 		}
 	}
@@ -759,10 +761,8 @@ public class Frame implements Drawable, Clickable {
 		if (this.content != null) {
 			int w = this.content.getPreferredWidth();
 			int h = this.content.getPreferredHeight();
-			this.setBounds(
-					w + Theme.getFrameBorderWidth() * 2,
-					h + 2 * Theme.getFrameBorderWidth()
-							+ this.getTitleBarHeight());
+			this.setBounds(w + getBorderWidth() * 2, h + 2 * getBorderWidth()
+					+ this.getTitleBarHeight());
 		} else {
 			this.setBounds(20, 20);
 		}
@@ -770,11 +770,11 @@ public class Frame implements Drawable, Clickable {
 
 	@Override
 	public void mouseHover(int x, int y) {
-		int border = Theme.getFrameBorderWidth();
+		int border = getBorderWidth();
 		boolean inside = border < x && x < this.getWidth() - border
 				&& border + getTitleBarHeight() < y
 				&& y < this.getHeight() - border;
-		if (inside || this.isMaximized()) {
+		if (inside) {
 			if (this.content != null) {
 				this.content.mouseHover(x - border, y - border
 						- getTitleBarHeight());
@@ -809,7 +809,7 @@ public class Frame implements Drawable, Clickable {
 
 	@Override
 	public void mouseUp(int button, int x, int y) {
-		int border = Theme.getFrameBorderWidth();
+		int border = getBorderWidth();
 		boolean hadOne = false;
 		if (this.contentLeftMouseDown && button == 0) {
 			hadOne = true;
@@ -860,8 +860,7 @@ public class Frame implements Drawable, Clickable {
 	 * @return true if the provided point is contained in this frame
 	 */
 	public boolean contains(int x, int y) {
-		return this.isMaximized()
-				|| bounds.contains(x - pos.getX(), y - pos.getY());
+		return bounds.contains(x - pos.getX(), y - pos.getY());
 	}
 
 	/**
@@ -881,16 +880,8 @@ public class Frame implements Drawable, Clickable {
 		int px = 0;
 		int py = 0;
 
-		int borderWidth = Theme.getFrameBorderWidth();
+		int borderWidth = getBorderWidth();
 		int titlebarHeight = getTitleBarHeight();
-
-		if (this.isMaximized()) {
-			x = 0;
-			y = 0;
-			w = Display.getDisplayMode().getWidth();
-			h = Display.getDisplayMode().getHeight();
-			borderWidth = 0;
-		}
 
 		boolean isTitle = false;
 
@@ -1056,6 +1047,17 @@ public class Frame implements Drawable, Clickable {
 			return titlebarHeight;
 		} else {
 			return 0;
+		}
+	}
+
+	/**
+	 * @return pixel width of the frame border
+	 */
+	private int getBorderWidth() {
+		if (this.isMaximized()) {
+			return 0;
+		} else {
+			return Theme.getFrameBorderWidth();
 		}
 	}
 

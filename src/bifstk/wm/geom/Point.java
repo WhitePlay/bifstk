@@ -62,6 +62,16 @@ public class Point {
 	}
 
 	/**
+	 * Copies values from the argument into this Point
+	 * 
+	 * @param p values to copy
+	 */
+	public void setPos(Point p) {
+		this.x = p.getX();
+		this.y = p.getY();
+	}
+
+	/**
 	 * @param x the new abscissa of this Point
 	 */
 	public void setX(int x) {

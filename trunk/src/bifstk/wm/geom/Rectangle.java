@@ -61,6 +61,16 @@ public class Rectangle {
 	}
 
 	/**
+	 * Copies values from the argument into this Rectangle
+	 * 
+	 * @param r values to copy
+	 */
+	public void setBounds(Rectangle r) {
+		this.width = r.getWidth();
+		this.height = r.getHeight();
+	}
+
+	/**
 	 * @param w this Rectangle's new width
 	 */
 	public void setWidth(int w) {

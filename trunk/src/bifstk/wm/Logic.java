@@ -52,6 +52,8 @@ public class Logic {
 		int lastHoverX = 0, lastHoverY = 0;
 		/** hovered frame last time update was called */
 		Frame lastHoverFrame = null;
+		/** true if hover frame has titlebar */
+		boolean hoverFrameHasTitle = true;
 
 		/** true when the left mouse button just went from up to down */
 		boolean clicked = false;
@@ -426,6 +428,19 @@ public class Logic {
 				this.handler.mouseEvent(2, this.leftMouse.hoverX,
 						this.leftMouse.hoverY, false);
 			}
+		}
+
+		// hoverFrame had its titlebar toggled, need to resend mouseHover to
+		// content
+		if (this.leftMouse.hoverFrame != null) {
+			boolean hasNow = this.leftMouse.hoverFrame.hasTitlebar();
+
+			if (hasNow != this.leftMouse.hoverFrameHasTitle) {
+				this.leftMouse.hoverFrame.mouseHover(this.leftMouse.hoverX,
+						this.leftMouse.hoverY);
+			}
+
+			this.leftMouse.hoverFrameHasTitle = hasNow;
 		}
 
 		// mouse drag: window move/resize or delegate to child component

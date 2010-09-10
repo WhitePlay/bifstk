@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import bifstk.config.Theme;
 import bifstk.gl.Color;
 import bifstk.gl.Util;
 import bifstk.wm.geom.Rectangle;
@@ -210,7 +209,7 @@ public class FlowBox extends Container {
 					break;
 				}
 				if (widg == null) {
-					Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
+					uiBg.use(alpha * uiAlpha);
 					GL11.glBegin(GL11.GL_QUADS);
 					if (this.orientation.equals(Orientation.HORIZONTAL)) {
 						GL11.glVertex2i(acc, 0);
@@ -240,7 +239,7 @@ public class FlowBox extends Container {
 					widg.render(alpha, uiBg, uiAlpha);
 					Util.popScissor();
 					GL11.glPopMatrix();
-					Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
+					uiBg.use(alpha * uiAlpha);
 					GL11.glBegin(GL11.GL_QUADS);
 					if (this.orientation.equals(Orientation.HORIZONTAL)) {
 						if (widg.getHeight() < h) {

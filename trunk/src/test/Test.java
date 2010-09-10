@@ -5,7 +5,9 @@ import org.lwjgl.input.Keyboard;
 import bifstk.Bifstk;
 import bifstk.Handler;
 import bifstk.Root;
+import bifstk.wm.Area;
 import bifstk.wm.Frame;
+import bifstk.wm.Window;
 import bifstk.wm.ui.Actionable;
 import bifstk.wm.ui.Button;
 import bifstk.wm.ui.CustomBorder;
@@ -18,6 +20,12 @@ public class Test implements Handler, Root {
 
 	@Override
 	public void init() {
+		Area a = new Area(20, 20, 100, 60);
+		Button b1 = new Button("Area");
+		b1.setAction("area");
+		b1.setHandler(this);
+		a.setContent(b1);
+		Bifstk.addArea(a);
 	}
 
 	@Override
@@ -35,7 +43,7 @@ public class Test implements Handler, Root {
 
 		case Keyboard.KEY_C:
 			if (Keyboard.getEventKeyState()) {
-				Frame f = new Frame(100, 100);
+				Window f = new Window(100, 100);
 				f.setTitle("Frame #" + frameCount++);
 
 				FlowBox vBox = new FlowBox(FlowBox.Orientation.VERTICAL);
@@ -64,7 +72,7 @@ public class Test implements Handler, Root {
 
 				f.setContent(vBox);
 
-				Bifstk.addFrame(f);
+				Bifstk.addWindow(f);
 			}
 			break;
 
@@ -84,11 +92,17 @@ public class Test implements Handler, Root {
 			Frame f = source.getFrame();
 			f.setTitlebar(!f.hasTitlebar());
 		} else if (command.equals("message")) {
-			Frame f = new Frame(300, 240, 100, 70);
+			Window f = new Window(300, 240, 100, 70);
 			f.setContent(new Label("Boo!"));
 			f.setResizable(false);
 			// f.setTitlebar(false);
-			Bifstk.setModalFrame(f);
+			Bifstk.setModalWindow(f);
+		} else if (command.equals("area")) {
+			Window f = new Window(300, 240, 100, 70);
+			f.setContent(new Label("area <3"));
+			f.setResizable(false);
+			// f.setTitlebar(false);
+			Bifstk.setModalWindow(f);
 		}
 	}
 

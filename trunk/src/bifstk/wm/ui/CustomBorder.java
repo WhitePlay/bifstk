@@ -2,7 +2,6 @@ package bifstk.wm.ui;
 
 import org.lwjgl.opengl.GL11;
 
-import bifstk.config.Theme;
 import bifstk.gl.Color;
 import bifstk.gl.Util;
 import bifstk.wm.geom.Rectangle;
@@ -137,7 +136,7 @@ public class CustomBorder extends Border {
 				Util.popScissor();
 			}
 		} else {
-			Theme.getUiBgColor().use(alpha * Theme.getUiBgAlpha());
+			uiBg.use(alpha * uiAlpha);
 			GL11.glBegin(GL11.GL_QUADS);
 			GL11.glVertex2i(0, 0);
 			GL11.glVertex2i(w, 0);

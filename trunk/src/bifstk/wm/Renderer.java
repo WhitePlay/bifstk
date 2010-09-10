@@ -11,6 +11,8 @@ import bifstk.Root;
 import bifstk.config.Config;
 import bifstk.config.Property;
 import bifstk.config.Theme;
+import bifstk.gl.Color;
+import bifstk.gl.Util;
 import bifstk.util.BifstkException;
 import bifstk.util.Logger;
 
@@ -124,36 +126,39 @@ public class Renderer {
 		int width = mode.getWidth();
 		int height = mode.getHeight();
 
-		/*
-		 * clear display
-		 */
+		/* clear display */
 		this.clear(width, height);
 
-		/*
-		 * draw user content
-		 */
+		/* draw user content */
 		if (this.root != null) {
 			this.root.render();
 		}
 
-		/*
-		 * init rendering context
-		 */
+		/* init rendering context */
 		this.initRender(width, height);
 
-		/*
-		 * draw all windows
-		 */
-		Drawable f = null;
+		/* draw all areas */
+		for (Area area : this.state.getAreas()) {
+			Color col = Theme.getAreaFocusedColor();
+			float alpha = 1.0f;
+			if (!area.isFocused()) {
+				col = Theme.getAreaUnfocusedColor();
+				alpha *= Theme.getAreaUnfocusedAlpha();
+			}
+
+			area.render(alpha, col, Theme.getAreaUiAlpha());
+		}
+
+		/* draw all windows */
+		Window f = null;
 		// reverse iteration : frames are stacked with the head of the list
 		// being the focused one
-		Iterator<? extends Drawable> it = this.state.getFrames()
-				.descendingIterator();
+		Iterator<Window> it = this.state.getWindows().descendingIterator();
 		while (it.hasNext()) {
 			f = it.next();
 
 			// display a mask when a modal is shown
-			if (this.state.getModalFrame() == f) {
+			if (this.state.getModalWindow() == f) {
 				float modalAlpha = Theme.getRootBackgroundModalAlpha();
 				Theme.getRootBackgroundModalColor().use(modalAlpha);
 				GL11.glBegin(GL11.GL_QUADS);
@@ -164,8 +169,23 @@ public class Renderer {
 				GL11.glEnd();
 			}
 
-			// render the frame
-			f.render(1.0f, Theme.getUiBgColor(), Theme.getUiBgAlpha());
+			float alpha = 1.0f;
+			if (f.isDragged()) {
+				alpha *= Theme.getWindowMovedAlpha();
+			} else if (f.isResized()) {
+				alpha *= Theme.getWindowResizedAlpha();
+			}
+			if (!f.isFocused()) {
+				alpha *= Theme.getWindowUnfocusedAlpha();
+			}
+			if (Theme.isWindowShadowEnabled() && !f.isMaximized()) {
+				Util.drawDroppedShadow(f.getX(), f.getY(), f.getWidth(),
+						f.getHeight(), Theme.getWindowShadowRadius(),
+						Theme.getWindowShadowAlpha() * alpha);
+			}
+
+			// render the Window
+			f.render(alpha, Theme.getWindowUiColor(), Theme.getWindowUiAlpha());
 		}
 	}
 

@@ -15,14 +15,14 @@ import bifstk.wm.geom.Region;
 /**
  * Internal logic of the WM
  * <p>
- * Handles input, propagates changes in the {@link InternalState} upon a call to
+ * Handles input, propagates changes in the {@link State} upon a call to
  * {@link #update()}
  * 
  */
 public class Logic {
 
 	/** Privileged view of the WM's state */
-	private InternalState state = null;
+	private State state = null;
 
 	/** Client side event handler */
 	private Handler handler = null;
@@ -100,7 +100,7 @@ public class Logic {
 	 */
 	public Logic(Handler h) {
 		this.handler = h;
-		this.state = new InternalState();
+		this.state = new State();
 		this.exitRequested = false;
 		this.leftMouse = new MouseButton();
 		this.rightMouse = new MouseButton();
@@ -117,7 +117,7 @@ public class Logic {
 	/**
 	 * @return an immutable view of the WM's state
 	 */
-	public InternalState getState() {
+	public State getState() {
 		return this.state;
 	}
 
@@ -247,18 +247,24 @@ public class Logic {
 	 * Applies mouse events
 	 */
 	private void applyMouse() {
-		Drawable modalFrame = this.state.getModalFrame();
-		boolean modalIsHoverOrNull = (modalFrame == null || modalFrame == this.leftMouse.hoverFrame);
-		boolean modalIsLClickOrNull = (modalFrame == null || modalFrame == this.leftMouse.clickedFrame);
-		boolean modalIsRClickOrNull = (modalFrame == null || modalFrame == this.rightMouse.clickedFrame);
-		boolean modalIsCClickOrNull = (modalFrame == null || modalFrame == this.centerMouse.clickedFrame);
+		Drawable modalWindow = this.state.getModalWindow();
+		boolean modalIsHoverOrNull = (modalWindow == null || modalWindow == this.leftMouse.hoverFrame);
+		boolean modalIsLClickOrNull = (modalWindow == null || modalWindow == this.leftMouse.clickedFrame);
+		boolean modalIsRClickOrNull = (modalWindow == null || modalWindow == this.rightMouse.clickedFrame);
+		boolean modalIsCClickOrNull = (modalWindow == null || modalWindow == this.centerMouse.clickedFrame);
+
+		boolean lclickIsWindow = false;
+		if (this.leftMouse.clickedFrame != null) {
+			lclickIsWindow = Window.class
+					.isAssignableFrom(this.leftMouse.clickedFrame.getClass());
+		}
 
 		boolean focusFollowMouse = new Boolean(
 				Config.getValue(Property.wmFocuseFollowmouse));
 		// apply sloppy focus
 		if (focusFollowMouse && !this.leftMouse.clicked
 				&& !this.leftMouse.dragged) {
-			if (this.leftMouse.hoverFrame != null && modalFrame == null) {
+			if (this.leftMouse.hoverFrame != null && modalWindow == null) {
 				this.state.focusFrame(this.leftMouse.hoverFrame);
 			}
 		}
@@ -292,8 +298,9 @@ public class Logic {
 		// LMB click
 		if (this.leftMouse.clicked && modalIsLClickOrNull) {
 			Frame f = this.leftMouse.clickedFrame;
-			this.state.foregroundFrame(f);
-
+			if (lclickIsWindow) {
+				this.state.foregroundWindow((Window) f);
+			}
 			if (f != null) {
 				this.leftMouse.draggedFrame = f;
 				this.leftMouse.dragX = f.getX();
@@ -349,10 +356,12 @@ public class Logic {
 				if (this.leftMouse.hoverRegion.equals(Region.CLOSE)
 						&& this.leftMouse.hoverFrame
 								.equals(this.leftMouse.clickedFrame)) {
-					if (modalFrame == this.leftMouse.clickedFrame) {
-						Bifstk.setModalFrame(null);
+					if (modalWindow == this.leftMouse.clickedFrame) {
+						Bifstk.setModalWindow(null);
 					} else {
-						Bifstk.removeFrame(this.leftMouse.clickedFrame);
+						if (lclickIsWindow) {
+							Bifstk.removeWindow((Window) this.leftMouse.clickedFrame);
+						}
 					}
 					this.leftMouse.clickedFrame = null;
 					this.leftMouse.hoverFrame = null;
@@ -451,6 +460,10 @@ public class Logic {
 				// drag action effect depends on the region of the frame
 				switch (this.leftMouse.clickedRegion) {
 				case TITLE: {
+					if (!dragged.isMovable()) {
+						break;
+					}
+
 					if (!this.leftMouse.draggedLastPoll) {
 						dragged.setDragged(true);
 						Cursors.setCursor(Type.MOVE);
@@ -466,6 +479,10 @@ public class Logic {
 					// TODO delegate to embedded component
 					break;
 				case RIGHT: {
+					if (!dragged.isMovable()) {
+						break;
+					}
+
 					if (!dragged.isResizable()) {
 						if (!this.leftMouse.draggedLastPoll) {
 							dragged.setDragged(true);
@@ -488,6 +505,10 @@ public class Logic {
 				}
 					break;
 				case LEFT: {
+					if (!dragged.isMovable()) {
+						break;
+					}
+
 					if (!dragged.isResizable()) {
 						if (!this.leftMouse.draggedLastPoll) {
 							dragged.setDragged(true);
@@ -515,6 +536,10 @@ public class Logic {
 				}
 					break;
 				case BOT: {
+					if (!dragged.isMovable()) {
+						break;
+					}
+
 					if (!dragged.isResizable()) {
 						if (!this.leftMouse.draggedLastPoll) {
 							dragged.setDragged(true);
@@ -537,6 +562,10 @@ public class Logic {
 				}
 					break;
 				case TOP: {
+					if (!dragged.isMovable()) {
+						break;
+					}
+
 					if (!dragged.isResizable()) {
 						if (!this.leftMouse.draggedLastPoll) {
 							dragged.setDragged(true);
@@ -564,6 +593,10 @@ public class Logic {
 				}
 					break;
 				case BOT_RIGHT: {
+					if (!dragged.isMovable()) {
+						break;
+					}
+
 					if (!dragged.isResizable()) {
 						if (!this.leftMouse.draggedLastPoll) {
 							dragged.setDragged(true);
@@ -588,6 +621,10 @@ public class Logic {
 				}
 					break;
 				case TOP_RIGHT: {
+					if (!dragged.isMovable()) {
+						break;
+					}
+
 					if (!dragged.isResizable()) {
 						if (!this.leftMouse.draggedLastPoll) {
 							dragged.setDragged(true);
@@ -617,6 +654,10 @@ public class Logic {
 				}
 					break;
 				case TOP_LEFT: {
+					if (!dragged.isMovable()) {
+						break;
+					}
+
 					if (!dragged.isResizable()) {
 						if (!this.leftMouse.draggedLastPoll) {
 							dragged.setDragged(true);
@@ -652,6 +693,10 @@ public class Logic {
 				}
 					break;
 				case BOT_LEFT: {
+					if (!dragged.isMovable()) {
+						break;
+					}
+
 					if (!dragged.isResizable()) {
 						if (!this.leftMouse.draggedLastPoll) {
 							dragged.setDragged(true);
@@ -700,9 +745,10 @@ public class Logic {
 			return;
 		}
 
-		Drawable modal = this.state.getModalFrame();
+		Drawable modal = this.state.getModalWindow();
 		Frame f = this.leftMouse.hoverFrame;
-		if (f == null || (modal != null && modal != this.leftMouse.hoverFrame)) {
+		if (f == null || (modal != null && modal != this.leftMouse.hoverFrame)
+				|| !(f.isMovable() || f.isResizable())) {
 			Cursors.setCursor(Type.POINTER);
 			return;
 		}

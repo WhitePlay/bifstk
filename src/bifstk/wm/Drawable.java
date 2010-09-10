@@ -9,11 +9,11 @@ import bifstk.gl.Color;
 public interface Drawable {
 
 	/**
-	 * renders this Drawable to the OpenGL display
+	 * Renders this Drawable to the display in the current OpenGL context
 	 * 
-	 * @param alpha opacity [0.0, 1.0]
-	 * @param uiBg base UI bg color
-	 * @param uiBgAlpha opacity of the UI bg
+	 * @param alpha overall opacity
+	 * @param uiBg base UI background color
+	 * @param uiBgAlpha base UI background opacity
 	 */
 	public void render(float alpha, Color uiBg, float uiBgAlpha);
 

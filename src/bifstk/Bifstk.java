@@ -15,9 +15,10 @@ import bifstk.util.BifstkException;
 import bifstk.util.BifstkLogSystem;
 import bifstk.util.Logger;
 import bifstk.util.ThreadAccessException;
-import bifstk.wm.Frame;
+import bifstk.wm.Area;
 import bifstk.wm.Logic;
 import bifstk.wm.Renderer;
+import bifstk.wm.Window;
 
 /**
  * Main class for Bifstk
@@ -234,52 +235,77 @@ public class Bifstk {
 	}
 
 	/**
-	 * Adds a new Frame in the Bifstk Window Manager
+	 * Adds a new Window in the Bifstk Window Manager
 	 * 
-	 * @param f the frame to add in the WM
+	 * @param f the Window to add in the WM
 	 * @throws ThreadAccessException method was called outside the Bifstk thread
 	 */
-	public static void addFrame(Frame f) throws ThreadAccessException {
-		if (!Thread.currentThread().equals(Bifstk.runner)) {
-			throw new ThreadAccessException(
-					"This method cannot be called outside the Bifstk thread");
-		}
-		Bifstk.logic.getState().addFrame(f);
+	public static void addWindow(Window f) throws ThreadAccessException {
+		checkThread();
+		Bifstk.logic.getState().addWindow(f);
 	}
 
 	/**
-	 * Removes a Frame from the Bifstk Window Manager
+	 * Removes a Window from the Bifstk Window Manager
 	 * 
-	 * @param f the Frame to remove from the WM
+	 * @param f the Window to remove from the WM
 	 * @throws ThreadAccessException method was called outside the Bifstk thread
 	 */
-	public static void removeFrame(Frame f) throws ThreadAccessException {
-		if (!Thread.currentThread().equals(Bifstk.runner)) {
-			throw new ThreadAccessException(
-					"This method cannot be called outside the Bifstk thread");
-		}
-		Bifstk.logic.getState().removeFrame(f);
+	public static void removeWindow(Window f) throws ThreadAccessException {
+		checkThread();
+
+		Bifstk.logic.getState().removeWindow(f);
 	}
 
 	/**
-	 * Sets the current modal frame of the WM
+	 * Sets the current modal Window of the WM
 	 * <p>
-	 * If the WM has a modal frame, it becomes the only frame the user can
+	 * If the WM has a modal Window, it becomes the only Window the user can
 	 * interact with, and stays focused in the foreground until closed using
-	 * setModalFrame(null)
+	 * setModalWindow(null)
 	 * <p>
-	 * Setting a modal frame when the WM already holds a modal frame causes the
+	 * Setting a modal frame when the WM already holds a modal Window causes the
 	 * old one to be replaced
 	 * 
-	 * @param f the Frame to define as modal, or null
+	 * @param f the Window to define as modal, or null
 	 * @throws ThreadAccessException method was called outside the Bifstk thread
 	 */
-	public static void setModalFrame(Frame f) throws ThreadAccessException {
+	public static void setModalWindow(Window f) throws ThreadAccessException {
+		checkThread();
+		Bifstk.logic.getState().setModalWindow(f);
+	}
+
+	/**
+	 * Adds an Area to the WM
+	 * 
+	 * @param a the Area to add
+	 * @throws ThreadAccessException method was called outside the Bifstk thread
+	 */
+	public static void addArea(Area a) throws ThreadAccessException {
+		checkThread();
+		Bifstk.logic.getState().addArea(a);
+	}
+
+	/**
+	 * Removes an Area from the WM
+	 * 
+	 * @param a the Area to remove
+	 * @throws ThreadAccessException method was called outside the Bifstk thread
+	 */
+	public static void removeArea(Area a) throws ThreadAccessException {
+		checkThread();
+		Bifstk.logic.getState().removeArea(a);
+	}
+
+	/**
+	 * Checks that the current Thread is the Bifstk thread
+	 * @throws ThreadAccessException
+	 */
+	private static void checkThread() throws ThreadAccessException {
 		if (!Thread.currentThread().equals(Bifstk.runner)) {
 			throw new ThreadAccessException(
 					"This method cannot be called outside the Bifstk thread");
 		}
-		Bifstk.logic.getState().setModalFrame(f);
 	}
 
 	/**

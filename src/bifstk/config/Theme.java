@@ -53,132 +53,223 @@ public class Theme {
 		return instance.rootBackgroundModalAlpha;
 	}
 
-	private int frameBorderWidth;
-	private int frameBorderWidthMin = 1, frameBorderWidthMax = 10;
+	private int windowBorderWidth;
+	private int windowBorderWidthMin = 1, windowBorderWidthMax = 10;
 
 	/**
-	 * @return pixel width of the border around the frame
+	 * @return pixel width of the border around the window
 	 */
-	public static int getFrameBorderWidth() {
-		return instance.frameBorderWidth;
+	public static int getWindowBorderWidth() {
+		return instance.windowBorderWidth;
 	}
 
-	private Color frameBorderFocusedColor = null;
+	private Color windowBorderFocusedColor = null;
 
 	/**
-	 * @return frame border color when focused
+	 * @return window border color when focused
 	 */
-	public static Color getFrameBorderFocusedColor() {
-		return instance.frameBorderFocusedColor;
+	public static Color getWindowBorderFocusedColor() {
+		return instance.windowBorderFocusedColor;
 	}
 
-	private Color frameBorderUnfocusedColor = null;
+	private Color windowBorderUnfocusedColor = null;
 
 	/**
-	 * @return frame border color when not focused
+	 * @return window border color when not focused
 	 */
-	public static Color getFrameBorderUnfocusedColor() {
-		return instance.frameBorderUnfocusedColor;
+	public static Color getWindowBorderUnfocusedColor() {
+		return instance.windowBorderUnfocusedColor;
 	}
 
-	private boolean frameBorderRounded;
+	private boolean windowBorderRounded;
 
 	/**
-	 * @return true if frame border corners should be rounded
+	 * @return true if window border corners should be rounded
 	 */
-	public static boolean isFrameBorderRounded() {
-		return instance.frameBorderRounded;
+	public static boolean isWindowBorderRounded() {
+		return instance.windowBorderRounded;
 	}
 
-	private Color frameBorderBorderFocusedColor;
+	private Color windowBorderOuterFocusedColor;
 
 	/**
-	 * @return the color of the 1px border of the frame border when focused
+	 * @return the color of the 1px border of the window border when focused
 	 */
-	public static Color getFrameBorderBorderFocusedColor() {
-		return instance.frameBorderBorderFocusedColor;
+	public static Color getWindowBorderOuterFocusedColor() {
+		return instance.windowBorderOuterFocusedColor;
 	}
 
-	private Color frameBorderBorderUnfocusedColor;
+	private Color windowBorderOuterUnfocusedColor;
 
 	/**
-	 * @return the color of the 1px border of the frame border when not focused
+	 * @return the color of the 1px border of the window border when not focused
 	 */
-	public static Color getFrameBorderBorderUnfocusedColor() {
-		return instance.frameBorderBorderUnfocusedColor;
+	public static Color getWindowBorderOuterUnfocusedColor() {
+		return instance.windowBorderOuterUnfocusedColor;
 	}
 
-	private Color frameTitlebarFocusedColor = null;
+	private Color windowTitlebarFocusedColor = null;
 
 	/**
-	 * @return frame titlebar color when focused
+	 * @return window titlebar color when focused
 	 */
-	public static Color getFrameTitlebarFocusedColor() {
-		return instance.frameTitlebarFocusedColor;
+	public static Color getWindowTitlebarFocusedColor() {
+		return instance.windowTitlebarFocusedColor;
 	}
 
-	private Color frameTitlebarUnfocusedColor = null;
+	private Color windowTitlebarUnfocusedColor = null;
 
 	/**
-	 * @return frame titlebar color when not focused
+	 * @return window titlebar color when not focused
 	 */
-	public static Color getFrameTitlebarUnfocusedColor() {
-		return instance.frameTitlebarUnfocusedColor;
+	public static Color getWindowTitlebarUnfocusedColor() {
+		return instance.windowTitlebarUnfocusedColor;
 	}
 
-	private float frameMovedAlpha;
+	private int areaBorderWidth;
+	private static final int areaBorderMin = 1, areaBorderMax = 20;
 
 	/**
-	 * @return frame opacity when moved
+	 * @return pixel width of the border around areas
 	 */
-	public static float getFrameMovedAlpha() {
-		return instance.frameMovedAlpha;
+	public static int getAreaBorderWidth() {
+		return instance.areaBorderWidth;
 	}
 
-	private float frameResizedAlpha;
+	private boolean areaBorderRounded;
 
 	/**
-	 * @return frame opacity when resized
+	 * @return true if the area border is rounded
 	 */
-	public static float getFrameResizedAlpha() {
-		return instance.frameResizedAlpha;
+	public static boolean isAreaBorderRounded() {
+		return instance.areaBorderRounded;
 	}
 
-	private float frameUnfocusedAlpha;
+	private Color areaFocusedColor = null;
 
 	/**
-	 * @return frame opacity when not focused
+	 * @return the focused color of the area
 	 */
-	public static float getFrameUnfocusedAlpha() {
-		return instance.frameUnfocusedAlpha;
+	public static Color getAreaFocusedColor() {
+		return instance.areaFocusedColor;
 	}
 
-	private boolean frameShadowEnabled;
+	private Color areaUnfocusedColor = null;
 
 	/**
-	 * @return true to enable dropped shadows around frames
+	 * @return the unfocused color of the area
 	 */
-	public static boolean isFrameShadowEnabled() {
-		return instance.frameShadowEnabled;
+	public static Color getAreaUnfocusedColor() {
+		return instance.areaUnfocusedColor;
 	}
 
-	private float frameShadowAlpha;
+	private Color areaBorderFocusedColor = null;
 
 	/**
-	 * @return opacity of the frame shadow
+	 * @return the focused color of the outer border of the area
 	 */
-	public static float getFrameShadowAlpha() {
-		return instance.frameShadowAlpha;
+	public static Color getAreaBorderFocusedColor() {
+		return instance.areaBorderFocusedColor;
 	}
 
-	private int frameShadowRadius;
-	private int frameShadowRadiusMin = 1, frameShadowRadiusMax = 20;
+	private Color areaBorderUnfocusedColor = null;
 
 	/**
-	 * @return pixel radius of the frame shadow
+	 * @return the unfocused color of the outer border of the area
 	 */
-	public static int getFrameShadowRadius() {
-		return instance.frameShadowRadius;
+	public static Color getAreaBorderUnfocusedColor() {
+		return instance.areaBorderUnfocusedColor;
+	}
+
+	private float areaUiAlpha;
+
+	/**
+	 * @return the opacity of the area ui
+	 */
+	public static float getAreaUiAlpha() {
+		return instance.areaUiAlpha;
+	}
+
+	private float areaUnfocusedAlpha;
+
+	/**
+	 * @return the opacity of an area when not focused
+	 */
+	public static float getAreaUnfocusedAlpha() {
+		return instance.areaUnfocusedAlpha;
+	}
+
+	private float windowMovedAlpha;
+
+	/**
+	 * @return window opacity when moved
+	 */
+	public static float getWindowMovedAlpha() {
+		return instance.windowMovedAlpha;
+	}
+
+	private float windowResizedAlpha;
+
+	/**
+	 * @return window opacity when resized
+	 */
+	public static float getWindowResizedAlpha() {
+		return instance.windowResizedAlpha;
+	}
+
+	private float windowUnfocusedAlpha;
+
+	/**
+	 * @return window opacity when not focused
+	 */
+	public static float getWindowUnfocusedAlpha() {
+		return instance.windowUnfocusedAlpha;
+	}
+
+	private boolean windowShadowEnabled;
+
+	/**
+	 * @return true to enable dropped shadows around windows
+	 */
+	public static boolean isWindowShadowEnabled() {
+		return instance.windowShadowEnabled;
+	}
+
+	private float windowShadowAlpha;
+
+	/**
+	 * @return opacity of the window shadow
+	 */
+	public static float getWindowShadowAlpha() {
+		return instance.windowShadowAlpha;
+	}
+
+	private int windowShadowRadius;
+	private int windowShadowRadiusMin = 1, windowShadowRadiusMax = 20;
+
+	/**
+	 * @return pixel radius of the window shadow
+	 */
+	public static int getWindowShadowRadius() {
+		return instance.windowShadowRadius;
+	}
+
+	private Color windowUiColor = null;
+
+	/**
+	 * @return color of the Window ui
+	 */
+	public static Color getWindowUiColor() {
+		return instance.windowUiColor;
+	}
+
+	private float windowUiAlpha = 1.0f;
+
+	/**
+	 * @return opacity of a window UI
+	 */
+	public static float getWindowUiAlpha() {
+		return instance.windowUiAlpha;
 	}
 
 	private List<Controls> frameControlsOrder = null;
@@ -292,24 +383,6 @@ public class Theme {
 		return instance.frameControlsMaximizeClickColor;
 	}
 
-	private Color uiBgColor = null;
-
-	/**
-	 * @return the background color of the ui
-	 */
-	public static Color getUiBgColor() {
-		return instance.uiBgColor;
-	}
-
-	private float uiBgAlpha = 1.0f;
-
-	/**
-	 * @return opacity of the background of the ui
-	 */
-	public static float getUiBgAlpha() {
-		return instance.uiBgAlpha;
-	}
-
 	private Color uiButtonColor = null;
 
 	/**
@@ -358,36 +431,55 @@ public class Theme {
 		/** FLOAT opacity of the color layered when a modal is shown */
 		rootBackgroundModalAlpha("root.background.modal.alpha"),
 
-		/** INT pixel width of the border around the frame */
-		frameBorderWidth("frame.border.width"),
-		/** COLOR frame border color when focused */
-		frameBorderFocusedColor("frame.border.focused.color"),
-		/** COLOR frame border color when not focused */
-		frameBorderUnfocusedColor("frame.border.unfocused.color"),
-		/** BOOL true for rounded frame corners */
-		frameBorderRounded("frame.border.rounded"),
-		/** COLOR color of the border of the frame border */
-		frameBorderBorderFocusedColor("frame.border.border.focused.color"),
-		/** COLOR color of the border of the frame border */
-		frameBorderBorderUnfocusedColor("frame.border.border.unfocused.color"),
-		/** COLOR frame titlebar color when focused */
-		frameTitlebarFocusedColor("frame.titlebar.focused.color"),
-		/** COLOR frame titlebar color when not focused */
-		frameTitlebarUnfocusedColor("frame.titlebar.unfocused.color"),
+		/** INT pixel width of the border around the window */
+		windowBorderWidth("window.border.width"),
+		/** COLOR window border color when focused */
+		windowBorderFocusedColor("window.border.focused.color"),
+		/** COLOR window border color when not focused */
+		windowBorderUnfocusedColor("window.border.unfocused.color"),
+		/** BOOL true for rounded window corners */
+		windowBorderRounded("window.border.rounded"),
+		/** COLOR color of the border of the window border */
+		windowBorderOuterFocusedColor("window.border.outer.focused.color"),
+		/** COLOR color of the border of the window border */
+		windowBorderOuterUnfocusedColor("window.border.outer.unfocused.color"),
+		/** COLOR window titlebar color when focused */
+		windowTitlebarFocusedColor("window.titlebar.focused.color"),
+		/** COLOR window titlebar color when not focused */
+		windowTitlebarUnfocusedColor("window.titlebar.unfocused.color"),
+		/** FLOAT window opacity when moved */
+		windowMovedAlpha("window.moved.alpha"),
+		/** FLOAT window opacity when resized */
+		windowResizedAlpha("window.resized.alpha"),
+		/** FLOAT window opacity when not focused */
+		windowUnfocusedAlpha("window.unfocused.alpha"),
+		/** BOOL true to enable dropped shadows around windows */
+		windowShadowEnabled("window.shadow.enabled"),
+		/** FLOAT opacity of the window shadow */
+		windowShadowAlpha("window.shadow.alpha"),
+		/** INT pixel radius of the window shadow */
+		windowShadowRadius("window.shadow.radius"),
+		/** COLOR base color of a Window ui */
+		windowUiColor("window.ui.color"),
+		/** FLOAT base opacity of the window ui */
+		windowUiAlpha("window.ui.alpha"),
 
-		/** FLOAT frame opacity when moved */
-		frameMovedAlpha("frame.moved.alpha"),
-		/** FLOAT frame opacity when resized */
-		frameResizedAlpha("frame.resized.alpha"),
-		/** FLOAT frame opacity when not focused */
-		frameUnfocusedAlpha("frame.unfocused.alpha"),
-
-		/** BOOL true to enable dropped shadows around frames */
-		frameShadowEnabled("frame.shadow.enabled"),
-		/** FLOAT opacity of the frame shadow */
-		frameShadowAlpha("frame.shadow.alpha"),
-		/** INT pixel radius of the frame shadow */
-		frameShadowRadius("frame.shadow.radius"),
+		/** INT pixel width of the border around the area */
+		areaBorderWidth("area.border.width"),
+		/** COLOR focused color of the area */
+		areaFocusedColor("area.focused.color"),
+		/** COLOR unfocused color of the area */
+		areaUnfocusedColor("area.unfocused.color"),
+		/** BOOL true if border corners should be rounded */
+		areaBorderRounded("area.border.rounded"),
+		/** COLOR focused color of the outer border */
+		areaBorderFocusedColor("area.border.focused.color"),
+		/** COLOR unfocused color of the outer border */
+		areaBorderUnfocusedColor("area.border.unfocused.color"),
+		/** FLOAT opacity of the area ui */
+		areaUiAlpha("area.ui.alpha"),
+		/** FLOAT opacity if of the area when not focused */
+		areaUnfocusedAlpha("area.unfocused.alpha"),
 
 		/** List<bifstk.wm.Frame.Controls> title frame controls order */
 		frameControlsOrder("frame.controls.order"),
@@ -413,11 +505,6 @@ public class Theme {
 		frameControlsMaximizeHoverColor("frame.controls.maximize.hover.color"),
 		/** COLOR maximize frame control color when hovered */
 		frameControlsMaximizeClickColor("frame.controls.maximize.click.color"),
-
-		/** COLOR background color of the ui */
-		uiBgColor("ui.bg.color"),
-		/** FLOAT opacity of the background of the ui */
-		uiBgAlpha("ui.bg.alpha"),
 
 		/** COLOR color of the ui button border */
 		uiButtonBorderColor("ui.button.border.color"),
@@ -515,65 +602,109 @@ public class Theme {
 							Float.parseFloat(sval), 0.0f, 1.0f);
 					break;
 				}
-				case frameBorderWidth: {
-					this.frameBorderWidth = clampi(Integer.parseInt(sval),
-							frameBorderWidthMin, frameBorderWidthMax);
+				case windowBorderWidth: {
+					this.windowBorderWidth = clampi(Integer.parseInt(sval),
+							windowBorderWidthMin, windowBorderWidthMax);
 					break;
 				}
-				case frameBorderFocusedColor: {
-					this.frameBorderFocusedColor = Color.parse(sval);
+				case windowBorderFocusedColor: {
+					this.windowBorderFocusedColor = Color.parse(sval);
 					break;
 				}
-				case frameBorderUnfocusedColor: {
-					this.frameBorderUnfocusedColor = Color.parse(sval);
+				case windowBorderUnfocusedColor: {
+					this.windowBorderUnfocusedColor = Color.parse(sval);
 					break;
 				}
-				case frameBorderRounded: {
-					this.frameBorderRounded = Boolean.parseBoolean(sval);
+				case windowBorderRounded: {
+					this.windowBorderRounded = Boolean.parseBoolean(sval);
 					break;
 				}
-				case frameBorderBorderFocusedColor: {
-					this.frameBorderBorderFocusedColor = Color.parse(sval);
+				case windowBorderOuterFocusedColor: {
+					this.windowBorderOuterFocusedColor = Color.parse(sval);
 					break;
 				}
-				case frameBorderBorderUnfocusedColor: {
-					this.frameBorderBorderUnfocusedColor = Color.parse(sval);
+				case windowBorderOuterUnfocusedColor: {
+					this.windowBorderOuterUnfocusedColor = Color.parse(sval);
 					break;
 				}
-				case frameTitlebarFocusedColor: {
-					this.frameTitlebarFocusedColor = Color.parse(sval);
+				case windowTitlebarFocusedColor: {
+					this.windowTitlebarFocusedColor = Color.parse(sval);
 					break;
 				}
-				case frameTitlebarUnfocusedColor: {
-					this.frameTitlebarUnfocusedColor = Color.parse(sval);
+				case windowTitlebarUnfocusedColor: {
+					this.windowTitlebarUnfocusedColor = Color.parse(sval);
 					break;
 				}
-				case frameShadowEnabled: {
-					this.frameShadowEnabled = Boolean.parseBoolean(sval);
+				case windowShadowEnabled: {
+					this.windowShadowEnabled = Boolean.parseBoolean(sval);
 					break;
 				}
-				case frameShadowAlpha: {
-					this.frameShadowAlpha = clampf(Float.parseFloat(sval),
+				case windowShadowAlpha: {
+					this.windowShadowAlpha = clampf(Float.parseFloat(sval),
 							0.0f, 1.0f);
 					break;
 				}
-				case frameShadowRadius: {
-					this.frameShadowRadius = clampi(Integer.parseInt(sval),
-							frameShadowRadiusMin, frameShadowRadiusMax);
+				case windowShadowRadius: {
+					this.windowShadowRadius = clampi(Integer.parseInt(sval),
+							windowShadowRadiusMin, windowShadowRadiusMax);
 					break;
 				}
-				case frameMovedAlpha: {
-					this.frameMovedAlpha = clampf(Float.parseFloat(sval), 0.0f,
+				case windowMovedAlpha: {
+					this.windowMovedAlpha = clampf(Float.parseFloat(sval),
+							0.0f, 1.0f);
+					break;
+				}
+				case windowResizedAlpha: {
+					this.windowResizedAlpha = clampf(Float.parseFloat(sval),
+							0.0f, 1.0f);
+					break;
+				}
+				case windowUnfocusedAlpha: {
+					this.windowUnfocusedAlpha = clampf(Float.parseFloat(sval),
+							0.0f, 1.0f);
+					break;
+				}
+				case windowUiColor: {
+					this.windowUiColor = Color.parse(sval);
+					break;
+				}
+				case windowUiAlpha: {
+					this.windowUiAlpha = clampf(Float.parseFloat(sval), 0.0f,
 							1.0f);
 					break;
 				}
-				case frameResizedAlpha: {
-					this.frameResizedAlpha = clampf(Float.parseFloat(sval),
-							0.0f, 1.0f);
+				case areaBorderWidth: {
+					this.areaBorderWidth = clampi(Integer.parseInt(sval),
+							areaBorderMax, areaBorderMin);
 					break;
 				}
-				case frameUnfocusedAlpha: {
-					this.frameUnfocusedAlpha = clampf(Float.parseFloat(sval),
+				case areaBorderRounded: {
+					this.areaBorderRounded = Boolean.parseBoolean(sval);
+					break;
+				}
+				case areaFocusedColor: {
+					this.areaFocusedColor = Color.parse(sval);
+					break;
+				}
+				case areaUnfocusedColor: {
+					this.areaUnfocusedColor = Color.parse(sval);
+					break;
+				}
+				case areaBorderFocusedColor: {
+					this.areaBorderFocusedColor = Color.parse(sval);
+					break;
+				}
+				case areaBorderUnfocusedColor: {
+					this.areaBorderUnfocusedColor = Color.parse(sval);
+					break;
+				}
+				case areaUiAlpha: {
+					this.areaUiAlpha = clampf(Float.parseFloat(sval), 0.0f,
+							1.0f);
+					break;
+				}
+				case areaUnfocusedAlpha: {
+					this.areaUnfocusedAlpha = clampf(Float.parseFloat(sval),
 							0.0f, 1.0f);
 					break;
 				}
@@ -658,14 +789,6 @@ public class Theme {
 				}
 				case frameControlsMaximizeClickColor: {
 					this.frameControlsMaximizeClickColor = Color.parse(sval);
-					break;
-				}
-				case uiBgColor: {
-					this.uiBgColor = Color.parse(sval);
-					break;
-				}
-				case uiBgAlpha: {
-					this.uiBgAlpha = clampf(Float.parseFloat(sval), 0.0f, 1.0f);
 					break;
 				}
 				case uiButtonColor: {

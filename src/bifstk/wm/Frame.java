@@ -10,7 +10,6 @@ import org.newdawn.slick.opengl.Texture;
 import bifstk.config.Fonts;
 import bifstk.config.Theme;
 import bifstk.gl.Color;
-import bifstk.gl.TrueTypeFont;
 import bifstk.gl.Util;
 import bifstk.wm.geom.Point;
 import bifstk.wm.geom.Rectangle;
@@ -21,9 +20,8 @@ import bifstk.wm.ui.Widget;
  * a Frame is a Window in the Window Manager
  * <p>
  * It has a title bar and contains widgets
- * 
  */
-public class Frame implements Drawable, Clickable {
+public abstract class Frame implements Drawable, Clickable {
 
 	/** dimensions */
 	private Rectangle bounds = null;
@@ -51,8 +49,6 @@ public class Frame implements Drawable, Clickable {
 	/** width of the corner in pixels for mouse corner resize */
 	private final int cornerWidth = 15;
 
-	/** height of the titlebar in pixels */
-	private final int titlebarHeight = 20;
 	/** title of the frame */
 	private String title = "";
 	/** frame has no titlebar if false */
@@ -62,9 +58,7 @@ public class Frame implements Drawable, Clickable {
 	/** frame cannot be resized */
 	private boolean resizable = true;
 
-	/**
-	 * Frame controls and elements to put in the titlebar
-	 */
+	/** Frame controls and elements to put in the titlebar */
 	public static enum Controls {
 		/** contains the title displayed in the titlebar */
 		TITLE("Title"),
@@ -130,9 +124,7 @@ public class Frame implements Drawable, Clickable {
 		this.pos = new Point(x, y);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public void render(float alpha, Color uiColor, float uiAlpha) {
 		int x, y, w, h;
@@ -145,29 +137,14 @@ public class Frame implements Drawable, Clickable {
 		w = this.getWidth();
 		h = this.getHeight();
 
-		if (this.isDragged()) {
-			alpha *= Theme.getFrameMovedAlpha();
-		} else if (this.isResized()) {
-			alpha *= Theme.getFrameResizedAlpha();
-		}
-
-		if (!this.isFocused()) {
-			alpha *= Theme.getFrameUnfocusedAlpha();
-		}
-
-		if (Theme.isFrameShadowEnabled() && !this.isMaximized()) {
-			Util.drawDroppedShadow(x, y, w, h, Theme.getFrameShadowRadius(),
-					Theme.getFrameShadowAlpha() * alpha);
-		}
-
 		Color borderCol = null;
 		Color borderBorderCol = null;
 		if (this.isFocused()) {
 			borderCol = getBorderFocusedColor();
-			borderBorderCol = getBorderBorderFocusedColor();
+			borderBorderCol = getBorderOuterFocusedColor();
 		} else {
 			borderCol = getBorderUnfocusedColor();
-			borderBorderCol = getBorderBorderUnfocusedColor();
+			borderBorderCol = getBorderOuterUnfocusedColor();
 		}
 		borderCol.use(alpha);
 		GL11.glBegin(GL11.GL_QUADS);
@@ -194,7 +171,7 @@ public class Frame implements Drawable, Clickable {
 		GL11.glEnd();
 
 		int precision = 5;
-		if (Theme.isFrameBorderRounded()) {
+		if (isFrameBorderRounded()) {
 			Util.drawFilledArc(x + borderWidth, y + borderWidth, borderWidth,
 					(float) Math.PI, (float) Math.PI / 2.0f, precision,
 					borderCol, alpha, borderCol, alpha);
@@ -286,9 +263,9 @@ public class Frame implements Drawable, Clickable {
 		}
 
 		if (this.isFocused()) {
-			Theme.getFrameTitlebarFocusedColor().use(alpha);
+			getFrameTitlebarFocusedColor().use(alpha);
 		} else {
-			Theme.getFrameTitlebarUnfocusedColor().use(alpha);
+			getFrameTitlebarUnfocusedColor().use(alpha);
 		}
 
 		// title-bar
@@ -432,68 +409,26 @@ public class Frame implements Drawable, Clickable {
 			GL11.glDisable(GL11.GL_SCISSOR_TEST);
 			GL11.glPopMatrix();
 		}
-
-		// draw little info area at the center of the window to display
-		// the current position/size while dragging/resizing
-		if (this.dragged || this.resized) {
-			TrueTypeFont font = Fonts.getSmall();
-			String msg = "";
-			if (this.resized) {
-				msg = w + "x" + h;
-			} else {
-				msg = x + ":" + y;
-			}
-
-			int msgW = font.getWidth(msg);
-			int msgH = font.getHeight(msg);
-			int mx = x + (w / 2) - (msgW / 2);
-			int my = y + (h / 2) - (msgH / 2);
-
-			GL11.glColor4f(0.9f, 0.9f, 0.9f, 1.0f);
-			GL11.glBegin(GL11.GL_QUADS);
-			GL11.glVertex2i(mx, my);
-			GL11.glVertex2i(mx, my + msgH);
-			GL11.glVertex2i(mx + msgW, my + msgH);
-			GL11.glVertex2i(mx + msgW, my);
-			GL11.glEnd();
-
-			if (Theme.isFrameShadowEnabled()) {
-				Util.drawDroppedShadow(mx, my, msgW, msgH,
-						Theme.getFrameShadowRadius(),
-						Theme.getFrameShadowAlpha());
-			}
-
-			font.drawString(mx, my, msg, Color.BLACK, 1.0f);
-		}
-
 	}
 
-	/**
-	 * @return the abscissa of the top left corner of this frame
-	 */
+	/** @return the abscissa of the top left corner of this frame */
 	public int getX() {
 		return this.pos.getX();
 	}
 
-	/**
-	 * @return the ordinate of the top left corner of this frame
-	 */
+	/** @return the ordinate of the top left corner of this frame */
 	public int getY() {
 		return this.pos.getY();
 	}
 
-	/**
-	 * @param x the new abscissa position of this frame in the WM
-	 */
+	/** @param x the new abscissa position of this frame in the WM */
 	public void setX(int x) {
 		x = Util.clamp(x, 0,
 				Display.getDisplayMode().getWidth() - this.getWidth());
 		this.pos.setX(x);
 	}
 
-	/**
-	 * @param y the new ordinate position of this frame in the WM
-	 */
+	/** @param y the new ordinate position of this frame in the WM */
 	public void setY(int y) {
 		y = Util.clamp(y, 0,
 				Display.getDisplayMode().getHeight() - this.getHeight());
@@ -512,23 +447,17 @@ public class Frame implements Drawable, Clickable {
 		this.pos.setPos(x, y);
 	}
 
-	/**
-	 * @return the current width of this frame
-	 */
+	/** @return the current width of this frame */
 	public int getWidth() {
 		return this.bounds.getWidth();
 	}
 
-	/**
-	 * @return the current height of this frame
-	 */
+	/** @return the current height of this frame */
 	public int getHeight() {
 		return this.bounds.getHeight();
 	}
 
-	/**
-	 * @param w the new width of this frame
-	 */
+	/** @param w the new width of this frame */
 	public void setWidth(int w) {
 		if (!this.isResizable()) {
 			return;
@@ -541,9 +470,7 @@ public class Frame implements Drawable, Clickable {
 		}
 	}
 
-	/**
-	 * @param h the new height of this frame
-	 */
+	/** @param h the new height of this frame */
 	public void setHeight(int h) {
 		if (!this.isResizable()) {
 			return;
@@ -576,30 +503,22 @@ public class Frame implements Drawable, Clickable {
 		}
 	}
 
-	/**
-	 * @return the minimum width of this frame
-	 */
+	/** @return the minimum width of this frame */
 	public int getMinWidth() {
 		return this.minBounds.getWidth();
 	}
 
-	/**
-	 * @return the minimum height of this frame
-	 */
+	/** @return the minimum height of this frame */
 	public int getMinHeight() {
 		return this.minBounds.getHeight();
 	}
 
-	/**
-	 * @param x the minimum width of this frame
-	 */
+	/** @param x the minimum width of this frame */
 	public void setMinWidth(int x) {
 		this.minBounds.setWidth(x);
 	}
 
-	/**
-	 * @param y the minimum width of this frame
-	 */
+	/** @param y the minimum width of this frame */
 	public void setMinHeight(int y) {
 		this.minBounds.setHeight(y);
 	}
@@ -612,65 +531,47 @@ public class Frame implements Drawable, Clickable {
 		this.minBounds.setBounds(w, h);
 	}
 
-	/**
-	 * @param title the new title of the frame as displayed in the titlebar
-	 */
+	/** @param title the new title of the frame as displayed in the titlebar */
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
-	/**
-	 * @return the title of the frame as displayed in the titlebar
-	 */
+	/** @return the title of the frame as displayed in the titlebar */
 	public String getTitle() {
 		return this.title;
 	}
 
-	/**
-	 * @return true if this frame is currently focused in the WM
-	 */
+	/** @return true if this frame is currently focused in the WM */
 	public boolean isFocused() {
 		return this.focused;
 	}
 
-	/**
-	 * @param focus the new focus state of this frame
-	 */
+	/** @param focus the new focus state of this frame */
 	public void setFocused(boolean focus) {
 		this.focused = focus;
 	}
 
-	/**
-	 * @return true if this frame is dragged in the WM
-	 */
+	/** @return true if this frame is dragged in the WM */
 	public boolean isDragged() {
 		return this.dragged;
 	}
 
-	/**
-	 * @param dragged the new drag state of this frame
-	 */
+	/** @param dragged the new drag state of this frame */
 	public void setDragged(boolean dragged) {
 		this.dragged = dragged;
 	}
 
-	/**
-	 * @return true if this frame is resized in the WM
-	 */
+	/** @return true if this frame is resized in the WM */
 	public boolean isResized() {
 		return this.resized;
 	}
 
-	/**
-	 * @param dragged the new resize state of this frame
-	 */
+	/** @param dragged the new resize state of this frame */
 	public void setResized(boolean resized) {
 		this.resized = resized;
 	}
 
-	/**
-	 * @param w the content of the frame
-	 */
+	/** @param w the content of the frame */
 	public void setContent(Widget w) {
 		if (this.content != null) {
 			this.content.setFrame(null);
@@ -683,16 +584,12 @@ public class Frame implements Drawable, Clickable {
 						- this.getTitleBarHeight());
 	}
 
-	/**
-	 * @return true if this frame is maximized
-	 */
+	/** @return true if this frame is maximized */
 	public boolean isMaximized() {
 		return this.maximized;
 	}
 
-	/**
-	 * Maximize / unmaximize this frame
-	 */
+	/** Maximize / unmaximize this frame */
 	public void toggleMaximize() {
 		if (!this.hasTitlebar) {
 			return;
@@ -716,30 +613,27 @@ public class Frame implements Drawable, Clickable {
 		}
 	}
 
-	/**
-	 * @return true if this frame is resizable
-	 */
+	/** @return true if this frame is resizable */
 	public boolean isResizable() {
 		return this.resizable;
 	}
 
-	/**
-	 * @param r true to make this frame resizable
-	 */
+	/** @param r true to make this frame resizable */
 	public void setResizable(boolean r) {
 		this.resizable = r;
 	}
 
-	/**
-	 * @return true if this frame has a titlebar
-	 */
+	/** @return true if this frame can be moved */
+	public boolean isMovable() {
+		return true;
+	}
+
+	/** @return true if this frame has a titlebar */
 	public boolean hasTitlebar() {
 		return this.hasTitlebar;
 	}
 
-	/**
-	 * @param t true for this frame to have a titlebar
-	 */
+	/** @param t true for this frame to have a titlebar */
 	public void setTitlebar(boolean t) {
 		if (this.isMaximized()) {
 			return;
@@ -754,9 +648,7 @@ public class Frame implements Drawable, Clickable {
 		}
 	}
 
-	/**
-	 * Resize this frame to fit the preferred size of its content
-	 */
+	/** Resize this frame to fit the preferred size of its content */
 	public void pack() {
 		if (this.content != null) {
 			int w = this.content.getPreferredWidth();
@@ -844,9 +736,7 @@ public class Frame implements Drawable, Clickable {
 		this.controlMaximizeDown = d;
 	}
 
-	/**
-	 * @return the content of the frame
-	 */
+	/** @return the content of the frame */
 	public Widget getContent() {
 		return this.content;
 	}
@@ -1039,50 +929,31 @@ public class Frame implements Drawable, Clickable {
 		}
 	}
 
-	/**
-	 * @return pixel height of the titlebar
-	 */
-	private int getTitleBarHeight() {
-		if (this.hasTitlebar) {
-			return titlebarHeight;
-		} else {
-			return 0;
-		}
-	}
+	/** @return pixel height of the titlebar */
+	protected abstract int getTitleBarHeight();
 
-	/**
-	 * @return pixel width of the frame border
-	 */
-	protected int getBorderWidth() {
-		if (this.isMaximized()) {
-			return 0;
-		} else {
-			return Theme.getFrameBorderWidth();
-		}
-	}
+	/** @return pixel width of the frame border */
+	protected abstract int getBorderWidth();
 
-	protected Color getUiBgColor() {
-		return Theme.getUiBgColor();
-	}
+	/** @return Color of the border when focused */
+	protected abstract Color getBorderFocusedColor();
 
-	protected Color getBorderFocusedColor() {
-		return Theme.getFrameBorderFocusedColor();
-	}
+	/** @return Color of the border when not focused */
+	protected abstract Color getBorderUnfocusedColor();
 
-	protected Color getBorderUnfocusedColor() {
-		return Theme.getFrameBorderUnfocusedColor();
-	}
+	/** @return Color of the outer border when focused */
+	protected abstract Color getBorderOuterFocusedColor();
 
-	protected Color getBorderBorderFocusedColor() {
-		return Theme.getFrameBorderBorderFocusedColor();
-	}
+	/** @return Color of the outer border when not focused */
+	protected abstract Color getBorderOuterUnfocusedColor();
 
-	protected Color getBorderBorderUnfocusedColor() {
-		return Theme.getFrameBorderBorderUnfocusedColor();
-	}
+	/** @return true if the border corner should be rounded */
+	protected abstract boolean isFrameBorderRounded();
 
-	@Override
-	public String toString() {
-		return bounds.toString() + pos.toString();
-	}
+	/** @return the color of the focused titlebar */
+	protected abstract Color getFrameTitlebarFocusedColor();
+
+	/** @return the color of the unfocused titlebar */
+	protected abstract Color getFrameTitlebarUnfocusedColor();
+
 }

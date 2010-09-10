@@ -1,22 +1,7 @@
-frame.border.width = 4
-frame.border.focused.color = 135 178 204
-frame.border.unfocused.color = 212 212 212
-frame.border.rounded = true
-frame.border.border.focused.color = 100 150 180
-frame.border.border.unfocused.color = white
-frame.titlebar.focused.color = 135 178 204
-frame.titlebar.unfocused.color = 212 212 212
-frame.moved.alpha = 0.5
-frame.resized.alpha = 0.7
-frame.unfocused.alpha = 0.8
-frame.shadow.enabled = true
-frame.shadow.alpha = 0.2
-frame.shadow.radius = 10
 frame.controls.order = Title Maximize Close
 frame.controls.border = 2
 frame.controls.width = 16
 frame.controls.height = 16
-
 frame.controls.maximize.image = default_maximize.png
 frame.controls.maximize.color = 200 200 255
 frame.controls.maximize.hover.color = white
@@ -26,12 +11,35 @@ frame.controls.close.color = 200 200 255
 frame.controls.close.hover.color = white
 frame.controls.close.click.color = 255 200 200
 
+window.border.width = 4
+window.border.focused.color = 135 178 204
+window.border.unfocused.color = 212 212 212
+window.border.rounded = true
+window.border.outer.focused.color = 100 150 180
+window.border.outer.unfocused.color = white
+window.titlebar.focused.color = 135 178 204
+window.titlebar.unfocused.color = 212 212 212
+window.moved.alpha = 0.5
+window.resized.alpha = 0.7
+window.unfocused.alpha = 0.8
+window.shadow.enabled = true
+window.shadow.alpha = 0.2
+window.shadow.radius = 10
+window.ui.color = 212 212 212
+window.ui.alpha = 1.0
+
+area.border.width = 10
+area.border.rounded = true
+area.focused.color = gray
+area.unfocused.color = gray
+area.border.focused.color = lightGray
+area.border.unfocused.color = white
+area.ui.alpha = 1.0
+area.unfocused.alpha = 1.0
+
 root.background.color = darkGray
 root.background.modal.color = black
 root.background.modal.alpha = 0.5
-
-ui.bg.color = 212 212 212
-ui.bg.alpha = 1.0
 
 ui.button.color = 190 190 190
 ui.button.hover.color = 210 210 210

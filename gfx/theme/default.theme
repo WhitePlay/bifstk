@@ -26,7 +26,7 @@ window.shadow.enabled = true
 window.shadow.alpha = 0.2
 window.shadow.radius = 10
 window.ui.color = 212 212 212
-window.ui.alpha = 1.0
+window.ui.alpha = 0.9
 
 area.border.width = 10
 area.border.rounded = true
@@ -34,8 +34,8 @@ area.focused.color = gray
 area.unfocused.color = gray
 area.border.focused.color = lightGray
 area.border.unfocused.color = white
-area.ui.alpha = 1.0
-area.unfocused.alpha = 1.0
+area.ui.alpha = 0.5
+area.unfocused.alpha = 0.5
 
 root.background.color = darkGray
 root.background.modal.color = black

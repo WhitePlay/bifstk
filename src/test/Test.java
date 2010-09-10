@@ -1,10 +1,14 @@
 package test;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 
 import bifstk.Bifstk;
 import bifstk.Handler;
 import bifstk.Root;
+import bifstk.gl.Color;
 import bifstk.wm.Area;
 import bifstk.wm.Frame;
 import bifstk.wm.Window;
@@ -18,6 +22,8 @@ public class Test implements Handler, Root {
 
 	private int frameCount = 1;
 
+	private Image bgImg = null;
+
 	@Override
 	public void init() {
 		Area a = new Area(20, 20, 100, 60);
@@ -26,11 +32,35 @@ public class Test implements Handler, Root {
 		b1.setHandler(this);
 		a.setContent(b1);
 		Bifstk.addArea(a);
+
+		try {
+			this.bgImg = new Image("gfx/bg.png");
+		} catch (SlickException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
 	}
 
 	@Override
 	public void render() {
+		float w = this.bgImg.getTexture().getTextureWidth();
+		float h = this.bgImg.getTexture().getTextureHeight();
 
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		Color.WHITE.use();
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.bgImg.getTexture()
+				.getTextureID());
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glTexCoord2f(0.0f, 0.0f);
+		GL11.glVertex2f(0, 0);
+		GL11.glTexCoord2f(0.0f, 1.0f);
+		GL11.glVertex2f(0, h);
+		GL11.glTexCoord2f(1.0f, 1.0f);
+		GL11.glVertex2f(w, h);
+		GL11.glTexCoord2f(1.0f, 0.0f);
+		GL11.glVertex2f(w, 0);
+		GL11.glEnd();
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
 	}
 
 	@Override

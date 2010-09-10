@@ -128,7 +128,7 @@ public abstract class Frame implements Drawable, Clickable {
 	@Override
 	public void render(float alpha, Color uiColor, float uiAlpha) {
 		int x, y, w, h;
-
+		float alpha2 = alpha * uiAlpha;
 		int borderWidth = getBorderWidth();
 		int titlebarHeight = getTitleBarHeight();
 
@@ -146,7 +146,7 @@ public abstract class Frame implements Drawable, Clickable {
 			borderCol = getBorderUnfocusedColor();
 			borderBorderCol = getBorderOuterUnfocusedColor();
 		}
-		borderCol.use(alpha);
+		borderCol.use(alpha2);
 		GL11.glBegin(GL11.GL_QUADS);
 		// top border
 		GL11.glVertex2i(x + borderWidth, y);
@@ -174,44 +174,44 @@ public abstract class Frame implements Drawable, Clickable {
 		if (isFrameBorderRounded()) {
 			Util.drawFilledArc(x + borderWidth, y + borderWidth, borderWidth,
 					(float) Math.PI, (float) Math.PI / 2.0f, precision,
-					borderCol, alpha, borderCol, alpha);
+					borderCol, alpha2, borderCol, alpha2);
 
 			Util.drawFilledArc(x + w - borderWidth, y + borderWidth,
 					borderWidth, (float) -Math.PI / 2.0f,
-					(float) Math.PI / 2.0f, precision, borderCol, alpha,
-					borderCol, alpha);
+					(float) Math.PI / 2.0f, precision, borderCol, alpha2,
+					borderCol, alpha2);
 
 			Util.drawFilledArc(x + w - borderWidth, y + h - borderWidth,
 					borderWidth, 0.0f, (float) Math.PI / 2.0f, precision,
-					borderCol, alpha, borderCol, alpha);
+					borderCol, alpha2, borderCol, alpha2);
 
 			Util.drawFilledArc(x + borderWidth, y + h - borderWidth,
 					borderWidth, (float) Math.PI / 2.0f,
-					(float) Math.PI / 2.0f, precision, borderCol, alpha,
-					borderCol, alpha);
+					(float) Math.PI / 2.0f, precision, borderCol, alpha2,
+					borderCol, alpha2);
 
 			if (borderWidth > 1) {
 				// metaborder
 				Util.drawLineArc(x + borderWidth, y + borderWidth, borderWidth,
 						(float) Math.PI, (float) Math.PI / 2.0f, precision,
-						borderBorderCol, alpha);
+						borderBorderCol, alpha2);
 
 				Util.drawLineArc(x + w - borderWidth, y + borderWidth,
 						borderWidth, (float) -Math.PI / 2.0f,
 						(float) Math.PI / 2.0f, precision, borderBorderCol,
-						alpha);
+						alpha2);
 
 				Util.drawLineArc(x + w - borderWidth, y + h - borderWidth,
 						borderWidth, 0.0f, (float) Math.PI / 2.0f, precision,
-						borderBorderCol, alpha);
+						borderBorderCol, alpha2);
 
 				Util.drawLineArc(x + borderWidth, y + h - borderWidth,
 						borderWidth, (float) Math.PI / 2.0f,
 						(float) Math.PI / 2.0f, precision, borderBorderCol,
-						alpha);
+						alpha2);
 
 				GL11.glBegin(GL11.GL_LINES);
-				borderBorderCol.use(alpha);
+				borderBorderCol.use(alpha2);
 
 				GL11.glVertex2i(x + borderWidth, y + 1);
 				GL11.glVertex2i(x + w - borderWidth, y + 1);
@@ -252,7 +252,7 @@ public abstract class Frame implements Drawable, Clickable {
 
 			if (borderWidth > 1) {
 				// metaborder
-				borderBorderCol.use(alpha);
+				borderBorderCol.use(alpha2);
 				GL11.glBegin(GL11.GL_LINE_LOOP);
 				GL11.glVertex2i(x + 2, y + 2);
 				GL11.glVertex2i(x + w - 1, y + 2);
@@ -263,9 +263,9 @@ public abstract class Frame implements Drawable, Clickable {
 		}
 
 		if (this.isFocused()) {
-			getFrameTitlebarFocusedColor().use(alpha);
+			getFrameTitlebarFocusedColor().use(alpha2);
 		} else {
-			getFrameTitlebarUnfocusedColor().use(alpha);
+			getFrameTitlebarUnfocusedColor().use(alpha2);
 		}
 
 		// title-bar
@@ -388,7 +388,7 @@ public abstract class Frame implements Drawable, Clickable {
 
 		// content
 		if (this.content == null) {
-			GL11.glColor4f(0.9f, 0.9f, 0.9f, alpha);
+			uiColor.use(alpha2);
 			GL11.glBegin(GL11.GL_QUADS);
 			GL11.glVertex2i(x + borderWidth, y + titlebarHeight + borderWidth);
 			GL11.glVertex2i(x + w - borderWidth, y + titlebarHeight

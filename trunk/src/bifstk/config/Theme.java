@@ -675,7 +675,7 @@ public class Theme {
 				}
 				case areaBorderWidth: {
 					this.areaBorderWidth = clampi(Integer.parseInt(sval),
-							areaBorderMax, areaBorderMin);
+							areaBorderMin, areaBorderMax);
 					break;
 				}
 				case areaBorderRounded: {

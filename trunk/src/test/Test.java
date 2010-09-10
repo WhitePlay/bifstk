@@ -26,7 +26,7 @@ public class Test implements Handler, Root {
 
 	@Override
 	public void init() {
-		Area a = new Area(20, 20, 100, 60);
+		Area a = new Area(20, 20, 80, 50);
 		Button b1 = new Button("Area");
 		b1.setAction("area");
 		b1.setHandler(this);

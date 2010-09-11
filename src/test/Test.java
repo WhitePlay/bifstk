@@ -1,5 +1,6 @@
 package test;
 
+import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Image;
@@ -24,14 +25,17 @@ public class Test implements Handler, Root {
 
 	private Image bgImg = null;
 
+	private int fps_acc = 0;
+	private long dt = 0, dt2 = 0;
+
+	private Label fpsLabel = null;
+
 	@Override
 	public void init() {
-		Area a = new Area(20, 20, 80, 50);
-		Button b1 = new Button("Area");
-		b1.setAction("area");
-		b1.setHandler(this);
-		a.setContent(b1);
-		Bifstk.addArea(a);
+		Area fpsArea = new Area(5, 5, 80, 40);
+		fpsLabel = new Label("FPS: ");
+		fpsArea.setContent(fpsLabel);
+		Bifstk.addArea(fpsArea);
 
 		try {
 			this.bgImg = new Image("gfx/bg.png");
@@ -43,6 +47,18 @@ public class Test implements Handler, Root {
 
 	@Override
 	public void render() {
+
+		// calculate framerate
+		dt = Sys.getTime();
+		if (dt - dt2 > 1000) {
+			this.fpsLabel.setText("FPS: " + fps_acc);
+			fps_acc = 0;
+			dt2 = dt;
+		} else {
+			fps_acc++;
+		}
+
+		// render background image
 		float w = this.bgImg.getTexture().getTextureWidth();
 		float h = this.bgImg.getTexture().getTextureHeight();
 

@@ -63,6 +63,21 @@ public class Label extends Widget {
 
 	}
 
+	/**
+	 * @param t the text to display in this Label
+	 */
+	public void setText(String t) {
+		this.text = t;
+		this.textWidth = Fonts.getNormal().getWidth(this.text);
+	}
+
+	/**
+	 * @return the text currently displayed in this Label
+	 */
+	public String getText() {
+		return this.text;
+	}
+
 	@Override
 	public int getPreferredWidth() {
 		return Fonts.getNormal().getWidth(this.text);

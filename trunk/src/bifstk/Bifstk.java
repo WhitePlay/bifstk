@@ -1,6 +1,5 @@
 package bifstk;
 
-import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.util.Log;
 
@@ -10,7 +9,6 @@ import bifstk.config.Cursors.Type;
 import bifstk.config.Fonts;
 import bifstk.config.Property;
 import bifstk.config.Theme;
-import bifstk.gl.Color;
 import bifstk.util.BifstkException;
 import bifstk.util.BifstkLogSystem;
 import bifstk.util.Logger;
@@ -99,29 +97,13 @@ public class Bifstk {
 				}
 				Logger.info(log);
 
-				int fps_real = 0, fps_acc = 0;
-				long dt = 0, dt2 = 0;
-
 				// user initialization
 				h.init();
 
-				/*
-				 * main loop
-				 */
+				/* main loop */
 				while (!(logic.isExitRequested() || stop)) {
 
 					try {
-
-						// calculate actual framerate
-						dt = Sys.getTime();
-						if (dt - dt2 > 1000) {
-							fps_real = fps_acc;
-							fps_acc = 0;
-							dt2 = dt;
-						} else {
-							fps_acc++;
-						}
-
 						// poll input
 						Display.processMessages();
 						logic.update();
@@ -144,9 +126,6 @@ public class Bifstk {
 								renderer.render();
 							}
 						}
-						// draw framerate
-						Fonts.getNormal().drawString(0, 0, "FPS: " + fps_real,
-								Color.BLACK, 1.0f);
 
 						// swap buffers
 						Display.update(false);
@@ -299,6 +278,7 @@ public class Bifstk {
 
 	/**
 	 * Checks that the current Thread is the Bifstk thread
+	 * 
 	 * @throws ThreadAccessException
 	 */
 	private static void checkThread() throws ThreadAccessException {

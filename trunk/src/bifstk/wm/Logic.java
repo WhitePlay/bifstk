@@ -9,7 +9,6 @@ import bifstk.Handler;
 import bifstk.config.Config;
 import bifstk.config.Cursors;
 import bifstk.config.Cursors.Type;
-import bifstk.config.Property;
 import bifstk.wm.geom.Region;
 
 /**
@@ -222,10 +221,8 @@ public class Logic {
 
 		boolean leftDiffPos = (leftDx != 0) && (leftDy != 0);
 
-		/*
-		 * the mouse is dragged if it was down the last time this method was
-		 * called, and the mouse's position diff is > 0
-		 */
+		/* the mouse is dragged if it was down the last time this method was
+		 * called, and the mouse's position diff is > 0 */
 		if (leftMouse.downLastPoll && leftMouse.down && leftDiffPos) {
 			leftMouse.draggedLastPoll = leftMouse.dragged;
 			leftMouse.dragged = true;
@@ -259,8 +256,7 @@ public class Logic {
 					.isAssignableFrom(this.leftMouse.clickedFrame.getClass());
 		}
 
-		boolean focusFollowMouse = new Boolean(
-				Config.getValue(Property.wmFocuseFollowmouse));
+		boolean focusFollowMouse = Config.isWmFocusFollowmouse();
 		// apply sloppy focus
 		if (focusFollowMouse && !this.leftMouse.clicked
 				&& !this.leftMouse.dragged) {

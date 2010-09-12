@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import bifstk.config.Config;
-import bifstk.config.Property;
 
 /**
  * Utility to help manipulate dates
@@ -31,7 +30,7 @@ public class DateHelper {
 	 * Access to non-static class members is restricted
 	 */
 	private DateHelper() {
-		String format = Config.getValue(Property.loggerDateFormat);
+		String format = Config.getLoggerDateFormat();
 		try {
 			timeStamps = new SimpleDateFormat(format);
 		} catch (Exception e) {

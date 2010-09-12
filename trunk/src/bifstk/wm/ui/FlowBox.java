@@ -123,12 +123,12 @@ public class FlowBox extends Container {
 		for (Widget widg : this.leftChildren) {
 			int nw, nh;
 			if (this.orientation.equals(Orientation.HORIZONTAL)) {
-				nw = Util.clamp(widg.getPreferredWidth(), 0, w - tacc);
-				nh = Util.clamp(widg.getPreferredHeight(), 0, h);
+				nw = Util.clampi(widg.getPreferredWidth(), 0, w - tacc);
+				nh = Util.clampi(widg.getPreferredHeight(), 0, h);
 				tacc += nw;
 			} else {
-				nw = Util.clamp(widg.getPreferredWidth(), 0, w);
-				nh = Util.clamp(widg.getPreferredHeight(), 0, h - tacc);
+				nw = Util.clampi(widg.getPreferredWidth(), 0, w);
+				nh = Util.clampi(widg.getPreferredHeight(), 0, h - tacc);
 				tacc += nh;
 			}
 			widg.setBounds(nw, nh);
@@ -137,12 +137,12 @@ public class FlowBox extends Container {
 		for (Widget widg : this.rightChildren) {
 			int nw, nh;
 			if (this.orientation.equals(Orientation.HORIZONTAL)) {
-				nw = Util.clamp(widg.getPreferredWidth(), 0, w - tacc);
-				nh = Util.clamp(widg.getPreferredHeight(), 0, h);
+				nw = Util.clampi(widg.getPreferredWidth(), 0, w - tacc);
+				nh = Util.clampi(widg.getPreferredHeight(), 0, h);
 				tacc += nw;
 			} else {
-				nw = Util.clamp(widg.getPreferredWidth(), 0, w);
-				nh = Util.clamp(widg.getPreferredHeight(), 0, h - tacc);
+				nw = Util.clampi(widg.getPreferredWidth(), 0, w);
+				nh = Util.clampi(widg.getPreferredHeight(), 0, h - tacc);
 				tacc += nh;
 			}
 			widg.setBounds(nw, nh);
@@ -156,13 +156,13 @@ public class FlowBox extends Container {
 		if (this.expandChild != null && ew > 0) {
 			int exPw, exPh;
 			if (this.orientation.equals(Orientation.HORIZONTAL)) {
-				exPh = Util.clamp(expandChild.getPreferredHeight(), 0, h);
+				exPh = Util.clampi(expandChild.getPreferredHeight(), 0, h);
 				if (exPh <= 0) {
 					exPh = h;
 				}
 				exPw = ew;
 			} else {
-				exPw = Util.clamp(expandChild.getPreferredWidth(), 0, w);
+				exPw = Util.clampi(expandChild.getPreferredWidth(), 0, w);
 				if (exPw <= 0) {
 					exPw = w;
 				}

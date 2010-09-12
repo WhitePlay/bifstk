@@ -460,6 +460,12 @@ public class Logic {
 						break;
 					}
 
+					if (dragged.isMaximized()) {
+						dragged.toggleMaximize();
+						leftMouse.dragX = this.leftMouse.hoverX
+								- dragged.getWidth() / 2;
+					}
+
 					if (!this.leftMouse.draggedLastPoll) {
 						dragged.setDragged(true);
 						Cursors.setCursor(Type.MOVE);
@@ -468,6 +474,7 @@ public class Logic {
 							- (leftMouse.clickX - leftMouse.dragX);
 					int ny = this.leftMouse.hoverY
 							- (leftMouse.clickY - leftMouse.dragY);
+
 					dragged.setPos(nx, ny);
 				}
 					break;

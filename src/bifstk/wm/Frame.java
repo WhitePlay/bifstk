@@ -608,7 +608,7 @@ public abstract class Frame implements Drawable, Clickable {
 
 		} else {
 			this.setBounds(this.windowedBounds.getWidth(),
-					this.windowedBounds.getWidth());
+					this.windowedBounds.getHeight());
 			this.setPos(this.windowedPos.getX(), this.windowedPos.getY());
 		}
 	}

@@ -12,7 +12,6 @@ public class Fonts {
 	private static Fonts instance = null;
 
 	private static final String defaultFont = "Arial";
-	private static final int minSize = 6, maxSize = 20;
 
 	private TrueTypeFont normal = null;
 
@@ -22,26 +21,9 @@ public class Fonts {
 
 	private Fonts() {
 		Font f;
-		String path = Config.getValue(Property.fontPath);
-		int normalSize = 12, smallSize = 10;
-
-		try {
-			normalSize = Integer.parseInt(Config
-					.getValue(Property.fontSizeNormal));
-		} catch (NumberFormatException e) {
-			Logger.error("Could not read value for " + Property.fontSizeNormal
-					+ ", defaulting to " + normalSize, e);
-		}
-		try {
-			smallSize = Integer.parseInt(Config
-					.getValue(Property.fontSizeSmall));
-		} catch (NumberFormatException e) {
-			Logger.error("Could not read value for " + Property.fontSizeSmall
-					+ ", defaulting to " + smallSize, e);
-		}
-
-		normalSize = Math.max(minSize, Math.min(maxSize, normalSize));
-		smallSize = Math.max(minSize, Math.min(maxSize, smallSize));
+		String path = Config.getFontPath();
+		int normalSize = Config.getFontSizeNormal();
+		int smallSize = Config.getFontSizeSmall();
 
 		try {
 			f = Font.createFont(Font.TRUETYPE_FONT, new File(path));

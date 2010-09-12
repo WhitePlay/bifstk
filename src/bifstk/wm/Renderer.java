@@ -9,7 +9,6 @@ import org.lwjgl.opengl.GL11;
 
 import bifstk.Root;
 import bifstk.config.Config;
-import bifstk.config.Property;
 import bifstk.config.Theme;
 import bifstk.gl.Color;
 import bifstk.gl.Util;
@@ -52,23 +51,11 @@ public class Renderer {
 		this.state = state;
 		this.root = root;
 
-		int width = 0;
-		try {
-			width = Integer.parseInt(Config.getValue(Property.displayWidth));
-		} catch (NumberFormatException e) {
-			throw new BifstkException("Could not parse value for property "
-					+ Property.displayWidth, e);
-		}
-		int height = 0;
-		try {
-			height = Integer.parseInt(Config.getValue(Property.displayHeight));
-		} catch (NumberFormatException e) {
-			throw new BifstkException("Could not parse value for property "
-					+ Property.displayHeight, e);
-		}
-		String title = Config.getValue(Property.displayTitle);
+		int width = Config.getDisplayWidth();
+		int height = Config.getDisplayHeight();
+		String title = Config.getDisplayTitle();
 
-		boolean vsync = new Boolean(Config.getValue(Property.displayVsync));
+		boolean vsync = Config.isDisplayVsync();
 		Display.setVSyncEnabled(vsync);
 
 		DisplayMode[] modes = null;
@@ -92,8 +79,7 @@ public class Renderer {
 							+ height);
 		}
 
-		boolean fullscreen = new Boolean(
-				Config.getValue(Property.displayFullscreen));
+		boolean fullscreen = Config.isDisplayFullscreen();
 
 		try {
 			if (fullscreen) {

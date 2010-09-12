@@ -6,7 +6,6 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import bifstk.config.Config;
-import bifstk.config.Property;
 
 /**
  * Misc GL utilities
@@ -229,10 +228,10 @@ public class Util {
 
 		}
 
-		int nx = clamp(ax, 0, bw);
-		int ny = clamp(ay, 0, bh);
-		int nw = clamp(w, 0, bw - nx);
-		int nh = clamp(h, 0, bh - ny);
+		int nx = clampi(ax, 0, bw);
+		int ny = clampi(ay, 0, bh);
+		int nw = clampi(w, 0, bw - nx);
+		int nh = clampi(h, 0, bh - ny);
 
 		Coord sci = new Coord(bx + nx, by + ny, nw, nh);
 		scissors.push(sci);
@@ -240,7 +239,7 @@ public class Util {
 		sci.cx = ax - nx;
 		sci.cy = ay - ny;
 
-		if (new Boolean(Config.getValue(Property.wmDebugLayout))) {
+		if (new Boolean(Config.isWmDebugLayout())) {
 			int dh = Display.getDisplayMode().getHeight();
 			GL11.glDisable(GL11.GL_SCISSOR_TEST);
 			GL11.glPushMatrix();
@@ -260,13 +259,28 @@ public class Util {
 
 	}
 
-	public static int clamp(int val, int min, int max) {
-		if (val < min)
-			return min;
-		else if (val > max)
-			return max;
-		else
-			return val;
+	/**
+	 * Clamp integer in specified range
+	 * 
+	 * @param val value to clamp
+	 * @param min min value
+	 * @param max max value
+	 * @return a value comprised between min and max
+	 */
+	public static int clampi(int val, int min, int max) {
+		return Math.max(Math.min(val, max), min);
+	}
+
+	/**
+	 * Clamp float in specified range
+	 * 
+	 * @param val value to clamp
+	 * @param min min value
+	 * @param max max value
+	 * @return a value comprised between min and max
+	 */
+	public static float clampf(float val, float min, float max) {
+		return Math.max(Math.min(val, max), min);
 	}
 
 	/**

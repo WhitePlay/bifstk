@@ -7,7 +7,6 @@ import bifstk.config.Config;
 import bifstk.config.Cursors;
 import bifstk.config.Cursors.Type;
 import bifstk.config.Fonts;
-import bifstk.config.Property;
 import bifstk.config.Theme;
 import bifstk.util.BifstkException;
 import bifstk.util.BifstkLogSystem;
@@ -33,15 +32,6 @@ public class Bifstk {
 
 	/** exit flag : thread will stop if set to true */
 	private static boolean stop = false;
-
-	/** default fps */
-	private final static int default_fps = 60;
-
-	/** minimum refresh rate in fps */
-	private final static int min_fps = 10;
-
-	/** maximum refresh rate in fps */
-	private final static int max_fps = 100;
 
 	/** static pointer to the WM's logic, used by the API */
 	private static Logic logic = null;
@@ -76,10 +66,9 @@ public class Bifstk {
 					return;
 				}
 
-				boolean vsync = new Boolean(
-						Config.getValue(Property.displayVsync));
+				boolean vsync = Config.isDisplayVsync();
 				int fps_target = 60;
-				boolean capped = isCapped();
+				boolean capped = Config.isDisplayFpsCap();
 
 				String log = "Display refresh rate: ";
 				if (vsync) {
@@ -91,7 +80,7 @@ public class Bifstk {
 					if (!capped) {
 						log += "unlimited";
 					} else {
-						fps_target = getFps();
+						fps_target = Config.getDisplayFps();
 						log += fps_target;
 					}
 				}
@@ -148,7 +137,7 @@ public class Bifstk {
 	 * <p>
 	 * 
 	 * @param configFile path to a local file containing values for all the
-	 *            properties defined in {@link bifstk.config.Property}
+	 *            properties defined in {@link bifstk.config.ConfigProperty}
 	 * @throws IllegalStateException Bifstk was already started
 	 */
 	public static void start(String configFile) {
@@ -160,7 +149,7 @@ public class Bifstk {
 	 * <p>
 	 * 
 	 * @param configFile path to a local file containing values for all the
-	 *            properties defined in {@link bifstk.config.Property}
+	 *            properties defined in {@link bifstk.config.ConfigProperty}
 	 * @param r root renderer for WM background, can be null
 	 * @throws IllegalStateException Bifstk was already started
 	 */
@@ -173,7 +162,7 @@ public class Bifstk {
 	 * <p>
 	 * 
 	 * @param configFile path to a local file containing values for all the
-	 *            properties defined in {@link bifstk.config.Property}
+	 *            properties defined in {@link bifstk.config.ConfigProperty}
 	 * @param h handler for keyboard and mouse inputs, can be null
 	 * @throws IllegalStateException Bifstk was already started
 	 */
@@ -186,7 +175,7 @@ public class Bifstk {
 	 * <p>
 	 * 
 	 * @param configFile path to a local file containing values for all the
-	 *            properties defined in {@link bifstk.config.Property}
+	 *            properties defined in {@link bifstk.config.ConfigProperty}
 	 * @param h handler for keyboard and mouse inputs, can be null
 	 * @param r root renderer for WM background, can be null
 	 * @throws IllegalStateException Bifstk was already started
@@ -312,46 +301,14 @@ public class Bifstk {
 	 */
 	private static void postDisplayInit() throws BifstkException {
 		// load theme
-		String themePath = Config.getValue(Property.themePath);
+		String themePath = Config.getThemePath();
 		Theme.load(themePath);
 
 		// cursor creation
-		Cursors.load(Config.getValue(Property.cursorsPath));
+		Cursors.load(Config.getCursorsPath());
 		Cursors.setCursor(Type.POINTER);
 
 		// load fonts
 		Fonts.load();
-	}
-
-	/**
-	 * Extracts FPS from config
-	 * 
-	 * @return the refresh rate of the display in frames per second
-	 */
-	private static int getFps() {
-		int fps = default_fps;
-		try {
-			fps = Integer.parseInt(Config.getValue(Property.displayFps));
-		} catch (NumberFormatException e) {
-			Logger.warn("Could not parse property for " + Property.displayFps);
-		}
-		if (fps < min_fps) {
-			Logger.warn("FPS should not be less than " + min_fps);
-			fps = min_fps;
-		}
-		if (fps > max_fps) {
-			Logger.warn("FPS should not be more than " + max_fps);
-			fps = max_fps;
-		}
-
-		return fps;
-	}
-
-	/**
-	 * @return true if the fsp is capped
-	 */
-	private static boolean isCapped() {
-		boolean cap = new Boolean(Config.getValue(Property.displayFpsCap));
-		return cap;
 	}
 }

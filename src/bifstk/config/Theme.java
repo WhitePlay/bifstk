@@ -14,6 +14,7 @@ import java.util.Properties;
 import org.newdawn.slick.Image;
 
 import bifstk.gl.Color;
+import bifstk.gl.Util;
 import bifstk.util.BifstkException;
 import bifstk.util.Logger;
 import bifstk.wm.Frame.Controls;
@@ -32,6 +33,7 @@ public class Theme {
 	 * @return root background color
 	 */
 	public static Color getRootBackgroundColor() {
+		check();
 		return instance.rootBackgroundColor;
 	}
 
@@ -41,6 +43,7 @@ public class Theme {
 	 * @return color of the mask displayed when a modal is shown
 	 */
 	public static Color getRootBackgroundModalColor() {
+		check();
 		return instance.rootBackgroundModalColor;
 	}
 
@@ -50,6 +53,7 @@ public class Theme {
 	 * @return opacity of the mask displayed when a modal is shown
 	 */
 	public static float getRootBackgroundModalAlpha() {
+		check();
 		return instance.rootBackgroundModalAlpha;
 	}
 
@@ -60,6 +64,7 @@ public class Theme {
 	 * @return pixel width of the border around the window
 	 */
 	public static int getWindowBorderWidth() {
+		check();
 		return instance.windowBorderWidth;
 	}
 
@@ -69,6 +74,7 @@ public class Theme {
 	 * @return window border color when focused
 	 */
 	public static Color getWindowBorderFocusedColor() {
+		check();
 		return instance.windowBorderFocusedColor;
 	}
 
@@ -78,6 +84,7 @@ public class Theme {
 	 * @return window border color when not focused
 	 */
 	public static Color getWindowBorderUnfocusedColor() {
+		check();
 		return instance.windowBorderUnfocusedColor;
 	}
 
@@ -87,6 +94,7 @@ public class Theme {
 	 * @return true if window border corners should be rounded
 	 */
 	public static boolean isWindowBorderRounded() {
+		check();
 		return instance.windowBorderRounded;
 	}
 
@@ -96,6 +104,7 @@ public class Theme {
 	 * @return the color of the 1px border of the window border when focused
 	 */
 	public static Color getWindowBorderOuterFocusedColor() {
+		check();
 		return instance.windowBorderOuterFocusedColor;
 	}
 
@@ -105,6 +114,7 @@ public class Theme {
 	 * @return the color of the 1px border of the window border when not focused
 	 */
 	public static Color getWindowBorderOuterUnfocusedColor() {
+		check();
 		return instance.windowBorderOuterUnfocusedColor;
 	}
 
@@ -114,6 +124,7 @@ public class Theme {
 	 * @return window titlebar color when focused
 	 */
 	public static Color getWindowTitlebarFocusedColor() {
+		check();
 		return instance.windowTitlebarFocusedColor;
 	}
 
@@ -123,6 +134,7 @@ public class Theme {
 	 * @return window titlebar color when not focused
 	 */
 	public static Color getWindowTitlebarUnfocusedColor() {
+		check();
 		return instance.windowTitlebarUnfocusedColor;
 	}
 
@@ -133,6 +145,7 @@ public class Theme {
 	 * @return pixel width of the border around areas
 	 */
 	public static int getAreaBorderWidth() {
+		check();
 		return instance.areaBorderWidth;
 	}
 
@@ -142,6 +155,7 @@ public class Theme {
 	 * @return true if the area border is rounded
 	 */
 	public static boolean isAreaBorderRounded() {
+		check();
 		return instance.areaBorderRounded;
 	}
 
@@ -151,6 +165,7 @@ public class Theme {
 	 * @return the focused color of the area
 	 */
 	public static Color getAreaFocusedColor() {
+		check();
 		return instance.areaFocusedColor;
 	}
 
@@ -160,6 +175,7 @@ public class Theme {
 	 * @return the unfocused color of the area
 	 */
 	public static Color getAreaUnfocusedColor() {
+		check();
 		return instance.areaUnfocusedColor;
 	}
 
@@ -169,6 +185,7 @@ public class Theme {
 	 * @return the focused color of the outer border of the area
 	 */
 	public static Color getAreaBorderFocusedColor() {
+		check();
 		return instance.areaBorderFocusedColor;
 	}
 
@@ -178,6 +195,7 @@ public class Theme {
 	 * @return the unfocused color of the outer border of the area
 	 */
 	public static Color getAreaBorderUnfocusedColor() {
+		check();
 		return instance.areaBorderUnfocusedColor;
 	}
 
@@ -187,6 +205,7 @@ public class Theme {
 	 * @return the opacity of the area ui
 	 */
 	public static float getAreaUiAlpha() {
+		check();
 		return instance.areaUiAlpha;
 	}
 
@@ -196,6 +215,7 @@ public class Theme {
 	 * @return the opacity of an area when not focused
 	 */
 	public static float getAreaUnfocusedAlpha() {
+		check();
 		return instance.areaUnfocusedAlpha;
 	}
 
@@ -205,6 +225,7 @@ public class Theme {
 	 * @return window opacity when moved
 	 */
 	public static float getWindowMovedAlpha() {
+		check();
 		return instance.windowMovedAlpha;
 	}
 
@@ -214,6 +235,7 @@ public class Theme {
 	 * @return window opacity when resized
 	 */
 	public static float getWindowResizedAlpha() {
+		check();
 		return instance.windowResizedAlpha;
 	}
 
@@ -223,6 +245,7 @@ public class Theme {
 	 * @return window opacity when not focused
 	 */
 	public static float getWindowUnfocusedAlpha() {
+		check();
 		return instance.windowUnfocusedAlpha;
 	}
 
@@ -232,6 +255,7 @@ public class Theme {
 	 * @return true to enable dropped shadows around windows
 	 */
 	public static boolean isWindowShadowEnabled() {
+		check();
 		return instance.windowShadowEnabled;
 	}
 
@@ -241,6 +265,7 @@ public class Theme {
 	 * @return opacity of the window shadow
 	 */
 	public static float getWindowShadowAlpha() {
+		check();
 		return instance.windowShadowAlpha;
 	}
 
@@ -251,6 +276,7 @@ public class Theme {
 	 * @return pixel radius of the window shadow
 	 */
 	public static int getWindowShadowRadius() {
+		check();
 		return instance.windowShadowRadius;
 	}
 
@@ -260,6 +286,7 @@ public class Theme {
 	 * @return color of the Window ui
 	 */
 	public static Color getWindowUiColor() {
+		check();
 		return instance.windowUiColor;
 	}
 
@@ -269,6 +296,7 @@ public class Theme {
 	 * @return opacity of a window UI
 	 */
 	public static float getWindowUiAlpha() {
+		check();
 		return instance.windowUiAlpha;
 	}
 
@@ -278,6 +306,7 @@ public class Theme {
 	 * @return title frame controls order
 	 */
 	public static List<Controls> getFrameControlsOrder() {
+		check();
 		return instance.frameControlsOrder;
 	}
 
@@ -288,6 +317,7 @@ public class Theme {
 	 * @return width of the frame controls
 	 */
 	public static int getFrameControlsWidth() {
+		check();
 		return instance.frameControlsWidth;
 	}
 
@@ -298,6 +328,7 @@ public class Theme {
 	 * @return height of the frame controls
 	 */
 	public static int getFrameControlsHeight() {
+		check();
 		return instance.frameControlsHeight;
 	}
 
@@ -308,6 +339,7 @@ public class Theme {
 	 * @return width of the frame controls
 	 */
 	public static int getFrameControlsBorder() {
+		check();
 		return instance.frameControlsBorder;
 	}
 
@@ -317,6 +349,7 @@ public class Theme {
 	 * @return the image for the close frame control
 	 */
 	public static Image getFrameControlCloseImage() {
+		check();
 		return instance.frameControlCloseImage;
 	}
 
@@ -326,6 +359,7 @@ public class Theme {
 	 * @return the image for the maximize frame control
 	 */
 	public static Image getFrameControlMaximizeImage() {
+		check();
 		return instance.frameControlMaximizeImage;
 	}
 
@@ -335,6 +369,7 @@ public class Theme {
 	 * @return frame close control color
 	 */
 	public static Color getFrameControlsCloseColor() {
+		check();
 		return instance.frameControlsCloseColor;
 	}
 
@@ -344,6 +379,7 @@ public class Theme {
 	 * @return close frame control color when hovered
 	 */
 	public static Color getFrameControlsCloseHoverColor() {
+		check();
 		return instance.frameControlsCloseHoverColor;
 	}
 
@@ -353,6 +389,7 @@ public class Theme {
 	 * @return close frame control color when clicked
 	 */
 	public static Color getFrameControlsCloseClickColor() {
+		check();
 		return instance.frameControlsCloseClickColor;
 	}
 
@@ -362,6 +399,7 @@ public class Theme {
 	 * @return frame Maximize control color
 	 */
 	public static Color getFrameControlsMaximizeColor() {
+		check();
 		return instance.frameControlsMaximizeColor;
 	}
 
@@ -371,6 +409,7 @@ public class Theme {
 	 * @return Maximize frame control color when hovered
 	 */
 	public static Color getFrameControlsMaximizeHoverColor() {
+		check();
 		return instance.frameControlsMaximizeHoverColor;
 	}
 
@@ -380,6 +419,7 @@ public class Theme {
 	 * @return Maximize frame control color when clicked
 	 */
 	public static Color getFrameControlsMaximizeClickColor() {
+		check();
 		return instance.frameControlsMaximizeClickColor;
 	}
 
@@ -389,6 +429,7 @@ public class Theme {
 	 * @return the background color of a Button
 	 */
 	public static Color getUiButtonColor() {
+		check();
 		return instance.uiButtonColor;
 	}
 
@@ -398,6 +439,7 @@ public class Theme {
 	 * @return the background color of a Button when hovered
 	 */
 	public static Color getUiButtonHoverColor() {
+		check();
 		return instance.uiButtonHoverColor;
 	}
 
@@ -407,6 +449,7 @@ public class Theme {
 	 * @return the background color of a Button when clicked
 	 */
 	public static Color getUiButtonClickColor() {
+		check();
 		return instance.uiButtonClickColor;
 	}
 
@@ -416,114 +459,8 @@ public class Theme {
 	 * @return the border color of a Button
 	 */
 	public static Color getUiButtonBorderColor() {
+		check();
 		return instance.uiButtonBorderColor;
-	}
-
-	/**
-	 * Available (and mandatory) properties
-	 */
-	public static enum Prop {
-
-		/** COLOR root background color */
-		rootBackgroundColor("root.background.color"),
-		/** COLOR color superposed to the root bg when a modal frame is shown */
-		rootBackgroundModalColor("root.background.modal.color"),
-		/** FLOAT opacity of the color layered when a modal is shown */
-		rootBackgroundModalAlpha("root.background.modal.alpha"),
-
-		/** INT pixel width of the border around the window */
-		windowBorderWidth("window.border.width"),
-		/** COLOR window border color when focused */
-		windowBorderFocusedColor("window.border.focused.color"),
-		/** COLOR window border color when not focused */
-		windowBorderUnfocusedColor("window.border.unfocused.color"),
-		/** BOOL true for rounded window corners */
-		windowBorderRounded("window.border.rounded"),
-		/** COLOR color of the border of the window border */
-		windowBorderOuterFocusedColor("window.border.outer.focused.color"),
-		/** COLOR color of the border of the window border */
-		windowBorderOuterUnfocusedColor("window.border.outer.unfocused.color"),
-		/** COLOR window titlebar color when focused */
-		windowTitlebarFocusedColor("window.titlebar.focused.color"),
-		/** COLOR window titlebar color when not focused */
-		windowTitlebarUnfocusedColor("window.titlebar.unfocused.color"),
-		/** FLOAT window opacity when moved */
-		windowMovedAlpha("window.moved.alpha"),
-		/** FLOAT window opacity when resized */
-		windowResizedAlpha("window.resized.alpha"),
-		/** FLOAT window opacity when not focused */
-		windowUnfocusedAlpha("window.unfocused.alpha"),
-		/** BOOL true to enable dropped shadows around windows */
-		windowShadowEnabled("window.shadow.enabled"),
-		/** FLOAT opacity of the window shadow */
-		windowShadowAlpha("window.shadow.alpha"),
-		/** INT pixel radius of the window shadow */
-		windowShadowRadius("window.shadow.radius"),
-		/** COLOR base color of a Window ui */
-		windowUiColor("window.ui.color"),
-		/** FLOAT base opacity of the window ui */
-		windowUiAlpha("window.ui.alpha"),
-
-		/** INT pixel width of the border around the area */
-		areaBorderWidth("area.border.width"),
-		/** COLOR focused color of the area */
-		areaFocusedColor("area.focused.color"),
-		/** COLOR unfocused color of the area */
-		areaUnfocusedColor("area.unfocused.color"),
-		/** BOOL true if border corners should be rounded */
-		areaBorderRounded("area.border.rounded"),
-		/** COLOR focused color of the outer border */
-		areaBorderFocusedColor("area.border.focused.color"),
-		/** COLOR unfocused color of the outer border */
-		areaBorderUnfocusedColor("area.border.unfocused.color"),
-		/** FLOAT opacity of the area ui */
-		areaUiAlpha("area.ui.alpha"),
-		/** FLOAT opacity if of the area when not focused */
-		areaUnfocusedAlpha("area.unfocused.alpha"),
-
-		/** List<bifstk.wm.Frame.Controls> title frame controls order */
-		frameControlsOrder("frame.controls.order"),
-		/** INT width of the frame controls */
-		frameControlsWidth("frame.controls.width"),
-		/** INT height of the frame controls */
-		frameControlsHeight("frame.controls.height"),
-		/** INT spacing border between frame controls */
-		frameControlsBorder("frame.controls.border"),
-		/** STRING path to the image for the close frame control */
-		frameControlsCloseImage("frame.controls.close.image"),
-		/** COLOR close frame control color */
-		frameControlsCloseColor("frame.controls.close.color"),
-		/** COLOR close frame control color when hovered */
-		frameControlsCloseHoverColor("frame.controls.close.hover.color"),
-		/** COLOR close frame control color when clicked */
-		frameControlsCloseClickColor("frame.controls.close.click.color"),
-		/** STRING path to the image for the maximize frame control */
-		frameControlsMaximizeImage("frame.controls.maximize.image"),
-		/** COLOR maximize frame control color */
-		frameControlsMaximizeColor("frame.controls.maximize.color"),
-		/** COLOR maximize frame control color when hovered */
-		frameControlsMaximizeHoverColor("frame.controls.maximize.hover.color"),
-		/** COLOR maximize frame control color when hovered */
-		frameControlsMaximizeClickColor("frame.controls.maximize.click.color"),
-
-		/** COLOR color of the ui button border */
-		uiButtonBorderColor("ui.button.border.color"),
-		/** COLOR color of the ui button background */
-		uiButtonColor("ui.button.color"),
-		/** COLOR color of the ui button background when focused */
-		uiButtonHoverColor("ui.button.hover.color"),
-		/** COLOR color of the ui button background when clicked */
-		uiButtonClickColor("ui.button.click.color");
-
-		private String name = "";
-
-		public String getName() {
-			return this.name;
-		}
-
-		private Prop(String name) {
-			this.name = name;
-		}
 	}
 
 	/** singleton instance */
@@ -557,12 +494,12 @@ public class Theme {
 			throw new BifstkException("Could not read theme file", e);
 		}
 
-		HashMap<Prop, String> readProperties = new HashMap<Prop, String>();
+		HashMap<ThemeProperty, String> readProperties = new HashMap<ThemeProperty, String>();
 
 		try {
 			for (Entry<Object, Object> entry : props.entrySet()) {
 				String key = (String) entry.getKey();
-				for (Prop p : Prop.values()) {
+				for (ThemeProperty p : ThemeProperty.values()) {
 					if (p.getName().equals(key)) {
 						readProperties.put(p, (String) entry.getValue());
 					}
@@ -572,7 +509,7 @@ public class Theme {
 			throw new BifstkException("Error parsing configuration file", e);
 		}
 
-		for (Prop p : Prop.values()) {
+		for (ThemeProperty p : ThemeProperty.values()) {
 			if (!readProperties.containsKey(p)) {
 				String message = "Property " + p + " (" + p.getName()
 						+ ") is not defined in theme descriptor";
@@ -583,8 +520,9 @@ public class Theme {
 		readProps(readProperties);
 	}
 
-	private void readProps(Map<Prop, String> props) throws BifstkException {
-		for (Entry<Prop, String> prop : props.entrySet()) {
+	private void readProps(Map<ThemeProperty, String> props)
+			throws BifstkException {
+		for (Entry<ThemeProperty, String> prop : props.entrySet()) {
 			String sval = prop.getValue();
 
 			try {
@@ -598,13 +536,14 @@ public class Theme {
 					break;
 				}
 				case rootBackgroundModalAlpha: {
-					this.rootBackgroundModalAlpha = clampf(
+					this.rootBackgroundModalAlpha = Util.clampf(
 							Float.parseFloat(sval), 0.0f, 1.0f);
 					break;
 				}
 				case windowBorderWidth: {
-					this.windowBorderWidth = clampi(Integer.parseInt(sval),
-							windowBorderWidthMin, windowBorderWidthMax);
+					this.windowBorderWidth = Util.clampi(
+							Integer.parseInt(sval), windowBorderWidthMin,
+							windowBorderWidthMax);
 					break;
 				}
 				case windowBorderFocusedColor: {
@@ -640,28 +579,29 @@ public class Theme {
 					break;
 				}
 				case windowShadowAlpha: {
-					this.windowShadowAlpha = clampf(Float.parseFloat(sval),
-							0.0f, 1.0f);
+					this.windowShadowAlpha = Util.clampf(
+							Float.parseFloat(sval), 0.0f, 1.0f);
 					break;
 				}
 				case windowShadowRadius: {
-					this.windowShadowRadius = clampi(Integer.parseInt(sval),
-							windowShadowRadiusMin, windowShadowRadiusMax);
+					this.windowShadowRadius = Util.clampi(
+							Integer.parseInt(sval), windowShadowRadiusMin,
+							windowShadowRadiusMax);
 					break;
 				}
 				case windowMovedAlpha: {
-					this.windowMovedAlpha = clampf(Float.parseFloat(sval),
+					this.windowMovedAlpha = Util.clampf(Float.parseFloat(sval),
 							0.0f, 1.0f);
 					break;
 				}
 				case windowResizedAlpha: {
-					this.windowResizedAlpha = clampf(Float.parseFloat(sval),
-							0.0f, 1.0f);
+					this.windowResizedAlpha = Util.clampf(
+							Float.parseFloat(sval), 0.0f, 1.0f);
 					break;
 				}
 				case windowUnfocusedAlpha: {
-					this.windowUnfocusedAlpha = clampf(Float.parseFloat(sval),
-							0.0f, 1.0f);
+					this.windowUnfocusedAlpha = Util.clampf(
+							Float.parseFloat(sval), 0.0f, 1.0f);
 					break;
 				}
 				case windowUiColor: {
@@ -669,12 +609,12 @@ public class Theme {
 					break;
 				}
 				case windowUiAlpha: {
-					this.windowUiAlpha = clampf(Float.parseFloat(sval), 0.0f,
-							1.0f);
+					this.windowUiAlpha = Util.clampf(Float.parseFloat(sval),
+							0.0f, 1.0f);
 					break;
 				}
 				case areaBorderWidth: {
-					this.areaBorderWidth = clampi(Integer.parseInt(sval),
+					this.areaBorderWidth = Util.clampi(Integer.parseInt(sval),
 							areaBorderMin, areaBorderMax);
 					break;
 				}
@@ -699,13 +639,13 @@ public class Theme {
 					break;
 				}
 				case areaUiAlpha: {
-					this.areaUiAlpha = clampf(Float.parseFloat(sval), 0.0f,
-							1.0f);
+					this.areaUiAlpha = Util.clampf(Float.parseFloat(sval),
+							0.0f, 1.0f);
 					break;
 				}
 				case areaUnfocusedAlpha: {
-					this.areaUnfocusedAlpha = clampf(Float.parseFloat(sval),
-							0.0f, 1.0f);
+					this.areaUnfocusedAlpha = Util.clampf(
+							Float.parseFloat(sval), 0.0f, 1.0f);
 					break;
 				}
 				case frameControlsOrder: {
@@ -740,19 +680,21 @@ public class Theme {
 					break;
 				}
 				case frameControlsWidth: {
-					this.frameControlsWidth = clampi(Integer.parseInt(sval),
-							this.frameControlsWidthMin,
+					this.frameControlsWidth = Util.clampi(
+							Integer.parseInt(sval), this.frameControlsWidthMin,
 							this.frameControlsWidthMax);
 					break;
 				}
 				case frameControlsHeight: {
-					this.frameControlsHeight = clampi(Integer.parseInt(sval),
+					this.frameControlsHeight = Util.clampi(
+							Integer.parseInt(sval),
 							this.frameControlsHeightMin,
 							this.frameControlsHeightMax);
 					break;
 				}
 				case frameControlsBorder: {
-					this.frameControlsBorder = clampi(Integer.parseInt(sval),
+					this.frameControlsBorder = Util.clampi(
+							Integer.parseInt(sval),
 							this.frameControlsBorderMin,
 							this.frameControlsBorderMax);
 					break;
@@ -815,32 +757,17 @@ public class Theme {
 		}
 	}
 
-	/**
-	 * Clamp integer in specified range
-	 * 
-	 * @param val value to clamp
-	 * @param min min value
-	 * @param max max value
-	 * @return a value comprised between min and max
-	 */
-	private static int clampi(int val, int min, int max) {
-		return Math.max(Math.min(val, max), min);
-	}
-
-	/**
-	 * Clamp float in specified range
-	 * 
-	 * @param val value to clamp
-	 * @param min min value
-	 * @param max max value
-	 * @return a value comprised between min and max
-	 */
-	private static float clampf(float val, float min, float max) {
-		return Math.max(Math.min(val, max), min);
+	private static void check() throws IllegalStateException {
+		if (instance == null) {
+			throw new IllegalStateException("Config has not been loaded");
+		}
 	}
 
 	/**
 	 * Load a theme file
+	 * <p>
+	 * Will create the singleton instance and enable access to property values
+	 * through the appropriate public accessor
 	 * 
 	 * @param path file path to the theme descriptor
 	 * @throws BifstkException theme could not be opened

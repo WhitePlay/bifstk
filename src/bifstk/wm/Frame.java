@@ -423,14 +423,14 @@ public abstract class Frame implements Drawable, Clickable {
 
 	/** @param x the new abscissa position of this frame in the WM */
 	public void setX(int x) {
-		x = Util.clamp(x, 0,
+		x = Util.clampi(x, 0,
 				Display.getDisplayMode().getWidth() - this.getWidth());
 		this.pos.setX(x);
 	}
 
 	/** @param y the new ordinate position of this frame in the WM */
 	public void setY(int y) {
-		y = Util.clamp(y, 0,
+		y = Util.clampi(y, 0,
 				Display.getDisplayMode().getHeight() - this.getHeight());
 		this.pos.setY(y);
 	}
@@ -440,9 +440,9 @@ public abstract class Frame implements Drawable, Clickable {
 	 * @param y the new ordinate position of this frame in the WM
 	 */
 	public void setPos(int x, int y) {
-		x = Util.clamp(x, 0,
+		x = Util.clampi(x, 0,
 				Display.getDisplayMode().getWidth() - this.getWidth());
-		y = Util.clamp(y, 0,
+		y = Util.clampi(y, 0,
 				Display.getDisplayMode().getHeight() - this.getHeight());
 		this.pos.setPos(x, y);
 	}
@@ -462,7 +462,7 @@ public abstract class Frame implements Drawable, Clickable {
 		if (!this.isResizable()) {
 			return;
 		}
-		w = Util.clamp(w, this.minBounds.getWidth(), Display.getDisplayMode()
+		w = Util.clampi(w, this.minBounds.getWidth(), Display.getDisplayMode()
 				.getWidth() - this.getX());
 		this.bounds.setWidth(w);
 		if (this.content != null) {
@@ -475,7 +475,7 @@ public abstract class Frame implements Drawable, Clickable {
 		if (!this.isResizable()) {
 			return;
 		}
-		h = Util.clamp(h, this.minBounds.getHeight(), Display.getDisplayMode()
+		h = Util.clampi(h, this.minBounds.getHeight(), Display.getDisplayMode()
 				.getHeight() - this.getY());
 		this.bounds.setHeight(h);
 		if (this.content != null) {
@@ -492,9 +492,9 @@ public abstract class Frame implements Drawable, Clickable {
 		if (!this.isResizable()) {
 			return;
 		}
-		w = Util.clamp(w, this.minBounds.getWidth(), Display.getDisplayMode()
+		w = Util.clampi(w, this.minBounds.getWidth(), Display.getDisplayMode()
 				.getWidth() - this.getX());
-		h = Util.clamp(h, this.minBounds.getHeight(), Display.getDisplayMode()
+		h = Util.clampi(h, this.minBounds.getHeight(), Display.getDisplayMode()
 				.getHeight() - this.getY());
 		this.bounds.setBounds(w, h);
 		if (this.content != null) {

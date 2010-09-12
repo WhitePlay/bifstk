@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 
 import bifstk.config.Config;
-import bifstk.config.Property;
 
 /**
  * Simple and straightforward logging facility
@@ -142,10 +141,8 @@ public class Logger {
 	public static void init() {
 		Visibility vis = Visibility.NONE;
 
-		boolean confFile = new Boolean(
-				Config.getValue(Property.loggerFileEnabled));
-		boolean confOut = new Boolean(
-				Config.getValue(Property.loggerStdoutEnabled));
+		boolean confFile = Config.isLoggerFileEnabled();
+		boolean confOut = Config.isLoggerStdoutEnabled();
 
 		if (confFile && confOut) {
 			vis = Visibility.BOTH;
@@ -154,18 +151,11 @@ public class Logger {
 		} else if (confOut) {
 			vis = Visibility.STDOUT;
 		}
-		String out = Config.getValue(Property.loggerFilePath);
-		boolean debug = new Boolean(Config.getValue(Property.loggerStdoutDebug));
-		boolean trace = new Boolean(Config.getValue(Property.loggerStdoutTrace));
-		boolean overwrite = new Boolean(
-				Config.getValue(Property.loggerFileOverwrite));
-
-		int len = 0;
-		try {
-			len = Integer.parseInt(Config.getValue(Property.loggerTraceLength));
-		} catch (Throwable t) {
-		}
-		len = Math.max(Math.min(60, len), 15);
+		String out = Config.getLoggerFilePath();
+		boolean debug = Config.isLoggerStdoutDebug();
+		boolean trace = Config.isLoggerStdoutTrace();
+		boolean overwrite = Config.isLoggerFileOverwrite();
+		int len = Config.getLoggerTraceLength();
 
 		Logger.instance = new Logger(vis, out, debug, trace, overwrite, len);
 

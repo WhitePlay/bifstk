@@ -82,6 +82,8 @@ public class Logic {
 		int dragX = 0;
 		/** Y position of the dragged frame when it was clicked */
 		int dragY = 0;
+		/** true when the mouse is dragged to the top of the screen */
+		boolean dragTop = false;
 
 	}
 
@@ -374,6 +376,12 @@ public class Logic {
 				this.leftMouse.hoverFrame.setControlMaximizeHover(false);
 
 			}
+
+			if (this.leftMouse.dragTop) {
+				this.state.getWindowDraggedTop().toggleMaximize();
+				this.state.setWindowDraggedTop(null);
+				this.leftMouse.dragTop = false;
+			}
 		}
 
 		// RMB click
@@ -460,10 +468,28 @@ public class Logic {
 						break;
 					}
 
+					// cancel maximize upon drag
 					if (dragged.isMaximized()) {
 						dragged.toggleMaximize();
 						leftMouse.dragX = this.leftMouse.hoverX
 								- dragged.getWidth() / 2;
+					}
+
+					// initiate or cancel maximize on top drag
+					if (lclickIsWindow && dragged.isResizable()
+							&& Config.isWmWindowSnapTop()) {
+						if (this.leftMouse.dragTop) {
+							if (this.leftMouse.hoverY > 1) {
+								this.leftMouse.dragTop = false;
+								this.state.setWindowDraggedTop(null);
+							}
+						} else {
+							if (this.leftMouse.hoverY == 1) {
+								this.leftMouse.dragTop = true;
+								this.state
+										.setWindowDraggedTop((Window) dragged);
+							}
+						}
 					}
 
 					if (!this.leftMouse.draggedLastPoll) {

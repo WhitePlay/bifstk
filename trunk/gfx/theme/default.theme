@@ -27,6 +27,8 @@ window.shadow.alpha = 0.2
 window.shadow.radius = 10
 window.ui.color = 212 212 212
 window.ui.alpha = 0.9
+window.snap.color = 200 200 255
+window.snap.alpha = 0.2
 
 area.border.width = 10
 area.border.rounded = true

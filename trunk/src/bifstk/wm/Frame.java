@@ -591,7 +591,7 @@ public abstract class Frame implements Drawable, Clickable {
 
 	/** Maximize / unmaximize this frame */
 	public void toggleMaximize() {
-		if (!this.hasTitlebar) {
+		if (!this.hasTitlebar() || !this.isResizable()) {
 			return;
 		}
 

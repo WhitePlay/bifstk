@@ -69,7 +69,9 @@ public enum ConfigProperty {
 	/** BOOL true if frame focus follows the mouse or if click is required */
 	wmFocusFollowmouse("wm.focus.followmouse"),
 	/** BOOL displays some visual debug info in the UI layout when true */
-	wmDebugLayout("wm.debug.layout");
+	wmDebugLayout("wm.debug.layout"),
+	/** true to enable maximization on top window drag */
+	wmWindowSnapTop("wm.window.snap.top");
 
 	private String property = null;
 

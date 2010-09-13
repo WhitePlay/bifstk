@@ -300,6 +300,24 @@ public class Theme {
 		return instance.windowUiAlpha;
 	}
 
+	private Color windowSnapColor;
+
+	/**
+	 * @return the Color of the box to preview window snap
+	 */
+	public static Color getWindowSnapColor() {
+		return instance.windowSnapColor;
+	}
+
+	private float windowSnapAlpha;
+
+	/**
+	 * @return the opacity of the box to preview window snap
+	 */
+	public static float getWindowSnapAlpha() {
+		return instance.windowSnapAlpha;
+	}
+
 	private List<Controls> frameControlsOrder = null;
 
 	/**
@@ -613,6 +631,13 @@ public class Theme {
 							0.0f, 1.0f);
 					break;
 				}
+				case windowSnapColor:
+					this.windowSnapColor = Color.parse(sval);
+					break;
+				case windowSnapAlpha:
+					this.windowSnapAlpha = Util.clampf(Float.parseFloat(sval),
+							0.0f, 1.0f);
+					break;
 				case areaBorderWidth: {
 					this.areaBorderWidth = Util.clampi(Integer.parseInt(sval),
 							areaBorderMin, areaBorderMax);

@@ -312,6 +312,15 @@ public class Config {
 		return instance.wmFocusFollowmouse;
 	}
 
+	private boolean wmWindowSnapTop;
+
+	/**
+	 * @return true if top window drag-snap is enabled
+	 */
+	public static boolean isWmWindowSnapTop() {
+		return instance.wmWindowSnapTop;
+	}
+
 	private void readProps(Map<ConfigProperty, String> props)
 			throws BifstkException {
 		for (Entry<ConfigProperty, String> prop : props.entrySet()) {
@@ -390,7 +399,9 @@ public class Config {
 				case wmFocusFollowmouse:
 					this.wmFocusFollowmouse = Boolean.parseBoolean(sval);
 					break;
-
+				case wmWindowSnapTop:
+					this.wmWindowSnapTop = Boolean.parseBoolean(sval);
+					break;
 				}
 			} catch (Throwable t) {
 				throw new BifstkException("Could not read value for "

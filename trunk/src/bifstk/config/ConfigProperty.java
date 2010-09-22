@@ -44,6 +44,8 @@ public enum ConfigProperty {
 	displayFpsCap("display.fps.cap"),
 	/** BOOL enable VSync */
 	displayVsync("display.vsync"),
+	/** INT number of antialias samples for Multisampling */
+	displayAntialiasSamples("display.antialias.samples"),
 
 	// /////////////////////////
 	// /// Fonts

@@ -6,6 +6,7 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.PixelFormat;
 
 import bifstk.Root;
 import bifstk.config.Config;
@@ -92,10 +93,21 @@ public class Renderer {
 		}
 		Display.setTitle(title);
 
+		int samples = Config.getDisplayAntialiasSamples();
+
 		try {
-			Display.create();
+			Display.create(new PixelFormat(8, 8, 0, samples));
 		} catch (LWJGLException e) {
-			throw new BifstkException(e);
+			Display.destroy();
+			if (samples > 0) {
+				Logger.debug("Unable to activate multisampling", e);
+			}
+			try {
+				Display.create();
+			} catch (LWJGLException e1) {
+				Display.destroy();
+				throw new BifstkException("", e1);
+			}
 		}
 
 		Logger.info("Created display: " + Display.getDisplayMode().toString());

@@ -170,6 +170,17 @@ public class Config {
 		return instance.displayVsync;
 	}
 
+	private int displayAntialiasSamples = 0;
+	private int displayAntialiasSamplesMin = 0, displayAntialiasSamplesMax = 8;
+
+	/**
+	 * @return the number of antialias samples when Multisampling is enabled, or
+	 *         0
+	 */
+	public static int getDisplayAntialiasSamples() {
+		return instance.displayAntialiasSamples;
+	}
+
 	private String fontPath;
 
 	/**
@@ -352,6 +363,12 @@ public class Config {
 					break;
 				case displayWidth:
 					this.displayWidth = Integer.parseInt(sval);
+					break;
+				case displayAntialiasSamples:
+					this.displayAntialiasSamples = Util.clampi(
+							Integer.parseInt(sval),
+							this.displayAntialiasSamplesMin,
+							this.displayAntialiasSamplesMax);
 					break;
 				case fontPath:
 					this.fontPath = sval;

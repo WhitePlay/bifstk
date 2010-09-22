@@ -1,5 +1,6 @@
 package bifstk;
 
+import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.util.Log;
 
@@ -293,6 +294,20 @@ public class Bifstk {
 		// create logsystem
 		Logger.init();
 		Log.setLogSystem(new BifstkLogSystem());
+
+		Logger.debug("OS: \t" + System.getProperty("os.name") + " "
+				+ System.getProperty("os.arch") + " "
+				+ System.getProperty("os.version"));
+
+		Logger.debug("Java: \t" + System.getProperty("java.version") + ", "
+				+ System.getProperty("java.vendor"));
+		Logger.debug("JAVA_HOME: \t" + System.getProperty("java.home"));
+		Logger.debug("VM: \t" + System.getProperty("java.vm.name") + ", "
+				+ System.getProperty("java.vm.version") + ", "
+				+ System.getProperty("java.vm.vendor"));
+
+		Logger.debug("LWJGL: \t" + Sys.getVersion());
+
 		Logger.info("Config loaded from: " + config);
 	}
 

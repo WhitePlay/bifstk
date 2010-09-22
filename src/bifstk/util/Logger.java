@@ -214,6 +214,17 @@ public class Logger {
 	}
 
 	/**
+	 * Issue a debug message
+	 * 
+	 * @param message the message to append to the log
+	 * @param t the Exception to append to the log
+	 */
+	public static void debug(String message, Throwable t) {
+		check();
+		instance.message("[D] " + message, Level.DEBUG, t);
+	}
+
+	/**
 	 * Issue an information message
 	 * 
 	 * @param message the message to append to the log

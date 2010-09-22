@@ -260,6 +260,22 @@ public class Util {
 	}
 
 	/**
+	 * Reset the scissor box as it was last time
+	 * {@link #pushScissor(int, int, int, int)} was called
+	 */
+	public static void popScissor() {
+		scissors.pop();
+		if (scissors.size() > 0) {
+			Coord sci = scissors.getFirst();
+			GL11.glScissor(sci.x, sci.y, sci.w, sci.h);
+		} else {
+			GL11.glScissor(0, 0, Display.getDisplayMode().getWidth(), Display
+					.getDisplayMode().getHeight());
+		}
+
+	}
+
+	/**
 	 * Clamp integer in specified range
 	 * 
 	 * @param val value to clamp
@@ -284,19 +300,15 @@ public class Util {
 	}
 
 	/**
-	 * Reset the scissor box as it was last time
-	 * {@link #pushScissor(int, int, int, int)} was called
+	 * @param n a positive integer
+	 * @return the lesser power of two greater than n
 	 */
-	public static void popScissor() {
-		scissors.pop();
-		if (scissors.size() > 0) {
-			Coord sci = scissors.getFirst();
-			GL11.glScissor(sci.x, sci.y, sci.w, sci.h);
-		} else {
-			GL11.glScissor(0, 0, Display.getDisplayMode().getWidth(), Display
-					.getDisplayMode().getHeight());
+	public static int npot(int n) {
+		int k = 1;
+		while (k < n) {
+			k *= 2;
 		}
-
+		return k;
 	}
 
 }

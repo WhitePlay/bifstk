@@ -173,7 +173,7 @@ public class Cursors {
 	 * @throws BifstkException
 	 */
 	public static void load(String path) throws BifstkException {
-		Logger.debug("Loading cursors from " + path);
 		instance = new Cursors(path);
+		Logger.debug("Cursors loaded from: " + path);
 	}
 }

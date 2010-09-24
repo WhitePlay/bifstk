@@ -44,10 +44,6 @@ public enum ThemeProperty {
 	windowUiColor("window.ui.color"),
 	/** FLOAT base opacity of the window ui */
 	windowUiAlpha("window.ui.alpha"),
-	/** color of the snap preview area */
-	windowSnapColor("window.snap.color"),
-	/** opacity of the snap preview area */
-	windowSnapAlpha("window.snap.alpha"),
 	
 	/** INT pixel width of the border around the area */
 	areaBorderWidth("area.border.width"),

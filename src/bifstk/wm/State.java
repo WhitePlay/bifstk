@@ -33,11 +33,6 @@ public class State {
 	private Window modalWindow = null;
 
 	/**
-	 * Window currently dragged to the top of the screen, or null
-	 */
-	private Window windowDraggedTop = null;
-
-	/**
 	 * Default constructor
 	 */
 	public State() {
@@ -89,28 +84,6 @@ public class State {
 			addWindow(f);
 		}
 		this.modalWindow = f;
-	}
-
-	/**
-	 * Dragging a Window to the top of the screen maximized it upon mouse
-	 * release, this method returns a Window dragged in such situation before
-	 * mouse release
-	 * 
-	 * @return the Window being dragged to the top of the screen or null
-	 */
-	public Window getWindowDraggedTop() {
-		return this.windowDraggedTop;
-	}
-
-	/**
-	 * Dragging a Window to the top of the screen maximized it upon mouse
-	 * release, this method returns a Window dragged in such situation before
-	 * mouse release
-	 * 
-	 * @param w the Window being dragged to the top of the screen or null
-	 */
-	public void setWindowDraggedTop(Window w) {
-		this.windowDraggedTop = w;
 	}
 
 	/**

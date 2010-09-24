@@ -378,8 +378,6 @@ public class Logic {
 			}
 
 			if (this.leftMouse.dragTop) {
-				this.state.getWindowDraggedTop().toggleMaximize();
-				this.state.setWindowDraggedTop(null);
 				this.leftMouse.dragTop = false;
 			}
 		}
@@ -469,7 +467,7 @@ public class Logic {
 					}
 
 					// cancel maximize upon drag
-					if (dragged.isMaximized()) {
+					if (dragged.isMaximized() && !this.leftMouse.dragTop) {
 						dragged.toggleMaximize();
 						leftMouse.dragX = this.leftMouse.hoverX
 								- dragged.getWidth() / 2;
@@ -481,13 +479,12 @@ public class Logic {
 						if (this.leftMouse.dragTop) {
 							if (this.leftMouse.hoverY > 1) {
 								this.leftMouse.dragTop = false;
-								this.state.setWindowDraggedTop(null);
+								dragged.toggleMaximize();
 							}
 						} else {
 							if (this.leftMouse.hoverY == 1) {
 								this.leftMouse.dragTop = true;
-								this.state
-										.setWindowDraggedTop((Window) dragged);
+								dragged.toggleMaximize();
 							}
 						}
 					}

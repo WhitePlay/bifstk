@@ -182,23 +182,6 @@ public class Renderer {
 						Theme.getWindowShadowAlpha() * alpha);
 			}
 
-			if (f.equals(this.state.getWindowDraggedTop())) {
-				Theme.getWindowSnapColor().use(Theme.getWindowSnapAlpha());
-				GL11.glBegin(GL11.GL_QUADS);
-				GL11.glVertex2i(5, 5);
-				GL11.glVertex2i(width - 5, 5);
-				GL11.glVertex2i(width - 5, height - 5);
-				GL11.glVertex2i(5, height - 5);
-				GL11.glEnd();
-				Theme.getWindowSnapColor().use();
-				GL11.glBegin(GL11.GL_LINE_LOOP);
-				GL11.glVertex2i(5, 5);
-				GL11.glVertex2i(width - 5, 5);
-				GL11.glVertex2i(width - 5, height - 5);
-				GL11.glVertex2i(5, height - 5);
-				GL11.glEnd();
-			}
-
 			// render the Window
 			f.render(alpha, Theme.getWindowUiColor(), Theme.getWindowUiAlpha());
 		}

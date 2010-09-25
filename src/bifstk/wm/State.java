@@ -1,9 +1,11 @@
 package bifstk.wm;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
+
+import bifstk.util.SharedFrameException;
 
 /**
  * Window Manager's internal state
@@ -15,7 +17,7 @@ public class State {
 	 * ordered collection of windows: head of the list is the foreground window,
 	 * the others are stacked in order
 	 */
-	private Deque<Window> windows = null;
+	private LinkedList<Window> windows = null;
 
 	/**
 	 * areas: always behind frames, not ordered
@@ -33,11 +35,23 @@ public class State {
 	private Window modalWindow = null;
 
 	/**
+	 * Ordered left dock for Windows
+	 */
+	private LinkedList<Window> leftDock = null;
+
+	/**
+	 * Ordered right dock for Windows
+	 */
+	private LinkedList<Window> rightDock = null;
+
+	/**
 	 * Default constructor
 	 */
 	public State() {
-		this.windows = new ArrayDeque<Window>();
+		this.windows = new LinkedList<Window>();
 		this.areas = new ArrayList<Area>();
+		this.leftDock = new LinkedList<Window>();
+		this.rightDock = new LinkedList<Window>();
 	}
 
 	/**
@@ -48,6 +62,26 @@ public class State {
 	 */
 	public Deque<Window> getWindows() {
 		return this.windows;
+	}
+
+	/**
+	 * The left dock contains a group of window of constrained size, docked at
+	 * the left of the screen
+	 * 
+	 * @return an ordered list of the Windows contained in the left dock
+	 */
+	public List<Window> getLeftDock() {
+		return this.leftDock;
+	}
+
+	/**
+	 * The right dock contains a group of window of constrained size, docked at
+	 * the right of the screen
+	 * 
+	 * @return an ordered list of the Windows contained in the right dock
+	 */
+	public List<Window> getRightDock() {
+		return this.rightDock;
 	}
 
 	/**
@@ -75,8 +109,11 @@ public class State {
 	 * is the only window that receives user input
 	 * 
 	 * @param the modal window if there should be one, or null
+	 * @throws SharedFrameException the Window is already held by the WM
 	 */
 	public void setModalWindow(Window f) {
+		checkHasWindow(f);
+
 		if (this.modalWindow != null) {
 			removeWindow(modalWindow);
 		}
@@ -90,8 +127,11 @@ public class State {
 	 * Adds a new Window in the WM
 	 * 
 	 * @param f the window to add
+	 * @throws SharedFrameException the Window is already held by the WM
 	 */
 	public void addWindow(Window f) {
+		checkHasWindow(f);
+
 		if (f != null) {
 			// window is added on top of the stack: foreground
 			this.windows.addFirst(f);
@@ -114,8 +154,11 @@ public class State {
 	 * Adds an Area in the WM
 	 * 
 	 * @param a the Area to add
+	 * @throws SharedFrameException the Area is already held by the WM
 	 */
 	public void addArea(Area a) {
+		checkHasArea(a);
+
 		if (a != null) {
 			this.areas.add(a);
 		}
@@ -179,5 +222,47 @@ public class State {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Checks this Window is not already held by the WM
+	 * 
+	 * @param w a Window
+	 * @throws SharedFrameException w is already held by this State
+	 */
+	private void checkHasWindow(Window w) throws SharedFrameException {
+		if (w == null) {
+			return;
+		}
+		if (this.windows.contains(w)) {
+			throw new SharedFrameException("Window already held by the WM");
+		}
+		if (w.equals(this.modalWindow)) {
+			throw new SharedFrameException(
+					"Window is the current WM modal Window");
+		}
+		if (this.leftDock.contains(w)) {
+			throw new SharedFrameException(
+					"Window already held by the left dock");
+		}
+		if (this.rightDock.contains(w)) {
+			throw new SharedFrameException(
+					"Window already held by the right dock");
+		}
+	}
+
+	/**
+	 * Checks this Area is not already held by the WM
+	 * 
+	 * @param a an Area
+	 * @throws SharedFrameException a is already held by this State
+	 */
+	private void checkHasArea(Area a) throws SharedFrameException {
+		if (a == null) {
+			return;
+		}
+		if (this.areas.contains(a)) {
+			throw new SharedFrameException("Area already held by the WM");
+		}
 	}
 }

@@ -46,6 +46,9 @@ public abstract class Frame implements Drawable, Clickable {
 	/** true if the frame is currently resized in the WM */
 	private boolean resized = false;
 
+	/** true if the frame is currently docked */
+	private boolean docked = false;
+
 	/** width of the corner in pixels for mouse corner resize */
 	private final int cornerWidth = 15;
 
@@ -513,24 +516,6 @@ public abstract class Frame implements Drawable, Clickable {
 		return this.minBounds.getHeight();
 	}
 
-	/** @param x the minimum width of this frame */
-	public void setMinWidth(int x) {
-		this.minBounds.setWidth(x);
-	}
-
-	/** @param y the minimum width of this frame */
-	public void setMinHeight(int y) {
-		this.minBounds.setHeight(y);
-	}
-
-	/**
-	 * @param w the new minimum width of this frame
-	 * @param h the new minimum height of this frame
-	 */
-	public void setMinBounds(int w, int h) {
-		this.minBounds.setBounds(w, h);
-	}
-
 	/** @param title the new title of the frame as displayed in the titlebar */
 	public void setTitle(String title) {
 		this.title = title;
@@ -591,7 +576,7 @@ public abstract class Frame implements Drawable, Clickable {
 
 	/** Maximize / unmaximize this frame */
 	public void toggleMaximize() {
-		if (!this.hasTitlebar() || !this.isResizable()) {
+		if (!this.hasTitlebar() || !this.isResizable() || this.isDocked()) {
 			return;
 		}
 
@@ -611,6 +596,29 @@ public abstract class Frame implements Drawable, Clickable {
 					this.windowedBounds.getHeight());
 			this.setPos(this.windowedPos.getX(), this.windowedPos.getY());
 		}
+	}
+
+	/**
+	 * Toggle the docked / undocked state
+	 */
+	public void toggleDocked() {
+		this.docked = !this.docked;
+
+		if (this.docked) {
+			this.setResizable(false);
+			this.windowedBounds = new Rectangle(this.bounds);
+		} else {
+			this.setResizable(true);
+			this.setBounds(this.windowedBounds.getWidth(),
+					this.windowedBounds.getHeight());
+		}
+	}
+
+	/**
+	 * @return true if this Frame is docked
+	 */
+	public boolean isDocked() {
+		return this.docked;
 	}
 
 	/** @return true if this frame is resizable */
@@ -635,7 +643,7 @@ public abstract class Frame implements Drawable, Clickable {
 
 	/** @param t true for this frame to have a titlebar */
 	public void setTitlebar(boolean t) {
-		if (this.isMaximized()) {
+		if (this.isMaximized() || this.isDocked()) {
 			return;
 		}
 
@@ -910,7 +918,7 @@ public abstract class Frame implements Drawable, Clickable {
 						case CLOSE:
 							return Region.CLOSE;
 						case MAXIMIZE:
-							if (this.isResizable())
+							if (this.isResizable() && !this.isDocked())
 								return Region.MAXIMIZE;
 							else
 								return Region.TITLE;

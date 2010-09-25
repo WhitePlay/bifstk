@@ -84,6 +84,8 @@ public class Logic {
 		int dragY = 0;
 		/** true when the mouse is dragged to the top of the screen */
 		boolean dragTop = false;
+		/** true when the mouse is dragged to the left of the screen */
+		boolean dragLeft = false;
 
 	}
 
@@ -380,6 +382,12 @@ public class Logic {
 			if (this.leftMouse.dragTop) {
 				this.leftMouse.dragTop = false;
 			}
+			if (this.leftMouse.dragLeft) {
+				this.leftMouse.dragLeft = false;
+				/* Window w = (Window) this.leftMouse.draggedFrame;
+				 * w.toggleDocked(); this.state.removeWindow(w);
+				 * this.state.addToLeftDock(w, 0); */
+			}
 		}
 
 		// RMB click
@@ -489,16 +497,51 @@ public class Logic {
 						}
 					}
 
+					// remove from left dock
+					if (dragged.isDocked() && !this.leftMouse.dragLeft) {
+						Window w = (Window) dragged;
+						this.state.removeFromLeftDock(w);
+						this.state.addWindow(w);
+						w.toggleDocked();
+					}
+
 					if (!this.leftMouse.draggedLastPoll) {
 						dragged.setDragged(true);
 						Cursors.setCursor(Type.MOVE);
 					}
+					
 					int nx = this.leftMouse.hoverX
 							- (leftMouse.clickX - leftMouse.dragX);
 					int ny = this.leftMouse.hoverY
 							- (leftMouse.clickY - leftMouse.dragY);
 
 					dragged.setPos(nx, ny);
+					
+					// drag to left dock
+					if (lclickIsWindow) {
+						Window w = (Window) dragged;
+						if (this.leftMouse.dragLeft) {
+							if (this.leftMouse.hoverX > 0) {
+								this.leftMouse.dragLeft = false;
+								// move out of dock
+								w.toggleDocked();
+								this.state.removeFromLeftDock(w);
+								this.state.addWindow(w);
+							} else {
+								this.state.removeFromLeftDock(w);
+								this.state.addToLeftDock(w);
+							}
+						} else if (dragged.isResizable()) {
+							if (this.leftMouse.hoverX == 0) {
+								this.leftMouse.dragLeft = true;
+								// move in dock
+								w.toggleDocked();
+								this.state.removeWindow(w);
+								this.state.addToLeftDock(w);
+							}
+						}
+					
+					}
 				}
 					break;
 				case CONTENT:

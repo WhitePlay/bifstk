@@ -5,6 +5,8 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.lwjgl.opengl.Display;
+
 import bifstk.util.SharedFrameException;
 
 /**
@@ -39,10 +41,14 @@ public class State {
 	 */
 	private LinkedList<Window> leftDock = null;
 
+	private int leftDockWidth = 150;
+
 	/**
 	 * Ordered right dock for Windows
 	 */
 	private LinkedList<Window> rightDock = null;
+
+	private int rightDockWidth = 150;
 
 	/**
 	 * Default constructor
@@ -176,6 +182,73 @@ public class State {
 	}
 
 	/**
+	 * Add a Window to the left dock at the specified position
+	 * 
+	 * @param w the Window to add to the left dock
+	 * @throws SharedFrameException the Window is already held by the WM
+	 */
+	public void addToLeftDock(Window w) {
+		checkHasWindow(w);
+
+		if (w != null) {
+			int pos = 0;
+			for (Window win : this.leftDock) {
+				if (w.getY() < win.getY() + win.getHeight() / 2) {
+					break;
+				}
+				pos++;
+			}
+			if (w.getY() + w.getHeight() == Display.getDisplayMode()
+					.getHeight()) {
+				pos = this.leftDock.size();
+			}
+
+			this.leftDock.add(pos, w);
+			focusFrame(w);
+			updateLeftDock();
+		}
+	}
+
+	/**
+	 * Remove a Window from the left dock
+	 * 
+	 * @param w the Window to remove
+	 */
+	public void removeFromLeftDock(Window w) {
+		if (w != null) {
+			this.leftDock.remove(w);
+			updateLeftDock();
+		}
+	}
+
+	/**
+	 * Update the position/size of the left dock Windows
+	 */
+	private void updateLeftDock() {
+		int num = this.leftDock.size();
+
+		if (num == 0) {
+			return;
+		}
+
+		int i = 0, acc = 0;
+		int h = Display.getDisplayMode().getHeight() / num;
+
+		for (Window win : this.leftDock) {
+			win.setResizable(true);
+			if (++i == num) {
+				h += Display.getDisplayMode().getHeight() % num;
+			}
+			win.setPos(0, acc);
+			win.setBounds(this.leftDockWidth, h);
+			win.setPos(0, acc); // sometimes the first setPos is clamped due
+								// to the height of the win
+			acc += h;
+			win.setResizable(false);
+		}
+	}
+
+	/**
 	 * Puts a frame window in the foreground and focus it
 	 * 
 	 * @param tofocus window to put in foreground, can be null
@@ -183,8 +256,9 @@ public class State {
 	public void foregroundWindow(Window tofocus) {
 		focusFrame(tofocus);
 		if (tofocus != null) {
-			this.windows.remove(tofocus);
-			this.windows.addFirst(tofocus);
+			if (this.windows.remove(tofocus)) {
+				this.windows.addFirst(tofocus);
+			}
 		}
 	}
 
@@ -196,10 +270,30 @@ public class State {
 	public void focusFrame(Frame tofocus) {
 		if (this.focusedFrame != null) {
 			this.focusedFrame.setFocused(false);
+
+			if (this.leftDock.contains(focusedFrame)) {
+				for (Window w : leftDock) {
+					w.setFocused(false);
+				}
+			} else if (this.rightDock.contains(focusedFrame)) {
+				for (Window w : rightDock) {
+					w.setFocused(false);
+				}
+			}
 		}
 		this.focusedFrame = tofocus;
 		if (tofocus != null) {
 			tofocus.setFocused(true);
+
+			if (this.leftDock.contains(tofocus)) {
+				for (Window w : leftDock) {
+					w.setFocused(true);
+				}
+			} else if (this.rightDock.contains(tofocus)) {
+				for (Window w : rightDock) {
+					w.setFocused(true);
+				}
+			}
 		}
 	}
 
@@ -212,6 +306,16 @@ public class State {
 	 */
 	public Frame findFrame(int x, int y) {
 		for (Window win : windows) {
+			if (win.contains(x, y)) {
+				return win;
+			}
+		}
+		for (Window win : leftDock) {
+			if (win.contains(x, y)) {
+				return win;
+			}
+		}
+		for (Window win : rightDock) {
 			if (win.contains(x, y)) {
 				return win;
 			}

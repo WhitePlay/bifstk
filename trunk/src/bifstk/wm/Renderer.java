@@ -147,6 +147,19 @@ public class Renderer {
 			area.render(alpha, col, Theme.getAreaUiAlpha());
 		}
 
+		/* draw left dock */
+		for (Window w : this.state.getLeftDock()) {
+			float alpha = 1.0f;
+			if (w.isDragged()) {
+				alpha *= Theme.getWindowMovedAlpha();
+			}
+			if (!w.isFocused()) {
+				alpha *= Theme.getWindowUnfocusedAlpha();
+			}
+			w.render(alpha, Theme.getWindowUiColor(), Theme.getWindowUiAlpha());
+		}
+		
+		
 		/* draw all windows */
 		Window f = null;
 		// reverse iteration : frames are stacked with the head of the list

@@ -26,7 +26,7 @@ public class Window extends Frame {
 
 	@Override
 	protected int getBorderWidth() {
-		if (this.isMaximized()) {
+		if (this.isMaximized() || this.isDocked()) {
 			return 0;
 		} else {
 			return Theme.getWindowBorderWidth();

@@ -149,11 +149,13 @@ public class State {
 	 * Remove an existing Window from the WM
 	 * 
 	 * @param f window to remove
+	 * @return true if a Window was removed from the WM
 	 */
-	public void removeWindow(Window f) {
+	public boolean removeWindow(Window f) {
 		if (f != null) {
-			this.windows.remove(f);
+			return this.windows.remove(f);
 		}
+		return false;
 	}
 
 	/**
@@ -174,11 +176,13 @@ public class State {
 	 * Removes an Area from the WM
 	 * 
 	 * @param a the Area to remove
+	 * @return true if an Area was removed from the WM
 	 */
-	public void removeArea(Area a) {
+	public boolean removeArea(Area a) {
 		if (a != null) {
-			this.areas.remove(a);
+			return this.areas.remove(a);
 		}
+		return false;
 	}
 
 	/**
@@ -213,12 +217,15 @@ public class State {
 	 * Remove a Window from the left dock
 	 * 
 	 * @param w the Window to remove
+	 * @return true if a Window was removed from the left dock
 	 */
-	public void removeFromLeftDock(Window w) {
+	public boolean removeFromLeftDock(Window w) {
 		if (w != null) {
-			this.leftDock.remove(w);
+			boolean ret = this.leftDock.remove(w);
 			updateLeftDock();
+			return ret;
 		}
+		return false;
 	}
 
 	/**

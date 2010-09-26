@@ -9,6 +9,7 @@ import bifstk.Handler;
 import bifstk.config.Config;
 import bifstk.config.Cursors;
 import bifstk.config.Cursors.Type;
+import bifstk.config.Theme;
 import bifstk.wm.geom.Region;
 
 /**
@@ -84,8 +85,13 @@ public class Logic {
 		int dragY = 0;
 		/** true when the mouse is dragged to the top of the screen */
 		boolean dragTop = false;
+
 		/** true when the mouse is dragged to the left of the screen */
 		boolean dragLeft = false;
+		/** true when the left dock border is hovered */
+		boolean leftDockBorderHover = false;
+		/** true when the left dock border was clicked last click */
+		boolean leftDockBorderClicked = false;
 
 	}
 
@@ -171,6 +177,14 @@ public class Logic {
 			this.leftMouse.hoverRegion = this.leftMouse.hoverFrame.getRegion(
 					mx, my);
 		}
+		if (this.state.getLeftDock().size() > 0
+				&& this.state.getLeftDockWidth() <= mx
+				&& mx < this.state.getLeftDockWidth()
+						+ Theme.getWindowBorderWidth()) {
+			this.leftMouse.leftDockBorderHover = true;
+		} else {
+			this.leftMouse.leftDockBorderHover = false;
+		}
 
 		// for each mouse event since last call
 		while (Mouse.next()) {
@@ -181,6 +195,7 @@ public class Logic {
 			case 0:
 				if (this.leftMouse.down) {
 					this.leftMouse.down = false;
+					this.leftMouse.leftDockBorderClicked = false;
 				} else {
 					this.leftMouse.down = true;
 					this.leftMouse.clicked = true;
@@ -188,6 +203,7 @@ public class Logic {
 					this.leftMouse.clickY = my;
 					this.leftMouse.clickedFrame = this.leftMouse.hoverFrame;
 					this.leftMouse.clickedRegion = this.leftMouse.hoverRegion;
+					this.leftMouse.leftDockBorderClicked = this.leftMouse.leftDockBorderHover;
 				}
 				break;
 			// right
@@ -323,12 +339,14 @@ public class Logic {
 			}
 
 			// close frame control
-			if (this.leftMouse.clickedRegion.equals(Region.CLOSE)) {
+			if (this.leftMouse.clickedRegion.equals(Region.CLOSE)
+					&& this.leftMouse.clickedFrame != null) {
 				this.leftMouse.clickedFrame.setControlCloseDown(true);
 			}
 
 			// maximize frame control
-			if (this.leftMouse.clickedRegion.equals(Region.MAXIMIZE)) {
+			if (this.leftMouse.clickedRegion.equals(Region.MAXIMIZE)
+					&& this.leftMouse.clickedFrame != null) {
 				this.leftMouse.clickedFrame.setControlMaximizeDown(true);
 			}
 
@@ -462,6 +480,14 @@ public class Logic {
 			this.leftMouse.hoverFrameHasTitle = hasNow;
 		}
 
+		if (this.leftMouse.dragged && modalWindow == null
+				&& this.leftMouse.leftDockBorderClicked) {
+			if (!this.leftMouse.draggedLastPoll) {
+				Cursors.setCursor(Type.RESIZE_HOR);
+			}
+			this.state.setLeftDockWidth(this.leftMouse.hoverX);
+		}
+
 		// mouse drag: window move/resize or delegate to child component
 		if (this.leftMouse.dragged && modalIsLClickOrNull) {
 			Frame dragged = this.leftMouse.draggedFrame;
@@ -509,14 +535,14 @@ public class Logic {
 						dragged.setDragged(true);
 						Cursors.setCursor(Type.MOVE);
 					}
-					
+
 					int nx = this.leftMouse.hoverX
 							- (leftMouse.clickX - leftMouse.dragX);
 					int ny = this.leftMouse.hoverY
 							- (leftMouse.clickY - leftMouse.dragY);
 
 					dragged.setPos(nx, ny);
-					
+
 					// drag to left dock
 					if (lclickIsWindow) {
 						Window w = (Window) dragged;
@@ -540,7 +566,7 @@ public class Logic {
 								this.state.addToLeftDock(w);
 							}
 						}
-					
+
 					}
 				}
 					break;
@@ -565,7 +591,7 @@ public class Logic {
 					} else {
 						if (!this.leftMouse.draggedLastPoll) {
 							dragged.setResized(true);
-							Cursors.setCursor(Type.RESIZE_RIGHT);
+							Cursors.setCursor(Type.RESIZE_HOR);
 						}
 						int nw = this.leftMouse.clickWidth
 								+ (this.leftMouse.hoverX - this.leftMouse.clickX);
@@ -591,7 +617,7 @@ public class Logic {
 					} else {
 						if (!this.leftMouse.draggedLastPoll) {
 							dragged.setResized(true);
-							Cursors.setCursor(Type.RESIZE_LEFT);
+							Cursors.setCursor(Type.RESIZE_HOR);
 						}
 						int dx = this.leftMouse.hoverX - this.leftMouse.clickX;
 						int nx = this.leftMouse.dragX
@@ -622,7 +648,7 @@ public class Logic {
 					} else {
 						if (!this.leftMouse.draggedLastPoll) {
 							dragged.setResized(true);
-							Cursors.setCursor(Type.RESIZE_BOT);
+							Cursors.setCursor(Type.RESIZE_VER);
 						}
 						int nh = this.leftMouse.clickHeight
 								+ (this.leftMouse.hoverY - this.leftMouse.clickY);
@@ -648,7 +674,7 @@ public class Logic {
 					} else {
 						if (!this.leftMouse.draggedLastPoll) {
 							dragged.setResized(true);
-							Cursors.setCursor(Type.RESIZE_TOP);
+							Cursors.setCursor(Type.RESIZE_VER);
 						}
 						int dy = this.leftMouse.hoverY - this.leftMouse.clickY;
 						int ny = this.leftMouse.dragY
@@ -679,7 +705,7 @@ public class Logic {
 					} else {
 						if (!this.leftMouse.draggedLastPoll) {
 							dragged.setResized(true);
-							Cursors.setCursor(Type.RESIZE_BOT_RIGHT);
+							Cursors.setCursor(Type.RESIZE_TOP_LEFT);
 						}
 						int nw = this.leftMouse.clickWidth
 								+ (this.leftMouse.hoverX - this.leftMouse.clickX);
@@ -779,7 +805,7 @@ public class Logic {
 					} else {
 						if (!this.leftMouse.draggedLastPoll) {
 							dragged.setResized(true);
-							Cursors.setCursor(Type.RESIZE_BOT_LEFT);
+							Cursors.setCursor(Type.RESIZE_TOP_RIGHT);
 						}
 						int dx = this.leftMouse.hoverX - this.leftMouse.clickX;
 						int nx = this.leftMouse.dragX
@@ -794,6 +820,9 @@ public class Logic {
 					}
 				}
 					break;
+				case OUT: {
+
+				}
 				}
 			}
 		} else if (this.leftMouse.draggedLastPoll) {
@@ -818,7 +847,12 @@ public class Logic {
 		Frame f = this.leftMouse.hoverFrame;
 		if (f == null || (modal != null && modal != this.leftMouse.hoverFrame)
 				|| !(f.isMovable() || f.isResizable())) {
-			Cursors.setCursor(Type.POINTER);
+
+			if (this.leftMouse.leftDockBorderHover) {
+				Cursors.setCursor(Type.RESIZE_HOR);
+			} else {
+				Cursors.setCursor(Type.POINTER);
+			}
 			return;
 		}
 
@@ -829,32 +863,33 @@ public class Logic {
 		case CLOSE:
 		case MAXIMIZE:
 			Cursors.setCursor(Type.POINTER);
-			break;
+			return;
 		case TOP_LEFT:
 			Cursors.setCursor(Type.RESIZE_TOP_LEFT);
-			break;
+			return;
 		case TOP:
-			Cursors.setCursor(Type.RESIZE_TOP);
-			break;
+			Cursors.setCursor(Type.RESIZE_VER);
+			return;
 		case TOP_RIGHT:
 			Cursors.setCursor(Type.RESIZE_TOP_RIGHT);
-			break;
+			return;
 		case LEFT:
-			Cursors.setCursor(Type.RESIZE_LEFT);
-			break;
+			Cursors.setCursor(Type.RESIZE_HOR);
+			return;
 		case RIGHT:
-			Cursors.setCursor(Type.RESIZE_RIGHT);
-			break;
+			Cursors.setCursor(Type.RESIZE_HOR);
+			return;
 		case BOT_LEFT:
-			Cursors.setCursor(Type.RESIZE_BOT_LEFT);
-			break;
+			Cursors.setCursor(Type.RESIZE_TOP_RIGHT);
+			return;
 		case BOT:
-			Cursors.setCursor(Type.RESIZE_BOT);
-			break;
+			Cursors.setCursor(Type.RESIZE_VER);
+			return;
 		case BOT_RIGHT:
-			Cursors.setCursor(Type.RESIZE_BOT_RIGHT);
-			break;
+			Cursors.setCursor(Type.RESIZE_TOP_LEFT);
+			return;
 		}
+
 	}
 
 	/**

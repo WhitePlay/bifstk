@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.opengl.Texture;
 
+import bifstk.config.Config;
 import bifstk.config.Fonts;
 import bifstk.config.Theme;
 import bifstk.gl.Color;
@@ -123,7 +124,8 @@ public abstract class Frame implements Drawable, Clickable {
 	 */
 	public Frame(int x, int y, int w, int h) {
 		this.bounds = new Rectangle(w, h);
-		this.minBounds = new Rectangle(60, 60);
+		int min = Config.getWmFrameSizeMin();
+		this.minBounds = new Rectangle(min, min);
 		this.pos = new Point(x, y);
 	}
 

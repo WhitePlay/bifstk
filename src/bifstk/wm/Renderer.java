@@ -127,7 +127,7 @@ public class Renderer {
 		/* clear display */
 		this.clear(width, height);
 
-		/* draw user content */
+		/* first layer: user content */
 		if (this.root != null) {
 			this.root.render();
 		}
@@ -135,7 +135,23 @@ public class Renderer {
 		/* init rendering context */
 		this.initRender(width, height);
 
-		/* draw all areas */
+		/* second layer: areas */
+		this.renderAreas(width, height);
+
+		/* third layer: dock */
+		this.renderLeftDock(width, height);
+
+		/* top layer: windows */
+		this.renderWindows(width, height);
+	}
+
+	/**
+	 * Renders the Areas of the WM
+	 * 
+	 * @param width
+	 * @param height
+	 */
+	private void renderAreas(int width, int height) {
 		for (Area area : this.state.getAreas()) {
 			Color col = Theme.getAreaFocusedColor();
 			float alpha = 1.0f;
@@ -146,21 +162,82 @@ public class Renderer {
 
 			area.render(alpha, col, Theme.getAreaUiAlpha());
 		}
+	}
 
-		/* draw left dock */
+	/**
+	 * Renders the left dock of the WM
+	 * 
+	 * @param width
+	 * @param height
+	 */
+	private void renderLeftDock(int width, int height) {
+		if (this.state.getLeftDock().size() == 0) {
+			return;
+		}
+		float alpha = 1.0f;
+		boolean focus = true;
+		/* draw the windows */
 		for (Window w : this.state.getLeftDock()) {
-			float alpha = 1.0f;
+			float amul = 1.0f;
 			if (w.isDragged()) {
-				alpha *= Theme.getWindowMovedAlpha();
+				amul *= Theme.getWindowMovedAlpha();
 			}
 			if (!w.isFocused()) {
+				focus = false;
 				alpha *= Theme.getWindowUnfocusedAlpha();
 			}
-			w.render(alpha, Theme.getWindowUiColor(), Theme.getWindowUiAlpha());
+			w.render(alpha * amul, Theme.getWindowUiColor(), Theme.getWindowUiAlpha());
 		}
 		
+		int x = this.state.getLeftDockWidth();
+		int w = Theme.getWindowBorderWidth();
+
+		/* right shadow */
+		if (Theme.isWindowShadowEnabled()) {
+			int radius = Theme.getWindowShadowRadius();
+			GL11.glBegin(GL11.GL_QUADS);
+			Color.BLACK.use(Theme.getWindowShadowAlpha() * alpha);
+			GL11.glVertex2i(x + w, 0);
+			Color.BLACK.use(0.0f);
+			GL11.glVertex2i(x + w + radius, 0);
+			GL11.glVertex2i(x + w + radius, height);
+			Color.BLACK.use(Theme.getWindowShadowAlpha() * alpha);
+			GL11.glVertex2i(x + w, height);
+			GL11.glEnd();
+		}
 		
-		/* draw all windows */
+		if (focus) {
+			Theme.getWindowBorderFocusedColor().use(alpha);
+		} else {
+			Theme.getWindowBorderUnfocusedColor().use(alpha);
+		}
+		/* right border */
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glVertex2i(x, 0);
+		GL11.glVertex2i(x + w, 0);
+		GL11.glVertex2i(x + w, height);
+		GL11.glVertex2i(x, height);
+		GL11.glEnd();
+
+		if (focus) {
+			Theme.getWindowBorderOuterFocusedColor().use(alpha);
+		} else {
+			Theme.getWindowBorderOuterUnfocusedColor().use(alpha);
+		}
+		/* right outer border */
+		GL11.glBegin(GL11.GL_LINES);
+		GL11.glVertex2i(x + w, 0);
+		GL11.glVertex2i(x + w, height);
+		GL11.glEnd();
+	}
+
+	/**
+	 * Renders the WM Windows
+	 * 
+	 * @param width
+	 * @param height
+	 */
+	private void renderWindows(int width, int height) {
 		Window f = null;
 		// reverse iteration : frames are stacked with the head of the list
 		// being the focused one
@@ -200,6 +277,12 @@ public class Renderer {
 		}
 	}
 
+	/**
+	 * Clear the Display
+	 * 
+	 * @param width
+	 * @param height
+	 */
 	private void clear(int width, int height) {
 		// GL11.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		// GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);

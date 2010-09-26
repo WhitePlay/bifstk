@@ -223,7 +223,10 @@ public class Bifstk {
 	public static void removeWindow(Window f) throws ThreadAccessException {
 		checkThread();
 
-		Bifstk.logic.getState().removeWindow(f);
+		boolean r = Bifstk.logic.getState().removeWindow(f);
+		if (!r) {
+			r = Bifstk.logic.getState().removeFromLeftDock(f);
+		}
 	}
 
 	/**

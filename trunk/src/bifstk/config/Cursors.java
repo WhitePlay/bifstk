@@ -26,23 +26,15 @@ public class Cursors {
 		POINTER("pointer"),
 		// used when moving or dragging an item
 		MOVE("move"),
-		// window resize left border
-		RESIZE_LEFT("resize-left"),
-		// window resize left border
-		RESIZE_RIGHT("resize-right"),
-		// window resize top border
-		RESIZE_TOP("resize-top"),
-		// window resize bottom border
-		RESIZE_BOT("resize-bot"),
-		// window resize top left corner
+		// window resize horizontal: left/right border
+		RESIZE_HOR("resize-hor"),
+		// window resize vertical: top/bot border
+		RESIZE_VER("resize-ver"),
+		// window resize top-left/bot-right corner
 		RESIZE_TOP_LEFT("resize-top-left"),
-		// window resize top right corner
-		RESIZE_TOP_RIGHT("resize-top-right"),
-		// window resize bottom right corner
-		RESIZE_BOT_RIGHT("resize-bot-right"),
-		// window resize bottom left corner
-		RESIZE_BOT_LEFT("resize-bot-left");
-
+		// window resize top-right/bot-left corner
+		RESIZE_TOP_RIGHT("resize-top-right");
+		
 		private String name = null;
 
 		private Type(String n) {

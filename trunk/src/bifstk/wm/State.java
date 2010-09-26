@@ -7,6 +7,9 @@ import java.util.List;
 
 import org.lwjgl.opengl.Display;
 
+import bifstk.config.Config;
+import bifstk.config.Theme;
+import bifstk.gl.Util;
 import bifstk.util.SharedFrameException;
 
 /**
@@ -226,6 +229,23 @@ public class State {
 			return ret;
 		}
 		return false;
+	}
+
+	/**
+	 * @return the width of the left dock
+	 */
+	public int getLeftDockWidth() {
+		return this.leftDockWidth;
+	}
+
+	/**
+	 * @param w the new width of the left dock
+	 */
+	public void setLeftDockWidth(int w) {
+		this.leftDockWidth = Util
+				.clampi(w, Config.getWmFrameSizeMin(), Display.getDisplayMode()
+						.getWidth() / 2 - Theme.getWindowBorderWidth());
+		updateLeftDock();
 	}
 
 	/**

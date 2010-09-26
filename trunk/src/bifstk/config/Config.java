@@ -331,6 +331,15 @@ public class Config {
 	public static boolean isWmWindowSnapTop() {
 		return instance.wmWindowSnapTop;
 	}
+	
+	private int wmFrameSizeMin;
+	
+	/**
+	 * @return the minimum horizontal and vertical size of a Frame
+	 */
+	public static int getWmFrameSizeMin() {
+		return instance.wmFrameSizeMin;
+	}
 
 	private void readProps(Map<ConfigProperty, String> props)
 			throws BifstkException {
@@ -418,6 +427,9 @@ public class Config {
 					break;
 				case wmWindowSnapTop:
 					this.wmWindowSnapTop = Boolean.parseBoolean(sval);
+					break;
+				case wmFrameSizeMin:
+					this.wmFrameSizeMin = Integer.parseInt(sval);
 					break;
 				}
 			} catch (Throwable t) {

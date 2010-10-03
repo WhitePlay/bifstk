@@ -558,7 +558,11 @@ public class Logic {
 								this.state.addToLeftDock(w);
 							}
 						} else if (dragged.isResizable()) {
-							if (this.leftMouse.hoverX == 0) {
+							boolean canDock = Display.getDisplayMode()
+									.getHeight()
+									/ (this.state.getLeftDock().size() + 1) > Config
+									.getWmFrameSizeMin();
+							if (canDock && this.leftMouse.hoverX == 0) {
 								this.leftMouse.dragLeft = true;
 								// move in dock
 								w.toggleDocked();

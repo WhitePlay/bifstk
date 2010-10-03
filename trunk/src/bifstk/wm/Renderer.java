@@ -174,23 +174,41 @@ public class Renderer {
 		if (this.state.getLeftDock().size() == 0) {
 			return;
 		}
+		int x = this.state.getLeftDockWidth();
+		int w = Theme.getWindowBorderWidth();
+
 		float alpha = 1.0f;
 		boolean focus = true;
+		int acc = 0;
 		/* draw the windows */
-		for (Window w : this.state.getLeftDock()) {
+		for (Window win : this.state.getLeftDock()) {
 			float amul = 1.0f;
-			if (w.isDragged()) {
+			if (win.isDragged()) {
 				amul *= Theme.getWindowMovedAlpha();
 			}
-			if (!w.isFocused()) {
+			if (!win.isFocused()) {
 				focus = false;
 				alpha *= Theme.getWindowUnfocusedAlpha();
 			}
-			w.render(alpha * amul, Theme.getWindowUiColor(), Theme.getWindowUiAlpha());
+			win.render(alpha * amul, Theme.getWindowUiColor(),
+					Theme.getWindowUiAlpha());
+
+			acc += win.getHeight();
+			// bot border
+			if (focus) {
+				Theme.getWindowBorderFocusedColor().use(alpha);
+			} else {
+				Theme.getWindowBorderUnfocusedColor().use(alpha);
+			}
+			GL11.glBegin(GL11.GL_QUADS);
+			GL11.glVertex2i(0, acc);
+			GL11.glVertex2i(x, acc);
+			GL11.glVertex2i(x, acc + w);
+			GL11.glVertex2i(0, acc + w);
+			GL11.glEnd();
+
+			acc += w;
 		}
-		
-		int x = this.state.getLeftDockWidth();
-		int w = Theme.getWindowBorderWidth();
 
 		/* right shadow */
 		if (Theme.isWindowShadowEnabled()) {
@@ -205,7 +223,7 @@ public class Renderer {
 			GL11.glVertex2i(x + w, height);
 			GL11.glEnd();
 		}
-		
+
 		if (focus) {
 			Theme.getWindowBorderFocusedColor().use(alpha);
 		} else {

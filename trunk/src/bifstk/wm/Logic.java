@@ -477,403 +477,399 @@ public class Logic {
 			this.leftMouse.hoverFrameHasTitle = hasNow;
 		}
 
-		if (this.leftMouse.dragged && modalWindow == null
+		Frame dragged = this.leftMouse.draggedFrame;
+		// mouse drag: window move/resize or delegate to child component
+		if (this.leftMouse.dragged && dragged != null && modalIsLClickOrNull) {
+			// drag action effect depends on the region of the frame
+			switch (this.leftMouse.clickedRegion) {
+			case TITLE: {
+				if (!dragged.isMovable()) {
+					break;
+				}
+
+				// cancel maximize upon drag
+				if (dragged.isMaximized() && !this.leftMouse.dragTop) {
+					dragged.toggleMaximize();
+					leftMouse.dragX = this.leftMouse.hoverX
+							- dragged.getWidth() / 2;
+				}
+
+				// initiate or cancel maximize on top drag
+				if (lclickIsWindow && dragged.isResizable()
+						&& Config.isWmWindowSnapTop()) {
+					if (this.leftMouse.dragTop) {
+						if (this.leftMouse.hoverY > 1) {
+							this.leftMouse.dragTop = false;
+							dragged.toggleMaximize();
+						}
+					} else {
+						if (this.leftMouse.hoverY == 1) {
+							this.leftMouse.dragTop = true;
+							dragged.toggleMaximize();
+						}
+					}
+				}
+
+				if (!this.leftMouse.draggedLastPoll) {
+					dragged.setDragged(true);
+					Cursors.setCursor(Type.MOVE);
+				}
+
+				int nx = this.leftMouse.hoverX
+						- (leftMouse.clickX - leftMouse.dragX);
+				int ny = this.leftMouse.hoverY
+						- (leftMouse.clickY - leftMouse.dragY);
+
+				dragged.setPos(nx, ny);
+
+				// remove from left dock
+				if (dragged.isDocked() && !this.leftMouse.dragLeft) {
+					Window w = (Window) dragged;
+					this.state.removeFromLeftDock(w);
+					this.state.addWindow(w);
+					w.toggleDocked();
+					w.setX(this.leftMouse.hoverX - w.getWidth() / 2);
+					this.leftMouse.dragX = this.leftMouse.hoverX - w.getWidth()
+							/ 2;
+				}
+
+				// drag to left dock
+				if (lclickIsWindow) {
+					Window w = (Window) dragged;
+					if (this.leftMouse.dragLeft) {
+						if (this.leftMouse.hoverX > 0) {
+							this.leftMouse.dragLeft = false;
+							// move out of dock
+							this.state.removeFromLeftDock(w);
+							this.state.addWindow(w);
+							w.toggleDocked();
+						} else {
+							this.state.removeFromLeftDock(w);
+							this.state.addToLeftDock(w);
+						}
+					} else if (dragged.isResizable()) {
+						boolean canDock = Display.getDisplayMode().getHeight()
+								/ (this.state.getLeftDock().size() + 1) > Config
+								.getWmFrameSizeMin();
+						if (canDock && this.leftMouse.hoverX == 0) {
+							this.leftMouse.dragLeft = true;
+							// move in dock
+							w.toggleDocked();
+							this.state.removeWindow(w);
+							this.state.addToLeftDock(w);
+						}
+					}
+
+				}
+			}
+				break;
+			case CONTENT:
+				// TODO delegate to embedded component
+				break;
+			case RIGHT: {
+				if (!dragged.isMovable()) {
+					break;
+				}
+
+				if (!dragged.isResizable()) {
+					if (!this.leftMouse.draggedLastPoll) {
+						dragged.setDragged(true);
+						Cursors.setCursor(Type.MOVE);
+					}
+					int nx = this.leftMouse.hoverX
+							- (leftMouse.clickX - leftMouse.dragX);
+					int ny = this.leftMouse.hoverY
+							- (leftMouse.clickY - leftMouse.dragY);
+					dragged.setPos(nx, ny);
+				} else {
+					if (!this.leftMouse.draggedLastPoll) {
+						dragged.setResized(true);
+						Cursors.setCursor(Type.RESIZE_HOR);
+					}
+					int nw = this.leftMouse.clickWidth
+							+ (this.leftMouse.hoverX - this.leftMouse.clickX);
+					dragged.setWidth(nw);
+				}
+			}
+				break;
+			case LEFT: {
+				if (!dragged.isMovable()) {
+					break;
+				}
+
+				if (!dragged.isResizable()) {
+					if (!this.leftMouse.draggedLastPoll) {
+						dragged.setDragged(true);
+						Cursors.setCursor(Type.MOVE);
+					}
+					int nx = this.leftMouse.hoverX
+							- (leftMouse.clickX - leftMouse.dragX);
+					int ny = this.leftMouse.hoverY
+							- (leftMouse.clickY - leftMouse.dragY);
+					dragged.setPos(nx, ny);
+				} else {
+					if (!this.leftMouse.draggedLastPoll) {
+						dragged.setResized(true);
+						Cursors.setCursor(Type.RESIZE_HOR);
+					}
+					int dx = this.leftMouse.hoverX - this.leftMouse.clickX;
+					int nx = this.leftMouse.dragX
+							+ Math.min(
+									this.leftMouse.clickWidth
+											- dragged.getMinWidth(), dx);
+					int nw = this.leftMouse.clickWidth - dx;
+
+					if (dragged.getWidth() > nw) {
+						dragged.setWidth(nw);
+						dragged.setX(nx);
+					} else {
+						dragged.setX(nx);
+						dragged.setWidth(nw);
+					}
+				}
+			}
+				break;
+			case BOT: {
+				if (!dragged.isMovable()) {
+					break;
+				}
+
+				if (!dragged.isResizable()) {
+					if (!this.leftMouse.draggedLastPoll) {
+						dragged.setDragged(true);
+						Cursors.setCursor(Type.MOVE);
+					}
+					int nx = this.leftMouse.hoverX
+							- (leftMouse.clickX - leftMouse.dragX);
+					int ny = this.leftMouse.hoverY
+							- (leftMouse.clickY - leftMouse.dragY);
+					dragged.setPos(nx, ny);
+				} else {
+					if (!this.leftMouse.draggedLastPoll) {
+						dragged.setResized(true);
+						Cursors.setCursor(Type.RESIZE_VER);
+					}
+					int nh = this.leftMouse.clickHeight
+							+ (this.leftMouse.hoverY - this.leftMouse.clickY);
+					dragged.setHeight(nh);
+				}
+			}
+				break;
+			case TOP: {
+				if (!dragged.isMovable()) {
+					break;
+				}
+
+				if (!dragged.isResizable()) {
+					if (!this.leftMouse.draggedLastPoll) {
+						dragged.setDragged(true);
+						Cursors.setCursor(Type.MOVE);
+					}
+					int nx = this.leftMouse.hoverX
+							- (leftMouse.clickX - leftMouse.dragX);
+					int ny = this.leftMouse.hoverY
+							- (leftMouse.clickY - leftMouse.dragY);
+					dragged.setPos(nx, ny);
+				} else {
+					if (!this.leftMouse.draggedLastPoll) {
+						dragged.setResized(true);
+						Cursors.setCursor(Type.RESIZE_VER);
+					}
+					int dy = this.leftMouse.hoverY - this.leftMouse.clickY;
+					int ny = this.leftMouse.dragY
+							+ Math.min(
+									this.leftMouse.clickHeight
+											- dragged.getMinHeight(), dy);
+					int nh = this.leftMouse.clickHeight - dy;
+
+					if (dragged.getHeight() > nh) {
+						dragged.setHeight(nh);
+						dragged.setY(ny);
+					} else {
+						dragged.setY(ny);
+						dragged.setHeight(nh);
+					}
+				}
+			}
+				break;
+			case BOT_RIGHT: {
+				if (!dragged.isMovable()) {
+					break;
+				}
+
+				if (!dragged.isResizable()) {
+					if (!this.leftMouse.draggedLastPoll) {
+						dragged.setDragged(true);
+						Cursors.setCursor(Type.MOVE);
+					}
+					int nx = this.leftMouse.hoverX
+							- (leftMouse.clickX - leftMouse.dragX);
+					int ny = this.leftMouse.hoverY
+							- (leftMouse.clickY - leftMouse.dragY);
+					dragged.setPos(nx, ny);
+				} else {
+					if (!this.leftMouse.draggedLastPoll) {
+						dragged.setResized(true);
+						Cursors.setCursor(Type.RESIZE_TOP_LEFT);
+					}
+					int nw = this.leftMouse.clickWidth
+							+ (this.leftMouse.hoverX - this.leftMouse.clickX);
+					int nh = this.leftMouse.clickHeight
+							+ (this.leftMouse.hoverY - this.leftMouse.clickY);
+					dragged.setBounds(nw, nh);
+				}
+			}
+				break;
+			case TOP_RIGHT: {
+				if (!dragged.isMovable()) {
+					break;
+				}
+
+				if (!dragged.isResizable()) {
+					if (!this.leftMouse.draggedLastPoll) {
+						dragged.setDragged(true);
+						Cursors.setCursor(Type.MOVE);
+					}
+					int nx = this.leftMouse.hoverX
+							- (leftMouse.clickX - leftMouse.dragX);
+					int ny = this.leftMouse.hoverY
+							- (leftMouse.clickY - leftMouse.dragY);
+					dragged.setPos(nx, ny);
+				} else {
+					if (!this.leftMouse.draggedLastPoll) {
+						dragged.setResized(true);
+						Cursors.setCursor(Type.RESIZE_TOP_RIGHT);
+					}
+					int nw = this.leftMouse.clickWidth
+							+ (this.leftMouse.hoverX - this.leftMouse.clickX);
+					int dy = this.leftMouse.hoverY - this.leftMouse.clickY;
+					int ny = this.leftMouse.dragY
+							+ Math.min(
+									this.leftMouse.clickHeight
+											- dragged.getMinHeight(), dy);
+					int nh = this.leftMouse.clickHeight - dy;
+
+					if (dragged.getHeight() > nh) {
+						dragged.setBounds(nw, nh);
+						dragged.setY(ny);
+					} else {
+						dragged.setY(ny);
+						dragged.setBounds(nw, nh);
+					}
+				}
+			}
+				break;
+			case TOP_LEFT: {
+				if (!dragged.isMovable()) {
+					break;
+				}
+
+				if (!dragged.isResizable()) {
+					if (!this.leftMouse.draggedLastPoll) {
+						dragged.setDragged(true);
+						Cursors.setCursor(Type.MOVE);
+					}
+					int nx = this.leftMouse.hoverX
+							- (leftMouse.clickX - leftMouse.dragX);
+					int ny = this.leftMouse.hoverY
+							- (leftMouse.clickY - leftMouse.dragY);
+					dragged.setPos(nx, ny);
+				} else {
+					if (!this.leftMouse.draggedLastPoll) {
+						dragged.setResized(true);
+						Cursors.setCursor(Type.RESIZE_TOP_LEFT);
+					}
+
+					int dx = this.leftMouse.hoverX - this.leftMouse.clickX;
+					int nx = this.leftMouse.dragX
+							+ Math.min(
+									this.leftMouse.clickWidth
+											- dragged.getMinWidth(), dx);
+					int nw = this.leftMouse.clickWidth - dx;
+					int dy = this.leftMouse.hoverY - this.leftMouse.clickY;
+					int ny = this.leftMouse.dragY
+							+ Math.min(
+									this.leftMouse.clickHeight
+											- dragged.getMinHeight(), dy);
+					int nh = this.leftMouse.clickHeight - dy;
+
+					if (dragged.getWidth() > nw) {
+						if (dragged.getHeight() > nh) {
+							dragged.setBounds(nw, nh);
+							dragged.setX(nx);
+							dragged.setY(ny);
+						} else {
+							dragged.setY(ny);
+							dragged.setBounds(nw, nh);
+							dragged.setX(nx);
+						}
+					} else {
+						if (dragged.getHeight() > nh) {
+							dragged.setX(nx);
+							dragged.setBounds(nw, nh);
+							dragged.setY(ny);
+						} else {
+							dragged.setX(nx);
+							dragged.setY(ny);
+							dragged.setBounds(nw, nh);
+						}
+					}
+				}
+			}
+				break;
+			case BOT_LEFT: {
+				if (!dragged.isMovable()) {
+					break;
+				}
+
+				if (!dragged.isResizable()) {
+					if (!this.leftMouse.draggedLastPoll) {
+						dragged.setDragged(true);
+						Cursors.setCursor(Type.MOVE);
+					}
+					int nx = this.leftMouse.hoverX
+							- (leftMouse.clickX - leftMouse.dragX);
+					int ny = this.leftMouse.hoverY
+							- (leftMouse.clickY - leftMouse.dragY);
+					dragged.setPos(nx, ny);
+				} else {
+					if (!this.leftMouse.draggedLastPoll) {
+						dragged.setResized(true);
+						Cursors.setCursor(Type.RESIZE_TOP_RIGHT);
+					}
+					int dx = this.leftMouse.hoverX - this.leftMouse.clickX;
+					int nx = this.leftMouse.dragX
+							+ Math.min(
+									this.leftMouse.clickWidth
+											- dragged.getMinWidth(), dx);
+					int nw = this.leftMouse.clickWidth - dx;
+					int nh = this.leftMouse.clickHeight
+							+ (this.leftMouse.hoverY - this.leftMouse.clickY);
+
+					if (dragged.getWidth() > nw) {
+						dragged.setBounds(nw, nh);
+						dragged.setX(nx);
+					} else {
+						dragged.setX(nx);
+						dragged.setBounds(nw, nh);
+					}
+				}
+			}
+				break;
+			case OUT: {
+			}
+			}
+		}
+		// resize left dock
+		else if (this.leftMouse.dragged && modalWindow == null
 				&& this.leftMouse.leftDockBorderClicked) {
 			if (!this.leftMouse.draggedLastPoll) {
 				Cursors.setCursor(Type.RESIZE_HOR);
 			}
 			this.state.setLeftDockWidth(this.leftMouse.hoverX);
 		}
-
-		// mouse drag: window move/resize or delegate to child component
-		if (this.leftMouse.dragged && modalIsLClickOrNull) {
-			Frame dragged = this.leftMouse.draggedFrame;
-			if (dragged != null) {
-
-				// drag action effect depends on the region of the frame
-				switch (this.leftMouse.clickedRegion) {
-				case TITLE: {
-					if (!dragged.isMovable()) {
-						break;
-					}
-
-					// cancel maximize upon drag
-					if (dragged.isMaximized() && !this.leftMouse.dragTop) {
-						dragged.toggleMaximize();
-						leftMouse.dragX = this.leftMouse.hoverX
-								- dragged.getWidth() / 2;
-					}
-
-					// initiate or cancel maximize on top drag
-					if (lclickIsWindow && dragged.isResizable()
-							&& Config.isWmWindowSnapTop()) {
-						if (this.leftMouse.dragTop) {
-							if (this.leftMouse.hoverY > 1) {
-								this.leftMouse.dragTop = false;
-								dragged.toggleMaximize();
-							}
-						} else {
-							if (this.leftMouse.hoverY == 1) {
-								this.leftMouse.dragTop = true;
-								dragged.toggleMaximize();
-							}
-						}
-					}
-
-					if (!this.leftMouse.draggedLastPoll) {
-						dragged.setDragged(true);
-						Cursors.setCursor(Type.MOVE);
-					}
-
-					int nx = this.leftMouse.hoverX
-							- (leftMouse.clickX - leftMouse.dragX);
-					int ny = this.leftMouse.hoverY
-							- (leftMouse.clickY - leftMouse.dragY);
-
-					dragged.setPos(nx, ny);
-
-					// remove from left dock
-					if (dragged.isDocked() && !this.leftMouse.dragLeft) {
-						Window w = (Window) dragged;
-						this.state.removeFromLeftDock(w);
-						this.state.addWindow(w);
-						w.toggleDocked();
-						w.setX(this.leftMouse.hoverX - w.getWidth() / 2);
-						this.leftMouse.dragX = this.leftMouse.hoverX
-								- w.getWidth() / 2;
-					}
-
-					// drag to left dock
-					if (lclickIsWindow) {
-						Window w = (Window) dragged;
-						if (this.leftMouse.dragLeft) {
-							if (this.leftMouse.hoverX > 0) {
-								this.leftMouse.dragLeft = false;
-								// move out of dock
-								this.state.removeFromLeftDock(w);
-								this.state.addWindow(w);
-								w.toggleDocked();
-							} else {
-								this.state.removeFromLeftDock(w);
-								this.state.addToLeftDock(w);
-							}
-						} else if (dragged.isResizable()) {
-							boolean canDock = Display.getDisplayMode()
-									.getHeight()
-									/ (this.state.getLeftDock().size() + 1) > Config
-									.getWmFrameSizeMin();
-							if (canDock && this.leftMouse.hoverX == 0) {
-								this.leftMouse.dragLeft = true;
-								// move in dock
-								w.toggleDocked();
-								this.state.removeWindow(w);
-								this.state.addToLeftDock(w);
-							}
-						}
-
-					}
-				}
-					break;
-				case CONTENT:
-					// TODO delegate to embedded component
-					break;
-				case RIGHT: {
-					if (!dragged.isMovable()) {
-						break;
-					}
-
-					if (!dragged.isResizable()) {
-						if (!this.leftMouse.draggedLastPoll) {
-							dragged.setDragged(true);
-							Cursors.setCursor(Type.MOVE);
-						}
-						int nx = this.leftMouse.hoverX
-								- (leftMouse.clickX - leftMouse.dragX);
-						int ny = this.leftMouse.hoverY
-								- (leftMouse.clickY - leftMouse.dragY);
-						dragged.setPos(nx, ny);
-					} else {
-						if (!this.leftMouse.draggedLastPoll) {
-							dragged.setResized(true);
-							Cursors.setCursor(Type.RESIZE_HOR);
-						}
-						int nw = this.leftMouse.clickWidth
-								+ (this.leftMouse.hoverX - this.leftMouse.clickX);
-						dragged.setWidth(nw);
-					}
-				}
-					break;
-				case LEFT: {
-					if (!dragged.isMovable()) {
-						break;
-					}
-
-					if (!dragged.isResizable()) {
-						if (!this.leftMouse.draggedLastPoll) {
-							dragged.setDragged(true);
-							Cursors.setCursor(Type.MOVE);
-						}
-						int nx = this.leftMouse.hoverX
-								- (leftMouse.clickX - leftMouse.dragX);
-						int ny = this.leftMouse.hoverY
-								- (leftMouse.clickY - leftMouse.dragY);
-						dragged.setPos(nx, ny);
-					} else {
-						if (!this.leftMouse.draggedLastPoll) {
-							dragged.setResized(true);
-							Cursors.setCursor(Type.RESIZE_HOR);
-						}
-						int dx = this.leftMouse.hoverX - this.leftMouse.clickX;
-						int nx = this.leftMouse.dragX
-								+ Math.min(
-										this.leftMouse.clickWidth
-												- dragged.getMinWidth(), dx);
-						int nw = this.leftMouse.clickWidth - dx;
-
-						if (dragged.getWidth() > nw) {
-							dragged.setWidth(nw);
-							dragged.setX(nx);
-						} else {
-							dragged.setX(nx);
-							dragged.setWidth(nw);
-						}
-					}
-				}
-					break;
-				case BOT: {
-					if (!dragged.isMovable()) {
-						break;
-					}
-
-					if (!dragged.isResizable()) {
-						if (!this.leftMouse.draggedLastPoll) {
-							dragged.setDragged(true);
-							Cursors.setCursor(Type.MOVE);
-						}
-						int nx = this.leftMouse.hoverX
-								- (leftMouse.clickX - leftMouse.dragX);
-						int ny = this.leftMouse.hoverY
-								- (leftMouse.clickY - leftMouse.dragY);
-						dragged.setPos(nx, ny);
-					} else {
-						if (!this.leftMouse.draggedLastPoll) {
-							dragged.setResized(true);
-							Cursors.setCursor(Type.RESIZE_VER);
-						}
-						int nh = this.leftMouse.clickHeight
-								+ (this.leftMouse.hoverY - this.leftMouse.clickY);
-						dragged.setHeight(nh);
-					}
-				}
-					break;
-				case TOP: {
-					if (!dragged.isMovable()) {
-						break;
-					}
-
-					if (!dragged.isResizable()) {
-						if (!this.leftMouse.draggedLastPoll) {
-							dragged.setDragged(true);
-							Cursors.setCursor(Type.MOVE);
-						}
-						int nx = this.leftMouse.hoverX
-								- (leftMouse.clickX - leftMouse.dragX);
-						int ny = this.leftMouse.hoverY
-								- (leftMouse.clickY - leftMouse.dragY);
-						dragged.setPos(nx, ny);
-					} else {
-						if (!this.leftMouse.draggedLastPoll) {
-							dragged.setResized(true);
-							Cursors.setCursor(Type.RESIZE_VER);
-						}
-						int dy = this.leftMouse.hoverY - this.leftMouse.clickY;
-						int ny = this.leftMouse.dragY
-								+ Math.min(
-										this.leftMouse.clickHeight
-												- dragged.getMinHeight(), dy);
-						int nh = this.leftMouse.clickHeight - dy;
-
-						if (dragged.getHeight() > nh) {
-							dragged.setHeight(nh);
-							dragged.setY(ny);
-						} else {
-							dragged.setY(ny);
-							dragged.setHeight(nh);
-						}
-					}
-				}
-					break;
-				case BOT_RIGHT: {
-					if (!dragged.isMovable()) {
-						break;
-					}
-
-					if (!dragged.isResizable()) {
-						if (!this.leftMouse.draggedLastPoll) {
-							dragged.setDragged(true);
-							Cursors.setCursor(Type.MOVE);
-						}
-						int nx = this.leftMouse.hoverX
-								- (leftMouse.clickX - leftMouse.dragX);
-						int ny = this.leftMouse.hoverY
-								- (leftMouse.clickY - leftMouse.dragY);
-						dragged.setPos(nx, ny);
-					} else {
-						if (!this.leftMouse.draggedLastPoll) {
-							dragged.setResized(true);
-							Cursors.setCursor(Type.RESIZE_TOP_LEFT);
-						}
-						int nw = this.leftMouse.clickWidth
-								+ (this.leftMouse.hoverX - this.leftMouse.clickX);
-						int nh = this.leftMouse.clickHeight
-								+ (this.leftMouse.hoverY - this.leftMouse.clickY);
-						dragged.setBounds(nw, nh);
-					}
-				}
-					break;
-				case TOP_RIGHT: {
-					if (!dragged.isMovable()) {
-						break;
-					}
-
-					if (!dragged.isResizable()) {
-						if (!this.leftMouse.draggedLastPoll) {
-							dragged.setDragged(true);
-							Cursors.setCursor(Type.MOVE);
-						}
-						int nx = this.leftMouse.hoverX
-								- (leftMouse.clickX - leftMouse.dragX);
-						int ny = this.leftMouse.hoverY
-								- (leftMouse.clickY - leftMouse.dragY);
-						dragged.setPos(nx, ny);
-					} else {
-						if (!this.leftMouse.draggedLastPoll) {
-							dragged.setResized(true);
-							Cursors.setCursor(Type.RESIZE_TOP_RIGHT);
-						}
-						int nw = this.leftMouse.clickWidth
-								+ (this.leftMouse.hoverX - this.leftMouse.clickX);
-						int dy = this.leftMouse.hoverY - this.leftMouse.clickY;
-						int ny = this.leftMouse.dragY
-								+ Math.min(
-										this.leftMouse.clickHeight
-												- dragged.getMinHeight(), dy);
-						int nh = this.leftMouse.clickHeight - dy;
-
-						if (dragged.getHeight() > nh) {
-							dragged.setBounds(nw, nh);
-							dragged.setY(ny);
-						} else {
-							dragged.setY(ny);
-							dragged.setBounds(nw, nh);
-						}
-					}
-				}
-					break;
-				case TOP_LEFT: {
-					if (!dragged.isMovable()) {
-						break;
-					}
-
-					if (!dragged.isResizable()) {
-						if (!this.leftMouse.draggedLastPoll) {
-							dragged.setDragged(true);
-							Cursors.setCursor(Type.MOVE);
-						}
-						int nx = this.leftMouse.hoverX
-								- (leftMouse.clickX - leftMouse.dragX);
-						int ny = this.leftMouse.hoverY
-								- (leftMouse.clickY - leftMouse.dragY);
-						dragged.setPos(nx, ny);
-					} else {
-						if (!this.leftMouse.draggedLastPoll) {
-							dragged.setResized(true);
-							Cursors.setCursor(Type.RESIZE_TOP_LEFT);
-						}
-
-						int dx = this.leftMouse.hoverX - this.leftMouse.clickX;
-						int nx = this.leftMouse.dragX
-								+ Math.min(
-										this.leftMouse.clickWidth
-												- dragged.getMinWidth(), dx);
-						int nw = this.leftMouse.clickWidth - dx;
-						int dy = this.leftMouse.hoverY - this.leftMouse.clickY;
-						int ny = this.leftMouse.dragY
-								+ Math.min(
-										this.leftMouse.clickHeight
-												- dragged.getMinHeight(), dy);
-						int nh = this.leftMouse.clickHeight - dy;
-
-						if (dragged.getWidth() > nw) {
-							if (dragged.getHeight() > nh) {
-								dragged.setBounds(nw, nh);
-								dragged.setX(nx);
-								dragged.setY(ny);
-							} else {
-								dragged.setY(ny);
-								dragged.setBounds(nw, nh);
-								dragged.setX(nx);
-							}
-						} else {
-							if (dragged.getHeight() > nh) {
-								dragged.setX(nx);
-								dragged.setBounds(nw, nh);
-								dragged.setY(ny);
-							} else {
-								dragged.setX(nx);
-								dragged.setY(ny);
-								dragged.setBounds(nw, nh);
-							}
-						}
-					}
-				}
-					break;
-				case BOT_LEFT: {
-					if (!dragged.isMovable()) {
-						break;
-					}
-
-					if (!dragged.isResizable()) {
-						if (!this.leftMouse.draggedLastPoll) {
-							dragged.setDragged(true);
-							Cursors.setCursor(Type.MOVE);
-						}
-						int nx = this.leftMouse.hoverX
-								- (leftMouse.clickX - leftMouse.dragX);
-						int ny = this.leftMouse.hoverY
-								- (leftMouse.clickY - leftMouse.dragY);
-						dragged.setPos(nx, ny);
-					} else {
-						if (!this.leftMouse.draggedLastPoll) {
-							dragged.setResized(true);
-							Cursors.setCursor(Type.RESIZE_TOP_RIGHT);
-						}
-						int dx = this.leftMouse.hoverX - this.leftMouse.clickX;
-						int nx = this.leftMouse.dragX
-								+ Math.min(
-										this.leftMouse.clickWidth
-												- dragged.getMinWidth(), dx);
-						int nw = this.leftMouse.clickWidth - dx;
-						int nh = this.leftMouse.clickHeight
-								+ (this.leftMouse.hoverY - this.leftMouse.clickY);
-
-						if (dragged.getWidth() > nw) {
-							dragged.setBounds(nw, nh);
-							dragged.setX(nx);
-						} else {
-							dragged.setX(nx);
-							dragged.setBounds(nw, nh);
-						}
-					}
-				}
-					break;
-				case OUT: {
-
-				}
-				}
-			}
-		} else if (this.leftMouse.draggedLastPoll) {
-			Frame dragged = this.leftMouse.draggedFrame;
+		// cancel drag
+		else if (this.leftMouse.draggedLastPoll) {
 			if (dragged != null) {
 				dragged.setDragged(false);
 				dragged.setResized(false);

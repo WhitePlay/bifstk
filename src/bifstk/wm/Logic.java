@@ -402,9 +402,6 @@ public class Logic {
 			}
 			if (this.leftMouse.dragLeft) {
 				this.leftMouse.dragLeft = false;
-				/* Window w = (Window) this.leftMouse.draggedFrame;
-				 * w.toggleDocked(); this.state.removeWindow(w);
-				 * this.state.addToLeftDock(w, 0); */
 			}
 		}
 
@@ -523,14 +520,6 @@ public class Logic {
 						}
 					}
 
-					// remove from left dock
-					if (dragged.isDocked() && !this.leftMouse.dragLeft) {
-						Window w = (Window) dragged;
-						this.state.removeFromLeftDock(w);
-						this.state.addWindow(w);
-						w.toggleDocked();
-					}
-
 					if (!this.leftMouse.draggedLastPoll) {
 						dragged.setDragged(true);
 						Cursors.setCursor(Type.MOVE);
@@ -543,6 +532,17 @@ public class Logic {
 
 					dragged.setPos(nx, ny);
 
+					// remove from left dock
+					if (dragged.isDocked() && !this.leftMouse.dragLeft) {
+						Window w = (Window) dragged;
+						this.state.removeFromLeftDock(w);
+						this.state.addWindow(w);
+						w.toggleDocked();
+						w.setX(this.leftMouse.hoverX - w.getWidth() / 2);
+						this.leftMouse.dragX = this.leftMouse.hoverX
+								- w.getWidth() / 2;
+					}
+
 					// drag to left dock
 					if (lclickIsWindow) {
 						Window w = (Window) dragged;
@@ -550,9 +550,9 @@ public class Logic {
 							if (this.leftMouse.hoverX > 0) {
 								this.leftMouse.dragLeft = false;
 								// move out of dock
-								w.toggleDocked();
 								this.state.removeFromLeftDock(w);
 								this.state.addWindow(w);
+								w.toggleDocked();
 							} else {
 								this.state.removeFromLeftDock(w);
 								this.state.addToLeftDock(w);
@@ -848,7 +848,7 @@ public class Logic {
 		if (f == null || (modal != null && modal != this.leftMouse.hoverFrame)
 				|| !(f.isMovable() || f.isResizable())) {
 
-			if (this.leftMouse.leftDockBorderHover) {
+			if (this.leftMouse.leftDockBorderHover && modal == null) {
 				Cursors.setCursor(Type.RESIZE_HOR);
 			} else {
 				Cursors.setCursor(Type.POINTER);

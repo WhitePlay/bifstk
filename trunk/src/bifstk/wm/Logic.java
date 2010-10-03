@@ -625,8 +625,14 @@ public class Logic {
 										this.leftMouse.clickWidth
 												- dragged.getMinWidth(), dx);
 						int nw = this.leftMouse.clickWidth - dx;
-						dragged.setX(nx);
-						dragged.setWidth(nw);
+
+						if (dragged.getWidth() > nw) {
+							dragged.setWidth(nw);
+							dragged.setX(nx);
+						} else {
+							dragged.setX(nx);
+							dragged.setWidth(nw);
+						}
 					}
 				}
 					break;
@@ -682,8 +688,14 @@ public class Logic {
 										this.leftMouse.clickHeight
 												- dragged.getMinHeight(), dy);
 						int nh = this.leftMouse.clickHeight - dy;
-						dragged.setY(ny);
-						dragged.setHeight(nh);
+
+						if (dragged.getHeight() > nh) {
+							dragged.setHeight(nh);
+							dragged.setY(ny);
+						} else {
+							dragged.setY(ny);
+							dragged.setHeight(nh);
+						}
 					}
 				}
 					break;
@@ -743,8 +755,14 @@ public class Logic {
 										this.leftMouse.clickHeight
 												- dragged.getMinHeight(), dy);
 						int nh = this.leftMouse.clickHeight - dy;
-						dragged.setY(ny);
-						dragged.setBounds(nw, nh);
+
+						if (dragged.getHeight() > nh) {
+							dragged.setBounds(nw, nh);
+							dragged.setY(ny);
+						} else {
+							dragged.setY(ny);
+							dragged.setBounds(nw, nh);
+						}
 					}
 				}
 					break;
@@ -781,9 +799,28 @@ public class Logic {
 										this.leftMouse.clickHeight
 												- dragged.getMinHeight(), dy);
 						int nh = this.leftMouse.clickHeight - dy;
-						dragged.setX(nx);
-						dragged.setY(ny);
-						dragged.setBounds(nw, nh);
+
+						if (dragged.getWidth() > nw) {
+							if (dragged.getHeight() > nh) {
+								dragged.setBounds(nw, nh);
+								dragged.setX(nx);
+								dragged.setY(ny);
+							} else {
+								dragged.setY(ny);
+								dragged.setBounds(nw, nh);
+								dragged.setX(nx);
+							}
+						} else {
+							if (dragged.getHeight() > nh) {
+								dragged.setX(nx);
+								dragged.setBounds(nw, nh);
+								dragged.setY(ny);
+							} else {
+								dragged.setX(nx);
+								dragged.setY(ny);
+								dragged.setBounds(nw, nh);
+							}
+						}
 					}
 				}
 					break;
@@ -815,8 +852,14 @@ public class Logic {
 						int nw = this.leftMouse.clickWidth - dx;
 						int nh = this.leftMouse.clickHeight
 								+ (this.leftMouse.hoverY - this.leftMouse.clickY);
-						dragged.setX(nx);
-						dragged.setBounds(nw, nh);
+
+						if (dragged.getWidth() > nw) {
+							dragged.setBounds(nw, nh);
+							dragged.setX(nx);
+						} else {
+							dragged.setX(nx);
+							dragged.setBounds(nw, nh);
+						}
 					}
 				}
 					break;

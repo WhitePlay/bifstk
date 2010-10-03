@@ -604,11 +604,17 @@ public abstract class Frame implements Drawable, Clickable {
 	 * Toggle the docked / undocked state
 	 */
 	public void toggleDocked() {
+		if (!this.isDocked() && this.isMaximized()) {
+			toggleMaximize();
+		}
+
 		this.docked = !this.docked;
 
 		if (this.docked) {
 			this.setResizable(false);
-			this.windowedBounds = new Rectangle(this.bounds);
+			if (!this.isMaximized()) {
+				this.windowedBounds = new Rectangle(this.bounds);
+			}
 		} else {
 			this.setResizable(true);
 			this.setBounds(this.windowedBounds.getWidth(),

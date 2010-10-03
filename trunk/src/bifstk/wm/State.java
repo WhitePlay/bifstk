@@ -199,6 +199,8 @@ public class State {
 
 		if (w != null) {
 			int pos = 0;
+			// find the position in the dock depending the ordinate of the
+			// Window
 			for (Window win : this.leftDock) {
 				if (w.getY() < win.getY() + win.getHeight() / 2) {
 					break;
@@ -209,10 +211,36 @@ public class State {
 					.getHeight()) {
 				pos = this.leftDock.size();
 			}
-
 			this.leftDock.add(pos, w);
 			focusFrame(w);
-			updateLeftDock();
+
+			int border = Theme.getWindowBorderWidth();
+			int num = this.leftDock.size();
+			int i = 0, acc = 0;
+			int pixels = Display.getDisplayMode().getHeight() / num;
+
+			// resize all Windows in the dock accordingly
+			for (Window win : this.leftDock) {
+				int h = Display.getDisplayMode().getHeight();
+				i++;
+				if (num > 1) {
+					h = win.getHeight() - pixels / (num - 1);
+				}
+				if (win == w) {
+					h = pixels - border;
+				}
+				if (i == num) {
+					h = Display.getDisplayMode().getHeight() - acc;
+				}
+
+				win.setResizable(true);
+				win.setPos(0, acc);
+				win.setBounds(this.leftDockWidth, h);
+				win.setPos(0, acc); // sometimes the first setPos is clamped due
+									// to the height of the win
+				acc += h + border;
+				win.setResizable(false);
+			}
 		}
 	}
 
@@ -225,7 +253,31 @@ public class State {
 	public boolean removeFromLeftDock(Window w) {
 		if (w != null) {
 			boolean ret = this.leftDock.remove(w);
-			updateLeftDock();
+
+			w.setResizable(true);
+			w.setHeight(w.getHeight());
+			w.setResizable(false);
+
+			int border = Theme.getWindowBorderWidth();
+			int pixels = w.getHeight() + border;
+			int num = this.leftDock.size();
+			int i = 0;
+			int acc = 0;
+
+			// redistribute removed pixels to the remaining windows
+			for (Window win : this.leftDock) {
+				int h = win.getHeight() + pixels / num;
+				if (++i == num) {
+					h = Display.getDisplayMode().getHeight() - acc;
+				}
+
+				win.setResizable(true);
+				win.setY(acc);
+				win.setHeight(h);
+				win.setResizable(false);
+				acc += h + border;
+			}
+
 			return ret;
 		}
 		return false;
@@ -245,32 +297,10 @@ public class State {
 		this.leftDockWidth = Util
 				.clampi(w, Config.getWmFrameSizeMin(), Display.getDisplayMode()
 						.getWidth() / 2 - Theme.getWindowBorderWidth());
-		updateLeftDock();
-	}
-
-	/**
-	 * Update the position/size of the left dock Windows
-	 */
-	private void updateLeftDock() {
-		int num = this.leftDock.size();
-
-		if (num == 0) {
-			return;
-		}
-
-		int i = 0, acc = 0;
-		int h = Display.getDisplayMode().getHeight() / num;
 
 		for (Window win : this.leftDock) {
 			win.setResizable(true);
-			if (++i == num) {
-				h += Display.getDisplayMode().getHeight() % num;
-			}
-			win.setPos(0, acc);
-			win.setBounds(this.leftDockWidth, h);
-			win.setPos(0, acc); // sometimes the first setPos is clamped due
-								// to the height of the win
-			acc += h;
+			win.setWidth(this.leftDockWidth);
 			win.setResizable(false);
 		}
 	}

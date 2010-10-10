@@ -1,5 +1,7 @@
 package bifstk.wm;
 
+import java.util.Iterator;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -10,6 +12,7 @@ import bifstk.config.Config;
 import bifstk.config.Cursors;
 import bifstk.config.Cursors.Type;
 import bifstk.config.Theme;
+import bifstk.gl.Util;
 import bifstk.wm.geom.Region;
 
 /**
@@ -89,10 +92,18 @@ public class Logic {
 		/** true when the mouse is dragged to the left of the screen */
 		boolean dragLeft = false;
 		/** true when the left dock border is hovered */
-		boolean leftDockBorderHover = false;
+		boolean leftDockVBorderHover = false;
 		/** true when the left dock border was clicked last click */
-		boolean leftDockBorderClicked = false;
+		boolean leftDockVBorderClicked = false;
 
+		/** true when the left dock horizontal border is hovered */
+		boolean leftDockHBorderHover = false;
+		/** true when the left dock horizontal border was clicked last click */
+		boolean leftDockHBorderClicked = false;
+		/** if leftDockHBorderClicked, Frame on top of the border */
+		Window leftDockHBCTopWin = null;
+		/** if leftDockHBorderClicked, Frame at the bottom of the border */
+		Window leftDockHBCBotWin = null;
 	}
 
 	/** state of the left mouse button */
@@ -177,13 +188,42 @@ public class Logic {
 			this.leftMouse.hoverRegion = this.leftMouse.hoverFrame.getRegion(
 					mx, my);
 		}
+		// left dock border mouse hover
 		if (this.state.getLeftDock().size() > 0
 				&& this.state.getLeftDockWidth() <= mx
 				&& mx < this.state.getLeftDockWidth()
 						+ Theme.getWindowBorderWidth()) {
-			this.leftMouse.leftDockBorderHover = true;
+			this.leftMouse.leftDockVBorderHover = true;
 		} else {
-			this.leftMouse.leftDockBorderHover = false;
+			this.leftMouse.leftDockVBorderHover = false;
+		}
+		// left dock inter-frame mouse hover
+		this.leftMouse.leftDockHBorderHover = false;
+		if (this.state.getLeftDock().size() > 0
+				&& mx <= this.state.getLeftDockWidth()) {
+			int acc = 0;
+			int maxHeight = Display.getDisplayMode().getHeight();
+			int border = Theme.getWindowBorderWidth();
+			Iterator<Window> it = null;
+			for (it = this.state.getLeftDock().iterator(); it.hasNext();) {
+				Window win = it.next();
+				int h = win.getHeight();
+				acc += h;
+				if (acc >= maxHeight) {
+					break;
+				}
+				if (acc < my && my < acc + border) {
+					this.leftMouse.leftDockHBorderHover = true;
+					this.leftMouse.leftDockHBCTopWin = win;
+					if (it.hasNext()) {
+						this.leftMouse.leftDockHBCBotWin = it.next();
+					} else {
+						this.leftMouse.leftDockHBCBotWin = null;
+					}
+					break;
+				}
+				acc += border;
+			}
 		}
 
 		// for each mouse event since last call
@@ -195,7 +235,7 @@ public class Logic {
 			case 0:
 				if (this.leftMouse.down) {
 					this.leftMouse.down = false;
-					this.leftMouse.leftDockBorderClicked = false;
+					this.leftMouse.leftDockVBorderClicked = false;
 				} else {
 					this.leftMouse.down = true;
 					this.leftMouse.clicked = true;
@@ -203,7 +243,8 @@ public class Logic {
 					this.leftMouse.clickY = my;
 					this.leftMouse.clickedFrame = this.leftMouse.hoverFrame;
 					this.leftMouse.clickedRegion = this.leftMouse.hoverRegion;
-					this.leftMouse.leftDockBorderClicked = this.leftMouse.leftDockBorderHover;
+					this.leftMouse.leftDockVBorderClicked = this.leftMouse.leftDockVBorderHover;
+					this.leftMouse.leftDockHBorderClicked = this.leftMouse.leftDockHBorderHover;
 				}
 				break;
 			// right
@@ -862,11 +903,44 @@ public class Logic {
 		}
 		// resize left dock
 		else if (this.leftMouse.dragged && modalWindow == null
-				&& this.leftMouse.leftDockBorderClicked) {
+				&& this.leftMouse.leftDockVBorderClicked) {
 			if (!this.leftMouse.draggedLastPoll) {
 				Cursors.setCursor(Type.RESIZE_HOR);
 			}
 			this.state.setLeftDockWidth(this.leftMouse.hoverX);
+		}
+		// resize left dock frames
+		else if (this.leftMouse.dragged && modalWindow == null
+				&& this.leftMouse.leftDockHBorderClicked) {
+			if (!this.leftMouse.draggedLastPoll) {
+				Cursors.setCursor(Type.RESIZE_VER);
+			}
+
+			Window top = this.leftMouse.leftDockHBCTopWin;
+			Window bot = this.leftMouse.leftDockHBCBotWin;
+			int border = Theme.getWindowBorderWidth();
+			int space = top.getHeight() + bot.getHeight();
+			int minH = Config.getWmFrameSizeMin();
+
+			// resize top
+			int nht = this.leftMouse.hoverY - top.getY() - border / 2;
+			nht = Util.clampi(nht, minH, space - minH);
+			top.setResizable(true);
+			top.setHeight(nht);
+			top.setResizable(false);
+
+			// resize bot
+			int nh = space - top.getHeight();
+			int ny = top.getY() + top.getHeight() + border;
+			bot.setResizable(true);
+			if (bot.getHeight() > nh) {
+				bot.setHeight(nh);
+				bot.setY(ny);
+			} else {
+				bot.setY(ny);
+				bot.setHeight(nh);
+			}
+			bot.setResizable(false);
 		}
 		// cancel drag
 		else if (this.leftMouse.draggedLastPoll) {
@@ -891,8 +965,10 @@ public class Logic {
 		if (f == null || (modal != null && modal != this.leftMouse.hoverFrame)
 				|| !(f.isMovable() || f.isResizable())) {
 
-			if (this.leftMouse.leftDockBorderHover && modal == null) {
+			if (this.leftMouse.leftDockVBorderHover && modal == null) {
 				Cursors.setCursor(Type.RESIZE_HOR);
+			} else if (this.leftMouse.leftDockHBorderHover && modal == null) {
+				Cursors.setCursor(Type.RESIZE_VER);
 			} else {
 				Cursors.setCursor(Type.POINTER);
 			}

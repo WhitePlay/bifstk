@@ -17,6 +17,7 @@ import bifstk.wm.Area;
 import bifstk.wm.Logic;
 import bifstk.wm.Renderer;
 import bifstk.wm.Window;
+import bifstk.wm.State.DockPosition;
 
 /**
  * Main class for Bifstk
@@ -225,7 +226,10 @@ public class Bifstk {
 
 		boolean r = Bifstk.logic.getState().removeWindow(f);
 		if (!r) {
-			r = Bifstk.logic.getState().removeFromLeftDock(f);
+			r = Bifstk.logic.getState().removeFromDock(f, DockPosition.LEFT);
+		}
+		if (!r) {
+			r = Bifstk.logic.getState().removeFromDock(f, DockPosition.RIGHT);
 		}
 	}
 

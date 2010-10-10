@@ -15,6 +15,7 @@ import bifstk.gl.Color;
 import bifstk.gl.Util;
 import bifstk.util.BifstkException;
 import bifstk.util.Logger;
+import bifstk.wm.State.DockPosition;
 
 /**
  * Root of the Window Manager
@@ -138,8 +139,9 @@ public class Renderer {
 		/* second layer: areas */
 		this.renderAreas(width, height);
 
-		/* third layer: dock */
+		/* third layer: docks */
 		this.renderLeftDock(width, height);
+		this.renderRightDock(width, height);
 
 		/* top layer: windows */
 		this.renderWindows(width, height);
@@ -174,7 +176,7 @@ public class Renderer {
 		if (this.state.getLeftDock().size() == 0) {
 			return;
 		}
-		int x = this.state.getLeftDockWidth();
+		int x = this.state.getDockWidth(DockPosition.LEFT);
 		int w = Theme.getWindowBorderWidth();
 
 		float alpha = 1.0f;
@@ -246,6 +248,92 @@ public class Renderer {
 		GL11.glBegin(GL11.GL_LINES);
 		GL11.glVertex2i(x + w, 0);
 		GL11.glVertex2i(x + w, height);
+		GL11.glEnd();
+	}
+
+	/**
+	 * Renders the right dock of the WM
+	 * 
+	 * @param width
+	 * @param height
+	 */
+	private void renderRightDock(int width, int height) {
+		if (this.state.getRightDock().size() == 0) {
+			return;
+		}
+		int x = this.state.getDockWidth(DockPosition.RIGHT);
+		int w = Theme.getWindowBorderWidth();
+		int dw = Display.getDisplayMode().getWidth();
+
+		float alpha = 1.0f;
+		boolean focus = true;
+		int acc = 0;
+		/* draw the windows */
+		for (Window win : this.state.getRightDock()) {
+			float amul = 1.0f;
+			if (win.isDragged()) {
+				amul *= Theme.getWindowMovedAlpha();
+			}
+			if (!win.isFocused()) {
+				focus = false;
+				alpha *= Theme.getWindowUnfocusedAlpha();
+			}
+			win.render(alpha * amul, Theme.getWindowUiColor(),
+					Theme.getWindowUiAlpha());
+
+			acc += win.getHeight();
+			// bot border
+			if (focus) {
+				Theme.getWindowBorderFocusedColor().use(alpha);
+			} else {
+				Theme.getWindowBorderUnfocusedColor().use(alpha);
+			}
+			GL11.glBegin(GL11.GL_QUADS);
+			GL11.glVertex2i(dw, acc);
+			GL11.glVertex2i(dw - x, acc);
+			GL11.glVertex2i(dw - x, acc + w);
+			GL11.glVertex2i(dw, acc + w);
+			GL11.glEnd();
+
+			acc += w;
+		}
+
+		/* left shadow */
+		if (Theme.isWindowShadowEnabled()) {
+			int radius = Theme.getWindowShadowRadius();
+			GL11.glBegin(GL11.GL_QUADS);
+			Color.BLACK.use(Theme.getWindowShadowAlpha() * alpha);
+			GL11.glVertex2i(dw - (x + w), 0);
+			Color.BLACK.use(0.0f);
+			GL11.glVertex2i(dw - (x + w + radius), 0);
+			GL11.glVertex2i(dw - (x + w + radius), height);
+			Color.BLACK.use(Theme.getWindowShadowAlpha() * alpha);
+			GL11.glVertex2i(dw - (x + w), height);
+			GL11.glEnd();
+		}
+
+		if (focus) {
+			Theme.getWindowBorderFocusedColor().use(alpha);
+		} else {
+			Theme.getWindowBorderUnfocusedColor().use(alpha);
+		}
+		/* left border */
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glVertex2i(dw - x, 0);
+		GL11.glVertex2i(dw - x - w, 0);
+		GL11.glVertex2i(dw - x - w, height);
+		GL11.glVertex2i(dw - x, height);
+		GL11.glEnd();
+
+		if (focus) {
+			Theme.getWindowBorderOuterFocusedColor().use(alpha);
+		} else {
+			Theme.getWindowBorderOuterUnfocusedColor().use(alpha);
+		}
+		/* left outer border */
+		GL11.glBegin(GL11.GL_LINES);
+		GL11.glVertex2i(dw - x - w, 0);
+		GL11.glVertex2i(dw - x - w, height);
 		GL11.glEnd();
 	}
 

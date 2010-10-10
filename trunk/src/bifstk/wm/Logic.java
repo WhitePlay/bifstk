@@ -13,6 +13,7 @@ import bifstk.config.Cursors;
 import bifstk.config.Cursors.Type;
 import bifstk.config.Theme;
 import bifstk.gl.Util;
+import bifstk.wm.State.DockPosition;
 import bifstk.wm.geom.Region;
 
 /**
@@ -104,6 +105,23 @@ public class Logic {
 		Window leftDockHBCTopWin = null;
 		/** if leftDockHBorderClicked, Frame at the bottom of the border */
 		Window leftDockHBCBotWin = null;
+
+		/** true when the mouse is dragged to the right of the screen */
+		boolean dragRight = false;
+		/** true when the right dock border is hovered */
+		boolean rightDockVBorderHover = false;
+		/** true when the right dock border was clicked last click */
+		boolean rightDockVBorderClicked = false;
+
+		/** true when the right dock horizontal border is hovered */
+		boolean rightDockHBorderHover = false;
+		/** true when the right dock horizontal border was clicked last click */
+		boolean rightDockHBorderClicked = false;
+		/** if rightDockHBorderClicked, Frame on top of the border */
+		Window rightDockHBCTopWin = null;
+		/** if rightDockHBorderClicked, Frame at the bottom of the border */
+		Window rightDockHBCBotWin = null;
+
 	}
 
 	/** state of the left mouse button */
@@ -190,8 +208,8 @@ public class Logic {
 		}
 		// left dock border mouse hover
 		if (this.state.getLeftDock().size() > 0
-				&& this.state.getLeftDockWidth() <= mx
-				&& mx < this.state.getLeftDockWidth()
+				&& this.state.getDockWidth(DockPosition.LEFT) <= mx
+				&& mx < this.state.getDockWidth(DockPosition.LEFT)
 						+ Theme.getWindowBorderWidth()) {
 			this.leftMouse.leftDockVBorderHover = true;
 		} else {
@@ -200,7 +218,7 @@ public class Logic {
 		// left dock inter-frame mouse hover
 		this.leftMouse.leftDockHBorderHover = false;
 		if (this.state.getLeftDock().size() > 0
-				&& mx <= this.state.getLeftDockWidth()) {
+				&& mx <= this.state.getDockWidth(DockPosition.LEFT)) {
 			int acc = 0;
 			int maxHeight = Display.getDisplayMode().getHeight();
 			int border = Theme.getWindowBorderWidth();
@@ -226,6 +244,45 @@ public class Logic {
 			}
 		}
 
+		int dw = Display.getDisplayMode().getWidth();
+		// right dock border mouse hover
+		if (this.state.getRightDock().size() > 0
+				&& dw - this.state.getDockWidth(DockPosition.RIGHT)
+						- Theme.getWindowBorderWidth() <= mx
+				&& mx < dw - this.state.getDockWidth(DockPosition.RIGHT)) {
+			this.leftMouse.rightDockVBorderHover = true;
+		} else {
+			this.leftMouse.rightDockVBorderHover = false;
+		}
+		// right dock inter-frame mouse hover
+		this.leftMouse.rightDockHBorderHover = false;
+		if (this.state.getLeftDock().size() > 0
+				&& mx > dw - this.state.getDockWidth(DockPosition.RIGHT)) {
+			int acc = 0;
+			int maxHeight = Display.getDisplayMode().getHeight();
+			int border = Theme.getWindowBorderWidth();
+			Iterator<Window> it = null;
+			for (it = this.state.getRightDock().iterator(); it.hasNext();) {
+				Window win = it.next();
+				int h = win.getHeight();
+				acc += h;
+				if (acc >= maxHeight) {
+					break;
+				}
+				if (acc < my && my < acc + border) {
+					this.leftMouse.rightDockHBorderHover = true;
+					this.leftMouse.rightDockHBCTopWin = win;
+					if (it.hasNext()) {
+						this.leftMouse.rightDockHBCBotWin = it.next();
+					} else {
+						this.leftMouse.rightDockHBCBotWin = null;
+					}
+					break;
+				}
+				acc += border;
+			}
+		}
+
 		// for each mouse event since last call
 		while (Mouse.next()) {
 			int button = Mouse.getEventButton();
@@ -236,6 +293,7 @@ public class Logic {
 				if (this.leftMouse.down) {
 					this.leftMouse.down = false;
 					this.leftMouse.leftDockVBorderClicked = false;
+					this.leftMouse.rightDockVBorderClicked = false;
 				} else {
 					this.leftMouse.down = true;
 					this.leftMouse.clicked = true;
@@ -245,6 +303,8 @@ public class Logic {
 					this.leftMouse.clickedRegion = this.leftMouse.hoverRegion;
 					this.leftMouse.leftDockVBorderClicked = this.leftMouse.leftDockVBorderHover;
 					this.leftMouse.leftDockHBorderClicked = this.leftMouse.leftDockHBorderHover;
+					this.leftMouse.rightDockVBorderClicked = this.leftMouse.rightDockVBorderHover;
+					this.leftMouse.rightDockHBorderClicked = this.leftMouse.rightDockHBorderHover;
 				}
 				break;
 			// right
@@ -444,6 +504,9 @@ public class Logic {
 			if (this.leftMouse.dragLeft) {
 				this.leftMouse.dragLeft = false;
 			}
+			if (this.leftMouse.dragRight) {
+				this.leftMouse.dragRight = false;
+			}
 		}
 
 		// RMB click
@@ -566,12 +629,13 @@ public class Logic {
 				// remove from left dock
 				if (dragged.isDocked() && !this.leftMouse.dragLeft) {
 					Window w = (Window) dragged;
-					this.state.removeFromLeftDock(w);
-					this.state.addWindow(w);
-					w.toggleDocked();
-					w.setX(this.leftMouse.hoverX - w.getWidth() / 2);
-					this.leftMouse.dragX = this.leftMouse.hoverX - w.getWidth()
-							/ 2;
+					if (this.state.removeFromDock(w, DockPosition.LEFT)) {
+						this.state.addWindow(w);
+						w.toggleDocked();
+						w.setX(this.leftMouse.hoverX - w.getWidth() / 2);
+						this.leftMouse.dragX = this.leftMouse.hoverX
+								- w.getWidth() / 2;
+					}
 				}
 
 				// drag to left dock
@@ -581,12 +645,12 @@ public class Logic {
 						if (this.leftMouse.hoverX > 0) {
 							this.leftMouse.dragLeft = false;
 							// move out of dock
-							this.state.removeFromLeftDock(w);
+							this.state.removeFromDock(w, DockPosition.LEFT);
 							this.state.addWindow(w);
 							w.toggleDocked();
 						} else {
-							this.state.removeFromLeftDock(w);
-							this.state.addToLeftDock(w);
+							this.state.removeFromDock(w, DockPosition.LEFT);
+							this.state.addToDock(w, DockPosition.LEFT);
 						}
 					} else if (dragged.isResizable()) {
 						boolean canDock = Display.getDisplayMode().getHeight()
@@ -597,10 +661,52 @@ public class Logic {
 							// move in dock
 							w.toggleDocked();
 							this.state.removeWindow(w);
-							this.state.addToLeftDock(w);
+							this.state.addToDock(w, DockPosition.LEFT);
 						}
 					}
+				}
 
+				// remove from right dock
+				if (dragged.isDocked() && !this.leftMouse.dragRight) {
+					Window w = (Window) dragged;
+					if (this.state.removeFromDock(w, DockPosition.RIGHT)) {
+						this.state.addWindow(w);
+						w.toggleDocked();
+						w.setX(this.leftMouse.hoverX - w.getWidth() / 2);
+						this.leftMouse.dragX = this.leftMouse.hoverX
+								- w.getWidth() / 2;
+					}
+				}
+
+				// drag to right dock
+				if (lclickIsWindow) {
+					Window w = (Window) dragged;
+					if (this.leftMouse.dragRight) {
+						if (this.leftMouse.hoverX < Display.getDisplayMode()
+								.getWidth() - 1) {
+							this.leftMouse.dragRight = false;
+							// move out of dock
+							this.state.removeFromDock(w, DockPosition.RIGHT);
+							this.state.addWindow(w);
+							w.toggleDocked();
+						} else {
+							this.state.removeFromDock(w, DockPosition.RIGHT);
+							this.state.addToDock(w, DockPosition.RIGHT);
+						}
+					} else if (dragged.isResizable()) {
+						boolean canDock = Display.getDisplayMode().getHeight()
+								/ (this.state.getRightDock().size() + 1) > Config
+								.getWmFrameSizeMin();
+						if (canDock
+								&& this.leftMouse.hoverX == Display
+										.getDisplayMode().getWidth() - 1) {
+							this.leftMouse.dragRight = true;
+							// move in dock
+							w.toggleDocked();
+							this.state.removeWindow(w);
+							this.state.addToDock(w, DockPosition.RIGHT);
+						}
+					}
 				}
 			}
 				break;
@@ -907,7 +1013,7 @@ public class Logic {
 			if (!this.leftMouse.draggedLastPoll) {
 				Cursors.setCursor(Type.RESIZE_HOR);
 			}
-			this.state.setLeftDockWidth(this.leftMouse.hoverX);
+			this.state.setDockWidth(this.leftMouse.hoverX, DockPosition.LEFT);
 		}
 		// resize left dock frames
 		else if (this.leftMouse.dragged && modalWindow == null
@@ -942,6 +1048,50 @@ public class Logic {
 			}
 			bot.setResizable(false);
 		}
+
+		// resize right dock
+		else if (this.leftMouse.dragged && modalWindow == null
+				&& this.leftMouse.rightDockVBorderClicked) {
+			if (!this.leftMouse.draggedLastPoll) {
+				Cursors.setCursor(Type.RESIZE_HOR);
+			}
+			this.state.setDockWidth(Display.getDisplayMode().getWidth()
+					- this.leftMouse.hoverX, DockPosition.RIGHT);
+		}
+		// resize righgt dock frames
+		else if (this.leftMouse.dragged && modalWindow == null
+				&& this.leftMouse.rightDockHBorderClicked) {
+			if (!this.leftMouse.draggedLastPoll) {
+				Cursors.setCursor(Type.RESIZE_VER);
+			}
+
+			Window top = this.leftMouse.rightDockHBCTopWin;
+			Window bot = this.leftMouse.rightDockHBCBotWin;
+			int border = Theme.getWindowBorderWidth();
+			int space = top.getHeight() + bot.getHeight();
+			int minH = Config.getWmFrameSizeMin();
+
+			// resize top
+			int nht = this.leftMouse.hoverY - top.getY() - border / 2;
+			nht = Util.clampi(nht, minH, space - minH);
+			top.setResizable(true);
+			top.setHeight(nht);
+			top.setResizable(false);
+
+			// resize bot
+			int nh = space - top.getHeight();
+			int ny = top.getY() + top.getHeight() + border;
+			bot.setResizable(true);
+			if (bot.getHeight() > nh) {
+				bot.setHeight(nh);
+				bot.setY(ny);
+			} else {
+				bot.setY(ny);
+				bot.setHeight(nh);
+			}
+			bot.setResizable(false);
+		}
+
 		// cancel drag
 		else if (this.leftMouse.draggedLastPoll) {
 			if (dragged != null) {
@@ -968,6 +1118,10 @@ public class Logic {
 			if (this.leftMouse.leftDockVBorderHover && modal == null) {
 				Cursors.setCursor(Type.RESIZE_HOR);
 			} else if (this.leftMouse.leftDockHBorderHover && modal == null) {
+				Cursors.setCursor(Type.RESIZE_VER);
+			} else if (this.leftMouse.rightDockVBorderHover && modal == null) {
+				Cursors.setCursor(Type.RESIZE_HOR);
+			} else if (this.leftMouse.rightDockHBorderHover && modal == null) {
 				Cursors.setCursor(Type.RESIZE_VER);
 			} else {
 				Cursors.setCursor(Type.POINTER);

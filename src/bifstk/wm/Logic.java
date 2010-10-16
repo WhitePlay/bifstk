@@ -627,7 +627,8 @@ public class Logic {
 				dragged.setPos(nx, ny);
 
 				// remove from left dock
-				if (dragged.isDocked() && !this.leftMouse.dragLeft) {
+				if (dragged.isDocked() && !this.leftMouse.dragLeft
+						&& dragged.getX() == 0) {
 					Window w = (Window) dragged;
 					if (this.state.removeFromDock(w, DockPosition.LEFT)) {
 						this.state.addWindow(w);
@@ -667,7 +668,8 @@ public class Logic {
 				}
 
 				// remove from right dock
-				if (dragged.isDocked() && !this.leftMouse.dragRight) {
+				if (dragged.isDocked() && !this.leftMouse.dragRight
+						&& (dragged.getX() > 0)) {
 					Window w = (Window) dragged;
 					if (this.state.removeFromDock(w, DockPosition.RIGHT)) {
 						this.state.addWindow(w);

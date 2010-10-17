@@ -288,8 +288,6 @@ public class State {
 				win.setResizable(false);
 			}
 		}
-
-		return true;
 	}
 
 	/**

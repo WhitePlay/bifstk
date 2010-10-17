@@ -10,6 +10,7 @@ import org.lwjgl.opengl.Display;
 import bifstk.config.Config;
 import bifstk.config.Theme;
 import bifstk.gl.Util;
+import bifstk.util.Logger;
 import bifstk.util.SharedFrameException;
 
 /**
@@ -200,6 +201,7 @@ public class State {
 	 * 
 	 * @param w the Window to add to the left dock
 	 * @param dockPos left or right dock
+	 * @return true if the Window was added, false when not enough space
 	 * @throws SharedFrameException the Window is already held by the WM
 	 */
 	public void addToDock(Window w, DockPosition dockPos) {
@@ -238,19 +240,40 @@ public class State {
 
 			int border = Theme.getWindowBorderWidth();
 			int num = dock.size();
-			int i = 0, acc = 0;
+			int i = 0, acc = 0, totPix = 0;
 			int pixels = Display.getDisplayMode().getHeight() / num;
+			int hMin = Config.getWmFrameSizeMin();
 
+			int[] pixWin = new int[num];
+			// find out how much pixels each window can give
+			for (Window win : dock) {
+				int h = win.getHeight() - hMin;
+				pixWin[i++] = h;
+				totPix += h;
+			}
+			if (totPix < hMin && num > 1) {
+				Logger.error("Not enough space available to insert "
+						+ w.getTitle() + " in dock " + dockPos);
+			}
+			pixels = Math.min(totPix, pixels);
+			int share = 0;
+
+			if (num > 1) {
+				share = pixels / (num - 1);
+				// resize windows that cannot give a share
+				makeSpace(dock, share, w);
+			}
+			i = acc = 0;
 			// resize all Windows in the dock accordingly
 			for (Window win : dock) {
 				int h = Display.getDisplayMode().getHeight();
-				i++;
 				if (num > 1) {
-					h = win.getHeight() - pixels / (num - 1);
+					h = win.getHeight() - share;
 				}
 				if (win == w) {
 					h = pixels - border;
 				}
+				i++;
 				if (i == num) {
 					h = Display.getDisplayMode().getHeight() - acc;
 				}
@@ -264,6 +287,58 @@ public class State {
 				acc += h + border;
 				win.setResizable(false);
 			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Resize the dock's windows to allow the insertion of a new window
+	 * 
+	 * @param dock
+	 * @param share
+	 * @param skip
+	 */
+	private void makeSpace(LinkedList<Window> dock, int share, Window skip) {
+		int hMin = Config.getWmFrameSizeMin();
+		int i = 0;
+
+		for (Window w : dock) {
+			if (w.equals(skip))
+				continue;
+
+			int j = 0;
+			while (w.getHeight() - hMin < share) {
+				for (Window w2 : dock) {
+					if (w2.equals(skip) || w2.equals(w))
+						continue;
+					int px = w2.getHeight() - hMin - share;
+					// w2 will give px height to w
+					if (px > 0) {
+						px = Math.min(px, share);
+						w2.setResizable(true);
+						w.setResizable(true);
+
+						w2.setHeight(w2.getHeight() - px);
+						w.setHeight(w.getHeight() + px);
+
+						if (w.getY() < w2.getY()) {
+							w2.setY(w2.getY() - px);
+						} else {
+							w.setY(w.getY() - px);
+						}
+
+						w2.setResizable(false);
+						w.setResizable(false);
+					}
+				}
+
+				if (j++ > 20) {
+					return;
+				}
+			}
+
+			i++;
 		}
 	}
 

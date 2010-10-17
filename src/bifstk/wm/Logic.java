@@ -256,7 +256,7 @@ public class Logic {
 		}
 		// right dock inter-frame mouse hover
 		this.leftMouse.rightDockHBorderHover = false;
-		if (this.state.getLeftDock().size() > 0
+		if (this.state.getRightDock().size() > 0
 				&& mx > dw - this.state.getDockWidth(DockPosition.RIGHT)) {
 			int acc = 0;
 			int maxHeight = Display.getDisplayMode().getHeight();
@@ -628,7 +628,7 @@ public class Logic {
 
 				// remove from left dock
 				if (dragged.isDocked() && !this.leftMouse.dragLeft
-						&& dragged.getX() == 0) {
+						&& this.state.getLeftDock().contains(dragged)) {
 					Window w = (Window) dragged;
 					if (this.state.removeFromDock(w, DockPosition.LEFT)) {
 						this.state.addWindow(w);
@@ -669,7 +669,7 @@ public class Logic {
 
 				// remove from right dock
 				if (dragged.isDocked() && !this.leftMouse.dragRight
-						&& (dragged.getX() > 0)) {
+						&& this.state.getRightDock().contains(dragged)) {
 					Window w = (Window) dragged;
 					if (this.state.removeFromDock(w, DockPosition.RIGHT)) {
 						this.state.addWindow(w);

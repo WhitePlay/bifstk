@@ -74,8 +74,16 @@ public enum ConfigProperty {
 	wmDebugLayout("wm.debug.layout"),
 	/** BOOL true to enable maximization on top window drag */
 	wmWindowSnapTop("wm.window.snap.top"),
+	/** BOOL enable the left dock */
+	wmWindowDockLeft("wm.window.dock.left"),
+	/** BOOL enable the right dock */
+	wmWindowDockRight("wm.window.dock.right"),
 	/** INT minimum width/height of a frame, borders included */
-	wmFrameSizeMin("wm.frame.size.min");
+	wmFrameSizeMin("wm.frame.size.min"),
+	/** BOOL enable edge snapping (not edge resistance) */
+	wmFrameSnap("wm.frame.snap"),
+	/** INT radius of the edge snapping */
+	wmFrameSnapRadius("wm.frame.snap.radius");
 
 	private String property = null;
 

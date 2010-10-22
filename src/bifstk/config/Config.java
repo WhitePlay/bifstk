@@ -331,14 +331,50 @@ public class Config {
 	public static boolean isWmWindowSnapTop() {
 		return instance.wmWindowSnapTop;
 	}
-	
+
+	private boolean wmWindowDockLeft;
+
+	/**
+	 * @return true if the left dock is enabled
+	 */
+	public static boolean isWmWindowDockLeft() {
+		return instance.wmWindowDockLeft;
+	}
+
+	private boolean wmWindowDockRight;
+
+	/**
+	 * @return true if the right dock is enabled
+	 */
+	public static boolean isWmWindowDockRight() {
+		return instance.wmWindowDockRight;
+	}
+
 	private int wmFrameSizeMin;
-	
+
 	/**
 	 * @return the minimum horizontal and vertical size of a Frame
 	 */
 	public static int getWmFrameSizeMin() {
 		return instance.wmFrameSizeMin;
+	}
+
+	private boolean wmFrameSnap;
+
+	/**
+	 * @return true if Frame snapping is activated (not edge resistance)
+	 */
+	public static boolean isWmFrameSnap() {
+		return instance.wmFrameSnap;
+	}
+
+	private int wmFrameSnapRadius;
+
+	/**
+	 * @return the radius of effect of frame snapping
+	 */
+	public static int getFrameSnapRadius() {
+		return instance.wmFrameSnapRadius;
 	}
 
 	private void readProps(Map<ConfigProperty, String> props)
@@ -428,8 +464,20 @@ public class Config {
 				case wmWindowSnapTop:
 					this.wmWindowSnapTop = Boolean.parseBoolean(sval);
 					break;
+				case wmWindowDockLeft:
+					this.wmWindowDockLeft = Boolean.parseBoolean(sval);
+					break;
+				case wmWindowDockRight:
+					this.wmWindowDockRight = Boolean.parseBoolean(sval);
+					break;
 				case wmFrameSizeMin:
 					this.wmFrameSizeMin = Integer.parseInt(sval);
+					break;
+				case wmFrameSnap:
+					this.wmFrameSnap = Boolean.parseBoolean(sval);
+					break;
+				case wmFrameSnapRadius:
+					this.wmFrameSnapRadius = Integer.parseInt(sval);
 					break;
 				}
 			} catch (Throwable t) {

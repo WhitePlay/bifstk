@@ -640,7 +640,7 @@ public class Logic {
 				}
 
 				// drag to left dock
-				if (lclickIsWindow) {
+				if (lclickIsWindow && Config.isWmWindowDockLeft()) {
 					Window w = (Window) dragged;
 					if (this.leftMouse.dragLeft) {
 						if (this.leftMouse.hoverX > 0) {
@@ -681,7 +681,7 @@ public class Logic {
 				}
 
 				// drag to right dock
-				if (lclickIsWindow) {
+				if (lclickIsWindow && Config.isWmWindowDockRight()) {
 					Window w = (Window) dragged;
 					if (this.leftMouse.dragRight) {
 						if (this.leftMouse.hoverX < Display.getDisplayMode()

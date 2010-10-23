@@ -513,6 +513,64 @@ public class State {
 	}
 
 	/**
+	 * Move a Frame to the specified position, applying Frame snapping if
+	 * enabled and relevant
+	 * 
+	 * @param x abscissa
+	 * @param y ordinate
+	 * @param f Frame to move
+	 */
+	public void moveFrameTo(int x, int y, Frame f) {
+		if (Config.isWmFrameSnap()) {
+			int fw = f.getWidth();
+			int fh = f.getHeight();
+			int radius = Config.getWmFrameSnapRadius();
+			int displayWidth = Display.getDisplayMode().getWidth();
+
+			if (Config.isWmWindowDockLeft() && this.leftDock.size() > 0) {
+				int w = this.leftDockWidth + Theme.getWindowBorderWidth();
+				int d = x - w;
+				if (0 <= d && d < radius) {
+					x = w;
+				}
+			}
+			if (Config.isWmWindowDockRight() && this.rightDock.size() > 0) {
+				int w = displayWidth - this.rightDockWidth
+						- Theme.getWindowBorderWidth();
+				int d = w - x - fw;
+				if (0 <= d && d < radius) {
+					x = w - fw - 1;
+				}
+			}
+
+			for (Window w : this.windows) {
+				int wx = w.getX();
+				int wy = w.getY();
+				int ww = w.getWidth();
+				int wh = w.getHeight();
+
+				int dRight = wx - x - fw;
+				if (0 <= dRight && dRight < radius) {
+					x += dRight;
+				}
+				int dBot = wy - fh - y;
+				if (0 <= dBot && dBot < radius) {
+					y += dBot;
+				}
+				int dLeft = x - wx - ww;
+				if (0 <= dLeft && dLeft < radius) {
+					x -= dLeft;
+				}
+				int dTop = y - wh - wy;
+				if (0 <= dTop && dTop < radius) {
+					y -= dTop;
+				}
+			}
+		}
+		f.setPos(x, y);
+	}
+
+	/**
 	 * Checks this Window is not already held by the WM
 	 * 
 	 * @param w a Window

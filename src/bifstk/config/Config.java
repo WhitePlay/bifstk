@@ -371,6 +371,13 @@ public class Config {
 	private int wmFrameSnapRadius;
 
 	/**
+	 * @return the effect radius of Frame snapping
+	 */
+	public static int getWmFrameSnapRadius() {
+		return instance.wmFrameSnapRadius;
+	}
+	
+	/**
 	 * @return the radius of effect of frame snapping
 	 */
 	public static int getFrameSnapRadius() {

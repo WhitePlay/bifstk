@@ -624,8 +624,9 @@ public class Logic {
 				int ny = this.leftMouse.hoverY
 						- (leftMouse.clickY - leftMouse.dragY);
 
-				dragged.setPos(nx, ny);
-
+				//dragged.setPos(nx, ny);
+				this.state.moveFrameTo(nx, ny, dragged);
+				
 				// remove from left dock
 				if (dragged.isDocked() && !this.leftMouse.dragLeft
 						&& this.state.getLeftDock().contains(dragged)) {

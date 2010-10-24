@@ -41,9 +41,11 @@ public enum ThemeProperty {
 	/** INT pixel radius of the window shadow */
 	windowShadowRadius("window.shadow.radius"),
 	/** COLOR base color of a Window ui */
-	windowUiColor("window.ui.color"),
+	windowFocusedColor("window.focused.color"),
+	/** COLOR base color of a Window ui when not focused */
+	windowUnfocusedColor("window.unfocused.color"),
 	/** FLOAT base opacity of the window ui */
-	windowUiAlpha("window.ui.alpha"),
+	windowFocusedAlpha("window.focused.alpha"),
 	
 	/** INT pixel width of the border around the area */
 	areaBorderWidth("area.border.width"),
@@ -58,7 +60,7 @@ public enum ThemeProperty {
 	/** COLOR unfocused color of the outer border */
 	areaBorderUnfocusedColor("area.border.unfocused.color"),
 	/** FLOAT opacity of the area ui */
-	areaUiAlpha("area.ui.alpha"),
+	areaFocusedAlpha("area.focused.alpha"),
 	/** FLOAT opacity if of the area when not focused */
 	areaUnfocusedAlpha("area.unfocused.alpha"),
 

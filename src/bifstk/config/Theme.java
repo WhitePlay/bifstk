@@ -280,24 +280,34 @@ public class Theme {
 		return instance.windowShadowRadius;
 	}
 
-	private Color windowUiColor = null;
+	private Color windowFocusedColor = null;
 
 	/**
 	 * @return color of the Window ui
 	 */
-	public static Color getWindowUiColor() {
+	public static Color getWindowFocusedColor() {
 		check();
-		return instance.windowUiColor;
+		return instance.windowFocusedColor;
 	}
 
-	private float windowUiAlpha = 1.0f;
+	private Color windowUnfocusedColor = null;
 
 	/**
-	 * @return opacity of a window UI
+	 * @return color of the Window ui when not focused
 	 */
-	public static float getWindowUiAlpha() {
+	public static Color getWindowUnfocusedColor() {
 		check();
-		return instance.windowUiAlpha;
+		return instance.windowUnfocusedColor;
+	}
+
+	private float windowFocusedAlpha = 1.0f;
+
+	/**
+	 * @return opacity of a window UI when focused
+	 */
+	public static float getWindowFocusedAlpha() {
+		check();
+		return instance.windowFocusedAlpha;
 	}
 
 	private List<Controls> frameControlsOrder = null;
@@ -604,12 +614,16 @@ public class Theme {
 							Float.parseFloat(sval), 0.0f, 1.0f);
 					break;
 				}
-				case windowUiColor: {
-					this.windowUiColor = Color.parse(sval);
+				case windowFocusedColor: {
+					this.windowFocusedColor = Color.parse(sval);
 					break;
 				}
-				case windowUiAlpha: {
-					this.windowUiAlpha = Util.clampf(Float.parseFloat(sval),
+				case windowUnfocusedColor: {
+					this.windowUnfocusedColor = Color.parse(sval);
+					break;
+				}
+				case windowFocusedAlpha: {
+					this.windowFocusedAlpha = Util.clampf(Float.parseFloat(sval),
 							0.0f, 1.0f);
 					break;
 				}
@@ -638,7 +652,7 @@ public class Theme {
 					this.areaBorderUnfocusedColor = Color.parse(sval);
 					break;
 				}
-				case areaUiAlpha: {
+				case areaFocusedAlpha: {
 					this.areaUiAlpha = Util.clampf(Float.parseFloat(sval),
 							0.0f, 1.0f);
 					break;

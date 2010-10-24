@@ -185,15 +185,17 @@ public class Renderer {
 		/* draw the windows */
 		for (Window win : this.state.getLeftDock()) {
 			float amul = 1.0f;
+			Color col = Theme.getWindowFocusedColor();
 			if (win.isDragged()) {
 				amul *= Theme.getWindowMovedAlpha();
 			}
 			if (!win.isFocused()) {
+				col = Theme.getWindowUnfocusedColor();
 				focus = false;
 				alpha *= Theme.getWindowUnfocusedAlpha();
 			}
-			win.render(alpha * amul, Theme.getWindowUiColor(),
-					Theme.getWindowUiAlpha());
+			win.render(alpha * amul, col,
+					Theme.getWindowFocusedAlpha());
 
 			acc += win.getHeight();
 			// bot border
@@ -271,15 +273,17 @@ public class Renderer {
 		/* draw the windows */
 		for (Window win : this.state.getRightDock()) {
 			float amul = 1.0f;
+			Color col = Theme.getWindowFocusedColor();
 			if (win.isDragged()) {
 				amul *= Theme.getWindowMovedAlpha();
 			}
 			if (!win.isFocused()) {
+				col = Theme.getWindowUnfocusedColor();
 				focus = false;
 				alpha *= Theme.getWindowUnfocusedAlpha();
 			}
-			win.render(alpha * amul, Theme.getWindowUiColor(),
-					Theme.getWindowUiAlpha());
+			win.render(alpha * amul, col,
+					Theme.getWindowFocusedAlpha());
 
 			acc += win.getHeight();
 			// bot border
@@ -364,6 +368,8 @@ public class Renderer {
 			}
 
 			float alpha = 1.0f;
+			Color col = Theme.getWindowFocusedColor();
+
 			if (f.isDragged()) {
 				alpha *= Theme.getWindowMovedAlpha();
 			} else if (f.isResized()) {
@@ -371,6 +377,7 @@ public class Renderer {
 			}
 			if (!f.isFocused()) {
 				alpha *= Theme.getWindowUnfocusedAlpha();
+				col = Theme.getWindowUnfocusedColor();
 			}
 			if (Theme.isWindowShadowEnabled() && !f.isMaximized()) {
 				Util.drawDroppedShadow(f.getX(), f.getY(), f.getWidth(),
@@ -379,7 +386,7 @@ public class Renderer {
 			}
 
 			// render the Window
-			f.render(alpha, Theme.getWindowUiColor(), Theme.getWindowUiAlpha());
+			f.render(alpha, col, Theme.getWindowFocusedAlpha());
 		}
 	}
 

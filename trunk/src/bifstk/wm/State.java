@@ -530,7 +530,7 @@ public class State {
 			if (Config.isWmWindowDockLeft() && this.leftDock.size() > 0) {
 				int w = this.leftDockWidth + Theme.getWindowBorderWidth();
 				int d = x - w;
-				if (0 <= d && d < radius) {
+				if (-radius <= d && d < radius) {
 					x = w;
 				}
 			}
@@ -538,7 +538,7 @@ public class State {
 				int w = displayWidth - this.rightDockWidth
 						- Theme.getWindowBorderWidth();
 				int d = w - x - fw;
-				if (0 <= d && d < radius) {
+				if (-radius <= d && d < radius) {
 					x = w - fw - 1;
 				}
 			}
@@ -556,21 +556,21 @@ public class State {
 
 				if (ver) {
 					int dRight = wx - x - fw;
-					if (0 <= dRight && dRight < radius) {
+					if (-radius <= dRight && dRight < radius) {
 						x += dRight;
 					}
 					int dLeft = x - wx - ww;
-					if (0 <= dLeft && dLeft < radius) {
+					if (-radius <= dLeft && dLeft < radius) {
 						x -= dLeft;
 					}
 				}
 				if (hor) {
 					int dBot = wy - fh - y;
-					if (0 <= dBot && dBot < radius) {
+					if (-radius <= dBot && dBot < radius) {
 						y += dBot;
 					}
 					int dTop = y - wh - wy;
-					if (0 <= dTop && dTop < radius) {
+					if (-radius <= dTop && dTop < radius) {
 						y -= dTop;
 					}
 				}

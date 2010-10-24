@@ -88,16 +88,6 @@ public class Theme {
 		return instance.windowBorderUnfocusedColor;
 	}
 
-	private boolean windowBorderRounded;
-
-	/**
-	 * @return true if window border corners should be rounded
-	 */
-	public static boolean isWindowBorderRounded() {
-		check();
-		return instance.windowBorderRounded;
-	}
-
 	private Color windowBorderOuterFocusedColor;
 
 	/**
@@ -147,16 +137,6 @@ public class Theme {
 	public static int getAreaBorderWidth() {
 		check();
 		return instance.areaBorderWidth;
-	}
-
-	private boolean areaBorderRounded;
-
-	/**
-	 * @return true if the area border is rounded
-	 */
-	public static boolean isAreaBorderRounded() {
-		check();
-		return instance.areaBorderRounded;
 	}
 
 	private Color areaFocusedColor = null;
@@ -308,6 +288,42 @@ public class Theme {
 	public static float getWindowFocusedAlpha() {
 		check();
 		return instance.windowFocusedAlpha;
+	}
+
+	private Color windowTitlebarFocusedFontColor;
+
+	/**
+	 * @return the font color of the Window titlebar when focused
+	 */
+	public static Color getWindowTitlebarFocusedFontColor() {
+		return instance.windowTitlebarFocusedFontColor;
+	}
+
+	private Color windowTitlebarUnfocusedFontColor;
+
+	/**
+	 * @return the font color of the Window titlebar when not focused
+	 */
+	public static Color getWindowTitlebarUnfocusedFontColor() {
+		return instance.windowTitlebarUnfocusedFontColor;
+	}
+
+	private Color windowShadowFocusedColor;
+
+	/**
+	 * @return the color of Window shadows when focused
+	 */
+	public static Color getWindowShadowFocusedColor() {
+		return instance.windowShadowFocusedColor;
+	}
+
+	private Color windowShadowUnfocusedColor;
+
+	/**
+	 * @return the color of Window shadows when not focused
+	 */
+	public static Color getWindowShadowUnfocusedColor() {
+		return instance.windowShadowUnfocusedColor;
 	}
 
 	private List<Controls> frameControlsOrder = null;
@@ -473,6 +489,15 @@ public class Theme {
 		return instance.uiButtonBorderColor;
 	}
 
+	private Color uiFontColor;
+
+	/**
+	 * @return base color of the ui font
+	 */
+	public static Color getUiFontColor() {
+		return instance.uiFontColor;
+	}
+
 	/** singleton instance */
 	private static Theme instance = null;
 
@@ -564,10 +589,6 @@ public class Theme {
 					this.windowBorderUnfocusedColor = Color.parse(sval);
 					break;
 				}
-				case windowBorderRounded: {
-					this.windowBorderRounded = Boolean.parseBoolean(sval);
-					break;
-				}
 				case windowBorderOuterFocusedColor: {
 					this.windowBorderOuterFocusedColor = Color.parse(sval);
 					break;
@@ -623,17 +644,29 @@ public class Theme {
 					break;
 				}
 				case windowFocusedAlpha: {
-					this.windowFocusedAlpha = Util.clampf(Float.parseFloat(sval),
-							0.0f, 1.0f);
+					this.windowFocusedAlpha = Util.clampf(
+							Float.parseFloat(sval), 0.0f, 1.0f);
+					break;
+				}
+				case windowTitlebarFocusedFontColor: {
+					this.windowTitlebarFocusedFontColor = Color.parse(sval);
+					break;
+				}
+				case windowTitlebarUnfocusedFontColor: {
+					this.windowTitlebarUnfocusedFontColor = Color.parse(sval);
+					break;
+				}
+				case windowShadowFocusedColor: {
+					this.windowShadowFocusedColor = Color.parse(sval);
+					break;
+				}
+				case windowShadowUnfocusedColor: {
+					this.windowShadowUnfocusedColor = Color.parse(sval);
 					break;
 				}
 				case areaBorderWidth: {
 					this.areaBorderWidth = Util.clampi(Integer.parseInt(sval),
 							areaBorderMin, areaBorderMax);
-					break;
-				}
-				case areaBorderRounded: {
-					this.areaBorderRounded = Boolean.parseBoolean(sval);
 					break;
 				}
 				case areaFocusedColor: {
@@ -761,6 +794,10 @@ public class Theme {
 				}
 				case uiButtonBorderColor: {
 					this.uiButtonBorderColor = Color.parse(sval);
+					break;
+				}
+				case uiFontColor: {
+					this.uiFontColor = Color.parse(sval);
 					break;
 				}
 				}

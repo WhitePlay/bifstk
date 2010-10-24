@@ -634,6 +634,9 @@ public class Logic {
 					if (this.state.removeFromDock(w, DockPosition.LEFT)) {
 						this.state.addWindow(w);
 						w.toggleDocked();
+						for (Window ww : this.state.getLeftDock()) {
+							ww.setFocused(false);
+						}
 						w.setX(this.leftMouse.hoverX - w.getWidth() / 2);
 						this.leftMouse.dragX = this.leftMouse.hoverX
 								- w.getWidth() / 2;
@@ -675,6 +678,9 @@ public class Logic {
 					if (this.state.removeFromDock(w, DockPosition.RIGHT)) {
 						this.state.addWindow(w);
 						w.toggleDocked();
+						for (Window ww : this.state.getRightDock()) {
+							ww.setFocused(false);
+						}
 						w.setX(this.leftMouse.hoverX - w.getWidth() / 2);
 						this.leftMouse.dragX = this.leftMouse.hoverX
 								- w.getWidth() / 2;

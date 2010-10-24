@@ -71,11 +71,6 @@ public class Area extends Frame {
 	}
 
 	@Override
-	protected boolean isFrameBorderRounded() {
-		return Theme.isAreaBorderRounded();
-	}
-
-	@Override
 	protected Color getFrameTitlebarFocusedColor() {
 		// there should be no titlebar
 		return Color.RED;

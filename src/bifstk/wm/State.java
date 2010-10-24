@@ -521,7 +521,7 @@ public class State {
 	 * @param f Frame to move
 	 */
 	public void moveFrameTo(int x, int y, Frame f) {
-		if (Config.isWmFrameSnap()) {
+		if (Config.isWmFrameSnap() && !f.equals(this.modalWindow)) {
 			int fw = f.getWidth();
 			int fh = f.getHeight();
 			int radius = Config.getWmFrameSnapRadius();

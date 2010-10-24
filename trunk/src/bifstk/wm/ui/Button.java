@@ -45,6 +45,7 @@ public class Button extends Actionable {
 		int w = this.getWidth();
 		int h = this.getHeight();
 		float a = uiAlpha * alpha;
+		Color col = Theme.getUiFontColor();
 
 		if (this.mouseClicked && this.mouseHover) {
 			Theme.getUiButtonClickColor().use(a);
@@ -61,12 +62,18 @@ public class Button extends Actionable {
 		GL11.glEnd();
 
 		Theme.getUiButtonBorderColor().use(a);
-		GL11.glBegin(GL11.GL_LINE_LOOP);
-		GL11.glVertex2i(1, 1);
+		GL11.glBegin(GL11.GL_LINES);
+		GL11.glVertex2i(0, 1);
 		GL11.glVertex2i(w, 1);
+
+		GL11.glVertex2i(w, 1);
+		GL11.glVertex2i(w, h);
+
 		GL11.glVertex2i(w, h);
 		GL11.glVertex2i(1, h);
 
+		GL11.glVertex2i(1, h);
+		GL11.glVertex2i(0, 1);
 		GL11.glEnd();
 
 		int lx, ly;
@@ -80,7 +87,7 @@ public class Button extends Actionable {
 		} else {
 			ly = 0;
 		}
-		Fonts.getNormal().drawString(lx, ly, this.text, Color.BLACK, alpha);
+		Fonts.getNormal().drawString(lx, ly, this.text, col, alpha);
 
 	}
 

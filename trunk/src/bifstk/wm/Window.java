@@ -54,11 +54,6 @@ public class Window extends Frame {
 	}
 
 	@Override
-	protected boolean isFrameBorderRounded() {
-		return Theme.isWindowBorderRounded();
-	}
-
-	@Override
 	protected Color getFrameTitlebarFocusedColor() {
 		return Theme.getWindowTitlebarFocusedColor();
 	}

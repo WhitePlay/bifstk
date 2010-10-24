@@ -182,6 +182,7 @@ public class Renderer {
 		float alpha = 1.0f;
 		boolean focus = true;
 		int acc = 0;
+		float baseAlpha = Theme.getWindowFocusedAlpha();
 		/* draw the windows */
 		for (Window win : this.state.getLeftDock()) {
 			float amul = 1.0f;
@@ -192,17 +193,17 @@ public class Renderer {
 			if (!win.isFocused()) {
 				col = Theme.getWindowUnfocusedColor();
 				focus = false;
-				alpha *= Theme.getWindowUnfocusedAlpha();
+			} else {
+				baseAlpha = Theme.getWindowUnfocusedAlpha();
 			}
-			win.render(alpha * amul, col,
-					Theme.getWindowFocusedAlpha());
+			win.render(alpha * amul, col, baseAlpha);
 
 			acc += win.getHeight();
 			// bot border
 			if (focus) {
-				Theme.getWindowBorderFocusedColor().use(alpha);
+				Theme.getWindowBorderFocusedColor().use(alpha * baseAlpha);
 			} else {
-				Theme.getWindowBorderUnfocusedColor().use(alpha);
+				Theme.getWindowBorderUnfocusedColor().use(alpha * baseAlpha);
 			}
 			GL11.glBegin(GL11.GL_QUADS);
 			GL11.glVertex2i(0, acc);
@@ -217,21 +218,25 @@ public class Renderer {
 		/* right shadow */
 		if (Theme.isWindowShadowEnabled()) {
 			int radius = Theme.getWindowShadowRadius();
+			Color col = Theme.getWindowShadowFocusedColor();
+			if (!focus) {
+				col = Theme.getWindowShadowUnfocusedColor();
+			}
 			GL11.glBegin(GL11.GL_QUADS);
-			Color.BLACK.use(Theme.getWindowShadowAlpha() * alpha);
+			col.use(Theme.getWindowShadowAlpha() * alpha);
 			GL11.glVertex2i(x + w, 0);
-			Color.BLACK.use(0.0f);
+			col.use(0.0f);
 			GL11.glVertex2i(x + w + radius, 0);
 			GL11.glVertex2i(x + w + radius, height);
-			Color.BLACK.use(Theme.getWindowShadowAlpha() * alpha);
+			col.use(Theme.getWindowShadowAlpha() * alpha);
 			GL11.glVertex2i(x + w, height);
 			GL11.glEnd();
 		}
 
 		if (focus) {
-			Theme.getWindowBorderFocusedColor().use(alpha);
+			Theme.getWindowBorderFocusedColor().use(alpha * baseAlpha);
 		} else {
-			Theme.getWindowBorderUnfocusedColor().use(alpha);
+			Theme.getWindowBorderUnfocusedColor().use(alpha * baseAlpha);
 		}
 		/* right border */
 		GL11.glBegin(GL11.GL_QUADS);
@@ -267,6 +272,7 @@ public class Renderer {
 		int w = Theme.getWindowBorderWidth();
 		int dw = Display.getDisplayMode().getWidth();
 
+		float baseAlpha = Theme.getWindowFocusedAlpha();
 		float alpha = 1.0f;
 		boolean focus = true;
 		int acc = 0;
@@ -280,17 +286,17 @@ public class Renderer {
 			if (!win.isFocused()) {
 				col = Theme.getWindowUnfocusedColor();
 				focus = false;
-				alpha *= Theme.getWindowUnfocusedAlpha();
+			} else {
+				baseAlpha = Theme.getWindowUnfocusedAlpha();
 			}
-			win.render(alpha * amul, col,
-					Theme.getWindowFocusedAlpha());
+			win.render(alpha * amul, col, baseAlpha);
 
 			acc += win.getHeight();
 			// bot border
 			if (focus) {
-				Theme.getWindowBorderFocusedColor().use(alpha);
+				Theme.getWindowBorderFocusedColor().use(alpha * baseAlpha);
 			} else {
-				Theme.getWindowBorderUnfocusedColor().use(alpha);
+				Theme.getWindowBorderUnfocusedColor().use(alpha * baseAlpha);
 			}
 			GL11.glBegin(GL11.GL_QUADS);
 			GL11.glVertex2i(dw, acc);
@@ -305,21 +311,25 @@ public class Renderer {
 		/* left shadow */
 		if (Theme.isWindowShadowEnabled()) {
 			int radius = Theme.getWindowShadowRadius();
+			Color col = Theme.getWindowShadowFocusedColor();
+			if (!focus) {
+				col = Theme.getWindowShadowUnfocusedColor();
+			}
 			GL11.glBegin(GL11.GL_QUADS);
-			Color.BLACK.use(Theme.getWindowShadowAlpha() * alpha);
+			col.use(Theme.getWindowShadowAlpha() * alpha);
 			GL11.glVertex2i(dw - (x + w), 0);
-			Color.BLACK.use(0.0f);
+			col.use(0.0f);
 			GL11.glVertex2i(dw - (x + w + radius), 0);
 			GL11.glVertex2i(dw - (x + w + radius), height);
-			Color.BLACK.use(Theme.getWindowShadowAlpha() * alpha);
+			col.use(Theme.getWindowShadowAlpha() * alpha);
 			GL11.glVertex2i(dw - (x + w), height);
 			GL11.glEnd();
 		}
 
 		if (focus) {
-			Theme.getWindowBorderFocusedColor().use(alpha);
+			Theme.getWindowBorderFocusedColor().use(alpha * baseAlpha);
 		} else {
-			Theme.getWindowBorderUnfocusedColor().use(alpha);
+			Theme.getWindowBorderUnfocusedColor().use(alpha * baseAlpha);
 		}
 		/* left border */
 		GL11.glBegin(GL11.GL_QUADS);
@@ -369,6 +379,7 @@ public class Renderer {
 
 			float alpha = 1.0f;
 			Color col = Theme.getWindowFocusedColor();
+			Color shadowCol = Theme.getWindowShadowFocusedColor();
 
 			if (f.isDragged()) {
 				alpha *= Theme.getWindowMovedAlpha();
@@ -378,11 +389,12 @@ public class Renderer {
 			if (!f.isFocused()) {
 				alpha *= Theme.getWindowUnfocusedAlpha();
 				col = Theme.getWindowUnfocusedColor();
+				shadowCol = Theme.getWindowShadowUnfocusedColor();
 			}
 			if (Theme.isWindowShadowEnabled() && !f.isMaximized()) {
 				Util.drawDroppedShadow(f.getX(), f.getY(), f.getWidth(),
 						f.getHeight(), Theme.getWindowShadowRadius(),
-						Theme.getWindowShadowAlpha() * alpha);
+						Theme.getWindowShadowAlpha() * alpha, shadowCol);
 			}
 
 			// render the Window

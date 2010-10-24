@@ -18,8 +18,6 @@ public enum ThemeProperty {
 	windowBorderFocusedColor("window.border.focused.color"),
 	/** COLOR window border color when not focused */
 	windowBorderUnfocusedColor("window.border.unfocused.color"),
-	/** BOOL true for rounded window corners */
-	windowBorderRounded("window.border.rounded"),
 	/** COLOR color of the border of the window border */
 	windowBorderOuterFocusedColor("window.border.outer.focused.color"),
 	/** COLOR color of the border of the window border */
@@ -28,6 +26,10 @@ public enum ThemeProperty {
 	windowTitlebarFocusedColor("window.titlebar.focused.color"),
 	/** COLOR window titlebar color when not focused */
 	windowTitlebarUnfocusedColor("window.titlebar.unfocused.color"),
+	/** COLOR window titlebar font color when focused */
+	windowTitlebarFocusedFontColor("window.titlebar.focused.font.color"),
+	/** COLOR window titlebar font color when not focused */
+	windowTitlebarUnfocusedFontColor("window.titlebar.unfocused.font.color"),
 	/** FLOAT window opacity when moved */
 	windowMovedAlpha("window.moved.alpha"),
 	/** FLOAT window opacity when resized */
@@ -46,6 +48,10 @@ public enum ThemeProperty {
 	windowUnfocusedColor("window.unfocused.color"),
 	/** FLOAT base opacity of the window ui */
 	windowFocusedAlpha("window.focused.alpha"),
+	/** COLOR color of the window shadow when focused */
+	windowShadowFocusedColor("window.shadow.focused.color"),
+	/** COLOR color of the window shadow when not focused */
+	windowShadowUnfocusedColor("window.shadow.unfocused.color"),
 	
 	/** INT pixel width of the border around the area */
 	areaBorderWidth("area.border.width"),
@@ -53,8 +59,6 @@ public enum ThemeProperty {
 	areaFocusedColor("area.focused.color"),
 	/** COLOR unfocused color of the area */
 	areaUnfocusedColor("area.unfocused.color"),
-	/** BOOL true if border corners should be rounded */
-	areaBorderRounded("area.border.rounded"),
 	/** COLOR focused color of the outer border */
 	areaBorderFocusedColor("area.border.focused.color"),
 	/** COLOR unfocused color of the outer border */
@@ -89,6 +93,8 @@ public enum ThemeProperty {
 	/** COLOR maximize frame control color when hovered */
 	frameControlsMaximizeClickColor("frame.controls.maximize.click.color"),
 
+	/** COLOR base font color of the UI */
+	uiFontColor("ui.font.color"),
 	/** COLOR color of the ui button border */
 	uiButtonBorderColor("ui.button.border.color"),
 	/** COLOR color of the ui button background */

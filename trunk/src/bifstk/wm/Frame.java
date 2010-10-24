@@ -175,106 +175,54 @@ public abstract class Frame implements Drawable, Clickable {
 		GL11.glVertex2i(x + borderWidth, y + h - borderWidth);
 		GL11.glEnd();
 
-		int precision = 5;
-		if (isFrameBorderRounded()) {
-			Util.drawFilledArc(x + borderWidth, y + borderWidth, borderWidth,
-					(float) Math.PI, (float) Math.PI / 2.0f, precision,
-					borderCol, alpha2, borderCol, alpha2);
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glVertex2i(x, y);
+		GL11.glVertex2i(x + borderWidth, y);
+		GL11.glVertex2i(x + borderWidth, y + borderWidth);
+		GL11.glVertex2i(x, y + borderWidth);
 
-			Util.drawFilledArc(x + w - borderWidth, y + borderWidth,
-					borderWidth, (float) -Math.PI / 2.0f,
-					(float) Math.PI / 2.0f, precision, borderCol, alpha2,
-					borderCol, alpha2);
+		GL11.glVertex2i(x + w, y);
+		GL11.glVertex2i(x + w - borderWidth, y);
+		GL11.glVertex2i(x + w - borderWidth, y + borderWidth);
+		GL11.glVertex2i(x + w, y + borderWidth);
 
-			Util.drawFilledArc(x + w - borderWidth, y + h - borderWidth,
-					borderWidth, 0.0f, (float) Math.PI / 2.0f, precision,
-					borderCol, alpha2, borderCol, alpha2);
+		GL11.glVertex2i(x, y + h);
+		GL11.glVertex2i(x + borderWidth, y + h);
+		GL11.glVertex2i(x + borderWidth, y + h - borderWidth);
+		GL11.glVertex2i(x, y + h - borderWidth);
 
-			Util.drawFilledArc(x + borderWidth, y + h - borderWidth,
-					borderWidth, (float) Math.PI / 2.0f,
-					(float) Math.PI / 2.0f, precision, borderCol, alpha2,
-					borderCol, alpha2);
+		GL11.glVertex2i(x + w, y + h);
+		GL11.glVertex2i(x + w - borderWidth, y + h);
+		GL11.glVertex2i(x + w - borderWidth, y + h - borderWidth);
+		GL11.glVertex2i(x + w, y + h - borderWidth);
+		GL11.glEnd();
 
-			if (borderWidth > 1) {
-				// metaborder
-				Util.drawLineArc(x + borderWidth, y + borderWidth, borderWidth,
-						(float) Math.PI, (float) Math.PI / 2.0f, precision,
-						borderBorderCol, alpha2);
+		if (borderWidth > 1) {
+			// metaborder
+			borderBorderCol.use(alpha2);
+			GL11.glBegin(GL11.GL_LINES);
+			GL11.glVertex2i(x, y + 1);
+			GL11.glVertex2i(x + w, y + 1);
 
-				Util.drawLineArc(x + w - borderWidth, y + borderWidth,
-						borderWidth, (float) -Math.PI / 2.0f,
-						(float) Math.PI / 2.0f, precision, borderBorderCol,
-						alpha2);
-
-				Util.drawLineArc(x + w - borderWidth, y + h - borderWidth,
-						borderWidth, 0.0f, (float) Math.PI / 2.0f, precision,
-						borderBorderCol, alpha2);
-
-				Util.drawLineArc(x + borderWidth, y + h - borderWidth,
-						borderWidth, (float) Math.PI / 2.0f,
-						(float) Math.PI / 2.0f, precision, borderBorderCol,
-						alpha2);
-
-				GL11.glBegin(GL11.GL_LINES);
-				borderBorderCol.use(alpha2);
-
-				GL11.glVertex2i(x + borderWidth, y + 1);
-				GL11.glVertex2i(x + w - borderWidth, y + 1);
-
-				GL11.glVertex2i(x + w, y + borderWidth);
-				GL11.glVertex2i(x + w, y + h - borderWidth);
-
-				GL11.glVertex2i(x + borderWidth, y + h);
-				GL11.glVertex2i(x + w - borderWidth, y + h);
-
-				GL11.glVertex2i(x + 1, y + borderWidth);
-				GL11.glVertex2i(x + 1, y + h - borderWidth);
-
-				GL11.glEnd();
-			}
-		} else {
-			GL11.glBegin(GL11.GL_QUADS);
-			GL11.glVertex2i(x, y);
-			GL11.glVertex2i(x + borderWidth, y);
-			GL11.glVertex2i(x + borderWidth, y + borderWidth);
-			GL11.glVertex2i(x, y + borderWidth);
-
-			GL11.glVertex2i(x + w, y);
-			GL11.glVertex2i(x + w - borderWidth, y);
-			GL11.glVertex2i(x + w - borderWidth, y + borderWidth);
-			GL11.glVertex2i(x + w, y + borderWidth);
-
-			GL11.glVertex2i(x, y + h);
-			GL11.glVertex2i(x + borderWidth, y + h);
-			GL11.glVertex2i(x + borderWidth, y + h - borderWidth);
-			GL11.glVertex2i(x, y + h - borderWidth);
+			GL11.glVertex2i(x + w, y + 1);
+			GL11.glVertex2i(x + w, y + h);
 
 			GL11.glVertex2i(x + w, y + h);
-			GL11.glVertex2i(x + w - borderWidth, y + h);
-			GL11.glVertex2i(x + w - borderWidth, y + h - borderWidth);
-			GL11.glVertex2i(x + w, y + h - borderWidth);
+			GL11.glVertex2i(x + 1, y + h);
+
+			GL11.glVertex2i(x + 1, y + h);
+			GL11.glVertex2i(x + 1, y + 1);
 			GL11.glEnd();
-
-			if (borderWidth > 1) {
-				// metaborder
-				borderBorderCol.use(alpha2);
-				GL11.glBegin(GL11.GL_LINE_LOOP);
-				GL11.glVertex2i(x + 2, y + 2);
-				GL11.glVertex2i(x + w - 1, y + 2);
-				GL11.glVertex2i(x + w - 1, y + h - 1);
-				GL11.glVertex2i(x + 2, y + h - 1);
-				GL11.glEnd();
-			}
-		}
-
-		if (this.isFocused()) {
-			getFrameTitlebarFocusedColor().use(alpha2);
-		} else {
-			getFrameTitlebarUnfocusedColor().use(alpha2);
 		}
 
 		// title-bar
 		if (this.hasTitlebar) {
+			Color titlebarColor = getBorderFocusedColor();
+			if (!this.isFocused()) {
+				titlebarColor = getBorderUnfocusedColor();
+			}
+
+			titlebarColor.use(alpha2);
 			// background
 			GL11.glBegin(GL11.GL_QUADS);
 			GL11.glVertex2i(x + borderWidth, y + titlebarHeight + borderWidth);
@@ -282,6 +230,26 @@ public abstract class Frame implements Drawable, Clickable {
 					+ borderWidth);
 			GL11.glVertex2i(x + w - borderWidth, y + borderWidth);
 			GL11.glVertex2i(x + borderWidth, y + borderWidth);
+			GL11.glEnd();
+
+			Color titleCol2 = getFrameTitlebarFocusedColor();
+			if (!this.isFocused()) {
+				titleCol2 = getFrameTitlebarUnfocusedColor();
+			}
+
+			// background
+			int dec = 1;
+			if (borderWidth == 0) {
+				dec = 0;
+			}
+			
+			GL11.glBegin(GL11.GL_QUADS);
+			titleCol2.use(0.0f);
+			GL11.glVertex2i(x + dec, y + titlebarHeight + borderWidth);
+			GL11.glVertex2i(x + w - dec, y + titlebarHeight + borderWidth);
+			titleCol2.use(alpha2);
+			GL11.glVertex2i(x + w - dec, y + dec);
+			GL11.glVertex2i(x + dec, y + dec);
 			GL11.glEnd();
 
 			int controlWidth = Theme.getFrameControlsWidth();
@@ -301,6 +269,12 @@ public abstract class Frame implements Drawable, Clickable {
 				if (c.equals(Controls.TITLE)) {
 					int titleWidth = spaceLeft - controlsNum
 							* (controlWidth + controlBorder);
+					Color titleFontCol = Theme
+							.getWindowTitlebarFocusedFontColor();
+					if (!this.isFocused()) {
+						titleFontCol = Theme
+								.getWindowTitlebarUnfocusedFontColor();
+					}
 					GL11.glEnable(GL11.GL_SCISSOR_TEST);
 					Util.pushScissor(x + borderWidth + acc, Display
 							.getDisplayMode().getHeight()
@@ -308,7 +282,7 @@ public abstract class Frame implements Drawable, Clickable {
 							- titlebarHeight
 							- borderWidth, titleWidth, titlebarHeight);
 					Fonts.getNormal().drawString(x + borderWidth + acc,
-							y + borderWidth, this.title, Color.WHITE, alpha);
+							y + borderWidth, this.title, titleFontCol, alpha);
 					Util.popScissor();
 					GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
@@ -962,9 +936,6 @@ public abstract class Frame implements Drawable, Clickable {
 
 	/** @return Color of the outer border when not focused */
 	protected abstract Color getBorderOuterUnfocusedColor();
-
-	/** @return true if the border corner should be rounded */
-	protected abstract boolean isFrameBorderRounded();
 
 	/** @return the color of the focused titlebar */
 	protected abstract Color getFrameTitlebarFocusedColor();

@@ -105,42 +105,41 @@ public class Util {
 	 * @param h height of the bounds
 	 * @param radius width of the shadow
 	 * @param alpha opacity
+	 * @param col color
 	 */
 	public static void drawDroppedShadow(int x, int y, int w, int h,
-			int radius, float alpha) {
-		Color shadowCol = Color.BLACK;
-
+			int radius, float alpha, Color col) {
 		GL11.glBegin(GL11.GL_QUADS);
 		// shadow: top
-		shadowCol.use(0.0f);
+		col.use(0.0f);
 		GL11.glVertex2i(x, y - radius);
 		GL11.glVertex2i(x + w, y - radius);
-		shadowCol.use(alpha);
+		col.use(alpha);
 		GL11.glVertex2i(x + w, y);
 		GL11.glVertex2i(x, y);
 		// shadow: right
-		shadowCol.use(0.0f);
+		col.use(0.0f);
 		GL11.glVertex2i(x + w + radius, y);
 		GL11.glVertex2i(x + w + radius, y + h);
-		shadowCol.use(alpha);
+		col.use(alpha);
 		GL11.glVertex2i(x + w, y + h);
 		GL11.glVertex2i(x + w, y);
 		// shadow: bot
-		shadowCol.use(0.0f);
+		col.use(0.0f);
 		GL11.glVertex2i(x + w, y + h + radius);
 		GL11.glVertex2i(x, y + h + radius);
-		shadowCol.use(alpha);
+		col.use(alpha);
 		GL11.glVertex2i(x, y + h);
 		GL11.glVertex2i(x + w, y + h);
 		// shadow: left
-		shadowCol.use(0.0f);
+		col.use(0.0f);
 		GL11.glVertex2i(x - radius, y + h);
 		GL11.glVertex2i(x - radius, y);
-		shadowCol.use(alpha);
+		col.use(alpha);
 		GL11.glVertex2i(x, y);
 		GL11.glVertex2i(x, y + h);
 		// center
-		shadowCol.use(alpha);
+		col.use(alpha);
 		GL11.glVertex2i(x, y);
 		GL11.glVertex2i(x, y + h);
 		GL11.glVertex2i(x + w, y + h);
@@ -150,17 +149,17 @@ public class Util {
 		int precision = 5;
 
 		Util.drawFilledArc((float) x, (float) y, (float) radius,
-				(float) Math.PI, (float) Math.PI / 2.0f, precision, shadowCol,
-				alpha, shadowCol, 0.0f);
+				(float) Math.PI, (float) Math.PI / 2.0f, precision, col,
+				alpha, col, 0.0f);
 		Util.drawFilledArc((float) x + w, (float) y, (float) radius,
 				(float) -Math.PI / 2.0f, (float) Math.PI / 2.0f, precision,
-				shadowCol, alpha, shadowCol, 0.0f);
+				col, alpha, col, 0.0f);
 		Util.drawFilledArc((float) x + w, (float) y + h, (float) radius, 0.0f,
-				(float) Math.PI / 2.0f, precision, shadowCol, alpha, shadowCol,
+				(float) Math.PI / 2.0f, precision, col, alpha, col,
 				0.0f);
 		Util.drawFilledArc((float) x, (float) y + h, (float) radius,
 				(float) Math.PI / 2.0f, (float) Math.PI / 2.0f, precision,
-				shadowCol, alpha, shadowCol, 0.0f);
+				col, alpha, col, 0.0f);
 	}
 
 	/**

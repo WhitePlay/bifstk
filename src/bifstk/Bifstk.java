@@ -16,8 +16,8 @@ import bifstk.util.ThreadAccessException;
 import bifstk.wm.Area;
 import bifstk.wm.Logic;
 import bifstk.wm.Renderer;
-import bifstk.wm.Window;
 import bifstk.wm.State.DockPosition;
+import bifstk.wm.Window;
 
 /**
  * Main class for Bifstk
@@ -38,7 +38,23 @@ public class Bifstk {
 	/** static pointer to the WM's logic, used by the API */
 	private static Logic logic = null;
 
+	/** Bifstk version number */
+	private static final String version = "0.0";
+
+	/** SVN revision ; do not edit */
+	private static final String rev = "$Rev$";
+
 	private Bifstk() {
+	}
+
+	/**
+	 * Version numbering follows the convention:
+	 * major.minor[.maintenance]-revision
+	 * 
+	 * @return the version of Bifstk
+	 */
+	public static String getVersion() {
+		return Bifstk.version + "-" + rev.substring(5, rev.length() - 2);
 	}
 
 	/**
@@ -302,16 +318,17 @@ public class Bifstk {
 		Logger.init();
 		Log.setLogSystem(new BifstkLogSystem());
 
-		Logger.debug("OS: \t" + System.getProperty("os.name") + " "
+		Logger.debug("Version:    " + Bifstk.getVersion());
+		Logger.debug("OS:         " + System.getProperty("os.name") + " "
 				+ System.getProperty("os.arch") + " "
 				+ System.getProperty("os.version"));
 
-		Logger.debug("Java: \t" + System.getProperty("java.vm.name") + ", "
+		Logger.debug("Java:       " + System.getProperty("java.vm.name") + ", "
 				+ System.getProperty("java.version") + ", "
 				+ System.getProperty("java.vendor"));
-		Logger.debug("JAVA_HOME: \t" + System.getProperty("java.home"));
+		Logger.debug("JAVA_HOME:  " + System.getProperty("java.home"));
 
-		Logger.debug("LWJGL: \t" + Sys.getVersion());
+		Logger.debug("LWJGL:      " + Sys.getVersion());
 
 		Logger.info("Config loaded from: " + config);
 	}

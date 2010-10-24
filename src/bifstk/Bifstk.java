@@ -41,20 +41,14 @@ public class Bifstk {
 	/** Bifstk version number */
 	private static final String version = "0.0";
 
-	/** SVN revision ; do not edit */
-	private static final String rev = "$Rev$";
-
 	private Bifstk() {
 	}
 
 	/**
-	 * Version numbering follows the convention:
-	 * major.minor[.maintenance]-revision
-	 * 
 	 * @return the version of Bifstk
 	 */
 	public static String getVersion() {
-		return Bifstk.version + "-r" + rev.substring(6, rev.length() - 2);
+		return Bifstk.version;
 	}
 
 	/**

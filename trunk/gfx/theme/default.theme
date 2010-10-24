@@ -21,21 +21,22 @@ window.titlebar.focused.color = 135 178 204
 window.titlebar.unfocused.color = 212 212 212
 window.moved.alpha = 0.5
 window.resized.alpha = 0.7
+window.focused.alpha = 0.9
 window.unfocused.alpha = 0.8
 window.shadow.enabled = true
 window.shadow.alpha = 0.2
 window.shadow.radius = 10
-window.ui.color = 212 212 212
-window.ui.alpha = 0.9
+window.focused.color = 212 212 212
+window.unfocused.color = 180 180 180
 
-area.border.width = 10
+area.border.width = 4
 area.border.rounded = true
 area.focused.color = gray
 area.unfocused.color = gray
 area.border.focused.color = lightGray
 area.border.unfocused.color = white
-area.ui.alpha = 0.5
-area.unfocused.alpha = 0.5
+area.focused.alpha = 0.5
+area.unfocused.alpha = 0.8
 
 root.background.color = darkGray
 root.background.modal.color = black

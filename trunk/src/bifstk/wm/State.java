@@ -549,21 +549,30 @@ public class State {
 				int ww = w.getWidth();
 				int wh = w.getHeight();
 
-				int dRight = wx - x - fw;
-				if (0 <= dRight && dRight < radius) {
-					x += dRight;
+				boolean hor = ((wx <= x && x <= wx + ww) || (wx <= x + fw && x
+						+ fw <= wx + ww) || (x < wx && wx + ww < x + fw));
+				boolean ver = ((wy <= y && y <= wy + wh) || (wy <= y + fh && y
+						+ fh <= wy + wh) || (y < wy && wy + wh < y + fh));
+
+				if (ver) {
+					int dRight = wx - x - fw;
+					if (0 <= dRight && dRight < radius) {
+						x += dRight;
+					}
+					int dLeft = x - wx - ww;
+					if (0 <= dLeft && dLeft < radius) {
+						x -= dLeft;
+					}
 				}
-				int dBot = wy - fh - y;
-				if (0 <= dBot && dBot < radius) {
-					y += dBot;
-				}
-				int dLeft = x - wx - ww;
-				if (0 <= dLeft && dLeft < radius) {
-					x -= dLeft;
-				}
-				int dTop = y - wh - wy;
-				if (0 <= dTop && dTop < radius) {
-					y -= dTop;
+				if (hor) {
+					int dBot = wy - fh - y;
+					if (0 <= dBot && dBot < radius) {
+						y += dBot;
+					}
+					int dTop = y - wh - wy;
+					if (0 <= dTop && dTop < radius) {
+						y -= dTop;
+					}
 				}
 			}
 		}

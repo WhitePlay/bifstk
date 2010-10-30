@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="bifstk" default="compile" basedir="..">
+<project name="bifstk" default="build_all" basedir="..">
+
+  <target name="build_all" depends="jar, post_clean" />
 
   <!-- default directories -->
   <property name="root" location="." />
   <property name="src" location="${root}/src" />
   <property name="classes" location="${root}/classes" />
   <property name="lib" location="${root}/lib" />
+  <property name="dist" location="${root}/dist" />
+  <property name="jar_file" location ="${dist}/bifstk.jar" />
+  <property name="buildinfo_file" value="build.properties" />
+
+  <exec executable="svnversion" outputproperty="svnversion"/>
 
   <!-- classpath -->
   <path id="lib.path">
@@ -24,6 +31,7 @@
   <!-- creates directory structure -->
   <target name="init">
 	<mkdir dir="${classes}" />
+	<mkdir dir="${dist}" />
   </target>
 
   <!-- compile sources -->
@@ -35,8 +43,36 @@
 	</javac>
   </target>
 
-  <!-- clean compiled sources -->
+  <!-- gets some build & version info -->
+  <target name="buildinfo">
+    <propertyfile file="${classes}/${buildinfo_file}">
+	  <entry key="revision" value="${svnversion}"/>
+	  <entry key="system" value="${os.name}"/>
+	  <entry key="java" value="${java.version}"/>
+    </propertyfile>
+  </target>
+
+  <!-- creates the dist jar -->
+  <target name="jar" depends="compile, buildinfo">
+	<manifest file="MANIFEST.MF">
+	  <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="SVN-Revision" value="${svnversion}"/>
+      <attribute name="Built-Date" value="${TODAY}"/>
+	</manifest>
+	<jar destfile="${jar_file}">
+	  <fileset dir="${classes}">
+		<include name="**/*.class" />
+		<include name="${buildinfo_file}" />
+	  </fileset>
+	</jar>
+  </target>
+
+  <target name="post_clean">
+	<delete failonerror="false" file="MANIFEST.MF" />
+  </target>
+
   <target name="clean">
+	<delete failonerror="false" dir="${dist}" />
 	<delete failonerror="false" dir="${classes}" />
   </target>
 

@@ -40,7 +40,7 @@ area.border.unfocused.color = 80 80 80
 area.focused.alpha = 0.5
 area.unfocused.alpha = 0.8
 
-root.background.color = darkGray
+root.background.color = gray
 root.background.modal.color = black
 root.background.modal.alpha = 0.5
 

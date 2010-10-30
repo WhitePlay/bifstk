@@ -1,5 +1,9 @@
 package bifstk;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.util.Log;
@@ -45,10 +49,28 @@ public class Bifstk {
 	}
 
 	/**
+	 * The version String may contain more info if the build info file is found
+	 * 
 	 * @return the version of Bifstk
 	 */
 	public static String getVersion() {
-		return Bifstk.version;
+		String ver = Bifstk.version;
+
+		InputStream info = Bifstk.class
+				.getResourceAsStream("/build.properties");
+		try {
+			if (info != null) {
+				Properties props = new Properties();
+				props.load(info);
+
+				ver += "-" + props.getProperty("revision");
+				ver += " (" + props.getProperty("java");
+				ver += "/" + props.getProperty("system") + ")";
+			}
+		} catch (IOException e) {
+		}
+
+		return ver;
 	}
 
 	/**

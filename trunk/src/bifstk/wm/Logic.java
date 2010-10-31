@@ -177,7 +177,7 @@ public class Logic {
 		while (Keyboard.next()) {
 			if (this.handler != null) {
 				this.handler.keyEvent(Keyboard.getEventKey(),
-						Keyboard.areRepeatEventsEnabled(),
+						Keyboard.getEventKeyState(),
 						Keyboard.getEventCharacter());
 			}
 		}

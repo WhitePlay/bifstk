@@ -10,7 +10,11 @@ import org.newdawn.slick.SlickException;
 import bifstk.Bifstk;
 import bifstk.Handler;
 import bifstk.Root;
+import bifstk.config.Config;
+import bifstk.config.Theme;
 import bifstk.gl.Color;
+import bifstk.util.BifstkException;
+import bifstk.util.Logger;
 import bifstk.wm.Area;
 import bifstk.wm.Frame;
 import bifstk.wm.Window;
@@ -94,7 +98,7 @@ public class Test implements Handler, Root {
 			break;
 
 		case Keyboard.KEY_C:
-			if (Keyboard.getEventKeyState()) {
+			if (state) {
 				Window f = new Window(100, 100);
 				f.setTitle("Frame #" + frameCount++);
 
@@ -125,6 +129,16 @@ public class Test implements Handler, Root {
 				f.setContent(vBox);
 
 				Bifstk.addWindow(f);
+			}
+			break;
+
+		case Keyboard.KEY_R:
+			if (state) {
+				try {
+					Theme.load(Config.getThemePath());
+				} catch (BifstkException e) {
+					Logger.error("Could not reload config", e);
+				}
 			}
 			break;
 

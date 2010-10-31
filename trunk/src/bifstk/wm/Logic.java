@@ -491,11 +491,12 @@ public class Logic {
 			}
 
 			// maximize frame control
-			if (this.leftMouse.clickedRegion.equals(Region.MAXIMIZE)) {
+			if (this.leftMouse.clickedRegion.equals(Region.MAXIMIZE)
+					&& this.leftMouse.hoverFrame != null
+					&& this.leftMouse.clickedFrame != null) {
 				this.leftMouse.clickedFrame.setControlMaximizeDown(false);
 				this.leftMouse.clickedFrame.toggleMaximize();
 				this.leftMouse.hoverFrame.setControlMaximizeHover(false);
-
 			}
 
 			if (this.leftMouse.dragTop) {
@@ -624,9 +625,9 @@ public class Logic {
 				int ny = this.leftMouse.hoverY
 						- (leftMouse.clickY - leftMouse.dragY);
 
-				//dragged.setPos(nx, ny);
+				// dragged.setPos(nx, ny);
 				this.state.moveFrameTo(nx, ny, dragged);
-				
+
 				// remove from left dock
 				if (dragged.isDocked() && !this.leftMouse.dragLeft
 						&& this.state.getLeftDock().contains(dragged)) {
@@ -677,13 +678,20 @@ public class Logic {
 					Window w = (Window) dragged;
 					if (this.state.removeFromDock(w, DockPosition.RIGHT)) {
 						this.state.addWindow(w);
+
+						// as the window is stuck at the right of the screen,
+						// it cannot expand as the undock tries to recover its
+						// original size, we have to remember it and reapply it
+						// later
+						int ow = w.getWindowedWidth();
 						w.toggleDocked();
 						for (Window ww : this.state.getRightDock()) {
 							ww.setFocused(false);
 						}
-						w.setX(this.leftMouse.hoverX - w.getWidth() / 2);
-						this.leftMouse.dragX = this.leftMouse.hoverX
-								- w.getWidth() / 2;
+						w.setX(0);
+						w.setWidth(ow);
+						w.setX(this.leftMouse.hoverX - ow / 2);
+						this.leftMouse.dragX = this.leftMouse.hoverX - ow / 2;
 					}
 				}
 
@@ -697,7 +705,11 @@ public class Logic {
 							// move out of dock
 							this.state.removeFromDock(w, DockPosition.RIGHT);
 							this.state.addWindow(w);
+							int ow = w.getWindowedWidth();
 							w.toggleDocked();
+							w.setX(0);
+							w.setWidth(ow);
+							w.setX(this.leftMouse.hoverX - ow / 2);
 						} else {
 							this.state.removeFromDock(w, DockPosition.RIGHT);
 							this.state.addToDock(w, DockPosition.RIGHT);

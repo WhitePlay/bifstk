@@ -242,7 +242,7 @@ public abstract class Frame implements Drawable, Clickable {
 			if (borderWidth == 0) {
 				dec = 0;
 			}
-			
+
 			GL11.glBegin(GL11.GL_QUADS);
 			titleCol2.use(0.0f);
 			GL11.glVertex2i(x + dec, y + titlebarHeight + borderWidth);
@@ -429,6 +429,30 @@ public abstract class Frame implements Drawable, Clickable {
 	/** @return the current width of this frame */
 	public int getWidth() {
 		return this.bounds.getWidth();
+	}
+
+	/**
+	 * @return the width of this Frame before maximization/docking if currently
+	 *         in such state, or the normal width
+	 */
+	public int getWindowedWidth() {
+		if (this.isMaximized() || this.isDocked()) {
+			return this.windowedBounds.getWidth();
+		} else {
+			return this.getWidth();
+		}
+	}
+
+	/**
+	 * @return the height of this Frame before maximization/docking if currently
+	 *         in such state, or the normal height
+	 */
+	public int getWindowedHeight() {
+		if (this.isMaximized() || this.isDocked()) {
+			return this.windowedBounds.getHeight();
+		} else {
+			return this.getHeight();
+		}
 	}
 
 	/** @return the current height of this frame */

@@ -383,6 +383,12 @@ public class Config {
 	public static int getFrameSnapRadius() {
 		return instance.wmFrameSnapRadius;
 	}
+	
+	private boolean wmAnimations;
+	
+	public static boolean getWmAnimations() {
+		return instance.wmAnimations;
+	}
 
 	private void readProps(Map<ConfigProperty, String> props)
 			throws BifstkException {
@@ -485,6 +491,9 @@ public class Config {
 					break;
 				case wmFrameSnapRadius:
 					this.wmFrameSnapRadius = Integer.parseInt(sval);
+					break;
+				case wmAnimations:
+					this.wmAnimations = Boolean.parseBoolean(sval);
 					break;
 				}
 			} catch (Throwable t) {

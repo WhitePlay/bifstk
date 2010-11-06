@@ -2,6 +2,7 @@ package bifstk.wm;
 
 import java.util.List;
 
+import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Image;
@@ -86,11 +87,15 @@ public abstract class Frame implements Drawable, Clickable {
 	private boolean controlCloseHover = false;
 	/** true if the Close Control button is clicked by the mouse */
 	private boolean controlCloseDown = false;
+	/** time when close control hover state changed */
+	private long controlCloseHoverTime = 0;
 
 	/** true if the Maximize Control button is hovered by the mouse */
 	private boolean controlMaximizeHover = false;
 	/** true if the Maximize Control button is clicked by the mouse */
 	private boolean controlMaximizeDown = false;
+	/** time when maximize control hover state changed */
+	private long controlMaximizeHoverTime = 0;
 
 	/** content of the frame */
 	private Widget content = null;
@@ -136,6 +141,7 @@ public abstract class Frame implements Drawable, Clickable {
 		float alpha2 = alpha * uiAlpha;
 		int borderWidth = getBorderWidth();
 		int titlebarHeight = getTitleBarHeight();
+		long t = Sys.getTime();
 
 		x = this.getX();
 		y = this.getY();
@@ -291,6 +297,9 @@ public abstract class Frame implements Drawable, Clickable {
 					Image img = null;
 					Color col = null;
 					int yClickDec = 0;
+					boolean hover = false;
+					float hoverAnim = 0.0f;
+					long hoverAnimLen = 100;
 
 					switch (c) {
 					case CLOSE:
@@ -300,8 +309,15 @@ public abstract class Frame implements Drawable, Clickable {
 							yClickDec = 1;
 						} else if (this.controlCloseHover) {
 							col = Theme.getFrameControlsCloseHoverColor();
+							hover = true;
+							hoverAnim = Util.clampf(
+									(float) (t - this.controlCloseHoverTime)
+											/ (float) hoverAnimLen, 0.0f, 1.0f);
 						} else {
 							col = Theme.getFrameControlsCloseColor();
+							hoverAnim = 1.0f - Util.clampf(
+									(float) (t - this.controlCloseHoverTime)
+											/ (float) hoverAnimLen, 0.0f, 1.0f);
 						}
 						break;
 					case MAXIMIZE:
@@ -315,8 +331,17 @@ public abstract class Frame implements Drawable, Clickable {
 							} else if (this.controlMaximizeHover) {
 								col = Theme
 										.getFrameControlsMaximizeHoverColor();
+								hover = true;
+								hoverAnim = Util
+										.clampf((float) (t - this.controlMaximizeHoverTime)
+												/ (float) hoverAnimLen, 0.0f,
+												1.0f);
 							} else {
 								col = Theme.getFrameControlsMaximizeColor();
+								hoverAnim = 1.0f - Util
+										.clampf((float) (t - this.controlMaximizeHoverTime)
+												/ (float) hoverAnimLen, 0.0f,
+												1.0f);
 							}
 						}
 						break;
@@ -356,6 +381,18 @@ public abstract class Frame implements Drawable, Clickable {
 						GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
 
 						Util.popScissor();
+
+						if (!Config.getWmAnimations()) {
+							hoverAnim = (hover ? 1.0f : 0.0f);
+						}
+
+						if (hover || hoverAnim > 0.0f) {
+							Util.drawDroppedShadow(x + borderWidth + acc, y
+									+ yClickDec + borderWidth,
+									tex.getTextureWidth(),
+									tex.getTextureHeight(), 7,
+									0.3f * hoverAnim, col);
+						}
 
 						acc += controlWidth + controlBorder;
 						spaceLeft -= controlWidth + controlBorder;
@@ -735,6 +772,9 @@ public abstract class Frame implements Drawable, Clickable {
 	}
 
 	public void setControlCloseHover(boolean h) {
+		if (h != this.controlCloseHover) {
+			this.controlCloseHoverTime = Sys.getTime();
+		}
 		this.controlCloseHover = h;
 	}
 
@@ -743,6 +783,9 @@ public abstract class Frame implements Drawable, Clickable {
 	}
 
 	public void setControlMaximizeHover(boolean h) {
+		if (h != this.controlMaximizeHover) {
+			this.controlMaximizeHoverTime = Sys.getTime();
+		}
 		this.controlMaximizeHover = h;
 	}
 
@@ -966,5 +1009,4 @@ public abstract class Frame implements Drawable, Clickable {
 
 	/** @return the color of the unfocused titlebar */
 	protected abstract Color getFrameTitlebarUnfocusedColor();
-
 }

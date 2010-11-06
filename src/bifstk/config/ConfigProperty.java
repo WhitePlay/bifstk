@@ -83,8 +83,10 @@ public enum ConfigProperty {
 	/** BOOL enable edge snapping (not edge resistance) */
 	wmFrameSnap("wm.frame.snap"),
 	/** INT radius of the edge snapping */
-	wmFrameSnapRadius("wm.frame.snap.radius");
-
+	wmFrameSnapRadius("wm.frame.snap.radius"),
+	/** BOOL enable animations */
+	wmAnimations("wm.animations");
+	
 	private String property = null;
 
 	private ConfigProperty(String property) {

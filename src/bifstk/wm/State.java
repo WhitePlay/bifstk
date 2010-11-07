@@ -438,7 +438,9 @@ public class State {
 	 * @param tofocus window to put in foreground, can be null
 	 */
 	public void foregroundWindow(Window tofocus) {
-		focusFrame(tofocus);
+		if (!tofocus.isFocused()) {
+			focusFrame(tofocus);
+		}
 		if (tofocus != null) {
 			if (this.windows.remove(tofocus)) {
 				this.windows.addFirst(tofocus);
@@ -549,10 +551,12 @@ public class State {
 				int ww = w.getWidth();
 				int wh = w.getHeight();
 
-				boolean hor = ((wx <= x && x <= wx + ww) || (wx <= x + fw && x
-						+ fw <= wx + ww) || (x < wx && wx + ww < x + fw));
-				boolean ver = ((wy <= y && y <= wy + wh) || (wy <= y + fh && y
-						+ fh <= wy + wh) || (y < wy && wy + wh < y + fh));
+				boolean hor = ((wx <= x && x <= wx + ww)
+						|| (wx <= x + fw && x + fw <= wx + ww) || (x < wx && wx
+						+ ww < x + fw));
+				boolean ver = ((wy <= y && y <= wy + wh)
+						|| (wy <= y + fh && y + fh <= wy + wh) || (y < wy && wy
+						+ wh < y + fh));
 
 				if (ver) {
 					int dRight = wx - x - fw;

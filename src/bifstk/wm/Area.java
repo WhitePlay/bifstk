@@ -82,4 +82,46 @@ public class Area extends Frame {
 		return Color.RED;
 	}
 
+	@Override
+	protected Color getFrameFocusedColor() {
+		return Theme.getAreaFocusedColor();
+	}
+
+	@Override
+	protected Color getFrameUnfocusedColor() {
+		return Theme.getAreaUnfocusedColor();
+	}
+
+	@Override
+	protected Color getFrameShadowFocusedColor() {
+		// should be none
+		return Color.RED;
+	}
+
+	@Override
+	protected Color getFrameShadowUnfocusedColor() {
+		// should be none
+		return Color.RED;
+	}
+
+	@Override
+	protected float getFrameMovedAlpha() {
+		return 1.0f;
+	}
+
+	@Override
+	protected float getFrameResizedAlpha() {
+		return 1.0f;
+	}
+
+	@Override
+	protected float getFrameFocusedAlpha() {
+		return Theme.getAreaFocusedAlpha();
+	}
+
+	@Override
+	protected float getFrameUnfocusedAlpha() {
+		return Theme.getAreaUnfocusedAlpha();
+	}
+
 }

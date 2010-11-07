@@ -91,6 +91,24 @@ public class Color {
 		GL11.glColor4f(this.red, this.green, this.blue, this.alpha * alpha);
 	}
 
+	public Color blend(Color target, float factor) {
+		factor = Util.clampf(factor, 0.0f, 1.0f);
+		float invFactor = 1.0f - factor;
+		return new Color(this.red * factor + target.red * invFactor, //
+				this.blue * factor + target.blue * invFactor, //
+				this.green * factor + target.green * invFactor, //
+				this.alpha * factor + target.alpha * invFactor);
+	}
+
+	public Color blend(Color target, float factor, float alpha) {
+		factor = Util.clampf(factor, 0.0f, 1.0f);
+		float invFactor = 1.0f - factor;
+		return new Color(this.red * factor + target.red * invFactor, this.blue
+				* factor + target.blue * invFactor, this.green * factor
+				+ target.green * invFactor, alpha
+				* (this.alpha * factor + target.alpha * invFactor));
+	}
+
 	public static Color parse(String str) {
 		if (str.equalsIgnoreCase("white")) {
 			return WHITE;

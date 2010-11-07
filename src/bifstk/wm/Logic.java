@@ -381,7 +381,8 @@ public class Logic {
 		// apply sloppy focus
 		if (focusFollowMouse && !this.leftMouse.clicked
 				&& !this.leftMouse.dragged) {
-			if (this.leftMouse.hoverFrame != null && modalWindow == null) {
+			if (this.leftMouse.hoverFrame != null && modalWindow == null
+					&& !this.leftMouse.hoverFrame.isFocused()) {
 				this.state.focusFrame(this.leftMouse.hoverFrame);
 			}
 		}

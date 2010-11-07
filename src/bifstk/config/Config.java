@@ -386,8 +386,20 @@ public class Config {
 	
 	private boolean wmAnimations;
 	
+	/**
+	 * @return true if WM animated transitions are enabled
+	 */
 	public static boolean getWmAnimations() {
 		return instance.wmAnimations;
+	}
+	
+	private int wmAnimationsLength;
+	
+	/**
+	 * @return the duration of WM animated transitions when enabled
+	 */
+	public static int getWmAnimationsLength() {
+		return instance.wmAnimationsLength;
 	}
 
 	private void readProps(Map<ConfigProperty, String> props)
@@ -494,6 +506,9 @@ public class Config {
 					break;
 				case wmAnimations:
 					this.wmAnimations = Boolean.parseBoolean(sval);
+					break;
+				case wmAnimationsLength:
+					this.wmAnimationsLength = Integer.parseInt(sval);
 					break;
 				}
 			} catch (Throwable t) {

@@ -179,14 +179,14 @@ public class Theme {
 		return instance.areaBorderUnfocusedColor;
 	}
 
-	private float areaUiAlpha;
+	private float areaFocusedAlpha;
 
 	/**
-	 * @return the opacity of the area ui
+	 * @return the opacity of the area ui when focused
 	 */
-	public static float getAreaUiAlpha() {
+	public static float getAreaFocusedAlpha() {
 		check();
-		return instance.areaUiAlpha;
+		return instance.areaFocusedAlpha;
 	}
 
 	private float areaUnfocusedAlpha;
@@ -686,7 +686,7 @@ public class Theme {
 					break;
 				}
 				case areaFocusedAlpha: {
-					this.areaUiAlpha = Util.clampf(Float.parseFloat(sval),
+					this.areaFocusedAlpha = Util.clampf(Float.parseFloat(sval),
 							0.0f, 1.0f);
 					break;
 				}

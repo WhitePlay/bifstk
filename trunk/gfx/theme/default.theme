@@ -24,7 +24,7 @@ window.titlebar.focused.font.color = white
 window.titlebar.unfocused.font.color = 150 150 150
 window.moved.alpha = 0.5
 window.resized.alpha = 0.7
-window.focused.alpha = 0.9
+window.focused.alpha = 0.95
 window.unfocused.alpha = 0.8
 window.shadow.enabled = true
 window.shadow.alpha = 0.2
@@ -33,12 +33,12 @@ window.shadow.focused.color = white
 window.shadow.unfocused.color = black
 
 area.border.width = 4
-area.focused.color = gray
-area.unfocused.color = gray
-area.border.focused.color = 140 140 140
-area.border.unfocused.color = 80 80 80
-area.focused.alpha = 0.5
-area.unfocused.alpha = 0.8
+area.focused.color = 150 150 150
+area.unfocused.color = 120 120 120
+area.border.focused.color = gray
+area.border.unfocused.color = lightgray
+area.focused.alpha = 0.8
+area.unfocused.alpha = 0.5
 
 root.background.color = gray
 root.background.modal.color = black

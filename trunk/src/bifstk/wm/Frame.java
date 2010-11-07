@@ -109,6 +109,13 @@ public abstract class Frame implements Drawable, Clickable {
 	/** true if the content is clicked by CMB */
 	private boolean contentCenterMouseDown = false;
 
+	/** the last time the drag status changed */
+	private long dragChangeTime = 0;
+	/** the last time the focus status changed */
+	private long focusChangeTime = 0;
+	/** last time the resize status changed */
+	private long resizeChangeTime = 0;
+
 	/**
 	 * Default constructor
 	 * 
@@ -299,7 +306,7 @@ public abstract class Frame implements Drawable, Clickable {
 					int yClickDec = 0;
 					boolean hover = false;
 					float hoverAnim = 0.0f;
-					long hoverAnimLen = 100;
+					long hoverAnimLen = Config.getWmAnimationsLength();
 
 					switch (c) {
 					case CLOSE:
@@ -570,7 +577,17 @@ public abstract class Frame implements Drawable, Clickable {
 
 	/** @param focus the new focus state of this frame */
 	public void setFocused(boolean focus) {
+		if (focus != this.focused) {
+			this.focusChangeTime = Sys.getTime();
+		}
 		this.focused = focus;
+	}
+
+	/**
+	 * @return the last time the focus status changed
+	 */
+	public long getFocusChangeTime() {
+		return this.focusChangeTime;
 	}
 
 	/** @return true if this frame is dragged in the WM */
@@ -580,7 +597,17 @@ public abstract class Frame implements Drawable, Clickable {
 
 	/** @param dragged the new drag state of this frame */
 	public void setDragged(boolean dragged) {
+		if (dragged != this.dragged) {
+			this.dragChangeTime = Sys.getTime();
+		}
 		this.dragged = dragged;
+	}
+
+	/**
+	 * @return the last time the drag status changed
+	 */
+	public long getDragChangeTime() {
+		return this.dragChangeTime;
 	}
 
 	/** @return true if this frame is resized in the WM */
@@ -590,7 +617,17 @@ public abstract class Frame implements Drawable, Clickable {
 
 	/** @param dragged the new resize state of this frame */
 	public void setResized(boolean resized) {
+		if (resized != this.resized) {
+			this.resizeChangeTime = Sys.getTime();
+		}
 		this.resized = resized;
+	}
+
+	/**
+	 * @return the last time the resize status changed
+	 */
+	public long getResizeChangeTime() {
+		return this.resizeChangeTime;
 	}
 
 	/** @param w the content of the frame */
@@ -1009,4 +1046,107 @@ public abstract class Frame implements Drawable, Clickable {
 
 	/** @return the color of the unfocused titlebar */
 	protected abstract Color getFrameTitlebarUnfocusedColor();
+
+	protected abstract Color getFrameFocusedColor();
+
+	protected abstract Color getFrameUnfocusedColor();
+
+	protected abstract Color getFrameShadowFocusedColor();
+
+	protected abstract Color getFrameShadowUnfocusedColor();
+
+	protected abstract float getFrameMovedAlpha();
+
+	protected abstract float getFrameResizedAlpha();
+
+	protected abstract float getFrameFocusedAlpha();
+
+	protected abstract float getFrameUnfocusedAlpha();
+
+	/**
+	 * @return the current frame UI color, acounting for animations
+	 */
+	public Color getUiColor() {
+		Color focusCol = getFrameFocusedColor();
+		Color unfocusCol = getFrameUnfocusedColor();
+
+		long t = Sys.getTime();
+		float animLen = (float) Config.getWmAnimationsLength();
+
+		float focusAnim = Util.clampf((float) (t - this.getFocusChangeTime())
+				/ animLen, 0.0f, 1.0f);
+		if (!this.isFocused()) {
+			focusAnim = 1.0f - focusAnim;
+		}
+
+		return focusCol.blend(unfocusCol, focusAnim);
+	}
+
+	/**
+	 * @return the current frame shadow color, accounting for animations
+	 */
+	public Color getShadowColor() {
+		Color shadowCol = getFrameShadowFocusedColor();
+		Color shadowUnfCol = getFrameShadowUnfocusedColor();
+
+		long t = Sys.getTime();
+		float animLen = (float) Config.getWmAnimationsLength();
+
+		float focusAnim = Util.clampf((float) (t - this.getFocusChangeTime())
+				/ animLen, 0.0f, 1.0f);
+		if (!this.isFocused()) {
+			focusAnim = 1.0f - focusAnim;
+		}
+		return shadowCol.blend(shadowUnfCol, focusAnim);
+	}
+
+	/**
+	 * @return the current frame alpha modifier for focus, resizing and moving,
+	 *         accounting animations
+	 */
+	public float getModAlpha() {
+		float movedAlpha = getFrameMovedAlpha();
+		float resizedAlpha = getFrameResizedAlpha();
+
+		long t = Sys.getTime();
+		float animLen = (float) Config.getWmAnimationsLength();
+
+		float movedAnim = Util.clampf((float) (t - this.getDragChangeTime())
+				/ animLen, 0.0f, 1.0f);
+		if (!this.isDragged()) {
+			movedAnim = 1.0f - movedAnim;
+		}
+		float resizeAnim = Util.clampf((float) (t - this.getResizeChangeTime())
+				/ animLen, 0.0f, 1.0f);
+		if (!this.isResized()) {
+			resizeAnim = 1.0f - resizeAnim;
+		}
+
+		float alpha = (movedAlpha * movedAnim + 1.0f * (1.0f - movedAnim));
+		alpha *= (resizedAlpha * resizeAnim + 1.0f * (1.0f - resizeAnim));
+
+		return alpha;
+	}
+
+	/**
+	 * @return the current frame alpha, accounting for animations
+	 */
+	public float getUiAlpha() {
+		float focusAlpha = getFrameFocusedAlpha();
+		float unfocusAlpha = getFrameUnfocusedAlpha();
+
+		long t = Sys.getTime();
+		float animLen = (float) Config.getWmAnimationsLength();
+
+		float focusAnim = Util.clampf((float) (t - this.getFocusChangeTime())
+				/ animLen, 0.0f, 1.0f);
+		if (!this.isFocused()) {
+			focusAnim = 1.0f - focusAnim;
+		}
+
+		float alpha = focusAlpha * focusAnim + unfocusAlpha
+				* (1.0f - focusAnim);
+
+		return alpha;
+	}
 }

@@ -168,6 +168,7 @@ public class Logic {
 
 		applyHoveringCursor();
 		applyMouse();
+		this.state.update();
 	}
 
 	/**

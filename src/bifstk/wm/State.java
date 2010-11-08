@@ -2,6 +2,7 @@ package bifstk.wm;
 
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -132,12 +133,13 @@ public class State {
 		checkHasWindow(f);
 
 		if (this.modalWindow != null) {
-			removeWindow(modalWindow);
+			modalWindow.teardown();
 		}
 		if (f != null) {
 			addWindow(f);
+			f.init();
+			this.modalWindow = f;
 		}
-		this.modalWindow = f;
 	}
 
 	/**
@@ -153,6 +155,7 @@ public class State {
 			// window is added on top of the stack: foreground
 			this.windows.addFirst(f);
 			focusFrame(f);
+			f.init();
 		}
 	}
 
@@ -163,8 +166,9 @@ public class State {
 	 * @return true if a Window was removed from the WM
 	 */
 	public boolean removeWindow(Window f) {
-		if (f != null) {
-			return this.windows.remove(f);
+		if (f != null && this.windows.contains(f)) {
+			f.teardown();
+			return true;
 		}
 		return false;
 	}
@@ -180,6 +184,7 @@ public class State {
 
 		if (a != null) {
 			this.areas.add(a);
+			a.init();
 		}
 	}
 
@@ -190,8 +195,9 @@ public class State {
 	 * @return true if an Area was removed from the WM
 	 */
 	public boolean removeArea(Area a) {
-		if (a != null) {
-			return this.areas.remove(a);
+		if (a != null && this.areas.contains(a)) {
+			a.teardown();
+			return true;
 		}
 		return false;
 	}
@@ -221,6 +227,7 @@ public class State {
 		}
 
 		if (w != null) {
+			w.init();
 			int pos = 0;
 			// find the position in the dock depending the ordinate of the
 			// Window
@@ -349,6 +356,7 @@ public class State {
 	 */
 	public boolean removeFromDock(Window w, DockPosition dockPos) {
 		if (w != null) {
+			w.teardown();
 
 			LinkedList<Window> dock = null;
 			if (dockPos.equals(DockPosition.LEFT)) {
@@ -357,19 +365,23 @@ public class State {
 				dock = this.rightDock;
 			}
 
-			boolean ret = dock.remove(w);
+			boolean ret = dock.contains(w);
 			w.setResizable(true);
 			w.setHeight(w.getHeight());
 			w.setResizable(false);
 
 			int border = Theme.getWindowBorderWidth();
 			int pixels = w.getHeight() + border;
-			int num = dock.size();
+			int num = dock.size() - 1;
 			int i = 0;
 			int acc = 0;
 
 			// redistribute removed pixels to the remaining windows
 			for (Window win : dock) {
+				if (win.equals(w)) {
+					continue;
+				}
+
 				int h = win.getHeight() + pixels / num;
 				if (++i == num) {
 					h = Display.getDisplayMode().getHeight() - acc;
@@ -492,22 +504,22 @@ public class State {
 	 */
 	public Frame findFrame(int x, int y) {
 		for (Window win : windows) {
-			if (win.contains(x, y)) {
+			if (win.contains(x, y) && win.isActive()) {
 				return win;
 			}
 		}
 		for (Window win : leftDock) {
-			if (win.contains(x, y)) {
+			if (win.contains(x, y) && win.isActive()) {
 				return win;
 			}
 		}
 		for (Window win : rightDock) {
-			if (win.contains(x, y)) {
+			if (win.contains(x, y) && win.isActive()) {
 				return win;
 			}
 		}
 		for (Area a : areas) {
-			if (a.contains(x, y)) {
+			if (a.contains(x, y) && a.isActive()) {
 				return a;
 			}
 		}
@@ -584,6 +596,48 @@ public class State {
 	}
 
 	/**
+	 * Periodical update
+	 */
+	public void update() {
+		if (this.modalWindow != null && this.modalWindow.isRemovable()) {
+			this.windows.remove(modalWindow);
+			this.modalWindow = null;
+		}
+
+		Iterator<Window> it = this.windows.iterator();
+		while (it.hasNext()) {
+			Window w = it.next();
+			if (w.isRemovable()) {
+				it.remove();
+			}
+		}
+
+		Iterator<Area> at = this.areas.iterator();
+		while (at.hasNext()) {
+			Area a = at.next();
+			if (a.isRemovable()) {
+				at.remove();
+			}
+		}
+
+		it = this.leftDock.iterator();
+		while (it.hasNext()) {
+			Window w = it.next();
+			if (w.isRemovable()) {
+				it.remove();
+			}
+		}
+
+		it = this.rightDock.iterator();
+		while (it.hasNext()) {
+			Window w = it.next();
+			if (w.isRemovable()) {
+				it.remove();
+			}
+		}
+	}
+
+	/**
 	 * Checks this Window is not already held by the WM
 	 * 
 	 * @param w a Window
@@ -594,19 +648,36 @@ public class State {
 			return;
 		}
 		if (this.windows.contains(w)) {
-			throw new SharedFrameException("Window already held by the WM");
+			if (w.isActive()) {
+				throw new SharedFrameException("Window already held by the WM");
+			} else {
+				this.windows.remove(w);
+			}
 		}
 		if (w.equals(this.modalWindow)) {
-			throw new SharedFrameException(
-					"Window is the current WM modal Window");
+			if (modalWindow.isActive()) {
+				throw new SharedFrameException(
+						"Window is the current WM modal Window");
+			} else {
+				this.windows.remove(modalWindow);
+				this.modalWindow = null;
+			}
 		}
 		if (this.leftDock.contains(w)) {
-			throw new SharedFrameException(
-					"Window already held by the left dock");
+			if (w.isActive()) {
+				throw new SharedFrameException(
+						"Window already held by the left dock");
+			} else {
+				this.leftDock.remove(w);
+			}
 		}
 		if (this.rightDock.contains(w)) {
-			throw new SharedFrameException(
-					"Window already held by the right dock");
+			if (w.isActive()) {
+				throw new SharedFrameException(
+						"Window already held by the right dock");
+			} else {
+				this.rightDock.remove(w);
+			}
 		}
 	}
 

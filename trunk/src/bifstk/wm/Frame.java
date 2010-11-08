@@ -115,6 +115,13 @@ public abstract class Frame implements Drawable, Clickable {
 	private long focusChangeTime = 0;
 	/** last time the resize status changed */
 	private long resizeChangeTime = 0;
+	/** time this Frame appeared in the WM */
+	private long apparitionTime = 0;
+	/** time this Frame was removed from the WM */
+	private long removalTime = 0;
+
+	/** false if this Frame is not part of the WM */
+	private boolean active = false;
 
 	/**
 	 * Default constructor
@@ -139,6 +146,38 @@ public abstract class Frame implements Drawable, Clickable {
 		int min = Config.getWmFrameSizeMin();
 		this.minBounds = new Rectangle(min, min);
 		this.pos = new Point(x, y);
+	}
+
+	/**
+	 * Called by the state when this Frame is added to the WM
+	 */
+	public void init() {
+		this.apparitionTime = Sys.getTime();
+		this.active = true;
+	}
+
+	/**
+	 * Called by the state when this Frame is removed from the WM
+	 */
+	public void teardown() {
+		this.removalTime = Sys.getTime();
+		this.active = false;
+	}
+
+	/**
+	 * @return true if this Frame is part of the WM
+	 */
+	public boolean isActive() {
+		return this.active;
+	}
+
+	/**
+	 * @return true if this Frame is not active and not visible
+	 */
+	public boolean isRemovable() {
+		return !this.active
+				&& (Sys.getTime() - this.removalTime) > Config
+						.getWmAnimationsLength();
 	}
 
 	/** {@inheritDoc} */
@@ -691,6 +730,10 @@ public abstract class Frame implements Drawable, Clickable {
 			this.setResizable(true);
 			this.setBounds(this.windowedBounds.getWidth(),
 					this.windowedBounds.getHeight());
+			
+			// do not do fadeout animation when moving out of dock
+			this.apparitionTime = 0;
+			this.removalTime = 0;
 		}
 	}
 
@@ -1022,6 +1065,20 @@ public abstract class Frame implements Drawable, Clickable {
 			return Region.OUT;
 		}
 	}
+	
+	/**
+	 * @return the time at which this Frame appeared in the WM
+	 */
+	public long getApparitionTime() {
+		return this.apparitionTime;
+	}
+	
+	/**
+	 * @return the time at which this Frame was removed from the WM
+	 */
+	public long getRemovalTime() {
+		return this.removalTime;
+	}
 
 	/** @return pixel height of the titlebar */
 	protected abstract int getTitleBarHeight();
@@ -1101,6 +1158,8 @@ public abstract class Frame implements Drawable, Clickable {
 	}
 
 	/**
+	 * Primary alpha : applies to every element of the Frame without exception
+	 * 
 	 * @return the current frame alpha modifier for focus, resizing and moving,
 	 *         accounting animations
 	 */
@@ -1121,15 +1180,32 @@ public abstract class Frame implements Drawable, Clickable {
 		if (!this.isResized()) {
 			resizeAnim = 1.0f - resizeAnim;
 		}
+		float appearAnim = Util.clampf((float) (t - this.apparitionTime)
+				/ animLen, 0.0f, 1.0f);
+		if (this.isDocked()) {
+			appearAnim = 1.0f;
+		}
+		float removeAnim = 1.0f - Util.clampf((float) (t - this.removalTime)
+				/ animLen, 0.0f, 1.0f);
+		if (this.isDocked()) {
+			removeAnim = 1.0f;
+		}
+		if (removeAnim == 0.0f && this.isActive()) {
+			removeAnim = 1.0f;
+		}
 
 		float alpha = (movedAlpha * movedAnim + 1.0f * (1.0f - movedAnim));
 		alpha *= (resizedAlpha * resizeAnim + 1.0f * (1.0f - resizeAnim));
+		alpha *= appearAnim * removeAnim;
 
 		return alpha;
 	}
 
 	/**
-	 * @return the current frame alpha, accounting for animations
+	 * Secondary alpha : applies to the background elements of the Frame, ie not
+	 * text or content.
+	 * 
+	 * @return the current frame UI alpha, accounting for animations
 	 */
 	public float getUiAlpha() {
 		float focusAlpha = getFrameFocusedAlpha();

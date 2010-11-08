@@ -3,6 +3,7 @@ package bifstk.wm;
 import java.util.Iterator;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
@@ -337,8 +338,22 @@ public class Renderer {
 
 			// display a mask when a modal is shown
 			if (this.state.getModalWindow() == f) {
+				long t = Sys.getTime();
+				long app = this.state.getModalWindow().getApparitionTime();
+				long rem = this.state.getModalWindow().getRemovalTime();
+				float animLen = (float) Config.getWmAnimationsLength();
+
+				float aApp = Util.clampf((float) (t - app) / animLen, 0.0f,
+						1.0f);
+				float aRem = 1.0f - Util.clampf((float) (t - rem) / animLen,
+						0.0f, 1.0f);
+				if (aRem == 0.0f && state.getModalWindow().isActive()) {
+					aRem = 1.0f;
+				}
+
 				float modalAlpha = Theme.getRootBackgroundModalAlpha();
-				Theme.getRootBackgroundModalColor().use(modalAlpha);
+				Theme.getRootBackgroundModalColor().use(
+						modalAlpha * aApp * aRem);
 				GL11.glBegin(GL11.GL_QUADS);
 				GL11.glVertex2i(0, 0);
 				GL11.glVertex2i(width, 0);
@@ -346,16 +361,17 @@ public class Renderer {
 				GL11.glVertex2i(0, height);
 				GL11.glEnd();
 			}
+			float modAlpha = f.getModAlpha();
 
 			if (Theme.isWindowShadowEnabled() && !f.isMaximized()) {
 				Util.drawDroppedShadow(f.getX(), f.getY(), f.getWidth(),
 						f.getHeight(), Theme.getWindowShadowRadius(),
-						Theme.getWindowShadowAlpha() * f.getModAlpha(),
+						Theme.getWindowShadowAlpha() * modAlpha,
 						f.getShadowColor());
 			}
 
 			// render the Window
-			f.render(f.getModAlpha(), f.getUiColor(), f.getUiAlpha());
+			f.render(modAlpha, f.getUiColor(), f.getUiAlpha());
 		}
 	}
 

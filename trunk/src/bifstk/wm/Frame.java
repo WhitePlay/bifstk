@@ -188,21 +188,24 @@ public abstract class Frame implements Drawable, Clickable {
 		int borderWidth = getBorderWidth();
 		int titlebarHeight = getTitleBarHeight();
 		long t = Sys.getTime();
+		float animLen = (float) Config.getWmAnimationsLength();
 
 		x = this.getX();
 		y = this.getY();
 		w = this.getWidth();
 		h = this.getHeight();
 
-		Color borderCol = null;
-		Color borderBorderCol = null;
-		if (this.isFocused()) {
-			borderCol = getBorderFocusedColor();
-			borderBorderCol = getBorderOuterFocusedColor();
-		} else {
-			borderCol = getBorderUnfocusedColor();
-			borderBorderCol = getBorderOuterUnfocusedColor();
+		float focusAnim = Util.clampf((float) (t - this.getFocusChangeTime())
+				/ animLen, 0.0f, 1.0f);
+		if (!this.isFocused()) {
+			focusAnim = 1.0f - focusAnim;
 		}
+
+		Color borderCol = getBorderFocusedColor().blend(
+				getBorderUnfocusedColor(), focusAnim);
+		Color borderBorderCol = getBorderOuterFocusedColor().blend(
+				getBorderOuterUnfocusedColor(), focusAnim);
+
 		borderCol.use(alpha2);
 		GL11.glBegin(GL11.GL_QUADS);
 		// top border
@@ -269,12 +272,8 @@ public abstract class Frame implements Drawable, Clickable {
 
 		// title-bar
 		if (this.hasTitlebar) {
-			Color titlebarColor = getBorderFocusedColor();
-			if (!this.isFocused()) {
-				titlebarColor = getBorderUnfocusedColor();
-			}
+			borderCol.use(alpha2);
 
-			titlebarColor.use(alpha2);
 			// background
 			GL11.glBegin(GL11.GL_QUADS);
 			GL11.glVertex2i(x + borderWidth, y + titlebarHeight + borderWidth);
@@ -284,10 +283,8 @@ public abstract class Frame implements Drawable, Clickable {
 			GL11.glVertex2i(x + borderWidth, y + borderWidth);
 			GL11.glEnd();
 
-			Color titleCol2 = getFrameTitlebarFocusedColor();
-			if (!this.isFocused()) {
-				titleCol2 = getFrameTitlebarUnfocusedColor();
-			}
+			Color titleCol2 = getFrameTitlebarFocusedColor().blend(
+					getFrameTitlebarUnfocusedColor(), focusAnim);
 
 			// background
 			int dec = 1;
@@ -322,11 +319,9 @@ public abstract class Frame implements Drawable, Clickable {
 					int titleWidth = spaceLeft - controlsNum
 							* (controlWidth + controlBorder);
 					Color titleFontCol = Theme
-							.getWindowTitlebarFocusedFontColor();
-					if (!this.isFocused()) {
-						titleFontCol = Theme
-								.getWindowTitlebarUnfocusedFontColor();
-					}
+							.getWindowTitlebarFocusedFontColor().blend(
+									Theme.getWindowTitlebarUnfocusedColor(),
+									focusAnim);
 					GL11.glEnable(GL11.GL_SCISSOR_TEST);
 					Util.pushScissor(x + borderWidth + acc, Display
 							.getDisplayMode().getHeight()
@@ -730,7 +725,7 @@ public abstract class Frame implements Drawable, Clickable {
 			this.setResizable(true);
 			this.setBounds(this.windowedBounds.getWidth(),
 					this.windowedBounds.getHeight());
-			
+
 			// do not do fadeout animation when moving out of dock
 			this.apparitionTime = 0;
 			this.removalTime = 0;
@@ -1065,14 +1060,14 @@ public abstract class Frame implements Drawable, Clickable {
 			return Region.OUT;
 		}
 	}
-	
+
 	/**
 	 * @return the time at which this Frame appeared in the WM
 	 */
 	public long getApparitionTime() {
 		return this.apparitionTime;
 	}
-	
+
 	/**
 	 * @return the time at which this Frame was removed from the WM
 	 */

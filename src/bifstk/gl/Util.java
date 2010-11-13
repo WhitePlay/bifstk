@@ -32,6 +32,17 @@ public class Util {
 	 * @return a ByteBuffer containing the image
 	 */
 	public static ByteBuffer imageToByteBuffer(BufferedImage image) {
+		return imageToByteBuffer(image, false);
+	}
+
+	/**
+	 * Uses Java2D to convert an AWT image to a LWJGL ByteBuffer
+	 * 
+	 * @param image an AWT image
+	 * @param flip vertically mirrors the image if true
+	 * @return a ByteBuffer containing the image
+	 */
+	public static ByteBuffer imageToByteBuffer(BufferedImage image, boolean flip) {
 		ByteBuffer imageBuffer = null;
 		WritableRaster raster;
 		BufferedImage texImage;
@@ -85,8 +96,12 @@ public class Util {
 			g.fillRect(0, 0, texWidth, texHeight);
 		}
 
-		g.scale(1, -1);
-		g.drawImage(image, 0, -height, null);
+		if (flip) {
+			g.scale(1.0, -1.0);
+			g.drawImage(image, 0, -height, null);
+		} else {
+			g.drawImage(image, 0, 0, null);
+		}
 
 		// build a byte buffer from the temporary image
 		// that be used by OpenGL to produce a texture.

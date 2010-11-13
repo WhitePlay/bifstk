@@ -126,7 +126,7 @@ public class Cursors {
 			throws IOException, LWJGLException {
 
 		BufferedImage img = ImageIO.read(new File(path));
-		ByteBuffer byteBuf = Util.imageToByteBuffer(img);
+		ByteBuffer byteBuf = Util.imageToByteBuffer(img, true);
 
 		return new Cursor(img.getWidth(), img.getHeight(), xHotspot,
 				img.getHeight() - yHotspot - 1, 1, byteBuf.asIntBuffer(), null);

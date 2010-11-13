@@ -4,8 +4,6 @@ import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 
 import bifstk.Bifstk;
 import bifstk.Handler;
@@ -13,6 +11,7 @@ import bifstk.Root;
 import bifstk.config.Config;
 import bifstk.config.Theme;
 import bifstk.gl.Color;
+import bifstk.gl.Image;
 import bifstk.util.BifstkException;
 import bifstk.util.Logger;
 import bifstk.wm.Area;
@@ -44,7 +43,7 @@ public class Test implements Handler, Root {
 
 		try {
 			this.bgImg = new Image("gfx/art/bifstk_256.png");
-		} catch (SlickException e) {
+		} catch (BifstkException e) {
 			e.printStackTrace();
 			System.exit(0);
 		}
@@ -64,8 +63,8 @@ public class Test implements Handler, Root {
 		}
 
 		// render background image
-		float w = this.bgImg.getTexture().getTextureWidth();
-		float h = this.bgImg.getTexture().getTextureHeight();
+		float w = this.bgImg.getTexWidth();
+		float h = this.bgImg.getTexHeight();
 		int dw = Display.getDisplayMode().getWidth();
 		int dh = Display.getDisplayMode().getHeight();
 
@@ -74,8 +73,7 @@ public class Test implements Handler, Root {
 
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		Color.WHITE.use();
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.bgImg.getTexture()
-				.getTextureID());
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.bgImg.getTexId());
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glTexCoord2f(0.0f, 0.0f);
 		GL11.glVertex2f(imgX, imgY);

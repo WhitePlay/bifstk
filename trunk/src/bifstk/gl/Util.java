@@ -1,5 +1,17 @@
 package bifstk.gl;
 
+import java.awt.Graphics2D;
+import java.awt.color.ColorSpace;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.Hashtable;
 import java.util.LinkedList;
 
 import org.lwjgl.opengl.Display;
@@ -12,6 +24,83 @@ import bifstk.config.Config;
  * 
  */
 public class Util {
+
+	/**
+	 * Uses Java2D to convert an AWT image to a LWJGL ByteBuffer
+	 * 
+	 * @param image an AWT image
+	 * @return a ByteBuffer containing the image
+	 */
+	public static ByteBuffer imageToByteBuffer(BufferedImage image) {
+		ByteBuffer imageBuffer = null;
+		WritableRaster raster;
+		BufferedImage texImage;
+
+		int texWidth = 2;
+		int texHeight = 2;
+
+		// find the closest power of 2 for the width and height
+		// of the produced texture
+
+		while (texWidth < image.getWidth()) {
+			texWidth *= 2;
+		}
+		while (texHeight < image.getHeight()) {
+			texHeight *= 2;
+		}
+
+		int height = image.getHeight();
+
+		ColorModel glAlphaColorModel = new ComponentColorModel(
+				ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8,
+						8, 8 }, true, false, ComponentColorModel.TRANSLUCENT,
+				DataBuffer.TYPE_BYTE);
+
+		ColorModel glColorModel = new ComponentColorModel(
+				ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8,
+						8, 0 }, false, false, ComponentColorModel.OPAQUE,
+				DataBuffer.TYPE_BYTE);
+
+		// create a raster that can be used by OpenGL as a source
+		// for a texture
+		boolean useAlpha = image.getColorModel().hasAlpha();
+
+		if (useAlpha) {
+			raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE,
+					texWidth, texHeight, 4, null);
+			texImage = new BufferedImage(glAlphaColorModel, raster, false,
+					new Hashtable<Object, Object>());
+		} else {
+			raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE,
+					texWidth, texHeight, 3, null);
+			texImage = new BufferedImage(glColorModel, raster, false,
+					new Hashtable<Object, Object>());
+		}
+
+		// copy the source image into the produced image
+		Graphics2D g = (Graphics2D) texImage.getGraphics();
+
+		if (useAlpha) {
+			g.setColor(new java.awt.Color(0f, 0f, 0f, 0f));
+			g.fillRect(0, 0, texWidth, texHeight);
+		}
+
+		g.scale(1, -1);
+		g.drawImage(image, 0, -height, null);
+
+		// build a byte buffer from the temporary image
+		// that be used by OpenGL to produce a texture.
+		byte[] data = ((DataBufferByte) texImage.getRaster().getDataBuffer())
+				.getData();
+
+		imageBuffer = ByteBuffer.allocateDirect(data.length);
+		imageBuffer.order(ByteOrder.nativeOrder());
+		imageBuffer.put(data, 0, data.length);
+		imageBuffer.flip();
+		g.dispose();
+
+		return imageBuffer;
+	}
 
 	/**
 	 * Draws an arc of a circle
@@ -149,17 +238,16 @@ public class Util {
 		int precision = 5;
 
 		Util.drawFilledArc((float) x, (float) y, (float) radius,
-				(float) Math.PI, (float) Math.PI / 2.0f, precision, col,
-				alpha, col, 0.0f);
+				(float) Math.PI, (float) Math.PI / 2.0f, precision, col, alpha,
+				col, 0.0f);
 		Util.drawFilledArc((float) x + w, (float) y, (float) radius,
 				(float) -Math.PI / 2.0f, (float) Math.PI / 2.0f, precision,
 				col, alpha, col, 0.0f);
 		Util.drawFilledArc((float) x + w, (float) y + h, (float) radius, 0.0f,
-				(float) Math.PI / 2.0f, precision, col, alpha, col,
-				0.0f);
+				(float) Math.PI / 2.0f, precision, col, alpha, col, 0.0f);
 		Util.drawFilledArc((float) x, (float) y + h, (float) radius,
-				(float) Math.PI / 2.0f, (float) Math.PI / 2.0f, precision,
-				col, alpha, col, 0.0f);
+				(float) Math.PI / 2.0f, (float) Math.PI / 2.0f, precision, col,
+				alpha, col, 0.0f);
 	}
 
 	/**

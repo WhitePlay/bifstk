@@ -5,8 +5,6 @@ import java.util.List;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.opengl.Texture;
 
 import bifstk.config.Config;
 import bifstk.config.Fonts;
@@ -335,7 +333,7 @@ public abstract class Frame implements Drawable, Clickable {
 
 					acc += titleWidth + controlBorder;
 				} else {
-					Image img = null;
+					bifstk.gl.Image img = null;
 					Color col = null;
 					int yClickDec = 0;
 					boolean hover = false;
@@ -388,8 +386,6 @@ public abstract class Frame implements Drawable, Clickable {
 						break;
 					}
 					if (img != null) {
-						Texture tex = img.getTexture();
-
 						GL11.glEnable(GL11.GL_SCISSOR_TEST);
 						Util.pushScissor(x + borderWidth + acc, Display
 								.getDisplayMode().getHeight()
@@ -399,7 +395,7 @@ public abstract class Frame implements Drawable, Clickable {
 
 						GL11.glEnable(GL11.GL_TEXTURE_2D);
 						GL11.glBindTexture(GL11.GL_TEXTURE_2D,
-								tex.getTextureID());
+								img.getTexId());
 						col.use(alpha);
 						GL11.glBegin(GL11.GL_QUADS);
 						GL11.glTexCoord2f(0.0f, 0.0f);
@@ -407,15 +403,15 @@ public abstract class Frame implements Drawable, Clickable {
 								+ borderWidth);
 						GL11.glTexCoord2f(0.0f, 1.0f);
 						GL11.glVertex2i(x + borderWidth + acc, y + yClickDec
-								+ borderWidth + tex.getTextureHeight());
+								+ borderWidth + img.getTexHeight());
 						GL11.glTexCoord2f(1.0f, 1.0f);
 						GL11.glVertex2i(
-								x + borderWidth + acc + tex.getTextureWidth(),
+								x + borderWidth + acc + img.getTexWidth(),
 								y + yClickDec + borderWidth
-										+ tex.getTextureHeight());
+										+ img.getTexHeight());
 						GL11.glTexCoord2f(1.0f, 0.0f);
 						GL11.glVertex2i(
-								x + borderWidth + acc + tex.getTextureWidth(),
+								x + borderWidth + acc + img.getTexWidth(),
 								y + yClickDec + borderWidth);
 						GL11.glEnd();
 
@@ -430,8 +426,8 @@ public abstract class Frame implements Drawable, Clickable {
 						if (hover || hoverAnim > 0.0f) {
 							Util.drawDroppedShadow(x + borderWidth + acc, y
 									+ yClickDec + borderWidth,
-									tex.getTextureWidth(),
-									tex.getTextureHeight(), 7,
+									img.getTexWidth(),
+									img.getTexHeight(), 7,
 									0.3f * hoverAnim, col);
 						}
 

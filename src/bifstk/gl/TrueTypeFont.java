@@ -5,12 +5,11 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.util.BufferedImageUtil;
 
 /**
  * A TrueType font implementation
@@ -176,72 +175,83 @@ public class TrueTypeFont {
 		// texture
 		// size should be calculated dynamicaly by looking at character sizes.
 
-		try {
+		BufferedImage imgTemp = new BufferedImage(textureWidth, textureHeight,
+				BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = (Graphics2D) imgTemp.getGraphics();
 
-			BufferedImage imgTemp = new BufferedImage(textureWidth,
-					textureHeight, BufferedImage.TYPE_INT_ARGB);
-			Graphics2D g = (Graphics2D) imgTemp.getGraphics();
+		g.setColor(new Color(255, 255, 255, 1));
+		g.fillRect(0, 0, textureWidth, textureHeight);
 
-			g.setColor(new Color(255, 255, 255, 1));
-			g.fillRect(0, 0, textureWidth, textureHeight);
+		int rowHeight = 0;
+		int positionX = 0;
+		int positionY = 0;
 
-			int rowHeight = 0;
-			int positionX = 0;
-			int positionY = 0;
+		int customCharsLength = (customCharsArray != null) ? customCharsArray.length
+				: 0;
 
-			int customCharsLength = (customCharsArray != null) ? customCharsArray.length
-					: 0;
+		for (int i = 0; i < 256 + customCharsLength; i++) {
 
-			for (int i = 0; i < 256 + customCharsLength; i++) {
+			// get 0-255 characters and then custom characters
+			char ch = (i < 256) ? (char) i : customCharsArray[i - 256];
 
-				// get 0-255 characters and then custom characters
-				char ch = (i < 256) ? (char) i : customCharsArray[i - 256];
+			BufferedImage fontImage = getFontImage(ch);
 
-				BufferedImage fontImage = getFontImage(ch);
+			IntObject newIntObject = new IntObject();
 
-				IntObject newIntObject = new IntObject();
+			newIntObject.width = fontImage.getWidth();
+			newIntObject.height = fontImage.getHeight();
 
-				newIntObject.width = fontImage.getWidth();
-				newIntObject.height = fontImage.getHeight();
-
-				if (positionX + newIntObject.width >= textureWidth) {
-					positionX = 0;
-					positionY += rowHeight;
-					rowHeight = 0;
-				}
-
-				newIntObject.storedX = positionX;
-				newIntObject.storedY = positionY;
-
-				if (newIntObject.height > fontHeight) {
-					fontHeight = newIntObject.height;
-				}
-
-				if (newIntObject.height > rowHeight) {
-					rowHeight = newIntObject.height;
-				}
-
-				// Draw it here
-				g.drawImage(fontImage, positionX, positionY, null);
-
-				positionX += newIntObject.width;
-
-				if (i < 256) { // standard characters
-					charArray[i] = newIntObject;
-				} else { // custom characters
-					customChars.put(new Character(ch), newIntObject);
-				}
-
-				fontImage = null;
+			if (positionX + newIntObject.width >= textureWidth) {
+				positionX = 0;
+				positionY += rowHeight;
+				rowHeight = 0;
 			}
 
-			fontTexture = BufferedImageUtil
-					.getTexture(font.toString(), imgTemp).getTextureID();
+			newIntObject.storedX = positionX;
+			newIntObject.storedY = positionY;
 
-		} catch (IOException e) {
-			System.err.println("Failed to create font.");
-			e.printStackTrace();
+			if (newIntObject.height > fontHeight) {
+				fontHeight = newIntObject.height;
+			}
+
+			if (newIntObject.height > rowHeight) {
+				rowHeight = newIntObject.height;
+			}
+
+			// Draw it here
+			g.drawImage(fontImage, positionX, positionY, null);
+
+			positionX += newIntObject.width;
+
+			if (i < 256) { // standard characters
+				charArray[i] = newIntObject;
+			} else { // custom characters
+				customChars.put(new Character(ch), newIntObject);
+			}
+
+			fontImage = null;
 		}
+
+		// fontTexture = BufferedImageUtil
+		// .getTexture(font.toString(), imgTemp).getTextureID();
+
+		ByteBuffer buf = Util.imageToByteBuffer(imgTemp);
+		this.fontTexture = GL11.glGenTextures();
+
+		int width = imgTemp.getWidth();
+		int height = imgTemp.getHeight();
+		int texWidth = Util.npot(width);
+		int texHeight = Util.npot(height);
+
+		int tg = GL11.GL_TEXTURE_2D;
+		GL11.glEnable(tg);
+		GL11.glBindTexture(tg, fontTexture);
+		GL11.glTexParameteri(tg, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+		GL11.glTexParameteri(tg, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+		GL11.glTexImage2D(tg, 0, GL11.GL_RGBA, texWidth, texHeight, 0,
+				GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buf);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+
 	}
 
 	/**

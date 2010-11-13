@@ -22,10 +22,6 @@
 	  <include name="lwjgl_util.jar" />
 	  <include name="jinput.jar" />
 	</fileset>
-	<!-- slick -->
-	<fileset dir="${lib}/slick/">
-	  <include name="slick.jar" />
-	</fileset>
   </path>
 
   <!-- creates directory structure -->

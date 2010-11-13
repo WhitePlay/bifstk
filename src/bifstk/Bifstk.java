@@ -6,7 +6,6 @@ import java.util.Properties;
 
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
-import org.newdawn.slick.util.Log;
 
 import bifstk.config.Config;
 import bifstk.config.Cursors;
@@ -14,7 +13,6 @@ import bifstk.config.Cursors.Type;
 import bifstk.config.Fonts;
 import bifstk.config.Theme;
 import bifstk.util.BifstkException;
-import bifstk.util.BifstkLogSystem;
 import bifstk.util.Logger;
 import bifstk.util.ThreadAccessException;
 import bifstk.wm.Area;
@@ -332,7 +330,6 @@ public class Bifstk {
 
 		// create logsystem
 		Logger.init();
-		Log.setLogSystem(new BifstkLogSystem());
 
 		Logger.debug("Bifstk:     " + Bifstk.getVersion());
 		Logger.debug("OS:         " + System.getProperty("os.name") + " "

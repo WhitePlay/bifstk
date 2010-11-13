@@ -11,9 +11,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.newdawn.slick.Image;
-
 import bifstk.gl.Color;
+import bifstk.gl.Image;
 import bifstk.gl.Util;
 import bifstk.util.BifstkException;
 import bifstk.util.Logger;

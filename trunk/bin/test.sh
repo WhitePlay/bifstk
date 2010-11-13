@@ -7,7 +7,6 @@ cd ..
 CP=$CP:$(pwd)/lib/lwjgl/jar/lwjgl.jar
 CP=$CP:$(pwd)/lib/lwjgl/jar/lwjgl_util.jar
 CP=$CP:$(pwd)/lib/lwjgl/jar/jinput.jar
-CP=$CP:$(pwd)/lib/slick/slick.jar
 
 CP=$CP:$(pwd)/dist/bifstk.jar
 

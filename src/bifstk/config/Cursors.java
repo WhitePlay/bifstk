@@ -1,14 +1,19 @@
 package bifstk.config;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.opengl.CursorLoader;
 
+import bifstk.gl.Util;
 import bifstk.util.BifstkException;
 import bifstk.util.Logger;
 
@@ -34,7 +39,7 @@ public class Cursors {
 		RESIZE_TOP_LEFT("resize-top-left"),
 		// window resize top-right/bot-left corner
 		RESIZE_TOP_RIGHT("resize-top-right");
-		
+
 		private String name = null;
 
 		private Type(String n) {
@@ -93,8 +98,10 @@ public class Cursors {
 			}
 			Cursor cursor = null;
 			try {
-				cursor = CursorLoader.get().getCursor(cur.getAbsolutePath(),
-						xHotspot, yHotspot);
+				// cursor = CursorLoader.get().getCursor(cur.getAbsolutePath(),
+				// xHotspot, yHotspot);
+				cursor = this.loadCursor(cur.getAbsolutePath(), xHotspot,
+						yHotspot);
 			} catch (Exception e) {
 				throw new BifstkException("Error generating cursor", e);
 			}
@@ -113,6 +120,16 @@ public class Cursors {
 						+ t.getName() + ")");
 			}
 		}
+	}
+
+	private Cursor loadCursor(String path, int xHotspot, int yHotspot)
+			throws IOException, LWJGLException {
+
+		BufferedImage img = ImageIO.read(new File(path));
+		ByteBuffer byteBuf = Util.imageToByteBuffer(img);
+
+		return new Cursor(img.getWidth(), img.getHeight(), xHotspot,
+				img.getHeight() - yHotspot - 1, 1, byteBuf.asIntBuffer(), null);
 	}
 
 	/**

@@ -17,6 +17,7 @@ import bifstk.util.Logger;
 import bifstk.wm.Area;
 import bifstk.wm.Frame;
 import bifstk.wm.Window;
+import bifstk.wm.ui.AbstractButton;
 import bifstk.wm.ui.Actionable;
 import bifstk.wm.ui.Button;
 import bifstk.wm.ui.CustomBorder;
@@ -103,20 +104,20 @@ public class Test implements Handler, Root {
 				FlowBox vBox = new FlowBox(FlowBox.Orientation.VERTICAL);
 
 				FlowBox h1 = new FlowBox(FlowBox.Orientation.HORIZONTAL);
-				Button b1 = new Button("toggle");
+				AbstractButton b1 = new Button("toggle");
 				b1.setAction("resize");
 				b1.setHandler(this);
 				h1.addBefore(new Label("Resizable"));
 				h1.addAfter(b1);
 
 				FlowBox h2 = new FlowBox(FlowBox.Orientation.HORIZONTAL);
-				Button b2 = new Button("toggle");
+				AbstractButton b2 = new Button("toggle");
 				b2.setAction("title");
 				b2.setHandler(this);
 				h2.addBefore(new Label("Titlebar"));
 				h2.addAfter(b2);
 
-				Button b3 = new Button("Message");
+				AbstractButton b3 = new Button("Message");
 				b3.setAction("message");
 				b3.setHandler(this);
 

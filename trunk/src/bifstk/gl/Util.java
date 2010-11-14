@@ -46,20 +46,8 @@ public class Util {
 		ByteBuffer imageBuffer = null;
 		WritableRaster raster;
 		BufferedImage texImage;
-
-		int texWidth = 2;
-		int texHeight = 2;
-
-		// find the closest power of 2 for the width and height
-		// of the produced texture
-
-		while (texWidth < image.getWidth()) {
-			texWidth *= 2;
-		}
-		while (texHeight < image.getHeight()) {
-			texHeight *= 2;
-		}
-
+		int texWidth = Util.npot(image.getWidth());
+		int texHeight = Util.npot(image.getHeight());
 		int height = image.getHeight();
 
 		ColorModel glAlphaColorModel = new ComponentColorModel(
@@ -402,6 +390,8 @@ public class Util {
 	}
 
 	/**
+	 * Next Power Of Two
+	 * 
 	 * @param n a positive integer
 	 * @return the lesser power of two greater than n
 	 */

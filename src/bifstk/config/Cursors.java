@@ -39,7 +39,7 @@ public class Cursors {
 		RESIZE_TOP_LEFT("resize-top-left"),
 		// window resize top-right/bot-left corner
 		RESIZE_TOP_RIGHT("resize-top-right");
-
+		
 		private String name = null;
 
 		private Type(String n) {
@@ -58,7 +58,7 @@ public class Cursors {
 	private Map<Type, Cursor> cursors = null;
 
 	/** currently used cursor */
-	private Type current = Type.POINTER;
+	private Type current = null;
 
 	/**
 	 * Default constructor
@@ -128,12 +128,13 @@ public class Cursors {
 		BufferedImage img = ImageIO.read(new File(path));
 		ByteBuffer byteBuf = Util.imageToByteBuffer(img, true);
 
-		return new Cursor(img.getWidth(), img.getHeight(), xHotspot,
-				img.getHeight() - yHotspot - 1, 1, byteBuf.asIntBuffer(), null);
+		return new Cursor(Util.npot(img.getWidth()),
+				Util.npot(img.getHeight()), xHotspot, img.getHeight()
+						- yHotspot - 1, 1, byteBuf.asIntBuffer(), null);
 	}
 
 	/**
-	 * Changes the cursor currently displayed in the OpenGL Display
+	 * Changes the cursor currently displayed in the OpenGL Displa y
 	 * 
 	 * @param type cursor to display
 	 */

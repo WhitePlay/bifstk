@@ -25,9 +25,7 @@ public class Button extends AbstractButton {
 	 * @param text text to display in the button
 	 */
 	public Button(String text) {
-		super();
 		this.text = text;
-
 		this.textWidth = Fonts.getNormal().getWidth(this.text);
 		this.textHeight = Fonts.getNormal().getHeight();
 	}

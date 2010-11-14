@@ -20,6 +20,7 @@ import bifstk.wm.Window;
 import bifstk.wm.ui.AbstractButton;
 import bifstk.wm.ui.Actionable;
 import bifstk.wm.ui.Button;
+import bifstk.wm.ui.Checkbox;
 import bifstk.wm.ui.CustomBorder;
 import bifstk.wm.ui.FlowBox;
 import bifstk.wm.ui.Label;
@@ -104,18 +105,25 @@ public class Test implements Handler, Root {
 				FlowBox vBox = new FlowBox(FlowBox.Orientation.VERTICAL);
 
 				FlowBox h1 = new FlowBox(FlowBox.Orientation.HORIZONTAL);
-				AbstractButton b1 = new Button("toggle");
+				Button b1 = new Button("toggle");
 				b1.setAction("resize");
 				b1.setHandler(this);
 				h1.addBefore(new Label("Resizable"));
 				h1.addAfter(b1);
 
 				FlowBox h2 = new FlowBox(FlowBox.Orientation.HORIZONTAL);
-				AbstractButton b2 = new Button("toggle");
+				Button b2 = new Button("toggle");
 				b2.setAction("title");
 				b2.setHandler(this);
 				h2.addBefore(new Label("Titlebar"));
 				h2.addAfter(b2);
+				
+				FlowBox h3 = new FlowBox(FlowBox.Orientation.HORIZONTAL);
+				Checkbox c1 = new Checkbox(Config.isWmDebugLayout());
+				c1.setAction("debugLayout");
+				c1.setHandler(this);
+				h3.addBefore(new Label("Debug layout"));
+				h3.addAfter(c1);
 
 				AbstractButton b3 = new Button("Message");
 				b3.setAction("message");
@@ -123,6 +131,7 @@ public class Test implements Handler, Root {
 
 				vBox.addBefore(new CustomBorder(h1, 2));
 				vBox.addBefore(new CustomBorder(h2, 2));
+				vBox.addBefore(new CustomBorder(h3, 2));
 				vBox.addAfter(b3);
 
 				f.setContent(vBox);
@@ -168,6 +177,8 @@ public class Test implements Handler, Root {
 			f.setResizable(false);
 			// f.setTitlebar(false);
 			Bifstk.setModalWindow(f);
+		} else if (command.equals("debugLayout")) {
+			Config.setWmDebugLayout(((Checkbox)source).isChecked());
 		}
 	}
 

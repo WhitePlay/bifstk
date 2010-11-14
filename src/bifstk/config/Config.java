@@ -312,6 +312,11 @@ public class Config {
 		check();
 		return instance.wmDebugLayout;
 	}
+	
+	public static void setWmDebugLayout(boolean d) {
+		check();
+		instance.wmDebugLayout = d;
+	}
 
 	private boolean wmFocusFollowmouse;
 

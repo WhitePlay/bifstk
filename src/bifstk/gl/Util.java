@@ -106,10 +106,98 @@ public class Util {
 	}
 
 	/**
-	 * Draws an arc of a circle
-	 * <p>
-	 * This method does not perform any glBegin(), it only defines vertices with
-	 * glVertex2d()
+	 * Draw arbitrary geometry in 2D space
+	 * 
+	 * @param vertices 2 coordinates per vertice: x,y
+	 * @param colors 4 elements per color: r,g,b,a
+	 * @param glMode one of the glBegin() primitives
+	 */
+	public static void draw2D(int[] vertices, float[] colors, int glMode) {
+		if (vertices.length / 2 != colors.length / 4) {
+			throw new IllegalArgumentException(
+					"Vertices and Colors array sizes do not match ("
+							+ vertices.length + "/" + colors.length + ")");
+		}
+		boolean line = checkLine(glMode);
+		GL11.glBegin(glMode);
+		for (int i = 0; i < vertices.length / 2; i++) {
+			GL11.glColor4f(colors[i * 4], colors[i * 4 + 1], colors[i * 4 + 2],
+					colors[i * 4 + 3]);
+			GL11.glVertex2i(vertices[i * 2], vertices[i * 2 + 1]);
+		}
+		GL11.glEnd();
+
+		if (line) {
+			GL11.glPopMatrix();
+		}
+	}
+
+	/**
+	 * Draw arbitrary geometry in 2D space
+	 * 
+	 * @param vertices 2 coordinates per vertice: x,y
+	 * @param colors 4 elements per color: r,g,b,a
+	 * @param glMode one of the glBegin() primitives
+	 */
+	public static void draw2D(float[] vertices, float[] colors, int glMode) {
+		if (vertices.length / 2 != colors.length / 4) {
+			throw new IllegalArgumentException(
+					"Vertices and Colors array sizes do not match");
+		}
+		boolean line = checkLine(glMode);
+		GL11.glBegin(glMode);
+		for (int i = 0; i < vertices.length / 2; i++) {
+			GL11.glColor4f(colors[i * 4], colors[i * 4 + 1], colors[i * 4 + 2],
+					colors[i * 4 + 3]);
+			GL11.glVertex2f(vertices[i * 2], vertices[i * 2 + 1]);
+		}
+		GL11.glEnd();
+
+		if (line) {
+			GL11.glPopMatrix();
+		}
+	}
+
+	/**
+	 * Draw arbitrary geometry in 2D space
+	 * 
+	 * @param vertices 2 coordinates per vertice: x,y
+	 * @param colors 4 elements per color: r,g,b,a
+	 * @param glMode one of the glBegin() primitives
+	 */
+	public static void draw2D(double[] vertices, float[] colors, int glMode) {
+		if (vertices.length / 2 != colors.length / 4) {
+			throw new IllegalArgumentException(
+					"Vertices and Colors array sizes do not match");
+		}
+		boolean line = checkLine(glMode);
+		GL11.glBegin(glMode);
+		for (int i = 0; i < vertices.length / 2; i++) {
+			GL11.glColor4f(colors[i * 4], colors[i * 4 + 1], colors[i * 4 + 2],
+					colors[i * 4 + 3]);
+			GL11.glVertex2d(vertices[i * 2], vertices[i * 2 + 1]);
+		}
+		GL11.glEnd();
+
+		if (line) {
+			GL11.glPopMatrix();
+		}
+	}
+
+	private static boolean checkLine(int glMode) {
+		boolean line = false;
+		if (glMode == GL11.GL_LINES || glMode == GL11.GL_LINE_STRIP
+				|| glMode == GL11.GL_LINE_LOOP) {
+			line = true;
+			GL11.glMatrixMode(GL11.GL_PROJECTION);
+			GL11.glPushMatrix();
+			GL11.glTranslatef(0.5f, 0.5f, 0.0f);
+		}
+		return line;
+	}
+
+	/**
+	 * Builds the geometry of an arc of a circle
 	 * 
 	 * @param cx abscissa center of the circle
 	 * @param cy ordinate center of the circle
@@ -117,10 +205,16 @@ public class Util {
 	 * @param startAngle starting angle of the arc
 	 * @param arcAngle angular length of the arc
 	 * @param edges number of edge segments to draw the arc
+	 * @param includeCenter include the center in the vertices return
+	 * @return the vertices in 2D space: x,y,x,y,x,...,y
 	 */
-	public static void drawArc(float cx, float cy, float r, float startAngle,
-			float arcAngle, int edges) {
-
+	public static double[] getArc(float cx, float cy, float r,
+			float startAngle, float arcAngle, int edges, boolean includeCenter) {
+		int len = edges;
+		if (includeCenter) {
+			len++;
+		}
+		double[] vertices = new double[len * 2];
 		float theta = arcAngle / (float) (edges - 1);
 		double tangetial_factor = Math.tan(theta);
 		double radial_factor = Math.cos(theta);
@@ -128,8 +222,16 @@ public class Util {
 		double x = r * Math.cos(startAngle);
 		double y = r * Math.sin(startAngle);
 
-		for (int ii = 0; ii < edges; ii++) {
-			GL11.glVertex2d(x + cx, y + cy);
+		int b = 0;
+		if (includeCenter) {
+			vertices[0] = cx;
+			vertices[1] = cy;
+			b = 1;
+		}
+
+		for (int ii = b; ii < len; ii++) {
+			vertices[ii * 2] = x + cx;
+			vertices[ii * 2 + 1] = y + cy;
 
 			double tx = -y;
 			double ty = x;
@@ -140,6 +242,7 @@ public class Util {
 			x *= radial_factor;
 			y *= radial_factor;
 		}
+		return vertices;
 	}
 
 	/**
@@ -156,10 +259,9 @@ public class Util {
 	 */
 	public static void drawLineArc(float cx, float cy, float r,
 			float startAngle, float endAngle, int edges, Color col, float alpha) {
-		GL11.glBegin(GL11.GL_LINE_STRIP);
-		col.use(alpha);
-		drawArc(cx, cy, r, startAngle, endAngle, edges);
-		GL11.glEnd();
+		double[] vert = getArc(cx, cy, r, startAngle, endAngle, edges, false);
+		float[] cols = col.toArray(vert.length / 2, alpha);
+		Util.draw2D(vert, cols, GL11.GL_LINE_STRIP);
 	}
 
 	/**
@@ -179,12 +281,11 @@ public class Util {
 	public static void drawFilledArc(float cx, float cy, float r,
 			float startAngle, float arcAngle, int edges, Color inColor,
 			float inAlpha, Color outColor, float outAlpha) {
-		GL11.glBegin(GL11.GL_TRIANGLE_FAN);
-		inColor.use(inAlpha);
-		GL11.glVertex2f(cx, cy);
-		outColor.use(outAlpha);
-		drawArc(cx, cy, r, startAngle, arcAngle, edges);
-		GL11.glEnd();
+		double[] verts = getArc(cx, cy, r, startAngle, arcAngle, edges, true);
+		float[] cols = new float[(verts.length / 2) * 4];
+		inColor.fillArray(cols, 0, 4, inAlpha);
+		outColor.fillArray(cols, 4, cols.length, outAlpha);
+		Util.draw2D(verts, cols, GL11.GL_TRIANGLE_FAN);
 	}
 
 	/**
@@ -201,42 +302,32 @@ public class Util {
 	 */
 	public static void drawDroppedShadow(int x, int y, int w, int h,
 			int radius, float alpha, Color col) {
-		GL11.glBegin(GL11.GL_QUADS);
-		// shadow: top
-		col.use(0.0f);
-		GL11.glVertex2i(x, y - radius);
-		GL11.glVertex2i(x + w, y - radius);
-		col.use(alpha);
-		GL11.glVertex2i(x + w, y);
-		GL11.glVertex2i(x, y);
-		// shadow: right
-		col.use(0.0f);
-		GL11.glVertex2i(x + w + radius, y);
-		GL11.glVertex2i(x + w + radius, y + h);
-		col.use(alpha);
-		GL11.glVertex2i(x + w, y + h);
-		GL11.glVertex2i(x + w, y);
-		// shadow: bot
-		col.use(0.0f);
-		GL11.glVertex2i(x + w, y + h + radius);
-		GL11.glVertex2i(x, y + h + radius);
-		col.use(alpha);
-		GL11.glVertex2i(x, y + h);
-		GL11.glVertex2i(x + w, y + h);
-		// shadow: left
-		col.use(0.0f);
-		GL11.glVertex2i(x - radius, y + h);
-		GL11.glVertex2i(x - radius, y);
-		col.use(alpha);
-		GL11.glVertex2i(x, y);
-		GL11.glVertex2i(x, y + h);
-		// center
-		col.use(alpha);
-		GL11.glVertex2i(x, y);
-		GL11.glVertex2i(x, y + h);
-		GL11.glVertex2i(x + w, y + h);
-		GL11.glVertex2i(x + w, y);
-		GL11.glEnd();
+		int[] verts = {
+				// shadow top
+				x, y - radius, x + w, y - radius, x + w, y, x,
+				y,
+				// shadow right
+				x + w + radius, y, x + w + radius, y + h, x + w, y + h, x + w,
+				y,
+				// shadow bot
+				x + w, y + h + radius, x, y + h + radius, x, y + h, x + w,
+				y + h,
+				// shadow left
+				x - radius, y + h, x - radius, y, x, y, x, y + h,
+				// center
+				x, y, x, y + h, x + w, y + h, x + w, y };
+		float[] cols = new float[2 * verts.length];
+		col.fillArray(cols, 0, 4 * 2, 0.0f);
+		col.fillArray(cols, 4 * 2, 4 * 4, alpha);
+		col.fillArray(cols, 4 * 4, 4 * 6, 0.0f);
+		col.fillArray(cols, 4 * 6, 4 * 8, alpha);
+		col.fillArray(cols, 4 * 8, 4 * 10, 0.0f);
+		col.fillArray(cols, 4 * 10, 4 * 12, alpha);
+		col.fillArray(cols, 4 * 12, 4 * 14, 0.0f);
+		col.fillArray(cols, 4 * 14, 4 * 16, alpha);
+		col.fillArray(cols, 4 * 16, 4 * 20, alpha);
+
+		Util.draw2D(verts, cols, GL11.GL_QUADS);
 
 		int precision = 5;
 
@@ -332,15 +423,18 @@ public class Util {
 		if (new Boolean(Config.isWmDebugLayout())) {
 			int dh = Display.getDisplayMode().getHeight();
 			GL11.glDisable(GL11.GL_SCISSOR_TEST);
+			GL11.glMatrixMode(GL11.GL_MODELVIEW);
 			GL11.glPushMatrix();
 			GL11.glLoadIdentity();
-			GL11.glBegin(GL11.GL_LINE_LOOP);
-			bifstk.gl.Color.RED.use();
-			GL11.glVertex2i(sci.x, dh - sci.y - sci.h);
-			GL11.glVertex2i(sci.x + sci.w, dh - sci.y - sci.h);
-			GL11.glVertex2i(sci.x + sci.w, dh - sci.y);
-			GL11.glVertex2i(sci.x, dh - sci.y);
-			GL11.glEnd();
+
+			int[] verts = new int[] { sci.x, dh - sci.y - sci.h, //
+					sci.x + sci.w, dh - sci.y - sci.h, //
+					sci.x + sci.w, dh - sci.y, //
+					sci.x, dh - sci.y };
+			float[] cols = Color.RED.toArray(4);
+			Util.draw2D(verts, cols, GL11.GL_LINE_LOOP);
+
+			GL11.glMatrixMode(GL11.GL_MODELVIEW);
 			GL11.glPopMatrix();
 			GL11.glEnable(GL11.GL_SCISSOR_TEST);
 		}

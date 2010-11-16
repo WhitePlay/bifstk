@@ -91,6 +91,74 @@ public class Color {
 		GL11.glColor4f(this.red, this.green, this.blue, this.alpha * alpha);
 	}
 
+	/**
+	 * @return this color as a float array
+	 */
+	public float[] toArray() {
+		return toArray(1, 1.0f);
+	}
+
+	/**
+	 * @param alpha multiply alpha
+	 * @return this color as a float array
+	 */
+	public float[] toArray(float alpha) {
+		return toArray(1, alpha);
+	}
+
+	/**
+	 * @param num number of consecutive repetitions
+	 * @return this color as a float array
+	 */
+	public float[] toArray(int num) {
+		return toArray(num, 1.0f);
+	}
+
+	/**
+	 * @param num number of consecutive repetitions
+	 * @param alpha multiply alpha
+	 * @return num consecutive repetitions of this color's elements as a float
+	 *         array
+	 */
+	public float[] toArray(int num, float alpha) {
+		if (num < 1) {
+			throw new IllegalArgumentException("num must be > 0");
+		}
+		float[] res = new float[num * 4];
+		for (int i = 0; i < num; i++) {
+			res[4 * i] = this.red;
+			res[4 * i + 1] = this.green;
+			res[4 * i + 2] = this.blue;
+			res[4 * i + 3] = this.alpha * alpha;
+		}
+		return res;
+	}
+
+	/**
+	 * Fill an array with this Color's elements
+	 * 
+	 * @param array the array to fill
+	 * @param beginIndex where to begin the filling
+	 * @param endIndex where to stop
+	 * @param alpha alpha multiplier
+	 */
+	public void fillArray(float[] array, int beginIndex, int endIndex,
+			float alpha) {
+		if (beginIndex >= endIndex || beginIndex < 0 || endIndex > array.length) {
+			throw new IllegalArgumentException("Messed up indexes");
+		}
+		if (array.length % 4 != 0 || beginIndex % 4 != 0 || endIndex % 4 != 0) {
+			throw new IllegalArgumentException(
+					"array length and indexes must be multiples of 4");
+		}
+		for (int i = beginIndex; i < endIndex; i += 4) {
+			array[i] = this.red;
+			array[i + 1] = this.green;
+			array[i + 2] = this.blue;
+			array[i + 3] = this.alpha * alpha;
+		}
+	}
+
 	public Color blend(Color target, float factor) {
 		factor = Util.clampf(factor, 0.0f, 1.0f);
 		float invFactor = 1.0f - factor;

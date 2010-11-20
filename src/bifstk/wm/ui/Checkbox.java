@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import bifstk.config.Fonts;
 import bifstk.config.Theme;
 import bifstk.gl.Color;
+import bifstk.gl.Util;
 
 public class Checkbox extends AbstractButton {
 
@@ -23,35 +24,33 @@ public class Checkbox extends AbstractButton {
 
 		float a = uiBgAlpha * alpha;
 
-		Color.WHITE.use(a);
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glVertex2i(0, 0);
-		GL11.glVertex2i(w, 0);
-		GL11.glVertex2i(w, w);
-		GL11.glVertex2i(0, w);
-		GL11.glEnd();
+		float[] c1 = Color.WHITE.toArray(4, a);
+		int[] g1 = new int[] {
+				0, 0, w, 0, w, w, 0, w
+		};
+		Util.draw2D(g1, c1, GL11.GL_QUADS);
 
-		Theme.getUiButtonBorderColor().use(a);
-		GL11.glBegin(GL11.GL_LINES);
-		GL11.glVertex2i(0, 1);
-		GL11.glVertex2i(w, 1);
-		GL11.glVertex2i(w, 1);
-		GL11.glVertex2i(w, w);
-		GL11.glVertex2i(w, w);
-		GL11.glVertex2i(1, w);
-		GL11.glVertex2i(1, w);
-		GL11.glVertex2i(0, 1);
-		GL11.glEnd();
+		float[] c2 = Theme.getUiButtonBorderColor().toArray(8, a);
+		int[] g2 = new int[] {
+				0, 0, //
+				w, 0, //
+				w, w, //
+				0, w, //
+		};
+		Util.draw2DLineLoop(g2, c2);
 
 		if (this.checked) {
-			int d = (int) (w * 0.2);
-			Color.GRAY.use(a);
-			GL11.glBegin(GL11.GL_LINES);
-			GL11.glVertex2i(d, d);
-			GL11.glVertex2i(w - d, w - d);
-			GL11.glVertex2i(w - d, d);
-			GL11.glVertex2i(d, w - d);
-			GL11.glEnd();
+			float d = w * 0.2f;
+			float[] c3 = Color.BLACK.toArray(4, a);
+			float[] g3 = new float[] {
+					d, d, //
+					w - d, //
+					w - d, //
+					w - d, //
+					d, d, //
+					w - d
+			};
+			Util.draw2D(g3, c3, GL11.GL_LINES);
 		}
 
 	}

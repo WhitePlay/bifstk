@@ -51,13 +51,15 @@ public class Util {
 		int height = image.getHeight();
 
 		ColorModel glAlphaColorModel = new ComponentColorModel(
-				ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8,
-						8, 8 }, true, false, ComponentColorModel.TRANSLUCENT,
+				ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] {
+						8, 8, 8, 8
+				}, true, false, ComponentColorModel.TRANSLUCENT,
 				DataBuffer.TYPE_BYTE);
 
 		ColorModel glColorModel = new ComponentColorModel(
-				ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8,
-						8, 0 }, false, false, ComponentColorModel.OPAQUE,
+				ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] {
+						8, 8, 8, 0
+				}, false, false, ComponentColorModel.OPAQUE,
 				DataBuffer.TYPE_BYTE);
 
 		// create a raster that can be used by OpenGL as a source
@@ -106,6 +108,68 @@ public class Util {
 	}
 
 	/**
+	 * Draws a rectangle in line mode
+	 * <p>
+	 * When trying to draw pixel-accurate lines in 2D coordinates, always prefer
+	 * this method as it:
+	 * <ul>
+	 * <li>ensures that corners will not be written twice (ie. when alpha < 1.0)
+	 * <li>ensures that corners will not be skipped using offset magic
+	 * </ul>
+	 * Note that doing glTranslatef(0.375, 0.375, 0.) in MODELVIEW as frequently
+	 * advertised does NOT guarantee pixel accuracy: you have to offset 0.5 top
+	 * left and -0.3 bottom right.
+	 * <p>
+	 * The color array must contain the color for each pixel twice: the vertex
+	 * array will indeed be reconstructed so that each line is drawn
+	 * individually (sending 8 vertices and not 4)
+	 * 
+	 * @param vertices must be of size 8: 4 2D pixels
+	 * @param colors must be of size 32: 4 colors of 4rgba components, repeated
+	 *            twice each
+	 */
+	public static void draw2DLineLoop(int[] vertices, float[] colors) {
+		if (vertices.length != 8) {
+			throw new IllegalArgumentException(
+					"Vertices array must be of size 8: " + "4 2D vertices");
+		}
+		if (colors.length != 32) {
+			throw new IllegalArgumentException(
+					"Colors array must be of size 32: "
+							+ "4 rgba colors repeated 2 times each");
+		}
+
+		float[] verts = new float[16];
+
+		// top left -> top right
+		verts[0] = vertices[0] + 0.5f + 1.0f;
+		verts[1] = vertices[1] + 0.5f;
+		verts[2] = vertices[2];
+		verts[3] = vertices[3];
+
+		// top right -> bot right
+		verts[4] = vertices[2];
+		verts[5] = vertices[3] + 1.0f;
+		verts[6] = vertices[4] - 0.3f;
+		verts[7] = vertices[5] - 0.3f;
+
+		// bot rigth -> bot left
+		verts[8] = vertices[4] - 0.3f - 1.0f;
+		verts[9] = vertices[5] - 0.3f;
+		verts[10] = vertices[6];
+		verts[11] = vertices[7];
+
+		// bot left -> top left
+		verts[12] = vertices[6];
+		verts[13] = vertices[7] - 1.0f;
+		verts[14] = vertices[0] + 0.5f;
+		verts[15] = vertices[1] + 0.5f;
+
+		Util.draw2D(verts, colors, GL11.GL_LINES);
+
+	}
+
+	/**
 	 * Draw arbitrary geometry in 2D space
 	 * 
 	 * @param vertices 2 coordinates per vertice: x,y
@@ -118,7 +182,6 @@ public class Util {
 					"Vertices and Colors array sizes do not match ("
 							+ vertices.length + "/" + colors.length + ")");
 		}
-		boolean line = checkLine(glMode);
 		GL11.glBegin(glMode);
 		for (int i = 0; i < vertices.length / 2; i++) {
 			GL11.glColor4f(colors[i * 4], colors[i * 4 + 1], colors[i * 4 + 2],
@@ -126,10 +189,6 @@ public class Util {
 			GL11.glVertex2i(vertices[i * 2], vertices[i * 2 + 1]);
 		}
 		GL11.glEnd();
-
-		if (line) {
-			GL11.glPopMatrix();
-		}
 	}
 
 	/**
@@ -144,7 +203,6 @@ public class Util {
 			throw new IllegalArgumentException(
 					"Vertices and Colors array sizes do not match");
 		}
-		boolean line = checkLine(glMode);
 		GL11.glBegin(glMode);
 		for (int i = 0; i < vertices.length / 2; i++) {
 			GL11.glColor4f(colors[i * 4], colors[i * 4 + 1], colors[i * 4 + 2],
@@ -152,10 +210,6 @@ public class Util {
 			GL11.glVertex2f(vertices[i * 2], vertices[i * 2 + 1]);
 		}
 		GL11.glEnd();
-
-		if (line) {
-			GL11.glPopMatrix();
-		}
 	}
 
 	/**
@@ -170,7 +224,6 @@ public class Util {
 			throw new IllegalArgumentException(
 					"Vertices and Colors array sizes do not match");
 		}
-		boolean line = checkLine(glMode);
 		GL11.glBegin(glMode);
 		for (int i = 0; i < vertices.length / 2; i++) {
 			GL11.glColor4f(colors[i * 4], colors[i * 4 + 1], colors[i * 4 + 2],
@@ -178,22 +231,6 @@ public class Util {
 			GL11.glVertex2d(vertices[i * 2], vertices[i * 2 + 1]);
 		}
 		GL11.glEnd();
-
-		if (line) {
-			GL11.glPopMatrix();
-		}
-	}
-
-	private static boolean checkLine(int glMode) {
-		boolean line = false;
-		if (glMode == GL11.GL_LINES || glMode == GL11.GL_LINE_STRIP
-				|| glMode == GL11.GL_LINE_LOOP) {
-			line = true;
-			GL11.glMatrixMode(GL11.GL_PROJECTION);
-			GL11.glPushMatrix();
-			GL11.glTranslatef(0.5f, 0.5f, 0.0f);
-		}
-		return line;
 	}
 
 	/**
@@ -315,7 +352,8 @@ public class Util {
 				// shadow left
 				x - radius, y + h, x - radius, y, x, y, x, y + h,
 				// center
-				x, y, x, y + h, x + w, y + h, x + w, y };
+				x, y, x, y + h, x + w, y + h, x + w, y
+		};
 		float[] cols = new float[2 * verts.length];
 		col.fillArray(cols, 0, 4 * 2, 0.0f);
 		col.fillArray(cols, 4 * 2, 4 * 4, alpha);
@@ -427,12 +465,14 @@ public class Util {
 			GL11.glPushMatrix();
 			GL11.glLoadIdentity();
 
-			int[] verts = new int[] { sci.x, dh - sci.y - sci.h, //
+			int[] verts = new int[] {
+					sci.x, dh - sci.y - sci.h, //
 					sci.x + sci.w, dh - sci.y - sci.h, //
 					sci.x + sci.w, dh - sci.y, //
-					sci.x, dh - sci.y };
-			float[] cols = Color.RED.toArray(4);
-			Util.draw2D(verts, cols, GL11.GL_LINE_LOOP);
+					sci.x, dh - sci.y
+			};
+			float[] cols = Color.RED.toArray(8);
+			Util.draw2DLineLoop(verts, cols);
 
 			GL11.glMatrixMode(GL11.GL_MODELVIEW);
 			GL11.glPopMatrix();

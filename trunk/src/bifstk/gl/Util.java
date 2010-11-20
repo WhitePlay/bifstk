@@ -515,7 +515,18 @@ public class Util {
 		sci.cx = ax - nx;
 		sci.cy = ay - ny;
 
-		if (new Boolean(Config.isWmDebugLayout())) {
+		GL11.glScissor(sci.x, sci.y, sci.w, sci.h);
+
+	}
+
+	/**
+	 * Reset the scissor box as it was last time
+	 * {@link #pushScissor(int, int, int, int)} was called
+	 */
+	public static void popScissor() {
+		Coord sci = scissors.pop();
+
+		if (Config.isWmDebugLayout()) {
 			int dh = Display.getDisplayMode().getHeight();
 			GL11.glDisable(GL11.GL_SCISSOR_TEST);
 			GL11.glMatrixMode(GL11.GL_MODELVIEW);
@@ -536,24 +547,13 @@ public class Util {
 			GL11.glEnable(GL11.GL_SCISSOR_TEST);
 		}
 
-		GL11.glScissor(sci.x, sci.y, sci.w, sci.h);
-
-	}
-
-	/**
-	 * Reset the scissor box as it was last time
-	 * {@link #pushScissor(int, int, int, int)} was called
-	 */
-	public static void popScissor() {
-		scissors.pop();
 		if (scissors.size() > 0) {
-			Coord sci = scissors.getFirst();
+			sci = scissors.getFirst();
 			GL11.glScissor(sci.x, sci.y, sci.w, sci.h);
 		} else {
 			GL11.glScissor(0, 0, Display.getDisplayMode().getWidth(), Display
 					.getDisplayMode().getHeight());
 		}
-
 	}
 
 	/**

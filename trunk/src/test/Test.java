@@ -3,7 +3,6 @@ package test;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
 
 import bifstk.Bifstk;
 import bifstk.Handler;
@@ -12,6 +11,7 @@ import bifstk.config.Config;
 import bifstk.config.Theme;
 import bifstk.gl.Color;
 import bifstk.gl.Image;
+import bifstk.gl.Util;
 import bifstk.util.BifstkException;
 import bifstk.util.Logger;
 import bifstk.wm.Area;
@@ -65,28 +65,22 @@ public class Test implements Handler, Root {
 		}
 
 		// render background image
-		float w = this.bgImg.getTexWidth();
-		float h = this.bgImg.getTexHeight();
+		int w = this.bgImg.getTexWidth();
+		int h = this.bgImg.getTexHeight();
 		int dw = Display.getDisplayMode().getWidth();
 		int dh = Display.getDisplayMode().getHeight();
 
-		float imgX = (dw - w) / 2;
-		float imgY = (dh - h) / 2;
+		int imgX = (dw - w) / 2;
+		int imgY = (dh - h) / 2;
 
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		Color.WHITE.use();
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.bgImg.getTexId());
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glTexCoord2f(0.0f, 0.0f);
-		GL11.glVertex2f(imgX, imgY);
-		GL11.glTexCoord2f(0.0f, 1.0f);
-		GL11.glVertex2f(imgX, imgY + h);
-		GL11.glTexCoord2f(1.0f, 1.0f);
-		GL11.glVertex2f(imgX + w, imgY + h);
-		GL11.glTexCoord2f(1.0f, 0.0f);
-		GL11.glVertex2f(imgX + w, imgY);
-		GL11.glEnd();
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+		int[] v1 = {
+				imgX, imgY, //
+				imgX + w, imgY, //
+				imgX + w, imgY + h, //
+				imgX, imgY + h
+		};
+		Util.draw2DTexturedQuad(v1, Color.WHITE.toArray(4),
+				this.bgImg.getTexId());
 	}
 
 	@Override
@@ -117,7 +111,7 @@ public class Test implements Handler, Root {
 				b2.setHandler(this);
 				h2.addBefore(new Label("Titlebar"));
 				h2.addAfter(b2);
-				
+
 				FlowBox h3 = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 				Checkbox c1 = new Checkbox(Config.isWmDebugLayout());
 				c1.setAction("debugLayout");
@@ -178,7 +172,7 @@ public class Test implements Handler, Root {
 			// f.setTitlebar(false);
 			Bifstk.setModalWindow(f);
 		} else if (command.equals("debugLayout")) {
-			Config.setWmDebugLayout(((Checkbox)source).isChecked());
+			Config.setWmDebugLayout(((Checkbox) source).isChecked());
 		}
 	}
 

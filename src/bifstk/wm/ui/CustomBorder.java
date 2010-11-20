@@ -94,33 +94,35 @@ public class CustomBorder extends Border {
 		int h = Math.max(top + bot, this.getHeight());
 
 		if (this.hasChildren()) {
+			Color c = this.color;
 			if (this.color == null) {
-				uiBg.use(alpha * uiAlpha);
-			} else {
-				this.color.use(alpha * uiAlpha);
+				c = uiBg;
 			}
-			// top
-			GL11.glBegin(GL11.GL_QUADS);
-			GL11.glVertex2i(0, 0);
-			GL11.glVertex2i(w, 0);
-			GL11.glVertex2i(w, top);
-			GL11.glVertex2i(0, top);
-			// right
-			GL11.glVertex2i(w, top);
-			GL11.glVertex2i(w, h - bot);
-			GL11.glVertex2i(w - right, h - bot);
-			GL11.glVertex2i(w - right, top);
-			// bot
-			GL11.glVertex2i(w, h);
-			GL11.glVertex2i(0, h);
-			GL11.glVertex2i(0, h - bot);
-			GL11.glVertex2i(w, h - bot);
-			// left
-			GL11.glVertex2i(0, h - bot);
-			GL11.glVertex2i(0, top);
-			GL11.glVertex2i(left, top);
-			GL11.glVertex2i(left, h - bot);
-			GL11.glEnd();
+
+			float[] c1 = c.toArray(4 * 4, alpha * uiAlpha);
+			int[] v1 = {
+					// top
+					0, 0,//
+					w, 0,//
+					w, top,//
+					0, top,//
+					// right
+					w, top, //
+					w, h - bot, //
+					w - right, h - bot, //
+					w - right, top, //
+					// bot
+					w, h, //
+					0, h, //
+					0, h - bot, //
+					w, h - bot, //
+					// left
+					0, h - bot, //
+					0, top, //
+					left, top, //
+					left, h - bot
+			};
+			Util.draw2D(v1, c1, GL11.GL_QUADS);
 
 			// content
 			int nw = w - left - right;
@@ -136,13 +138,19 @@ public class CustomBorder extends Border {
 				Util.popScissor();
 			}
 		} else {
-			uiBg.use(alpha * uiAlpha);
-			GL11.glBegin(GL11.GL_QUADS);
-			GL11.glVertex2i(0, 0);
-			GL11.glVertex2i(w, 0);
-			GL11.glVertex2i(w, h);
-			GL11.glVertex2i(0, h);
-			GL11.glEnd();
+			Color c = this.color;
+			if (this.color == null) {
+				c = uiBg;
+			}
+
+			float[] c1 = c.toArray(4, uiAlpha * alpha);
+			int[] v1 = {
+					0, 0,//
+					w, 0,//
+					w, h,//
+					0, h
+			};
+			Util.draw2D(v1, c1, GL11.GL_QUADS);
 		}
 	}
 

@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import bifstk.config.Fonts;
 import bifstk.config.Theme;
 import bifstk.gl.Color;
+import bifstk.gl.Util;
 import bifstk.wm.geom.Rectangle;
 
 /**
@@ -41,14 +42,12 @@ public class Label extends Widget {
 		int w = this.getWidth();
 		int h = this.getHeight();
 		Color col = Theme.getUiFontColor();
-		
-		uiBg.use(alpha * uiAlpha);
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glVertex2i(0, 0);
-		GL11.glVertex2i(w, 0);
-		GL11.glVertex2i(w, h);
-		GL11.glVertex2i(0, h);
-		GL11.glEnd();
+
+		float[] c1 = uiBg.toArray(4, uiAlpha * alpha);
+		int[] v1 = {
+				0, 0, w, 0, w, h, 0, h
+		};
+		Util.draw2D(v1, c1, GL11.GL_QUADS);
 
 		int lx, ly;
 		if (this.textWidth < w) {

@@ -180,14 +180,14 @@ public class FlowBox extends Container {
 		int w = this.getWidth();
 		int h = this.getHeight();
 
+		float[] c1 = uiBg.toArray(4, alpha * uiAlpha);
+
 		if (!hasChildren()) {
-			uiBg.use(alpha * uiAlpha);
-			GL11.glBegin(GL11.GL_QUADS);
-			GL11.glVertex2i(0, 0);
-			GL11.glVertex2i(w, 0);
-			GL11.glVertex2i(w, h);
-			GL11.glVertex2i(0, h);
-			GL11.glEnd();
+
+			int[] v1 = {
+					0, 0, w, 0, w, h, 0, h
+			};
+			Util.draw2D(v1, c1, GL11.GL_QUADS);
 		} else {
 			int acc = 0;
 
@@ -209,20 +209,23 @@ public class FlowBox extends Container {
 					break;
 				}
 				if (widg == null) {
-					uiBg.use(alpha * uiAlpha);
-					GL11.glBegin(GL11.GL_QUADS);
 					if (this.orientation.equals(Orientation.HORIZONTAL)) {
-						GL11.glVertex2i(acc, 0);
-						GL11.glVertex2i(acc + ew, 0);
-						GL11.glVertex2i(acc + ew, h);
-						GL11.glVertex2i(acc, h);
+						int[] v2 = {
+								acc, 0, //
+								acc + ew, 0, //
+								acc + ew, h, //
+								acc, h
+						};
+						Util.draw2D(v2, c1, GL11.GL_QUADS);
 					} else {
-						GL11.glVertex2i(0, acc);
-						GL11.glVertex2i(0, acc + ew);
-						GL11.glVertex2i(w, acc + ew);
-						GL11.glVertex2i(w, acc);
+						int[] v2 = {
+								0, acc, //
+								0, acc + ew, //
+								w, acc + ew, //
+								w, acc
+						};
+						Util.draw2D(v2, c1, GL11.GL_QUADS);
 					}
-					GL11.glEnd();
 
 					acc += ew;
 				} else {
@@ -239,23 +242,25 @@ public class FlowBox extends Container {
 					widg.render(alpha, uiBg, uiAlpha);
 					Util.popScissor();
 					GL11.glPopMatrix();
-					uiBg.use(alpha * uiAlpha);
-					GL11.glBegin(GL11.GL_QUADS);
 					if (this.orientation.equals(Orientation.HORIZONTAL)) {
 						if (widg.getHeight() < h) {
-							GL11.glVertex2i(acc, widg.getHeight());
-							GL11.glVertex2i(acc + widg.getWidth(),
-									widg.getHeight());
-							GL11.glVertex2i(acc + widg.getWidth(), h);
-							GL11.glVertex2i(acc, h);
+							int[] v2 = {
+									acc, widg.getHeight(), //
+									acc + widg.getWidth(), widg.getHeight(), //
+									acc + widg.getWidth(), h, //
+									acc, h
+							};
+							Util.draw2D(v2, c1, GL11.GL_QUADS);
 						}
 					} else {
 						if (widg.getWidth() < w) {
-							GL11.glVertex2i(widg.getWidth(), acc);
-							GL11.glVertex2i(w, acc);
-							GL11.glVertex2i(w, acc + widg.getHeight());
-							GL11.glVertex2i(widg.getWidth(),
-									acc + widg.getHeight());
+							int[] v2 = {
+									widg.getWidth(), acc, //
+									w, acc, //
+									w, acc + widg.getHeight(), //
+									widg.getWidth(), acc + widg.getHeight()
+							};
+							Util.draw2D(v2, c1, GL11.GL_QUADS);
 						}
 
 					}

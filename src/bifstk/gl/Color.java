@@ -3,8 +3,6 @@ package bifstk.gl;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.lwjgl.opengl.GL11;
-
 import bifstk.util.Logger;
 
 public class Color {

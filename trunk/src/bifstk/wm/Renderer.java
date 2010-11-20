@@ -372,14 +372,6 @@ public class Renderer {
 						0, height
 				};
 				Util.draw2D(v1, c1, GL11.GL_QUADS);
-				/*
-								GL11.glBegin(GL11.GL_QUADS);
-								GL11.glVertex2i(0, 0);
-								GL11.glVertex2i(width, 0);
-								GL11.glVertex2i(width, height);
-								GL11.glVertex2i(0, height);
-								GL11.glEnd();
-								*/
 			}
 			float modAlpha = f.getModAlpha();
 

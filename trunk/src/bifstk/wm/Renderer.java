@@ -185,19 +185,19 @@ public class Renderer {
 			win.render(win.getModAlpha(), win.getUiColor(), baseAlpha);
 
 			acc += win.getHeight();
+			Color col = Theme.getWindowBorderFocusedColor();
 			// bot border
-			if (focus) {
-				Theme.getWindowBorderFocusedColor().use(baseAlpha);
-			} else {
-				Theme.getWindowBorderUnfocusedColor().use(baseAlpha);
+			if (!focus) {
+				col = Theme.getWindowBorderUnfocusedColor();
 			}
-			GL11.glBegin(GL11.GL_QUADS);
-			GL11.glVertex2i(0, acc);
-			GL11.glVertex2i(x, acc);
-			GL11.glVertex2i(x, acc + w);
-			GL11.glVertex2i(0, acc + w);
-			GL11.glEnd();
-
+			float[] c1 = col.toArray(4, baseAlpha);
+			int[] v1 = {
+					0, acc, //
+					x, acc, //
+					x, acc + w, //
+					0, acc + w
+			};
+			Util.draw2D(v1, c1, GL11.GL_QUADS);
 			acc += w;
 		}
 
@@ -205,40 +205,46 @@ public class Renderer {
 		if (Theme.isWindowShadowEnabled()) {
 			int radius = Theme.getWindowShadowRadius();
 			Color col = this.state.getLeftDock().get(0).getShadowColor();
-			GL11.glBegin(GL11.GL_QUADS);
-			col.use(Theme.getWindowShadowAlpha());
-			GL11.glVertex2i(x + w, 0);
-			col.use(0.0f);
-			GL11.glVertex2i(x + w + radius, 0);
-			GL11.glVertex2i(x + w + radius, height);
-			col.use(Theme.getWindowShadowAlpha());
-			GL11.glVertex2i(x + w, height);
-			GL11.glEnd();
+
+			float[] c1 = new float[16];
+			col.fillArray(c1, 0, 4, Theme.getWindowShadowAlpha());
+			col.fillArray(c1, 4, 12, 0.0f);
+			col.fillArray(c1, 12, 16, Theme.getWindowShadowAlpha());
+			int[] v1 = {
+					x + w, 0, //
+					x + w + radius, 0, //
+					x + w + radius, height, //
+					x + w, height
+			};
+
+			Util.draw2D(v1, c1, GL11.GL_QUADS);
 		}
 
-		if (focus) {
-			Theme.getWindowBorderFocusedColor().use(baseAlpha);
-		} else {
-			Theme.getWindowBorderUnfocusedColor().use(baseAlpha);
+		Color c = Theme.getWindowBorderFocusedColor();
+		if (!focus) {
+			c = Theme.getWindowBorderUnfocusedColor();
 		}
 		/* right border */
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glVertex2i(x, 0);
-		GL11.glVertex2i(x + w, 0);
-		GL11.glVertex2i(x + w, height);
-		GL11.glVertex2i(x, height);
-		GL11.glEnd();
+		float[] c1 = c.toArray(4, baseAlpha);
+		int[] v1 = {
+				x, 0, //
+				x + w, 0, //
+				x + w, height, //
+				x, height
+		};
+		Util.draw2D(v1, c1, GL11.GL_QUADS);
 
-		if (focus) {
-			Theme.getWindowBorderOuterFocusedColor().use();
-		} else {
-			Theme.getWindowBorderOuterUnfocusedColor().use();
+		c = Theme.getWindowBorderOuterFocusedColor();
+		if (!focus) {
+			c = Theme.getWindowBorderOuterUnfocusedColor();
 		}
 		/* right outer border */
-		GL11.glBegin(GL11.GL_LINES);
-		GL11.glVertex2i(x + w, 0);
-		GL11.glVertex2i(x + w, height);
-		GL11.glEnd();
+		c1 = c.toArray(2);
+		v1 = new int[] {
+				x + w, 0, //
+				x + w, height
+		};
+		Util.draw2D(v1, c1, GL11.GL_LINES);
 	}
 
 	/**
@@ -267,18 +273,18 @@ public class Renderer {
 
 			acc += win.getHeight();
 			// bot border
-			if (focus) {
-				Theme.getWindowBorderFocusedColor().use(baseAlpha);
-			} else {
-				Theme.getWindowBorderUnfocusedColor().use(baseAlpha);
+			Color c = Theme.getWindowBorderFocusedColor();
+			if (!focus) {
+				c = Theme.getWindowBorderUnfocusedColor();
 			}
-			GL11.glBegin(GL11.GL_QUADS);
-			GL11.glVertex2i(dw, acc);
-			GL11.glVertex2i(dw - x, acc);
-			GL11.glVertex2i(dw - x, acc + w);
-			GL11.glVertex2i(dw, acc + w);
-			GL11.glEnd();
-
+			float[] c1 = c.toArray(4, baseAlpha);
+			int[] v1 = {
+					dw, acc, //
+					dw - x, acc, //
+					dw - x, acc + w, //
+					dw, acc + w
+			};
+			Util.draw2D(v1, c1, GL11.GL_QUADS);
 			acc += w;
 		}
 
@@ -286,40 +292,45 @@ public class Renderer {
 		if (Theme.isWindowShadowEnabled()) {
 			int radius = Theme.getWindowShadowRadius();
 			Color col = this.state.getRightDock().get(0).getShadowColor();
-			GL11.glBegin(GL11.GL_QUADS);
-			col.use(Theme.getWindowShadowAlpha());
-			GL11.glVertex2i(dw - (x + w), 0);
-			col.use(0.0f);
-			GL11.glVertex2i(dw - (x + w + radius), 0);
-			GL11.glVertex2i(dw - (x + w + radius), height);
-			col.use(Theme.getWindowShadowAlpha());
-			GL11.glVertex2i(dw - (x + w), height);
-			GL11.glEnd();
+
+			float[] c1 = new float[16];
+			col.fillArray(c1, 0, 4, Theme.getWindowShadowAlpha());
+			col.fillArray(c1, 4, 12, 0.0f);
+			col.fillArray(c1, 12, 16, Theme.getWindowShadowAlpha());
+			int[] v1 = {
+					dw - x - w, 0, //
+					dw - x - w - radius, 0, //
+					dw - x - w - radius, height, //
+					dw - x - w, height
+			};
+			Util.draw2D(v1, c1, GL11.GL_QUADS);
 		}
 
-		if (focus) {
-			Theme.getWindowBorderFocusedColor().use(baseAlpha);
-		} else {
-			Theme.getWindowBorderUnfocusedColor().use(baseAlpha);
+		Color c = Theme.getWindowBorderFocusedColor();
+		if (!focus) {
+			Theme.getWindowBorderUnfocusedColor();
 		}
 		/* left border */
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glVertex2i(dw - x, 0);
-		GL11.glVertex2i(dw - x - w, 0);
-		GL11.glVertex2i(dw - x - w, height);
-		GL11.glVertex2i(dw - x, height);
-		GL11.glEnd();
+		float[] c1 = c.toArray(4, baseAlpha);
+		int[] v1 = {
+				dw - x, 0, //
+				dw - x - w, 0, //
+				dw - x - w, height, //
+				dw - x, height
+		};
+		Util.draw2D(v1, c1, GL11.GL_QUADS);
 
-		if (focus) {
-			Theme.getWindowBorderOuterFocusedColor().use();
-		} else {
-			Theme.getWindowBorderOuterUnfocusedColor().use();
+		c = Theme.getWindowBorderOuterFocusedColor();
+		if (!focus) {
+			c = Theme.getWindowBorderOuterUnfocusedColor();
 		}
 		/* left outer border */
-		GL11.glBegin(GL11.GL_LINES);
-		GL11.glVertex2i(dw - x - w, 0);
-		GL11.glVertex2i(dw - x - w, height);
-		GL11.glEnd();
+		c1 = c.toArray(2);
+		v1 = new int[] {
+				dw - x - w, 0, //
+				dw - x - w, height
+		};
+		Util.draw2D(v1, c1, GL11.GL_LINES);
 	}
 
 	/**
@@ -352,14 +363,23 @@ public class Renderer {
 				}
 
 				float modalAlpha = Theme.getRootBackgroundModalAlpha();
-				Theme.getRootBackgroundModalColor().use(
+				float[] c1 = Theme.getRootBackgroundModalColor().toArray(4,
 						modalAlpha * aApp * aRem);
-				GL11.glBegin(GL11.GL_QUADS);
-				GL11.glVertex2i(0, 0);
-				GL11.glVertex2i(width, 0);
-				GL11.glVertex2i(width, height);
-				GL11.glVertex2i(0, height);
-				GL11.glEnd();
+				int[] v1 = {
+						0, 0, //
+						width, 0, //
+						width, height, //
+						0, height
+				};
+				Util.draw2D(v1, c1, GL11.GL_QUADS);
+				/*
+								GL11.glBegin(GL11.GL_QUADS);
+								GL11.glVertex2i(0, 0);
+								GL11.glVertex2i(width, 0);
+								GL11.glVertex2i(width, height);
+								GL11.glVertex2i(0, height);
+								GL11.glEnd();
+								*/
 			}
 			float modAlpha = f.getModAlpha();
 
@@ -386,13 +406,11 @@ public class Renderer {
 		// GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
 		// drawing a quad seems to be faster than glClear for some reason
-		Theme.getRootBackgroundColor().use();
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glVertex2i(0, 0);
-		GL11.glVertex2i(width, 0);
-		GL11.glVertex2i(width, height);
-		GL11.glVertex2i(0, height);
-		GL11.glEnd();
+		float[] c = Theme.getRootBackgroundColor().toArray(4);
+		int[] v = {
+				0, 0, width, 0, width, height, 0, height
+		};
+		Util.draw2D(v, c, GL11.GL_QUADS);
 	}
 
 	/**

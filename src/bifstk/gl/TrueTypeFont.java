@@ -255,39 +255,6 @@ public class TrueTypeFont {
 	}
 
 	/**
-	 * Draw a textured quad
-	 * 
-	 * @param drawX The left x position to draw to
-	 * @param drawY The top y position to draw to
-	 * @param drawX2 The right x position to draw to
-	 * @param drawY2 The bottom y position to draw to
-	 * @param srcX The left source x position to draw from
-	 * @param srcY The top source y position to draw from
-	 * @param srcX2 The right source x position to draw from
-	 * @param srcY2 The bottom source y position to draw from
-	 */
-	private void drawQuad(float drawX, float drawY, float drawX2, float drawY2,
-			float srcX, float srcY, float srcX2, float srcY2) {
-		float DrawWidth = drawX2 - drawX;
-		float DrawHeight = drawY2 - drawY;
-		float TextureSrcX = srcX / textureWidth;
-		float TextureSrcY = srcY / textureHeight;
-		float SrcWidth = srcX2 - srcX;
-		float SrcHeight = srcY2 - srcY;
-		float RenderWidth = (SrcWidth / textureWidth);
-		float RenderHeight = (SrcHeight / textureHeight);
-
-		GL11.glTexCoord2f(TextureSrcX, TextureSrcY);
-		GL11.glVertex2f(drawX, drawY);
-		GL11.glTexCoord2f(TextureSrcX, TextureSrcY + RenderHeight);
-		GL11.glVertex2f(drawX, drawY + DrawHeight);
-		GL11.glTexCoord2f(TextureSrcX + RenderWidth, TextureSrcY + RenderHeight);
-		GL11.glVertex2f(drawX + DrawWidth, drawY + DrawHeight);
-		GL11.glTexCoord2f(TextureSrcX + RenderWidth, TextureSrcY);
-		GL11.glVertex2f(drawX + DrawWidth, drawY);
-	}
-
-	/**
 	 * Get the width of a given String
 	 * 
 	 * @param whatchars The characters to get the width of
@@ -349,19 +316,14 @@ public class TrueTypeFont {
 	 * @param color The color to draw the text
 	 * @param alpha opacity
 	 */
-	public void drawString(float x, float y, String whatchars,
+	public void drawString(int x, int y, String whatchars,
 			bifstk.gl.Color color, float alpha) {
-		color.use(alpha);
-
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.fontTexture);
+		float[] c = color.toArray(4, alpha);
 
 		IntObject intObject = null;
 		int charCurrent;
 
-		GL11.glBegin(GL11.GL_QUADS);
-
-		int totalwidth = 0;
+		int acc = 0;
 		for (int i = 0; i < whatchars.length(); i++) {
 			charCurrent = whatchars.charAt(i);
 			if (charCurrent < 256) {
@@ -372,17 +334,28 @@ public class TrueTypeFont {
 			}
 
 			if (intObject != null) {
-				drawQuad((x + totalwidth), y,
-						(x + totalwidth + intObject.width),
-						(y + intObject.height), intObject.storedX,
-						intObject.storedY, intObject.storedX + intObject.width,
-						intObject.storedY + intObject.height);
-				totalwidth += intObject.width;
+				float sx = (float) intObject.storedX / (float) textureWidth;
+				float sy = (float) intObject.storedY / (float) textureHeight;
+				float rx = (float) intObject.width / (float) textureWidth;
+				float ry = (float) intObject.height / (float) textureHeight;
+
+				float[] coords = {
+						sx, sy, //
+						sx + rx, sy, //
+						sx + rx, sy + ry, //
+						sx, sy + ry
+				};
+				int[] v = {
+						x + acc, y, //
+						x + acc + intObject.width, y, //
+						x + acc + intObject.width, y + intObject.height, //
+						x + acc, y + intObject.height
+				};
+
+				Util.draw2DTexturedQuad(v, c, coords, this.fontTexture);
+				acc += intObject.width;
 			}
 		}
-
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
 	}
 
 	/**

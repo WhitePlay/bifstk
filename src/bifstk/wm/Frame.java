@@ -254,17 +254,6 @@ public abstract class Frame implements Drawable, Clickable {
 			};
 			Util.draw2D(v3, c3, GL11.GL_QUADS);
 
-			/*
-			borderCol.use(alpha2);
-			GL11.glBegin(GL11.GL_QUADS);
-			GL11.glVertex2i(x + borderWidth, y + titlebarHeight + borderWidth);
-			GL11.glVertex2i(x + w - borderWidth, y + titlebarHeight
-					+ borderWidth);
-			GL11.glVertex2i(x + w - borderWidth, y + borderWidth);
-			GL11.glVertex2i(x + borderWidth, y + borderWidth);
-			GL11.glEnd();
-			*/
-
 			Color titleCol2 = getFrameTitlebarFocusedColor().blend(
 					getFrameTitlebarUnfocusedColor(), focusAnim);
 
@@ -283,16 +272,6 @@ public abstract class Frame implements Drawable, Clickable {
 					x + dec, y + dec
 			};
 			Util.draw2D(v3, c3, GL11.GL_QUADS);
-			/*
-						GL11.glBegin(GL11.GL_QUADS);
-						titleCol2.use(0.0f);
-						GL11.glVertex2i(x + dec, y + titlebarHeight + borderWidth);
-						GL11.glVertex2i(x + w - dec, y + titlebarHeight + borderWidth);
-						titleCol2.use(alpha2);
-						GL11.glVertex2i(x + w - dec, y + dec);
-						GL11.glVertex2i(x + dec, y + dec);
-						GL11.glEnd();
-			*/
 
 			int controlWidth = Theme.getFrameControlsWidth();
 			int controlHeight = Theme.getFrameControlsHeight();
@@ -433,16 +412,6 @@ public abstract class Frame implements Drawable, Clickable {
 					x + borderWidth, y + h - borderWidth
 			};
 			Util.draw2D(v, c, GL11.GL_QUADS);
-			/*
-						uiColor.use(alpha2);
-						GL11.glBegin(GL11.GL_QUADS);
-						GL11.glVertex2i(x + borderWidth, y + titlebarHeight + borderWidth);
-						GL11.glVertex2i(x + w - borderWidth, y + titlebarHeight
-								+ borderWidth);
-						GL11.glVertex2i(x + w - borderWidth, y + h - borderWidth);
-						GL11.glVertex2i(x + borderWidth, y + h - borderWidth);
-						GL11.glEnd();
-						*/
 		} else {
 			GL11.glPushMatrix();
 			GL11.glTranslatef(x + borderWidth,

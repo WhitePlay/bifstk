@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import bifstk.config.Fonts;
 import bifstk.config.Theme;
 import bifstk.gl.Color;
+import bifstk.gl.Util;
 
 /**
  * Stateless button that can display text
@@ -36,36 +37,33 @@ public class Button extends AbstractButton {
 		int w = this.getWidth();
 		int h = this.getHeight();
 		float a = uiAlpha * alpha;
-		Color col = Theme.getUiFontColor();
+		Color fillCol = null;
 
 		if (this.isMouseClicked() && this.isMouseHover()) {
-			Theme.getUiButtonClickColor().use(a);
+			fillCol = Theme.getUiButtonClickColor();
 		} else if (this.isMouseHover()) {
-			Theme.getUiButtonHoverColor().use(a);
+			fillCol = Theme.getUiButtonHoverColor();
 		} else {
-			Theme.getUiButtonColor().use(a);
+			fillCol = Theme.getUiButtonColor();
 		}
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glVertex2i(0, 0);
-		GL11.glVertex2i(w, 0);
-		GL11.glVertex2i(w, h);
-		GL11.glVertex2i(0, h);
-		GL11.glEnd();
 
-		Theme.getUiButtonBorderColor().use(a);
-		GL11.glBegin(GL11.GL_LINES);
-		GL11.glVertex2i(0, 1);
-		GL11.glVertex2i(w, 1);
+		float[] c1 = fillCol.toArray(4, a);
+		int[] v1 = new int[] {
+				0, 0, //
+				w, 0, //
+				w, h, //
+				0, h
+		};
+		Util.draw2D(v1, c1, GL11.GL_QUADS);
 
-		GL11.glVertex2i(w, 1);
-		GL11.glVertex2i(w, h);
-
-		GL11.glVertex2i(w, h);
-		GL11.glVertex2i(1, h);
-
-		GL11.glVertex2i(1, h);
-		GL11.glVertex2i(0, 1);
-		GL11.glEnd();
+		float[] c2 = Theme.getUiButtonBorderColor().toArray(8, a);
+		int[] v2 = {
+				0, 0, //
+				w, 0, //
+				w, h, //
+				0, h
+		};
+		Util.draw2DLineLoop(v2, c2);
 
 		int lx, ly;
 		if (this.textWidth < w) {
@@ -78,7 +76,8 @@ public class Button extends AbstractButton {
 		} else {
 			ly = 0;
 		}
-		Fonts.getNormal().drawString(lx, ly, this.text, col, alpha);
+		Color fontCol = Theme.getUiFontColor();
+		Fonts.getNormal().drawString(lx, ly, this.text, fontCol, alpha);
 	}
 
 	@Override

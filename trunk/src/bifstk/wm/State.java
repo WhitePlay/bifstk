@@ -249,7 +249,7 @@ public class State {
 			int num = dock.size();
 			int i = 0, acc = 0, totPix = 0;
 			int pixels = Display.getDisplayMode().getHeight() / num;
-			int hMin = Config.getWmFrameSizeMin();
+			int hMin = Config.get().getWmFrameSizeMin();
 
 			int[] pixWin = new int[num];
 			// find out how much pixels each window can give
@@ -305,7 +305,7 @@ public class State {
 	 * @param skip
 	 */
 	private void makeSpace(LinkedList<Window> dock, int share, Window skip) {
-		int hMin = Config.getWmFrameSizeMin();
+		int hMin = Config.get().getWmFrameSizeMin();
 		int i = 0;
 
 		for (Window w : dock) {
@@ -417,7 +417,7 @@ public class State {
 	 */
 	public void setDockWidth(int w, DockPosition pos) {
 		int val = Util
-				.clampi(w, Config.getWmFrameSizeMin(), Display.getDisplayMode()
+				.clampi(w, Config.get().getWmFrameSizeMin(), Display.getDisplayMode()
 						.getWidth() / 2 - Theme.getWindowBorderWidth());
 		List<Window> dock = null;
 
@@ -535,20 +535,20 @@ public class State {
 	 * @param f Frame to move
 	 */
 	public void moveFrameTo(int x, int y, Frame f) {
-		if (Config.isWmFrameSnap() && !f.equals(this.modalWindow)) {
+		if (Config.get().isWmFrameSnap() && !f.equals(this.modalWindow)) {
 			int fw = f.getWidth();
 			int fh = f.getHeight();
-			int radius = Config.getWmFrameSnapRadius();
+			int radius = Config.get().getWmFrameSnapRadius();
 			int displayWidth = Display.getDisplayMode().getWidth();
 
-			if (Config.isWmWindowDockLeft() && this.leftDock.size() > 0) {
+			if (Config.get().isWmWindowDockLeft() && this.leftDock.size() > 0) {
 				int w = this.leftDockWidth + Theme.getWindowBorderWidth();
 				int d = x - w;
 				if (-radius <= d && d < radius) {
 					x = w;
 				}
 			}
-			if (Config.isWmWindowDockRight() && this.rightDock.size() > 0) {
+			if (Config.get().isWmWindowDockRight() && this.rightDock.size() > 0) {
 				int w = displayWidth - this.rightDockWidth
 						- Theme.getWindowBorderWidth();
 				int d = w - x - fw;

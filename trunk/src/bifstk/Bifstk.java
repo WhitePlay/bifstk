@@ -98,9 +98,9 @@ public class Bifstk {
 					return;
 				}
 
-				boolean vsync = Config.isDisplayVsync();
+				boolean vsync = Config.get().isDisplayVsync();
 				int fps_target = 60;
-				boolean capped = Config.isDisplayFpsCap();
+				boolean capped = Config.get().isDisplayFpsCap();
 
 				String log = "Display refresh rate: ";
 				if (vsync) {
@@ -112,7 +112,7 @@ public class Bifstk {
 					if (!capped) {
 						log += "unlimited";
 					} else {
-						fps_target = Config.getDisplayFps();
+						fps_target = Config.get().getDisplayFps();
 						log += fps_target;
 					}
 				}
@@ -321,7 +321,8 @@ public class Bifstk {
 	private static void preDisplayInit() {
 		// load configuration
 		try {
-			Config.load(config);
+			Config conf = Config.load(config);
+			Config.set(conf);
 		} catch (BifstkException e) {
 			// the logger needs the config, can't be used yet
 			e.printStackTrace();
@@ -351,11 +352,11 @@ public class Bifstk {
 	 */
 	private static void postDisplayInit() throws BifstkException {
 		// load theme
-		String themePath = Config.getThemePath();
+		String themePath = Config.get().getThemePath();
 		Theme.load(themePath);
 
 		// cursor creation
-		Cursors.load(Config.getCursorsPath());
+		Cursors.load(Config.get().getCursorsPath());
 		Cursors.setCursor(Type.POINTER);
 
 		// load fonts

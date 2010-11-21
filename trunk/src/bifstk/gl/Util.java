@@ -526,7 +526,7 @@ public class Util {
 	public static void popScissor() {
 		Coord sci = scissors.pop();
 
-		if (Config.isWmDebugLayout()) {
+		if (Config.get().isWmDebugLayout()) {
 			int dh = Display.getDisplayMode().getHeight();
 			GL11.glDisable(GL11.GL_SCISSOR_TEST);
 			GL11.glMatrixMode(GL11.GL_MODELVIEW);

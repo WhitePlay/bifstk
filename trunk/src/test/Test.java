@@ -113,7 +113,7 @@ public class Test implements Handler, Root {
 				h2.addAfter(b2);
 
 				FlowBox h3 = new FlowBox(FlowBox.Orientation.HORIZONTAL);
-				Checkbox c1 = new Checkbox(Config.isWmDebugLayout());
+				Checkbox c1 = new Checkbox(Config.get().isWmDebugLayout());
 				c1.setAction("debugLayout");
 				c1.setHandler(this);
 				h3.addBefore(new Label("Debug layout"));
@@ -137,7 +137,7 @@ public class Test implements Handler, Root {
 		case Keyboard.KEY_R:
 			if (state) {
 				try {
-					Theme.load(Config.getThemePath());
+					Theme.load(Config.get().getThemePath());
 				} catch (BifstkException e) {
 					Logger.error("Could not reload config", e);
 				}
@@ -172,7 +172,7 @@ public class Test implements Handler, Root {
 			// f.setTitlebar(false);
 			Bifstk.setModalWindow(f);
 		} else if (command.equals("debugLayout")) {
-			Config.setWmDebugLayout(((Checkbox) source).isChecked());
+			Config.get().setWmDebugLayout(((Checkbox) source).isChecked());
 		}
 	}
 

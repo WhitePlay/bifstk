@@ -54,11 +54,11 @@ public class Renderer {
 		this.state = state;
 		this.root = root;
 
-		int width = Config.getDisplayWidth();
-		int height = Config.getDisplayHeight();
-		String title = Config.getDisplayTitle();
+		int width = Config.get().getDisplayWidth();
+		int height = Config.get().getDisplayHeight();
+		String title = Config.get().getDisplayTitle();
 
-		boolean vsync = Config.isDisplayVsync();
+		boolean vsync = Config.get().isDisplayVsync();
 		Display.setVSyncEnabled(vsync);
 
 		DisplayMode[] modes = null;
@@ -82,7 +82,7 @@ public class Renderer {
 							+ height);
 		}
 
-		boolean fullscreen = Config.isDisplayFullscreen();
+		boolean fullscreen = Config.get().isDisplayFullscreen();
 
 		try {
 			if (fullscreen) {
@@ -95,7 +95,7 @@ public class Renderer {
 		}
 		Display.setTitle(title);
 
-		int samples = Config.getDisplayAntialiasSamples();
+		int samples = Config.get().getDisplayAntialiasSamples();
 
 		try {
 			Display.create(new PixelFormat(8, 8, 0, samples));
@@ -352,7 +352,7 @@ public class Renderer {
 				long t = Sys.getTime();
 				long app = this.state.getModalWindow().getApparitionTime();
 				long rem = this.state.getModalWindow().getRemovalTime();
-				float animLen = (float) Config.getWmAnimationsLength();
+				float animLen = (float) Config.get().getWmAnimationsLength();
 
 				float aApp = Util.clampf((float) (t - app) / animLen, 0.0f,
 						1.0f);

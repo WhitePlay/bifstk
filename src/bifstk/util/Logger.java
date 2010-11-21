@@ -141,8 +141,8 @@ public class Logger {
 	public static void init() {
 		Visibility vis = Visibility.NONE;
 
-		boolean confFile = Config.isLoggerFileEnabled();
-		boolean confOut = Config.isLoggerStdoutEnabled();
+		boolean confFile = Config.get().isLoggerFileEnabled();
+		boolean confOut = Config.get().isLoggerStdoutEnabled();
 
 		if (confFile && confOut) {
 			vis = Visibility.BOTH;
@@ -151,11 +151,11 @@ public class Logger {
 		} else if (confOut) {
 			vis = Visibility.STDOUT;
 		}
-		String out = Config.getLoggerFilePath();
-		boolean debug = Config.isLoggerStdoutDebug();
-		boolean trace = Config.isLoggerStdoutTrace();
-		boolean overwrite = Config.isLoggerFileOverwrite();
-		int len = Config.getLoggerTraceLength();
+		String out = Config.get().getLoggerFilePath();
+		boolean debug = Config.get().isLoggerStdoutDebug();
+		boolean trace = Config.get().isLoggerStdoutTrace();
+		boolean overwrite = Config.get().isLoggerFileOverwrite();
+		int len = Config.get().getLoggerTraceLength();
 
 		Logger.instance = new Logger(vis, out, debug, trace, overwrite, len);
 

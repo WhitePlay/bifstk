@@ -21,9 +21,9 @@ public class Fonts {
 
 	private Fonts() {
 		Font f;
-		String path = Config.getFontPath();
-		int normalSize = Config.getFontSizeNormal();
-		int smallSize = Config.getFontSizeSmall();
+		String path = Config.get().getFontPath();
+		int normalSize = Config.get().getFontSizeNormal();
+		int smallSize = Config.get().getFontSizeSmall();
 
 		try {
 			f = Font.createFont(Font.TRUETYPE_FONT, new File(path));

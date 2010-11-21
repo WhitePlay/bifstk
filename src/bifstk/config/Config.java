@@ -33,6 +33,9 @@ public class Config {
 	/** values for all {@link bifstk.config.ConfigProperty} */
 	private Map<ConfigProperty, String> properties = null;
 
+	private Config() {
+	}
+
 	/**
 	 * Default constructor
 	 * 
@@ -95,9 +98,15 @@ public class Config {
 	/**
 	 * @return path to the directory containing cursor files
 	 */
-	public static String getCursorsPath() {
-		check();
-		return instance.cursorsPath;
+	public String getCursorsPath() {
+		return this.cursorsPath;
+	}
+
+	/**
+	 * @param path the path to the directory containing cursor files
+	 */
+	public void setCursorsPath(String path) {
+		this.cursorsPath = path;
 	}
 
 	private int displayFps;
@@ -106,9 +115,15 @@ public class Config {
 	/**
 	 * @return Frames Per Second to display
 	 */
-	public static int getDisplayFps() {
-		check();
-		return instance.displayFps;
+	public int getDisplayFps() {
+		return this.displayFps;
+	}
+
+	/**
+	 * @param fps FPS to display
+	 */
+	public void setDisplayFps(int fps) {
+		this.displayFps = Util.clampi(fps, displayFpsMin, displayFpsMax);
 	}
 
 	private boolean displayFpsCap;
@@ -117,9 +132,15 @@ public class Config {
 	 * @return cap the FPS to {@link #getDisplayFps()} if true, unlimited if
 	 *         false
 	 */
-	public static boolean isDisplayFpsCap() {
-		check();
-		return instance.displayFpsCap;
+	public boolean isDisplayFpsCap() {
+		return this.displayFpsCap;
+	}
+
+	/**
+	 * @param b cap the FPS to {@link #getDisplayFps()} or let it be unlimited
+	 */
+	public void setDisplayFpsCap(boolean b) {
+		this.displayFpsCap = b;
 	}
 
 	private boolean displayFullScreen;
@@ -127,9 +148,15 @@ public class Config {
 	/**
 	 * @return ignore specified resolution and use native resolution fullscreen
 	 */
-	public static boolean isDisplayFullscreen() {
-		check();
-		return instance.displayFullScreen;
+	public boolean isDisplayFullscreen() {
+		return this.displayFullScreen;
+	}
+
+	/**
+	 * @param b use native resolution and fullscreen mode if true
+	 */
+	public void setDisplayFullScreen(boolean b) {
+		this.displayFullScreen = b;
 	}
 
 	private int displayWidth, displayHeight;
@@ -137,17 +164,29 @@ public class Config {
 	/**
 	 * @return horizontal display resolution when not fullscreen
 	 */
-	public static int getDisplayWidth() {
-		check();
-		return instance.displayWidth;
+	public int getDisplayWidth() {
+		return this.displayWidth;
+	}
+
+	/**
+	 * @param h horizontal display resolution when not fullscreen
+	 */
+	public void setDisplayWidth(int w) {
+		this.displayWidth = w;
 	}
 
 	/**
 	 * @return vertical display resolution when not fullscreen
 	 */
-	public static int getDisplayHeight() {
-		check();
-		return instance.displayHeight;
+	public int getDisplayHeight() {
+		return this.displayHeight;
+	}
+
+	/**
+	 * @param h vertical display resolution when not fullscreen
+	 */
+	public void setDisplayHeight(int h) {
+		this.displayHeight = h;
 	}
 
 	private String displayTitle;
@@ -155,9 +194,15 @@ public class Config {
 	/**
 	 * @return title of the display window in the OS running Bifstk
 	 */
-	public static String getDisplayTitle() {
-		check();
-		return instance.displayTitle;
+	public String getDisplayTitle() {
+		return this.displayTitle;
+	}
+
+	/**
+	 * @param title of the display window in the OS running Bifstk
+	 */
+	public void setDisplayTitle(String title) {
+		this.displayTitle = title;
 	}
 
 	private boolean displayVsync;
@@ -165,9 +210,15 @@ public class Config {
 	/**
 	 * @return sync display refresh rate to the monitor's refresh rate if true
 	 */
-	public static boolean isDisplayVsync() {
-		check();
-		return instance.displayVsync;
+	public boolean isDisplayVsync() {
+		return this.displayVsync;
+	}
+
+	/**
+	 * @param vs sync display refresh rate to the monitor's refresh rate if true
+	 */
+	public void setDisplayVsync(boolean vs) {
+		this.displayVsync = vs;
 	}
 
 	private int displayAntialiasSamples = 0;
@@ -177,8 +228,17 @@ public class Config {
 	 * @return the number of antialias samples when Multisampling is enabled, or
 	 *         0
 	 */
-	public static int getDisplayAntialiasSamples() {
-		return instance.displayAntialiasSamples;
+	public int getDisplayAntialiasSamples() {
+		return this.displayAntialiasSamples;
+	}
+
+	/**
+	 * @param samples the number of antialias samples when Multisampling is
+	 *            enabled, or 0
+	 */
+	public void setDisplayAntialiasSamples(int samples) {
+		this.displayAntialiasSamples = Util.clampi(samples,
+				displayAntialiasSamplesMin, displayAntialiasSamplesMax);
 	}
 
 	private String fontPath;
@@ -186,9 +246,15 @@ public class Config {
 	/**
 	 * @return path to the TTF file used for font rendering
 	 */
-	public static String getFontPath() {
-		check();
-		return instance.fontPath;
+	public String getFontPath() {
+		return this.fontPath;
+	}
+
+	/**
+	 * @param fp path to the TTF file used for font rendering
+	 */
+	public void setFontPath(String fp) {
+		this.fontPath = fp;
 	}
 
 	private int fontSizeNormal;
@@ -197,9 +263,15 @@ public class Config {
 	/**
 	 * @return point size of the font in 'normal' size
 	 */
-	public static int getFontSizeNormal() {
-		check();
-		return instance.fontSizeNormal;
+	public int getFontSizeNormal() {
+		return this.fontSizeNormal;
+	}
+
+	/**
+	 * @param size point size of the font in 'normal' size
+	 */
+	public void setFontSizeNormal(int size) {
+		this.fontSizeNormal = Util.clampi(size, fontSizeMin, fontSizeMax);
 	}
 
 	private int fontSizeSmall;
@@ -207,9 +279,15 @@ public class Config {
 	/**
 	 * @return point size of the font in 'small' size
 	 */
-	public static int getFontSizeSmall() {
-		check();
-		return instance.fontSizeSmall;
+	public int getFontSizeSmall() {
+		return this.fontSizeSmall;
+	}
+
+	/**
+	 * @param size point size of the font in 'small' size
+	 */
+	public void setFontSizeSmall(int size) {
+		this.fontSizeSmall = Util.clampi(size, fontSizeMin, fontSizeMax);
 	}
 
 	private String loggerDateFormat;
@@ -217,9 +295,15 @@ public class Config {
 	/**
 	 * @return format of the logger date, see {@link DateFormat}
 	 */
-	public static String getLoggerDateFormat() {
-		check();
-		return instance.loggerDateFormat;
+	public String getLoggerDateFormat() {
+		return this.loggerDateFormat;
+	}
+
+	/**
+	 * @param format format of the logger date, see {@link DateFormat}
+	 */
+	public void setLoggerDateFormat(String format) {
+		this.loggerDateFormat = format;
 	}
 
 	private boolean loggerFileEnabled;
@@ -227,9 +311,15 @@ public class Config {
 	/**
 	 * @return true if logging to a file is enabled
 	 */
-	public static boolean isLoggerFileEnabled() {
-		check();
-		return instance.loggerFileEnabled;
+	public boolean isLoggerFileEnabled() {
+		return this.loggerFileEnabled;
+	}
+
+	/**
+	 * @param e true if logging to a file is enabled
+	 */
+	public void setLoggerFileEnabled(boolean e) {
+		this.loggerFileEnabled = e;
 	}
 
 	private boolean loggerFileOverwrite;
@@ -237,9 +327,15 @@ public class Config {
 	/**
 	 * @return true if the previous log files should be overwritten
 	 */
-	public static boolean isLoggerFileOverwrite() {
-		check();
-		return instance.loggerFileOverwrite;
+	public boolean isLoggerFileOverwrite() {
+		return this.loggerFileOverwrite;
+	}
+
+	/**
+	 * @param b true if the previous log files should be overwritten
+	 */
+	public void setLoggerFileOverwrite(boolean b) {
+		this.loggerFileOverwrite = b;
 	}
 
 	private String loggerFilePath;
@@ -247,9 +343,15 @@ public class Config {
 	/**
 	 * @return path to the log file
 	 */
-	public static String getLoggerFilePath() {
-		check();
-		return instance.loggerFilePath;
+	public String getLoggerFilePath() {
+		return this.loggerFilePath;
+	}
+
+	/**
+	 * @param path path to the log file
+	 */
+	public void setLoggerFilePath(String path) {
+		this.loggerFilePath = path;
 	}
 
 	private boolean loggerStdoutDebug;
@@ -257,9 +359,15 @@ public class Config {
 	/**
 	 * @return true if debug statements should be printed to stdout
 	 */
-	public static boolean isLoggerStdoutDebug() {
-		check();
-		return instance.loggerStdoutDebug;
+	public boolean isLoggerStdoutDebug() {
+		return this.loggerStdoutDebug;
+	}
+
+	/**
+	 * @param d true if debug statements should be printed to stdout
+	 */
+	public void setLoggerStdoutDebug(boolean d) {
+		this.loggerStdoutDebug = d;
 	}
 
 	private boolean loggerStdoutEnabled;
@@ -267,9 +375,15 @@ public class Config {
 	/**
 	 * @return true to if the log should be printed to stdout
 	 */
-	public static boolean isLoggerStdoutEnabled() {
-		check();
-		return instance.loggerStdoutEnabled;
+	public boolean isLoggerStdoutEnabled() {
+		return this.loggerStdoutEnabled;
+	}
+
+	/**
+	 * @param b true to if the log should be printed to stdout
+	 */
+	public void setLoggerStdoutEnabled(boolean b) {
+		this.loggerStdoutEnabled = b;
 	}
 
 	private boolean loggerStdoutTrace;
@@ -277,9 +391,15 @@ public class Config {
 	/**
 	 * @return true if a context trace should be printed to stdout
 	 */
-	public static boolean isLoggerStdoutTrace() {
-		check();
-		return instance.loggerStdoutTrace;
+	public boolean isLoggerStdoutTrace() {
+		return this.loggerStdoutTrace;
+	}
+
+	/**
+	 * @param b true if a context trace should be printed to stdout
+	 */
+	public void setLoggerStdoutTrace(boolean b) {
+		this.loggerStdoutTrace = b;
 	}
 
 	private int loggerTraceLength;
@@ -288,9 +408,16 @@ public class Config {
 	/**
 	 * @return length of the log context trace
 	 */
-	public static int getLoggerTraceLength() {
-		check();
-		return instance.loggerTraceLength;
+	public int getLoggerTraceLength() {
+		return this.loggerTraceLength;
+	}
+
+	/**
+	 * @param len length of the log context trace
+	 */
+	public void setLoggerTraceLength(int len) {
+		this.loggerTraceLength = Util.clampi(len, loggerTraceLenMin,
+				loggerTraceLenMax);
 	}
 
 	private String themePath;
@@ -298,9 +425,15 @@ public class Config {
 	/**
 	 * @return path to the theme file
 	 */
-	public static String getThemePath() {
-		check();
-		return instance.themePath;
+	public String getThemePath() {
+		return this.themePath;
+	}
+
+	/**
+	 * @param path path to the theme file
+	 */
+	public void setThemePath(String path) {
+		this.themePath = path;
 	}
 
 	private boolean wmDebugLayout;
@@ -308,14 +441,16 @@ public class Config {
 	/**
 	 * @return true if debug information about the WM layout should be displayed
 	 */
-	public static boolean isWmDebugLayout() {
-		check();
-		return instance.wmDebugLayout;
+	public boolean isWmDebugLayout() {
+		return this.wmDebugLayout;
 	}
-	
-	public static void setWmDebugLayout(boolean d) {
-		check();
-		instance.wmDebugLayout = d;
+
+	/**
+	 * @param d true if debug information about the WM layout should be
+	 *            displayed
+	 */
+	public void setWmDebugLayout(boolean d) {
+		this.wmDebugLayout = d;
 	}
 
 	private boolean wmFocusFollowmouse;
@@ -323,9 +458,15 @@ public class Config {
 	/**
 	 * @return true if the focus should follow the mouse cursor
 	 */
-	public static boolean isWmFocusFollowmouse() {
-		check();
-		return instance.wmFocusFollowmouse;
+	public boolean isWmFocusFollowmouse() {
+		return this.wmFocusFollowmouse;
+	}
+
+	/**
+	 * @param b true if the focus should follow the mouse cursor
+	 */
+	public void setWmFocusFollowmouse(boolean b) {
+		this.wmFocusFollowmouse = b;
 	}
 
 	private boolean wmWindowSnapTop;
@@ -333,8 +474,15 @@ public class Config {
 	/**
 	 * @return true if top window drag-snap is enabled
 	 */
-	public static boolean isWmWindowSnapTop() {
-		return instance.wmWindowSnapTop;
+	public boolean isWmWindowSnapTop() {
+		return this.wmWindowSnapTop;
+	}
+
+	/**
+	 * @param w true if top window drag-snap is enabled
+	 */
+	public void setWmWindowSnapTop(boolean w) {
+		this.wmWindowSnapTop = w;
 	}
 
 	private boolean wmWindowDockLeft;
@@ -342,8 +490,15 @@ public class Config {
 	/**
 	 * @return true if the left dock is enabled
 	 */
-	public static boolean isWmWindowDockLeft() {
-		return instance.wmWindowDockLeft;
+	public boolean isWmWindowDockLeft() {
+		return this.wmWindowDockLeft;
+	}
+
+	/**
+	 * @param b true if the left dock is enabled
+	 */
+	public void setWmWindowDockLeft(boolean b) {
+		this.wmWindowDockLeft = b;
 	}
 
 	private boolean wmWindowDockRight;
@@ -351,8 +506,15 @@ public class Config {
 	/**
 	 * @return true if the right dock is enabled
 	 */
-	public static boolean isWmWindowDockRight() {
-		return instance.wmWindowDockRight;
+	public boolean isWmWindowDockRight() {
+		return this.wmWindowDockRight;
+	}
+
+	/**
+	 * @param b true if the right dock is enabled
+	 */
+	public void setWmWindowDockRight(boolean b) {
+		this.wmWindowDockRight = b;
 	}
 
 	private int wmFrameSizeMin;
@@ -360,8 +522,15 @@ public class Config {
 	/**
 	 * @return the minimum horizontal and vertical size of a Frame
 	 */
-	public static int getWmFrameSizeMin() {
-		return instance.wmFrameSizeMin;
+	public int getWmFrameSizeMin() {
+		return this.wmFrameSizeMin;
+	}
+
+	/**
+	 * @param m the minimum horizontal and vertical size of a Frame
+	 */
+	public void setWmFrameSizeMin(int m) {
+		this.wmFrameSizeMin = m;
 	}
 
 	private boolean wmFrameSnap;
@@ -369,8 +538,15 @@ public class Config {
 	/**
 	 * @return true if Frame snapping is activated (not edge resistance)
 	 */
-	public static boolean isWmFrameSnap() {
-		return instance.wmFrameSnap;
+	public boolean isWmFrameSnap() {
+		return this.wmFrameSnap;
+	}
+
+	/**
+	 * @param b true if Frame snapping is activated (not edge resistance)
+	 */
+	public void setWmFrameSnap(boolean b) {
+		this.wmFrameSnap = b;
 	}
 
 	private int wmFrameSnapRadius;
@@ -378,33 +554,54 @@ public class Config {
 	/**
 	 * @return the effect radius of Frame snapping
 	 */
-	public static int getWmFrameSnapRadius() {
-		return instance.wmFrameSnapRadius;
+	public int getWmFrameSnapRadius() {
+		return this.wmFrameSnapRadius;
 	}
-	
+
+	/**
+	 * @param r the effect radius of Frame snapping
+	 */
+	public void setWmFrameSnapRadius(int r) {
+		this.wmFrameSnapRadius = r;
+	}
+
 	/**
 	 * @return the radius of effect of frame snapping
 	 */
-	public static int getFrameSnapRadius() {
-		return instance.wmFrameSnapRadius;
+	public int getFrameSnapRadius() {
+		return this.wmFrameSnapRadius;
 	}
-	
+
 	private boolean wmAnimations;
-	
+
 	/**
 	 * @return true if WM animated transitions are enabled
 	 */
-	public static boolean getWmAnimations() {
-		return instance.wmAnimations;
+	public boolean getWmAnimations() {
+		return this.wmAnimations;
 	}
-	
-	private int wmAnimationsLength;
-	
+
 	/**
-	 * @return the duration of WM animated transitions when enabled
+	 * @param b true if WM animated transitions are enabled
 	 */
-	public static int getWmAnimationsLength() {
-		return instance.wmAnimationsLength;
+	public void setWmAnimations(boolean b) {
+		this.wmAnimations = true;
+	}
+
+	private int wmAnimationsLength;
+
+	/**
+	 * @return the duration of WM animated transitions when enabled in ms
+	 */
+	public int getWmAnimationsLength() {
+		return this.wmAnimationsLength;
+	}
+
+	/**
+	 * @param ms the duration of WM animated transitions when enabled in ms
+	 */
+	public void setWmAnimationsLength(int ms) {
+		this.wmAnimationsLength = ms;
 	}
 
 	private void readProps(Map<ConfigProperty, String> props)
@@ -415,105 +612,97 @@ public class Config {
 			try {
 				switch (prop.getKey()) {
 				case cursorsPath:
-					this.cursorsPath = sval;
+					setCursorsPath(sval);
 					break;
 				case displayFps:
-					this.displayFps = Util.clampi(Integer.parseInt(sval),
-							displayFpsMin, displayFpsMax);
+					setDisplayFps(Integer.parseInt(sval));
 					break;
 				case displayFpsCap:
-					this.displayFpsCap = Boolean.parseBoolean(sval);
+					setDisplayFpsCap(Boolean.parseBoolean(sval));
 					break;
 				case displayFullscreen:
-					this.displayFullScreen = Boolean.parseBoolean(sval);
-					break;
-				case displayHeight:
-					this.displayHeight = Integer.parseInt(sval);
-					break;
-				case displayTitle:
-					this.displayTitle = sval.trim();
-					break;
-				case displayVsync:
-					this.displayVsync = Boolean.parseBoolean(sval);
+					setDisplayFullScreen(Boolean.parseBoolean(sval));
 					break;
 				case displayWidth:
-					this.displayWidth = Integer.parseInt(sval);
+					setDisplayWidth(Integer.parseInt(sval));
+					break;
+				case displayHeight:
+					setDisplayHeight(Integer.parseInt(sval));
+					break;
+				case displayTitle:
+					setDisplayTitle(sval.trim());
+					break;
+				case displayVsync:
+					setDisplayVsync(Boolean.parseBoolean(sval));
 					break;
 				case displayAntialiasSamples:
-					this.displayAntialiasSamples = Util.clampi(
-							Integer.parseInt(sval),
-							this.displayAntialiasSamplesMin,
-							this.displayAntialiasSamplesMax);
+					setDisplayAntialiasSamples(Integer.parseInt(sval));
 					break;
 				case fontPath:
-					this.fontPath = sval;
+					setFontPath(sval);
 					break;
 				case fontSizeNormal:
-					this.fontSizeNormal = Util.clampi(Integer.parseInt(sval),
-							fontSizeMin, fontSizeMax);
+					setFontSizeNormal(Integer.parseInt(sval));
 					break;
 				case fontSizeSmall:
-					this.fontSizeSmall = Util.clampi(Integer.parseInt(sval),
-							fontSizeMin, fontSizeMax);
+					setFontSizeSmall(Integer.parseInt(sval));
 					break;
 				case loggerDateFormat:
-					this.loggerDateFormat = sval;
+					setLoggerDateFormat(sval);
 					break;
 				case loggerFileEnabled:
-					this.loggerFileEnabled = Boolean.parseBoolean(sval);
+					setLoggerFileEnabled(Boolean.parseBoolean(sval));
 					break;
 				case loggerFileOverwrite:
-					this.loggerFileOverwrite = Boolean.parseBoolean(sval);
+					setLoggerFileOverwrite(Boolean.parseBoolean(sval));
 					break;
 				case loggerFilePath:
-					this.loggerFilePath = sval;
+					setLoggerFilePath(sval);
 					break;
 				case loggerStdoutDebug:
-					this.loggerStdoutDebug = Boolean.parseBoolean(sval);
+					setLoggerStdoutDebug(Boolean.parseBoolean(sval));
 					break;
 				case loggerStdoutEnabled:
-					this.loggerStdoutEnabled = Boolean.parseBoolean(sval);
+					setLoggerStdoutEnabled(Boolean.parseBoolean(sval));
 					break;
 				case loggerStdoutTrace:
-					this.loggerStdoutTrace = Boolean.parseBoolean(sval);
+					setLoggerStdoutTrace(Boolean.parseBoolean(sval));
 					break;
 				case loggerTraceLength:
-					this.loggerTraceLength = Util.clampi(
-							Integer.parseInt(sval), loggerTraceLenMin,
-							loggerTraceLenMax);
+					setLoggerTraceLength(Integer.parseInt(sval));
 					break;
 				case themePath:
-					this.themePath = sval;
+					setThemePath(sval);
 					break;
 				case wmDebugLayout:
-					this.wmDebugLayout = Boolean.parseBoolean(sval);
+					setWmDebugLayout(Boolean.parseBoolean(sval));
 					break;
 				case wmFocusFollowmouse:
-					this.wmFocusFollowmouse = Boolean.parseBoolean(sval);
+					setWmFocusFollowmouse(Boolean.parseBoolean(sval));
 					break;
 				case wmWindowSnapTop:
-					this.wmWindowSnapTop = Boolean.parseBoolean(sval);
+					setWmWindowSnapTop(Boolean.parseBoolean(sval));
 					break;
 				case wmWindowDockLeft:
-					this.wmWindowDockLeft = Boolean.parseBoolean(sval);
+					setWmWindowDockLeft(Boolean.parseBoolean(sval));
 					break;
 				case wmWindowDockRight:
-					this.wmWindowDockRight = Boolean.parseBoolean(sval);
+					setWmWindowDockRight(Boolean.parseBoolean(sval));
 					break;
 				case wmFrameSizeMin:
-					this.wmFrameSizeMin = Integer.parseInt(sval);
+					setWmFrameSizeMin(Integer.parseInt(sval));
 					break;
 				case wmFrameSnap:
-					this.wmFrameSnap = Boolean.parseBoolean(sval);
+					setWmFrameSnap(Boolean.parseBoolean(sval));
 					break;
 				case wmFrameSnapRadius:
-					this.wmFrameSnapRadius = Integer.parseInt(sval);
+					setWmFrameSnapRadius(Integer.parseInt(sval));
 					break;
 				case wmAnimations:
-					this.wmAnimations = Boolean.parseBoolean(sval);
+					setWmAnimations(Boolean.parseBoolean(sval));
 					break;
 				case wmAnimationsLength:
-					this.wmAnimationsLength = Integer.parseInt(sval);
+					setWmAnimationsLength(Integer.parseInt(sval));
 					break;
 				}
 			} catch (Throwable t) {
@@ -524,24 +713,33 @@ public class Config {
 		}
 	}
 
-	private static void check() throws IllegalStateException {
-		if (instance == null) {
-			throw new IllegalStateException("Config has not been loaded");
-		}
+	/**
+	 * @return the current global Config instance
+	 */
+	public static Config get() {
+		return instance;
 	}
 
 	/**
-	 * Statically loads the configuration from a file
-	 * <p>
-	 * Will create the singleton instance and enable access to property values
-	 * through the appropriate public accessor
+	 * Loads an existing Config instance
+	 * 
+	 * @param conf the new current global Config instance
+	 */
+	public static void set(Config conf) {
+		Config.instance = conf;
+	}
+
+	/**
+	 * Creates a Config instance from a file descriptor
 	 * 
 	 * @param path path to a local file containing definitions for all
 	 *            {@link bifstk.config.ConfigProperty}
-	 * @throws BifstkException the configuration was not loaded
+	 * @return a Bifstk Config instance that can be loaded through
+	 *         {@link #setInstance(Config)} or stored
+	 * @throws BifstkException
 	 */
-	public static void load(String path) throws BifstkException {
-		Config.instance = new Config(new File(path));
+	public static Config load(String path) throws BifstkException {
+		return new Config(new File(path));
 	}
 
 }

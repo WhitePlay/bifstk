@@ -378,7 +378,7 @@ public class Logic {
 					.isAssignableFrom(this.leftMouse.clickedFrame.getClass());
 		}
 
-		boolean focusFollowMouse = Config.isWmFocusFollowmouse();
+		boolean focusFollowMouse = Config.get().isWmFocusFollowmouse();
 		// apply sloppy focus
 		if (focusFollowMouse && !this.leftMouse.clicked
 				&& !this.leftMouse.dragged) {
@@ -603,7 +603,7 @@ public class Logic {
 
 				// initiate or cancel maximize on top drag
 				if (lclickIsWindow && dragged.isResizable()
-						&& Config.isWmWindowSnapTop()) {
+						&& Config.get().isWmWindowSnapTop()) {
 					if (this.leftMouse.dragTop) {
 						if (this.leftMouse.hoverY > 1) {
 							this.leftMouse.dragTop = false;
@@ -647,7 +647,7 @@ public class Logic {
 				}
 
 				// drag to left dock
-				if (lclickIsWindow && Config.isWmWindowDockLeft()) {
+				if (lclickIsWindow && Config.get().isWmWindowDockLeft()) {
 					Window w = (Window) dragged;
 					if (this.leftMouse.dragLeft) {
 						if (this.leftMouse.hoverX > 0) {
@@ -663,7 +663,7 @@ public class Logic {
 					} else if (dragged.isResizable()) {
 						boolean canDock = Display.getDisplayMode().getHeight()
 								/ (this.state.getLeftDock().size() + 1) > Config
-								.getWmFrameSizeMin();
+								.get().getWmFrameSizeMin();
 						if (canDock && this.leftMouse.hoverX == 0) {
 							this.leftMouse.dragLeft = true;
 							// move in dock
@@ -698,7 +698,7 @@ public class Logic {
 				}
 
 				// drag to right dock
-				if (lclickIsWindow && Config.isWmWindowDockRight()) {
+				if (lclickIsWindow && Config.get().isWmWindowDockRight()) {
 					Window w = (Window) dragged;
 					if (this.leftMouse.dragRight) {
 						if (this.leftMouse.hoverX < Display.getDisplayMode()
@@ -719,7 +719,7 @@ public class Logic {
 					} else if (dragged.isResizable()) {
 						boolean canDock = Display.getDisplayMode().getHeight()
 								/ (this.state.getRightDock().size() + 1) > Config
-								.getWmFrameSizeMin();
+								.get().getWmFrameSizeMin();
 						if (canDock
 								&& this.leftMouse.hoverX == Display
 										.getDisplayMode().getWidth() - 1) {
@@ -1049,7 +1049,7 @@ public class Logic {
 			Window bot = this.leftMouse.leftDockHBCBotWin;
 			int border = Theme.getWindowBorderWidth();
 			int space = top.getHeight() + bot.getHeight();
-			int minH = Config.getWmFrameSizeMin();
+			int minH = Config.get().getWmFrameSizeMin();
 
 			// resize top
 			int nht = this.leftMouse.hoverY - top.getY() - border / 2;
@@ -1092,7 +1092,7 @@ public class Logic {
 			Window bot = this.leftMouse.rightDockHBCBotWin;
 			int border = Theme.getWindowBorderWidth();
 			int space = top.getHeight() + bot.getHeight();
-			int minH = Config.getWmFrameSizeMin();
+			int minH = Config.get().getWmFrameSizeMin();
 
 			// resize top
 			int nht = this.leftMouse.hoverY - top.getY() - border / 2;

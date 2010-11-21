@@ -141,7 +141,7 @@ public abstract class Frame implements Drawable, Clickable {
 	 */
 	public Frame(int x, int y, int w, int h) {
 		this.bounds = new Rectangle(w, h);
-		int min = Config.getWmFrameSizeMin();
+		int min = Config.get().getWmFrameSizeMin();
 		this.minBounds = new Rectangle(min, min);
 		this.pos = new Point(x, y);
 	}
@@ -174,7 +174,7 @@ public abstract class Frame implements Drawable, Clickable {
 	 */
 	public boolean isRemovable() {
 		return !this.active
-				&& (Sys.getTime() - this.removalTime) > Config
+				&& (Sys.getTime() - this.removalTime) > Config.get()
 						.getWmAnimationsLength();
 	}
 
@@ -186,7 +186,7 @@ public abstract class Frame implements Drawable, Clickable {
 		int borderWidth = getBorderWidth();
 		int titlebarHeight = getTitleBarHeight();
 		long t = Sys.getTime();
-		float animLen = (float) Config.getWmAnimationsLength();
+		float animLen = (float) Config.get().getWmAnimationsLength();
 
 		x = this.getX();
 		y = this.getY();
@@ -312,7 +312,7 @@ public abstract class Frame implements Drawable, Clickable {
 					int yClickDec = 0;
 					boolean hover = false;
 					float hoverAnim = 0.0f;
-					long hoverAnimLen = Config.getWmAnimationsLength();
+					long hoverAnimLen = Config.get().getWmAnimationsLength();
 
 					switch (c) {
 					case CLOSE:
@@ -383,7 +383,7 @@ public abstract class Frame implements Drawable, Clickable {
 						Util.draw2DTexturedQuad(v2, c2, img.getTexId());
 						Util.popScissor();
 
-						if (!Config.getWmAnimations()) {
+						if (!Config.get().getWmAnimations()) {
 							hoverAnim = (hover ? 1.0f : 0.0f);
 						}
 
@@ -1084,7 +1084,7 @@ public abstract class Frame implements Drawable, Clickable {
 		Color unfocusCol = getFrameUnfocusedColor();
 
 		long t = Sys.getTime();
-		float animLen = (float) Config.getWmAnimationsLength();
+		float animLen = (float) Config.get().getWmAnimationsLength();
 
 		float focusAnim = Util.clampf((float) (t - this.getFocusChangeTime())
 				/ animLen, 0.0f, 1.0f);
@@ -1103,7 +1103,7 @@ public abstract class Frame implements Drawable, Clickable {
 		Color shadowUnfCol = getFrameShadowUnfocusedColor();
 
 		long t = Sys.getTime();
-		float animLen = (float) Config.getWmAnimationsLength();
+		float animLen = (float) Config.get().getWmAnimationsLength();
 
 		float focusAnim = Util.clampf((float) (t - this.getFocusChangeTime())
 				/ animLen, 0.0f, 1.0f);
@@ -1124,7 +1124,7 @@ public abstract class Frame implements Drawable, Clickable {
 		float resizedAlpha = getFrameResizedAlpha();
 
 		long t = Sys.getTime();
-		float animLen = (float) Config.getWmAnimationsLength();
+		float animLen = (float) Config.get().getWmAnimationsLength();
 
 		float movedAnim = Util.clampf((float) (t - this.getDragChangeTime())
 				/ animLen, 0.0f, 1.0f);
@@ -1168,7 +1168,7 @@ public abstract class Frame implements Drawable, Clickable {
 		float unfocusAlpha = getFrameUnfocusedAlpha();
 
 		long t = Sys.getTime();
-		float animLen = (float) Config.getWmAnimationsLength();
+		float animLen = (float) Config.get().getWmAnimationsLength();
 
 		float focusAnim = Util.clampf((float) (t - this.getFocusChangeTime())
 				/ animLen, 0.0f, 1.0f);

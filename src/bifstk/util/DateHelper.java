@@ -30,7 +30,7 @@ public class DateHelper {
 	 * Access to non-static class members is restricted
 	 */
 	private DateHelper() {
-		String format = Config.getLoggerDateFormat();
+		String format = Config.get().getLoggerDateFormat();
 		try {
 			timeStamps = new SimpleDateFormat(format);
 		} catch (Exception e) {

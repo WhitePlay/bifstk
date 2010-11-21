@@ -349,22 +349,27 @@ public class Renderer {
 
 			// display a mask when a modal is shown
 			if (this.state.getModalWindow() == f) {
-				long t = Sys.getTime();
-				long app = this.state.getModalWindow().getApparitionTime();
-				long rem = this.state.getModalWindow().getRemovalTime();
-				float animLen = (float) Config.get().getWmAnimationsLength();
+				float modalAlpha = Theme.getRootBackgroundModalAlpha();
 
-				float aApp = Util.clampf((float) (t - app) / animLen, 0.0f,
-						1.0f);
-				float aRem = 1.0f - Util.clampf((float) (t - rem) / animLen,
-						0.0f, 1.0f);
-				if (aRem == 0.0f && state.getModalWindow().isActive()) {
-					aRem = 1.0f;
+				if (Config.get().isWmAnimations()) {
+					long t = Sys.getTime();
+					long app = this.state.getModalWindow().getApparitionTime();
+					long rem = this.state.getModalWindow().getRemovalTime();
+					float animLen = (float) Config.get()
+							.getWmAnimationsLength();
+
+					float aApp = Util.clampf((float) (t - app) / animLen, 0.0f,
+							1.0f);
+					float aRem = 1.0f - Util.clampf(
+							(float) (t - rem) / animLen, 0.0f, 1.0f);
+					if (aRem == 0.0f && state.getModalWindow().isActive()) {
+						aRem = 1.0f;
+					}
+					modalAlpha *= aApp * aRem;
 				}
 
-				float modalAlpha = Theme.getRootBackgroundModalAlpha();
 				float[] c1 = Theme.getRootBackgroundModalColor().toArray(4,
-						modalAlpha * aApp * aRem);
+						modalAlpha);
 				int[] v1 = {
 						0, 0, //
 						width, 0, //

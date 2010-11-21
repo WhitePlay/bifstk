@@ -14,6 +14,7 @@ import bifstk.config.Fonts;
 import bifstk.config.Theme;
 import bifstk.util.BifstkException;
 import bifstk.util.Logger;
+import bifstk.util.SharedFrameException;
 import bifstk.util.ThreadAccessException;
 import bifstk.wm.Area;
 import bifstk.wm.Logic;
@@ -239,6 +240,7 @@ public class Bifstk {
 	 * 
 	 * @param f the Window to add in the WM
 	 * @throws ThreadAccessException method was called outside the Bifstk thread
+	 * @throws SharedFrameException the Window is already held by the WM
 	 */
 	public static void addWindow(Window f) throws ThreadAccessException {
 		checkThread();
@@ -257,9 +259,15 @@ public class Bifstk {
 		boolean r = Bifstk.logic.getState().removeWindow(f);
 		if (!r) {
 			r = Bifstk.logic.getState().removeFromDock(f, DockPosition.LEFT);
+			if (r) {
+				f.toggleDocked();
+			}
 		}
 		if (!r) {
 			r = Bifstk.logic.getState().removeFromDock(f, DockPosition.RIGHT);
+			if (r) {
+				f.toggleDocked();
+			}
 		}
 	}
 
@@ -275,6 +283,7 @@ public class Bifstk {
 	 * 
 	 * @param f the Window to define as modal, or null
 	 * @throws ThreadAccessException method was called outside the Bifstk thread
+	 * @throws SharedFrameException the Window is already held by the WM
 	 */
 	public static void setModalWindow(Window f) throws ThreadAccessException {
 		checkThread();
@@ -286,6 +295,7 @@ public class Bifstk {
 	 * 
 	 * @param a the Area to add
 	 * @throws ThreadAccessException method was called outside the Bifstk thread
+	 * @throws SharedFrameException the Area is already held by the WM
 	 */
 	public static void addArea(Area a) throws ThreadAccessException {
 		checkThread();

@@ -577,7 +577,7 @@ public class Config {
 	/**
 	 * @return true if WM animated transitions are enabled
 	 */
-	public boolean getWmAnimations() {
+	public boolean isWmAnimations() {
 		return this.wmAnimations;
 	}
 
@@ -585,7 +585,7 @@ public class Config {
 	 * @param b true if WM animated transitions are enabled
 	 */
 	public void setWmAnimations(boolean b) {
-		this.wmAnimations = true;
+		this.wmAnimations = b;
 	}
 
 	private int wmAnimationsLength;

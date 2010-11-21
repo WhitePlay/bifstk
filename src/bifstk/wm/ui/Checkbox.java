@@ -7,9 +7,18 @@ import bifstk.config.Theme;
 import bifstk.gl.Color;
 import bifstk.gl.Util;
 
+/**
+ * Standard checkbox with two states
+ * 
+ * 
+ */
 public class Checkbox extends AbstractButton {
 
 	private boolean checked = false;
+
+	public Checkbox() {
+		this(false);
+	}
 
 	public Checkbox(boolean state) {
 		this.checked = state;
@@ -60,6 +69,13 @@ public class Checkbox extends AbstractButton {
 	 */
 	public boolean isChecked() {
 		return this.checked;
+	}
+
+	/**
+	 * @param c true if this checkbox should be checked
+	 */
+	public void setChecked(boolean c) {
+		this.checked = c;
 	}
 
 	@Override

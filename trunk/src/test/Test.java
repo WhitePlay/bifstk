@@ -14,6 +14,7 @@ import bifstk.gl.Image;
 import bifstk.gl.Util;
 import bifstk.util.BifstkException;
 import bifstk.util.Logger;
+import bifstk.util.SharedFrameException;
 import bifstk.wm.Area;
 import bifstk.wm.Frame;
 import bifstk.wm.Window;
@@ -24,6 +25,7 @@ import bifstk.wm.ui.Checkbox;
 import bifstk.wm.ui.CustomBorder;
 import bifstk.wm.ui.FlowBox;
 import bifstk.wm.ui.Label;
+import bifstk.wm.util.ConfigWindow;
 
 public class Test implements Handler, Root {
 
@@ -131,6 +133,13 @@ public class Test implements Handler, Root {
 				f.setContent(vBox);
 				f.pack();
 				Bifstk.addWindow(f);
+			}
+			break;
+
+		case Keyboard.KEY_K:
+			try {
+				Bifstk.addWindow(ConfigWindow.getInstance());
+			} catch (SharedFrameException e) {
 			}
 			break;
 

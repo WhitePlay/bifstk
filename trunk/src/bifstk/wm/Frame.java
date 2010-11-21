@@ -199,6 +199,10 @@ public abstract class Frame implements Drawable, Clickable {
 			focusAnim = 1.0f - focusAnim;
 		}
 
+		if (!Config.get().isWmAnimations()) {
+			focusAnim = ((this.isFocused()) ? 1.0f : 0.0f);
+		}
+
 		Color borderCol = getBorderFocusedColor().blend(
 				getBorderUnfocusedColor(), focusAnim);
 		Color borderBorderCol = getBorderOuterFocusedColor().blend(
@@ -383,7 +387,7 @@ public abstract class Frame implements Drawable, Clickable {
 						Util.draw2DTexturedQuad(v2, c2, img.getTexId());
 						Util.popScissor();
 
-						if (!Config.get().getWmAnimations()) {
+						if (!Config.get().isWmAnimations()) {
 							hoverAnim = (hover ? 1.0f : 0.0f);
 						}
 
@@ -1083,16 +1087,24 @@ public abstract class Frame implements Drawable, Clickable {
 		Color focusCol = getFrameFocusedColor();
 		Color unfocusCol = getFrameUnfocusedColor();
 
-		long t = Sys.getTime();
-		float animLen = (float) Config.get().getWmAnimationsLength();
+		if (Config.get().isWmAnimations()) {
+			long t = Sys.getTime();
+			float animLen = (float) Config.get().getWmAnimationsLength();
 
-		float focusAnim = Util.clampf((float) (t - this.getFocusChangeTime())
-				/ animLen, 0.0f, 1.0f);
-		if (!this.isFocused()) {
-			focusAnim = 1.0f - focusAnim;
+			float focusAnim = Util.clampf(
+					(float) (t - this.getFocusChangeTime()) / animLen, 0.0f,
+					1.0f);
+			if (!this.isFocused()) {
+				focusAnim = 1.0f - focusAnim;
+			}
+			return focusCol.blend(unfocusCol, focusAnim);
+		} else {
+			if (this.isFocused()) {
+				return focusCol;
+			} else {
+				return unfocusCol;
+			}
 		}
-
-		return focusCol.blend(unfocusCol, focusAnim);
 	}
 
 	/**
@@ -1102,15 +1114,24 @@ public abstract class Frame implements Drawable, Clickable {
 		Color shadowCol = getFrameShadowFocusedColor();
 		Color shadowUnfCol = getFrameShadowUnfocusedColor();
 
-		long t = Sys.getTime();
-		float animLen = (float) Config.get().getWmAnimationsLength();
+		if (Config.get().isWmAnimations()) {
+			long t = Sys.getTime();
+			float animLen = (float) Config.get().getWmAnimationsLength();
 
-		float focusAnim = Util.clampf((float) (t - this.getFocusChangeTime())
-				/ animLen, 0.0f, 1.0f);
-		if (!this.isFocused()) {
-			focusAnim = 1.0f - focusAnim;
+			float focusAnim = Util.clampf(
+					(float) (t - this.getFocusChangeTime()) / animLen, 0.0f,
+					1.0f);
+			if (!this.isFocused()) {
+				focusAnim = 1.0f - focusAnim;
+			}
+			return shadowCol.blend(shadowUnfCol, focusAnim);
+		} else {
+			if (this.isFocused()) {
+				return shadowCol;
+			} else {
+				return shadowUnfCol;
+			}
 		}
-		return shadowCol.blend(shadowUnfCol, focusAnim);
 	}
 
 	/**
@@ -1123,38 +1144,51 @@ public abstract class Frame implements Drawable, Clickable {
 		float movedAlpha = getFrameMovedAlpha();
 		float resizedAlpha = getFrameResizedAlpha();
 
-		long t = Sys.getTime();
-		float animLen = (float) Config.get().getWmAnimationsLength();
+		if (Config.get().isWmAnimations()) {
 
-		float movedAnim = Util.clampf((float) (t - this.getDragChangeTime())
-				/ animLen, 0.0f, 1.0f);
-		if (!this.isDragged()) {
-			movedAnim = 1.0f - movedAnim;
-		}
-		float resizeAnim = Util.clampf((float) (t - this.getResizeChangeTime())
-				/ animLen, 0.0f, 1.0f);
-		if (!this.isResized()) {
-			resizeAnim = 1.0f - resizeAnim;
-		}
-		float appearAnim = Util.clampf((float) (t - this.apparitionTime)
-				/ animLen, 0.0f, 1.0f);
-		if (this.isDocked()) {
-			appearAnim = 1.0f;
-		}
-		float removeAnim = 1.0f - Util.clampf((float) (t - this.removalTime)
-				/ animLen, 0.0f, 1.0f);
-		if (this.isDocked()) {
-			removeAnim = 1.0f;
-		}
-		if (removeAnim == 0.0f && this.isActive()) {
-			removeAnim = 1.0f;
-		}
+			long t = Sys.getTime();
+			float animLen = (float) Config.get().getWmAnimationsLength();
 
-		float alpha = (movedAlpha * movedAnim + 1.0f * (1.0f - movedAnim));
-		alpha *= (resizedAlpha * resizeAnim + 1.0f * (1.0f - resizeAnim));
-		alpha *= appearAnim * removeAnim;
+			float movedAnim = Util.clampf(
+					(float) (t - this.getDragChangeTime()) / animLen, 0.0f,
+					1.0f);
+			if (!this.isDragged()) {
+				movedAnim = 1.0f - movedAnim;
+			}
+			float resizeAnim = Util.clampf(
+					(float) (t - this.getResizeChangeTime()) / animLen, 0.0f,
+					1.0f);
+			if (!this.isResized()) {
+				resizeAnim = 1.0f - resizeAnim;
+			}
+			float appearAnim = Util.clampf((float) (t - this.apparitionTime)
+					/ animLen, 0.0f, 1.0f);
+			if (this.isDocked()) {
+				appearAnim = 1.0f;
+			}
+			float removeAnim = 1.0f - Util.clampf(
+					(float) (t - this.removalTime) / animLen, 0.0f, 1.0f);
+			if (this.isDocked()) {
+				removeAnim = 1.0f;
+			}
+			if (removeAnim == 0.0f && this.isActive()) {
+				removeAnim = 1.0f;
+			}
 
-		return alpha;
+			float alpha = (movedAlpha * movedAnim + 1.0f * (1.0f - movedAnim));
+			alpha *= (resizedAlpha * resizeAnim + 1.0f * (1.0f - resizeAnim));
+			alpha *= appearAnim * removeAnim;
+
+			return alpha;
+		} else {
+			float ra = 1.0f;
+			if (this.isResized()) {
+				ra *= resizedAlpha;
+			} else if (this.isDragged()) {
+				ra *= movedAlpha;
+			}
+			return ra;
+		}
 	}
 
 	/**
@@ -1167,18 +1201,28 @@ public abstract class Frame implements Drawable, Clickable {
 		float focusAlpha = getFrameFocusedAlpha();
 		float unfocusAlpha = getFrameUnfocusedAlpha();
 
-		long t = Sys.getTime();
-		float animLen = (float) Config.get().getWmAnimationsLength();
+		if (Config.get().isWmAnimations()) {
 
-		float focusAnim = Util.clampf((float) (t - this.getFocusChangeTime())
-				/ animLen, 0.0f, 1.0f);
-		if (!this.isFocused()) {
-			focusAnim = 1.0f - focusAnim;
+			long t = Sys.getTime();
+			float animLen = (float) Config.get().getWmAnimationsLength();
+
+			float focusAnim = Util.clampf(
+					(float) (t - this.getFocusChangeTime()) / animLen, 0.0f,
+					1.0f);
+			if (!this.isFocused()) {
+				focusAnim = 1.0f - focusAnim;
+			}
+
+			float alpha = focusAlpha * focusAnim + unfocusAlpha
+					* (1.0f - focusAnim);
+
+			return alpha;
+		} else {
+			if (this.isFocused()) {
+				return focusAlpha;
+			} else {
+				return unfocusAlpha;
+			}
 		}
-
-		float alpha = focusAlpha * focusAnim + unfocusAlpha
-				* (1.0f - focusAnim);
-
-		return alpha;
 	}
 }

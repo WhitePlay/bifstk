@@ -736,8 +736,10 @@ public abstract class Frame implements Drawable, Clickable {
 	/** Resize this frame to fit the preferred size of its content */
 	public void pack() {
 		if (this.content != null) {
-			int w = this.content.getPreferredWidth();
-			int h = this.content.getPreferredHeight();
+			int w = this.content.getPreferredWidth(this.getWidth() - 2
+					* getBorderWidth());
+			int h = this.content.getPreferredHeight(this.getHeight() - 2
+					* getBorderWidth() - this.getTitleBarHeight());
 			this.setBounds(w + getBorderWidth() * 2, h + 2 * getBorderWidth()
 					+ this.getTitleBarHeight());
 		} else {

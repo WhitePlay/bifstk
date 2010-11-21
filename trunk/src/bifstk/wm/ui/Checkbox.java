@@ -20,7 +20,7 @@ public class Checkbox extends AbstractButton {
 
 		// this widget should not scale ; if the actual size is
 		// smaller it will be cut by the scissor
-		int w = this.getPreferredWidth();
+		int w = this.getPreferredWidth(0);
 
 		float a = uiBgAlpha * alpha;
 
@@ -69,13 +69,13 @@ public class Checkbox extends AbstractButton {
 	}
 
 	@Override
-	public int getPreferredWidth() {
+	public int getPreferredWidth(int max) {
 		// height of a line of text
 		return Fonts.getNormal().getHeight();
 	}
 
 	@Override
-	public int getPreferredHeight() {
+	public int getPreferredHeight(int max) {
 		// height of a line of text
 		return Fonts.getNormal().getHeight();
 	}

@@ -123,12 +123,12 @@ public class FlowBox extends Container {
 		for (Widget widg : this.leftChildren) {
 			int nw, nh;
 			if (this.orientation.equals(Orientation.HORIZONTAL)) {
-				nw = Util.clampi(widg.getPreferredWidth(), 0, w - tacc);
-				nh = Util.clampi(widg.getPreferredHeight(), 0, h);
+				nw = Util.clampi(widg.getPreferredWidth(w), 0, w - tacc);
+				nh = Util.clampi(widg.getPreferredHeight(h), 0, h);
 				tacc += nw;
 			} else {
-				nw = Util.clampi(widg.getPreferredWidth(), 0, w);
-				nh = Util.clampi(widg.getPreferredHeight(), 0, h - tacc);
+				nw = Util.clampi(widg.getPreferredWidth(w), 0, w);
+				nh = Util.clampi(widg.getPreferredHeight(h), 0, h - tacc);
 				tacc += nh;
 			}
 			widg.setBounds(nw, nh);
@@ -137,12 +137,12 @@ public class FlowBox extends Container {
 		for (Widget widg : this.rightChildren) {
 			int nw, nh;
 			if (this.orientation.equals(Orientation.HORIZONTAL)) {
-				nw = Util.clampi(widg.getPreferredWidth(), 0, w - tacc);
-				nh = Util.clampi(widg.getPreferredHeight(), 0, h);
+				nw = Util.clampi(widg.getPreferredWidth(w), 0, w - tacc);
+				nh = Util.clampi(widg.getPreferredHeight(h), 0, h);
 				tacc += nw;
 			} else {
-				nw = Util.clampi(widg.getPreferredWidth(), 0, w);
-				nh = Util.clampi(widg.getPreferredHeight(), 0, h - tacc);
+				nw = Util.clampi(widg.getPreferredWidth(w), 0, w);
+				nh = Util.clampi(widg.getPreferredHeight(h), 0, h - tacc);
 				tacc += nh;
 			}
 			widg.setBounds(nw, nh);
@@ -156,13 +156,13 @@ public class FlowBox extends Container {
 		if (this.expandChild != null && ew > 0) {
 			int exPw, exPh;
 			if (this.orientation.equals(Orientation.HORIZONTAL)) {
-				exPh = Util.clampi(expandChild.getPreferredHeight(), 0, h);
+				exPh = Util.clampi(expandChild.getPreferredHeight(h), 0, h);
 				if (exPh <= 0) {
 					exPh = h;
 				}
 				exPw = ew;
 			} else {
-				exPw = Util.clampi(expandChild.getPreferredWidth(), 0, w);
+				exPw = Util.clampi(expandChild.getPreferredWidth(w), 0, w);
 				if (exPw <= 0) {
 					exPw = w;
 				}
@@ -388,40 +388,60 @@ public class FlowBox extends Container {
 	}
 
 	@Override
-	public int getPreferredWidth() {
+	public int getPreferredWidth(int max) {
+		int cw = 0;
 		if (this.orientation.equals(Orientation.HORIZONTAL)) {
-			return Integer.MAX_VALUE / 2;
+			for (Widget w : this.leftChildren) {
+				cw += w.getPreferredWidth(max - cw);
+			}
+			if (this.expandChild != null) {
+				cw += this.expandChild.getPreferredWidth(max - cw);
+			}
+			for (Widget w : this.rightChildren) {
+				cw += w.getPreferredWidth(max - cw);
+			}
+			cw = Math.max(cw, max);
+		} else {
+			for (Widget w : this.leftChildren) {
+				cw = Math.max(cw, w.getPreferredWidth(max));
+			}
+			if (this.expandChild != null) {
+				cw = Math.max(cw, this.expandChild.getPreferredWidth(max));
+			}
+			for (Widget w : this.rightChildren) {
+				cw = Math.max(cw, w.getPreferredWidth(max));
+			}
 		}
 
-		int cw = 0;
-		for (Widget w : this.leftChildren) {
-			cw = Math.max(cw, w.getPreferredWidth());
-		}
-		if (this.expandChild != null) {
-			cw += this.expandChild.getPreferredWidth();
-		}
-		for (Widget w : this.rightChildren) {
-			cw = Math.max(cw, w.getPreferredWidth());
-		}
 		return cw;
 	}
 
 	@Override
-	public int getPreferredHeight() {
+	public int getPreferredHeight(int max) {
+		int mh = 0;
 		if (this.orientation.equals(Orientation.VERTICAL)) {
-			return Integer.MAX_VALUE / 2;
+			for (Widget w : this.leftChildren) {
+				mh += w.getPreferredHeight(max - mh);
+			}
+			if (this.expandChild != null) {
+				mh += this.expandChild.getPreferredHeight(max - mh);
+			}
+			for (Widget w : this.rightChildren) {
+				mh += w.getPreferredHeight(max - mh);
+			}
+			mh = Math.max(mh, max);
+		} else {
+			for (Widget w : this.leftChildren) {
+				mh = Math.max(mh, w.getPreferredHeight(max));
+			}
+			if (this.expandChild != null) {
+				mh = Math.max(mh, this.expandChild.getPreferredHeight(max));
+			}
+			for (Widget w : this.rightChildren) {
+				mh = Math.max(mh, w.getPreferredHeight(max));
+			}
 		}
 
-		int mh = 0;
-		for (Widget w : this.leftChildren) {
-			mh = Math.max(mh, w.getPreferredHeight());
-		}
-		if (this.expandChild != null) {
-			mh = Math.max(mh, this.expandChild.getPreferredHeight());
-		}
-		for (Widget w : this.rightChildren) {
-			mh = Math.max(mh, w.getPreferredHeight());
-		}
 		return mh;
 	}
 

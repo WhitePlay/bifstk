@@ -3,7 +3,6 @@ package bifstk.wm.ui;
 import bifstk.wm.Clickable;
 import bifstk.wm.Drawable;
 import bifstk.wm.Frame;
-import bifstk.wm.geom.Rectangle;
 
 /**
  * Widgets are used to compose the UI held by a Frame
@@ -14,9 +13,6 @@ public abstract class Widget implements Drawable, Clickable {
 
 	/** Container containing this box, or null */
 	private Container parent = null;
-
-	/** dimension to attain if possible */
-	private Rectangle preferredBounds = new Rectangle();
 
 	/** frame this widget is the content of, or null */
 	private Frame frame = null;
@@ -90,58 +86,16 @@ public abstract class Widget implements Drawable, Clickable {
 	public abstract int getHeight();
 
 	/**
-	 * Request for a preferred width for this Widget
-	 * <p>
-	 * This Widget's container will try its best to satisfy this request, but
-	 * there is no guarantee that the actual size (see {@link #getWidth()} will
-	 * be the one specified here
-	 * 
-	 * @param w the preferred width for this widget
-	 */
-	public void setPreferredWidth(int w) {
-		this.preferredBounds.setWidth(w);
-	}
-
-	/**
-	 * Request for a preferred height for this Widget
-	 * <p>
-	 * This Widget's container will try its best to satisfy this request, but
-	 * there is no guarantee that the actual size (see {@link #getHeight()} will
-	 * be the one specified here
-	 * 
-	 * @param h the preferred height for this widget
-	 */
-	public void setPreferredHeight(int h) {
-		this.preferredBounds.setHeight(h);
-	}
-
-	/**
-	 * Request for a preferred size for this Widget
-	 * <p>
-	 * This Widget's container will try its best to satisfy this request, but
-	 * there is no guarantee that the actual size (see {@link #getWidth()},
-	 * {@link #getHeight()}) will be the one specified here
-	 * 
-	 * @param w the preferred width for this widget
-	 * @param h the preferred height for this widget
-	 */
-	public void setPreferredBounds(int w, int h) {
-		this.preferredBounds.setBounds(w, h);
-	}
-
-	/**
+	 * @param max the maximum width that can be returned by this method
 	 * @return the preferred width for this widget
 	 */
-	public int getPreferredWidth() {
-		return this.preferredBounds.getWidth();
-	}
+	public abstract int getPreferredWidth(int max);
 
 	/**
+	 * @param the maximum height that can be returned by this method
 	 * @return the preferred height for this widget
 	 */
-	public int getPreferredHeight() {
-		return this.preferredBounds.getHeight();
-	}
+	public abstract int getPreferredHeight(int max);
 
 	/**
 	 * Widgets can be put in containers, which have to maintain a Widget ->

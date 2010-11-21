@@ -129,7 +129,7 @@ public class Test implements Handler, Root {
 				vBox.addAfter(b3);
 
 				f.setContent(vBox);
-
+				f.pack();
 				Bifstk.addWindow(f);
 			}
 			break;

@@ -81,12 +81,12 @@ public class Button extends AbstractButton {
 	}
 
 	@Override
-	public int getPreferredWidth() {
+	public int getPreferredWidth(int max) {
 		return Fonts.getNormal().getWidth(this.text + "  ");
 	}
 
 	@Override
-	public int getPreferredHeight() {
+	public int getPreferredHeight(int max) {
 		return Fonts.getNormal().getHeight() + 4;
 	}
 

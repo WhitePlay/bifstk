@@ -232,15 +232,10 @@ public class FlowBox extends Container {
 					GL11.glPushMatrix();
 					if (this.orientation.equals(Orientation.HORIZONTAL)) {
 						GL11.glTranslatef(acc, 0, 0);
-						Util.pushScissor(acc, h - widg.getHeight(),
-								widg.getWidth(), widg.getHeight());
 					} else {
 						GL11.glTranslatef(0, acc, 0);
-						Util.pushScissor(0, h - acc - widg.getHeight(),
-								widg.getWidth(), widg.getHeight());
 					}
 					widg.render(alpha, uiBg, uiAlpha);
-					Util.popScissor();
 					GL11.glPopMatrix();
 					if (this.orientation.equals(Orientation.HORIZONTAL)) {
 						if (widg.getHeight() < h) {
@@ -273,7 +268,6 @@ public class FlowBox extends Container {
 					}
 				}
 			}
-
 		}
 	}
 

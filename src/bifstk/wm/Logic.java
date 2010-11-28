@@ -1192,7 +1192,7 @@ public class Logic {
 	 * @return the abscissa of the Mouse cursor with the origin at the left of
 	 *         the screen
 	 */
-	private static int getMouseX() {
+	public static int getMouseX() {
 		return Mouse.getX();
 	}
 
@@ -1200,7 +1200,7 @@ public class Logic {
 	 * @return the ordinate of the Mouse cursor with the origin at the top of
 	 *         the screen
 	 */
-	private static int getMouseY() {
+	public static int getMouseY() {
 		return Display.getDisplayMode().getHeight() - Mouse.getY();
 	}
 }

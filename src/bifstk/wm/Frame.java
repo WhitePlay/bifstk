@@ -299,11 +299,8 @@ public abstract class Frame implements Drawable, Clickable {
 									Theme.getWindowTitlebarUnfocusedColor(),
 									focusAnim);
 					GL11.glEnable(GL11.GL_SCISSOR_TEST);
-					Util.pushScissor(x + borderWidth + acc, Display
-							.getDisplayMode().getHeight()
-							- y
-							- titlebarHeight
-							- borderWidth, titleWidth, titlebarHeight);
+					Util.pushScissor(x + borderWidth + acc, y + borderWidth,
+							titleWidth, titlebarHeight);
 					Fonts.getNormal().drawString(x + borderWidth + acc,
 							y + borderWidth, this.title, titleFontCol, alpha);
 					Util.popScissor();
@@ -365,11 +362,8 @@ public abstract class Frame implements Drawable, Clickable {
 					}
 					if (img != null) {
 						GL11.glEnable(GL11.GL_SCISSOR_TEST);
-						Util.pushScissor(x + borderWidth + acc, Display
-								.getDisplayMode().getHeight()
-								- y
-								- controlHeight - borderWidth, controlWidth,
-								controlHeight);
+						Util.pushScissor(x + borderWidth + acc,
+								y + borderWidth, controlWidth, controlHeight);
 
 						float[] c2 = col.toArray(4, alpha);
 						int[] v2 = {
@@ -385,7 +379,9 @@ public abstract class Frame implements Drawable, Clickable {
 										+ img.getTexHeight(), //
 						};
 						Util.draw2DTexturedQuad(v2, c2, img.getTexId());
+
 						Util.popScissor();
+						GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
 						if (!Config.get().isWmAnimations()) {
 							hoverAnim = (hover ? 1.0f : 0.0f);
@@ -418,16 +414,16 @@ public abstract class Frame implements Drawable, Clickable {
 			Util.draw2D(v, c, GL11.GL_QUADS);
 		} else {
 			GL11.glPushMatrix();
+			Util.pushScissor(x + borderWidth, y + borderWidth + titlebarHeight,
+					w - 2 * borderWidth, h - 2 *borderWidth - titlebarHeight);
 			GL11.glTranslatef(x + borderWidth,
 					y + titlebarHeight + borderWidth, 0);
 			GL11.glEnable(GL11.GL_SCISSOR_TEST);
-			Util.pushScissor(x + borderWidth, Display.getDisplayMode()
-					.getHeight() - (y + h) + borderWidth, w - 2 * borderWidth,
-					h - 2 * borderWidth - titlebarHeight);
+
 			this.content.render(alpha, uiColor, uiAlpha);
-			Util.popScissor();
-			GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
 			GL11.glPopMatrix();
+			Util.popScissor();
 		}
 	}
 

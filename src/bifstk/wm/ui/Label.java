@@ -38,16 +38,19 @@ public class Label extends Widget {
 
 	@Override
 	public void render(float alpha, Color uiBg, float uiAlpha) {
-
 		int w = this.getWidth();
 		int h = this.getHeight();
+
+		if (w <= 0 || h <= 0) {
+			return;
+		}
+
 		Color col = Theme.getUiFontColor();
 
 		float[] c1 = uiBg.toArray(4, uiAlpha * alpha);
 		int[] v1 = {
 				0, 0, w, 0, w, h, 0, h
 		};
-		Util.draw2D(v1, c1, GL11.GL_QUADS);
 
 		int lx, ly;
 		if (this.textWidth < w) {
@@ -60,6 +63,8 @@ public class Label extends Widget {
 		} else {
 			ly = 0;
 		}
+
+		Util.draw2D(v1, c1, GL11.GL_QUADS);
 		Fonts.getNormal().drawString(lx, ly, this.text, col, alpha);
 
 	}

@@ -128,14 +128,12 @@ public class CustomBorder extends Border {
 			int nw = w - left - right;
 			int nh = h - top - bot;
 			if (nw > 0 && nh > 0) {
-				Util.pushScissor(left, bot, w - left - right, h - top - bot);
 				GL11.glPushMatrix();
 				GL11.glTranslatef(left, top, 0);
 
 				this.getContent().render(alpha, uiBg, uiAlpha);
 
 				GL11.glPopMatrix();
-				Util.popScissor();
 			}
 		} else {
 			Color c = this.color;

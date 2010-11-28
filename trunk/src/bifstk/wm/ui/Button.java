@@ -33,9 +33,13 @@ public class Button extends AbstractButton {
 
 	@Override
 	public void render(float alpha, Color uiBg, float uiAlpha) {
-
 		int w = this.getWidth();
 		int h = this.getHeight();
+
+		if (w <= 0 || h <= 0) {
+			return;
+		}
+
 		float a = uiAlpha * alpha;
 		Color fillCol = null;
 
@@ -54,7 +58,6 @@ public class Button extends AbstractButton {
 				w, h, //
 				0, h
 		};
-		Util.draw2D(v1, c1, GL11.GL_QUADS);
 
 		float[] c2 = Theme.getUiButtonBorderColor().toArray(8, a);
 		int[] v2 = {
@@ -63,7 +66,6 @@ public class Button extends AbstractButton {
 				w, h, //
 				0, h
 		};
-		Util.draw2DLineLoop(v2, c2);
 
 		int lx, ly;
 		if (this.textWidth < w) {
@@ -77,6 +79,9 @@ public class Button extends AbstractButton {
 			ly = 0;
 		}
 		Color fontCol = Theme.getUiFontColor();
+
+		Util.draw2D(v1, c1, GL11.GL_QUADS);
+		Util.draw2DLineLoop(v2, c2);
 		Fonts.getNormal().drawString(lx, ly, this.text, fontCol, alpha);
 	}
 

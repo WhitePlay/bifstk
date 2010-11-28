@@ -26,42 +26,50 @@ public class Checkbox extends AbstractButton {
 
 	@Override
 	public void render(float alpha, Color uiBg, float uiBgAlpha) {
+		int w = this.getWidth();
+		int h = this.getHeight();
+
+		if (w <= 0 || h <= 0) {
+			return;
+		}
 
 		// this widget should not scale ; if the actual size is
 		// smaller it will be cut by the scissor
-		int w = this.getPreferredWidth(0);
+		int pw = this.getPreferredWidth(0);
 
 		float a = uiBgAlpha * alpha;
 
 		float[] c1 = Color.WHITE.toArray(4, a);
 		int[] g1 = new int[] {
-				0, 0, w, 0, w, w, 0, w
+				0, 0, pw, 0, pw, pw, 0, pw
 		};
-		Util.draw2D(g1, c1, GL11.GL_QUADS);
 
 		float[] c2 = Theme.getUiButtonBorderColor().toArray(8, a);
 		int[] g2 = new int[] {
 				0, 0, //
-				w, 0, //
-				w, w, //
-				0, w, //
+				pw, 0, //
+				pw, pw, //
+				0, pw, //
 		};
+
+		GL11.glEnable(GL11.GL_SCISSOR_TEST);
+
+		Util.draw2D(g1, c1, GL11.GL_QUADS);
 		Util.draw2DLineLoop(g2, c2);
 
 		if (this.checked) {
-			float d = w * 0.2f;
+			float d = pw * 0.2f;
 			float[] c3 = Color.BLACK.toArray(4, a);
 			float[] g3 = new float[] {
 					d, d, //
-					w - d, //
-					w - d, //
-					w - d, //
+					pw - d, //
+					pw - d, //
+					pw - d, //
 					d, d, //
-					w - d
+					pw - d
 			};
 			Util.draw2D(g3, c3, GL11.GL_LINES);
 		}
-
 	}
 
 	/**

@@ -10,6 +10,7 @@ import bifstk.wm.ui.Button;
 import bifstk.wm.ui.Checkbox;
 import bifstk.wm.ui.FlowBox;
 import bifstk.wm.ui.Label;
+import bifstk.wm.ui.ScrollBox;
 
 /**
  * Stock graphical utility edit all {@link ConfigProperty} values
@@ -100,7 +101,9 @@ public final class ConfigWindow extends Window implements Handler {
 
 		vbox.addAfter(butBox);
 
-		setContent(vbox);
+		ScrollBox scroll = new ScrollBox(vbox);
+		
+		setContent(scroll);
 
 		pack();
 	}

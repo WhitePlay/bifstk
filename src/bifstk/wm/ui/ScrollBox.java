@@ -29,6 +29,9 @@ public class ScrollBox extends Border {
 	/** vertical scroll position : 0.0 for left/top; 1.0 for right/bot */
 	private float verScrollPos = 0.0f;
 
+	/** translation of the view in pixels */
+	private int xTranslate, yTranslate;
+
 	/** length of the vertical scroll button in pixels */
 	private int verLen;
 	/** distance from the top/left of the vertical scroll button in pixels */
@@ -97,6 +100,13 @@ public class ScrollBox extends Border {
 	/** mouse coordinates when dragging was initiated */
 	private int downX, downY;
 
+	/** true when LBM is down on the content */
+	private boolean contentLeftMouseDown = false;
+	/** true when RBM is down on the content */
+	private boolean contentRightMouseDown = false;
+	/** true when CBM is down on the content */
+	private boolean contentCenterMouseDown = false;
+
 	/**
 	 * Default constructor
 	 * 
@@ -132,16 +142,16 @@ public class ScrollBox extends Border {
 		} else if (this.horDrag) {
 			int mx = Logic.getMouseX();
 			int dx = mx - this.downX;
-			horPos = Util.clampi(orPos + dx, 0 , viewWidth - horLen);
+			horPos = Util.clampi(orPos + dx, 0, viewWidth - horLen);
 			horScrollPos = (float) horPos / (float) (viewWidth - horLen);
 		}
 
-		int dh = (int) (verScrollPos * Math.max(0, realHeight - viewHeight));
-		int dw = (int) (horScrollPos * Math.max(0, realWidth - viewWidth));
+		yTranslate = (int) (verScrollPos * Math.max(0, realHeight - viewHeight));
+		xTranslate = (int) (horScrollPos * Math.max(0, realWidth - viewWidth));
 
 		// draw content
 		GL11.glPushMatrix();
-		GL11.glTranslatef(-dw, -dh, 0.0f);
+		GL11.glTranslatef(-xTranslate, -yTranslate, 0.0f);
 
 		Util.pushScissor(0, 0, viewWidth, viewHeight, false);
 		this.getContent().render(alpha, uiBg, uiBgAlpha);
@@ -356,11 +366,17 @@ public class ScrollBox extends Border {
 			hoverRegion = Region.outside;
 			break;
 		}
+
+		if (hoverRegion.equals(Region.content)) {
+			this.getContent().mouseHover(x + xTranslate, y + yTranslate);
+		}
 	}
 
 	@Override
 	public void mouseOut() {
-
+		if (hoverRegion.equals(Region.content)) {
+			this.getContent().mouseOut();
+		}
 	}
 
 	@Override
@@ -378,6 +394,20 @@ public class ScrollBox extends Border {
 				this.orPos = this.horPos;
 			}
 		}
+
+		if (hoverRegion.equals(Region.content)) {
+			if (!contentLeftMouseDown && button == 0) {
+				this.contentLeftMouseDown = true;
+			} else if (!contentRightMouseDown && button == 1) {
+				this.contentRightMouseDown = true;
+			} else if (!contentCenterMouseDown && button == 2) {
+				this.contentCenterMouseDown = true;
+			}
+			if (this.getContent() != null) {
+				this.getContent().mouseDown(button);
+			}
+		}
+
 	}
 
 	@Override
@@ -386,6 +416,21 @@ public class ScrollBox extends Border {
 			this.verDrag = false;
 		} else if (this.horDrag) {
 			this.horDrag = false;
+		}
+
+		boolean hadOne = false;
+		if (this.contentLeftMouseDown && button == 0) {
+			this.contentLeftMouseDown = false;
+			hadOne = true;
+		} else if (this.contentRightMouseDown && button == 1) {
+			this.contentRightMouseDown = false;
+			hadOne = true;
+		} else if (this.contentCenterMouseDown && button == 2) {
+			this.contentCenterMouseDown = false;
+			hadOne = true;
+		}
+		if (hadOne && this.getContent() != null) {
+			this.getContent().mouseUp(button, x + xTranslate, y + yTranslate);
 		}
 	}
 

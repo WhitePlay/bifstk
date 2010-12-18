@@ -118,21 +118,30 @@ public class ScrollBox extends Border {
 		int viewHeight = ((this.scrollHor) ? h - scrollWidth : h);
 		float a = alpha * uiBgAlpha;
 
-		/**
-		 * update the position of the scrollbas
+		/*
+		 * update the position of the scrollbars
+		 * it really sucks to update the logic in the render method,
+		 * but this stuff is absolutely trivial and it avoid calling another
+		 * method everytime the mouse is moved
 		 */
 		if (this.verDrag) {
 			int my = Logic.getMouseY();
 			int dy = my - this.downY;
 			verPos = Util.clampi(orPos + dy, 0, viewHeight - verLen);
 			verScrollPos = (float) verPos / (float) (viewHeight - verLen);
+		} else if (this.horDrag) {
+			int mx = Logic.getMouseX();
+			int dx = mx - this.downX;
+			horPos = Util.clampi(orPos + dx, 0 , viewWidth - horLen);
+			horScrollPos = (float) horPos / (float) (viewWidth - horLen);
 		}
 
 		int dh = (int) (verScrollPos * Math.max(0, realHeight - viewHeight));
+		int dw = (int) (horScrollPos * Math.max(0, realWidth - viewWidth));
 
 		// draw content
 		GL11.glPushMatrix();
-		GL11.glTranslatef(0.0f, -dh, 0.0f);
+		GL11.glTranslatef(-dw, -dh, 0.0f);
 
 		Util.pushScissor(0, 0, viewWidth, viewHeight, false);
 		this.getContent().render(alpha, uiBg, uiBgAlpha);
@@ -362,6 +371,11 @@ public class ScrollBox extends Border {
 				this.downY = Logic.getMouseY();
 				this.verDrag = true;
 				this.orPos = this.verPos;
+			} else if (this.hoverRegion.equals(Region.horButton)) {
+				this.downX = Logic.getMouseX();
+				this.downY = Logic.getMouseY();
+				this.horDrag = true;
+				this.orPos = this.horPos;
 			}
 		}
 	}
@@ -370,6 +384,8 @@ public class ScrollBox extends Border {
 	public void mouseUp(int button, int x, int y) {
 		if (this.verDrag) {
 			this.verDrag = false;
+		} else if (this.horDrag) {
+			this.horDrag = false;
 		}
 	}
 

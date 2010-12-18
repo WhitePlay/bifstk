@@ -134,7 +134,9 @@ public class ScrollBox extends Border {
 		GL11.glPushMatrix();
 		GL11.glTranslatef(0.0f, -dh, 0.0f);
 
+		Util.pushScissor(0, 0, viewWidth, viewHeight, false);
 		this.getContent().render(alpha, uiBg, uiBgAlpha);
+		Util.popScissor();
 
 		GL11.glPopMatrix();
 

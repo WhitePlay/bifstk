@@ -181,7 +181,8 @@ public class Util {
 	 * array will indeed be reconstructed so that each line is drawn
 	 * individually (sending 8 vertices and not 4)
 	 * 
-	 * @param vertices must be of size 8: 4 2D pixels
+	 * @param vertices must be of size 8: 4 2D pixels. Order matters: should be
+	 *            clockwise beginning at top left
 	 * @param colors must be of size 32: 4 colors of 4rgba components, repeated
 	 *            twice each
 	 */
@@ -460,8 +461,51 @@ public class Util {
 
 	private static LinkedList<Coord> scissors = new LinkedList<Coord>();
 
+	/**
+	 * Push new scissors on top of the Scissor stack
+	 * <p>
+	 * The new Scissor position will be absolute in Display coordinates
+	 * 
+	 * @param x new scissor abscissa
+	 * @param y new scissor ordinate
+	 * @param w new scissor width
+	 * @param h new scissor height
+	 */
 	public static void pushScissor(int x, int y, int w, int h) {
+		pushScissor(x, y, w, h, true);
+	}
+
+	/**
+	 * Push new scissors on top of the Scissor stack
+	 * <p>
+	 * This handles calls to GL11.glScissor() so that stacking new scissors with
+	 * relative positions is possible.
+	 * 
+	 * @param x new scissor abscissa
+	 * @param y new scissor ordinate
+	 * @param w new scissor width
+	 * @param h new scissor height
+	 * @param absolute if true, the x and y coordinate parameters will be
+	 *            relative to the Display origin. If false, these coordinates
+	 *            will be relative to the last scissor coordinates pushed
+	 *            through this method.
+	 */
+	public static void pushScissor(int x, int y, int w, int h, boolean absolute) {
 		Coord c = new Coord(x, y, w, h);
+
+		if (!absolute) {
+			int prevX = 0;
+			int prevY = 0;
+
+			if (!scissors.isEmpty()) {
+				Coord prev = scissors.getFirst();
+				prevX = prev.x;
+				prevY = prev.y;
+			}
+			c.x += prevX;
+			c.y += prevY;
+		}
+
 		scissors.push(c);
 		int dh = Display.getDisplayMode().getHeight();
 		GL11.glScissor(c.x, dh - c.y - c.h, c.w, c.h);
@@ -478,10 +522,10 @@ public class Util {
 			GL11.glLoadIdentity();
 
 			int[] verts = new int[] {
-					c.x, c.y + c.h, //
-					c.x + c.w, c.y + c.h, //
+					c.x, c.y, //
 					c.x + c.w, c.y, //
-					c.x, c.y
+					c.x + c.w, c.y + c.h, //
+					c.x, c.y + c.h
 			};
 			float[] cols = Color.RED.toArray(8);
 			Util.draw2DLineLoop(verts, cols);

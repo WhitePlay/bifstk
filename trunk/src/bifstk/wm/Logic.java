@@ -206,6 +206,8 @@ public class Logic {
 		if (this.leftMouse.hoverFrame != null) {
 			this.leftMouse.hoverRegion = this.leftMouse.hoverFrame.getRegion(
 					mx, my);
+		} else {
+			this.leftMouse.hoverRegion = Region.OUT;
 		}
 		// left dock border mouse hover
 		if (this.state.getLeftDock().size() > 0
@@ -396,6 +398,9 @@ public class Logic {
 			this.leftMouse.hoverFrame
 					.setControlMaximizeHover(this.leftMouse.hoverRegion
 							.equals(Region.MAXIMIZE));
+		} else if (this.leftMouse.lastHoverFrame != null) {
+			this.leftMouse.lastHoverFrame.setControlCloseHover(false);
+			this.leftMouse.lastHoverFrame.setControlMaximizeHover(false);
 		}
 
 		// propagate mouseHover to the frame and its content

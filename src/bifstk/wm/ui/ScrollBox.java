@@ -160,16 +160,25 @@ public class ScrollBox extends Border {
 		GL11.glPopMatrix();
 
 		Color borderCol = Theme.getUiButtonBorderColor();
-		Color fillCol = Theme.getUiButtonColor();
+		Color fillCol = null;
 
 		//  scrollbars
 		if (scrollVer || scrollHor) {
 			float[] c1 = new float[4 * 4 * 3];
 			uiBg.fillArray(c1, 0, 16, a);
-			fillCol.fillArray(c1, 16, 32, a);
 			uiBg.fillArray(c1, 32, 48, a);
 
 			if (scrollVer) {
+
+				if (this.verDrag) {
+					fillCol = Theme.getUiButtonClickColor();
+				} else if (this.hoverRegion.equals(Region.verButton)) {
+					fillCol = Theme.getUiButtonHoverColor();
+				} else {
+					fillCol = Theme.getUiButtonColor();
+				}
+				fillCol.fillArray(c1, 16, 32, a);
+
 				int[] v1 = {
 						// top gap fill
 						viewWidth + scrollWidth, 0, //
@@ -201,6 +210,15 @@ public class ScrollBox extends Border {
 				Util.draw2DLineLoop(v2, c2);
 			}
 			if (scrollHor) {
+
+				if (this.horDrag) {
+					fillCol = Theme.getUiButtonClickColor();
+				} else if (this.hoverRegion.equals(Region.horButton)) {
+					fillCol = Theme.getUiButtonHoverColor();
+				} else {
+					fillCol = Theme.getUiButtonColor();
+				}
+				fillCol.fillArray(c1, 16, 32, a);
 				int[] v1 = {
 						// left gap fill
 						0, viewHeight, //
@@ -231,6 +249,18 @@ public class ScrollBox extends Border {
 				};
 				Util.draw2DLineLoop(v2, c2);
 			}
+
+			if (scrollHor && scrollVer) {
+				int[] v = {
+						viewWidth, viewHeight, //
+						w, viewHeight, //
+						w, h, //
+						viewWidth, h
+				};
+
+				float[] c = uiBg.toArray(4, a);
+				Util.draw2D(v, c, GL11.GL_QUADS);
+			}
 		}
 	}
 
@@ -241,7 +271,8 @@ public class ScrollBox extends Border {
 		int scrollWidth = getScrollBarWidth();
 		int w = this.bounds.getWidth();
 		int h = this.bounds.getHeight();
-
+		boolean wasContent = this.hoverRegion.equals(Region.content);
+		
 		// region detection: very verbose; very fast
 		if (x < 0) {
 			hor = 0;
@@ -369,6 +400,8 @@ public class ScrollBox extends Border {
 
 		if (hoverRegion.equals(Region.content)) {
 			this.getContent().mouseHover(x + xTranslate, y + yTranslate);
+		} else if (wasContent) {
+			this.getContent().mouseOut();
 		}
 	}
 
@@ -377,6 +410,7 @@ public class ScrollBox extends Border {
 		if (hoverRegion.equals(Region.content)) {
 			this.getContent().mouseOut();
 		}
+		this.hoverRegion = Region.outside;
 	}
 
 	@Override

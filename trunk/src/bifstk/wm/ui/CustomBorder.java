@@ -2,6 +2,8 @@ package bifstk.wm.ui;
 
 import org.lwjgl.opengl.GL11;
 
+import bifstk.config.Fonts;
+import bifstk.config.Theme;
 import bifstk.gl.Color;
 import bifstk.gl.Util;
 import bifstk.wm.geom.Rectangle;
@@ -33,14 +35,27 @@ public class CustomBorder extends Border {
 	/** bgcolor, uses uiBgColor if null */
 	private Color color = null;
 
+	/** text label or null */
+	private String label = null;
+
 	/**
-	 * Default constructor
+	 * Default constructor for an empty border
 	 * 
 	 * @param w content of the border
 	 * @param border width of the border
 	 */
 	public CustomBorder(Widget w, int border) {
 		this(w, border, border, border, border);
+	}
+
+	/**
+	 * Default constructor for an empty titled border
+	 * 
+	 * @param w content of the border
+	 * @param border width of the border
+	 */
+	public CustomBorder(Widget w, String label) {
+		this(w, Fonts.getNormal().getHeight(), 6, 6, 6, null, label);
 	}
 
 	/**
@@ -51,7 +66,7 @@ public class CustomBorder extends Border {
 	 * @param color border color, uses Theme default if null
 	 */
 	public CustomBorder(Widget w, int border, Color color) {
-		this(w, border, border, border, border, color);
+		this(w, border, border, border, border, color, null);
 	}
 
 	/**
@@ -64,7 +79,7 @@ public class CustomBorder extends Border {
 	 * @param left width of the left border
 	 */
 	public CustomBorder(Widget w, int top, int right, int bot, int left) {
-		this(w, top, right, bot, left, null);
+		this(w, top, right, bot, left, null, null);
 	}
 
 	/**
@@ -78,7 +93,7 @@ public class CustomBorder extends Border {
 	 * @param color border color, uses Theme default if null
 	 */
 	public CustomBorder(Widget w, int top, int right, int bot, int left,
-			Color color) {
+			Color color, String label) {
 		super(w);
 		this.bounds = new Rectangle();
 		this.top = top;
@@ -86,6 +101,7 @@ public class CustomBorder extends Border {
 		this.left = left;
 		this.bot = bot;
 		this.color = color;
+		this.label = label;
 	}
 
 	@Override
@@ -149,6 +165,15 @@ public class CustomBorder extends Border {
 					0, h
 			};
 			Util.draw2D(v1, c1, GL11.GL_QUADS);
+		}
+
+		if (this.label != null) {
+		//	Util.pushScissor(0, 0, this.labelWidth, this.labelHeight, false);
+
+			Color col = Theme.getUiFontColor();
+			Fonts.getNormal().drawString(0, 0, this.label, col, alpha);
+
+			//Util.popScissor();
 		}
 	}
 

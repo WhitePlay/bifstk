@@ -34,6 +34,13 @@ import bifstk.wm.geom.Rectangle;
  * height and width available.
  * <p>
  * There can be only one expanded widget.
+ * <p>
+ * LIMITATIONS: nesting multiple FlowBox with the same orientation does not work
+ * since a Vertical FlowBox gets all the Vertical space it can take, preventing
+ * multiple vertical FlowBox to be inserted in a Vertical FlowBox.
+ * <p>
+ * Use FlowBox only if you need the contained widget to be expanded, else, use
+ * anothe simpler container.
  * 
  * 
  */
@@ -257,9 +264,7 @@ public class FlowBox extends Container {
 							};
 							Util.draw2D(v2, c1, GL11.GL_QUADS);
 						}
-
 					}
-					GL11.glEnd();
 
 					if (this.orientation.equals(Orientation.HORIZONTAL)) {
 						acc += widg.getWidth();

@@ -105,7 +105,10 @@ public class Bifstk {
 
 				String log = "Display refresh rate: ";
 				if (vsync) {
-					fps_target = Display.getDisplayMode().getFrequency();
+					int freq = Display.getDisplayMode().getFrequency();
+					if (freq > 10) {
+						fps_target = freq;
+					}
 					log += "vsync";
 					if (!capped)
 						Logger.warn("Framerate will be capped due to VSync");

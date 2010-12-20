@@ -164,6 +164,9 @@ public class Util {
 
 	}
 
+	private static final float raster_off_1 = 0.2f;
+	private static final float raster_off_2 = 0.2f;
+
 	/**
 	 * Draws a rectangle in line mode
 	 * <p>
@@ -200,28 +203,28 @@ public class Util {
 		float[] verts = new float[16];
 
 		// top left -> top right
-		verts[0] = vertices[0] + 0.5f + 1.0f;
-		verts[1] = vertices[1] + 0.5f;
+		verts[0] = vertices[0] + raster_off_1 + 1.0f;
+		verts[1] = vertices[1] + raster_off_1;
 		verts[2] = vertices[2];
 		verts[3] = vertices[3];
 
 		// top right -> bot right
 		verts[4] = vertices[2];
 		verts[5] = vertices[3] + 1.0f;
-		verts[6] = vertices[4] - 0.3f;
-		verts[7] = vertices[5] - 0.3f;
+		verts[6] = vertices[4] - raster_off_2;
+		verts[7] = vertices[5] - raster_off_2;
 
 		// bot rigth -> bot left
-		verts[8] = vertices[4] - 0.3f - 1.0f;
-		verts[9] = vertices[5] - 0.3f;
+		verts[8] = vertices[4] - raster_off_2 - 1.0f;
+		verts[9] = vertices[5] - raster_off_2;
 		verts[10] = vertices[6];
 		verts[11] = vertices[7];
 
 		// bot left -> top left
 		verts[12] = vertices[6];
 		verts[13] = vertices[7] - 1.0f;
-		verts[14] = vertices[0] + 0.5f;
-		verts[15] = vertices[1] + 0.5f;
+		verts[14] = vertices[0] + raster_off_1;
+		verts[15] = vertices[1] + raster_off_1;
 
 		Util.draw2D(verts, colors, GL11.GL_LINES);
 

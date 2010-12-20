@@ -61,34 +61,13 @@ public class Renderer {
 		boolean vsync = Config.get().isDisplayVsync();
 		Display.setVSyncEnabled(vsync);
 
-		DisplayMode[] modes = null;
-		try {
-			modes = Display.getAvailableDisplayModes();
-		} catch (LWJGLException e) {
-			throw new BifstkException("", e);
-		}
-		DisplayMode mode = null;
-		for (int i = 0; i < modes.length; i++) {
-			if ((modes[i].getWidth() == width)
-					&& (modes[i].getHeight() == height)) {
-				mode = modes[i];
-				break;
-			}
-		}
-
-		if (mode == null) {
-			throw new BifstkException(
-					"Could not find DisplayMode for resolution " + width + "*"
-							+ height);
-		}
-
 		boolean fullscreen = Config.get().isDisplayFullscreen();
 
 		try {
 			if (fullscreen) {
 				Display.setFullscreen(true);
 			} else {
-				Display.setDisplayMode(mode);
+				Display.setDisplayMode(new DisplayMode(width, height));
 			}
 		} catch (LWJGLException e) {
 			throw new BifstkException(e);

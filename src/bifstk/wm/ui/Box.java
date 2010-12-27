@@ -306,12 +306,15 @@ public class Box extends Container {
 			if (this.widgetLeftMouseDown == null && button == 0) {
 				this.widgetLeftMouseDownDecal = this.widgetHoverDecal;
 				this.widgetLeftMouseDown = this.widgetHover;
+				this.widgetLeftMouseDown.mouseDown(button);
 			} else if (this.widgetRightMouseDown == null && button == 1) {
 				this.widgetRightMouseDownDecal = this.widgetHoverDecal;
 				this.widgetRightMouseDown = this.widgetHover;
+				this.widgetRightMouseDown.mouseDown(button);
 			} else if (this.widgetCenterMouseDown == null && button == 2) {
 				this.widgetCenterMouseDownDecal = this.widgetHoverDecal;
 				this.widgetCenterMouseDown = this.widgetHover;
+				this.widgetCenterMouseDown.mouseDown(button);
 			}
 		}
 	}

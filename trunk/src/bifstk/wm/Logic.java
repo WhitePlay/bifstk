@@ -183,6 +183,8 @@ public class Logic {
 			switch (Keyboard.getEventKey()) {
 			case Keyboard.KEY_ESCAPE:
 				reserved = true;
+			case Keyboard.KEY_TAB:
+				reserved = true;
 			}
 
 			// focused Frame has a Focused widget

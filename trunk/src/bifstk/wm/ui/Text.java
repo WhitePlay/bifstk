@@ -37,6 +37,11 @@ public class Text extends Actionable implements Focusable {
 	/** true when this text editor is focused */
 	private boolean focus = false;
 
+	/** there are 2 ctrl keys, so > 0 mean CONTROL down */
+	private int ctrlDown = 0;
+	/** there are 2 shift keys, so > 0 mean SHIFT down */
+	private int shiftDown = 0;
+
 	/**
 	 * Creates a multiline text that expands horizontally and vertically
 	 */
@@ -124,8 +129,19 @@ public class Text extends Actionable implements Focusable {
 
 	@Override
 	public void keyEvent(int key, boolean state, char character) {
-		if (!state)
+		if (!state) {
+			switch (key) {
+			case Keyboard.KEY_LSHIFT:
+			case Keyboard.KEY_RSHIFT:
+				this.shiftDown--;
+				break;
+			case Keyboard.KEY_LCONTROL:
+			case Keyboard.KEY_RCONTROL:
+				this.ctrlDown--;
+				break;
+			}
 			return;
+		}
 
 		switch (key) {
 		// new line
@@ -135,6 +151,7 @@ public class Text extends Actionable implements Focusable {
 				this.pos++;
 			}
 			break;
+			
 		// remove character
 		case Keyboard.KEY_BACK:
 			if (pos > 0) {
@@ -147,32 +164,60 @@ public class Text extends Actionable implements Focusable {
 				this.content.deleteCharAt(this.pos);
 			}
 			break;
+			
 		// move caret right
 		case Keyboard.KEY_RIGHT:
-			if (this.pos < this.content.length())
+			if (this.ctrlDown > 0) {
+				this.pos = this.getNextWordPos(this.pos);
+			} else if (this.pos < this.content.length())
 				this.pos++;
 			break;
+			
 		// move caret left
 		case Keyboard.KEY_LEFT:
-			if (this.pos > 0)
+			if (this.ctrlDown > 0) {
+				this.pos = this.getPrevWordPos(this.pos);
+			} else if (this.pos > 0)
 				this.pos--;
 			break;
+			
 		// move caret up
 		case Keyboard.KEY_UP:
+			
 			// move caret down
 		case Keyboard.KEY_DOWN:
 			break;
 
 		case Keyboard.KEY_LSHIFT:
 		case Keyboard.KEY_RSHIFT:
+			this.shiftDown++;
+			break;
 		case Keyboard.KEY_LCONTROL:
 		case Keyboard.KEY_RCONTROL:
+			this.ctrlDown++;
 			break;
 
 		// insert character
 		default:
 			if (character != Keyboard.CHAR_NONE) {
-				this.content.insert(this.pos, character);
+				char c = character;
+
+				if (shiftDown > 0 && Character.isLetter(c))
+					c = Character.toUpperCase(c);
+
+				if (ctrlDown > 0) {
+					switch (key) {
+					case Keyboard.KEY_A:
+						pos = 0;
+						break;
+					case Keyboard.KEY_E:
+						pos = this.content.length();
+						break;
+					}
+					break;
+				}
+
+				this.content.insert(this.pos, c);
 				this.pos++;
 			}
 			break;
@@ -189,6 +234,51 @@ public class Text extends Actionable implements Focusable {
 				offset = -caretPos + 2;
 			}
 		}
+	}
+
+	/**
+	 * @param pos the current position in the word
+	 * @return the position of the next word on the right
+	 */
+	private int getNextWordPos(int pos) {
+		char[] chars = this.content.toString().toCharArray();
+		while (true) {
+			pos++;
+
+			if (pos >= chars.length)
+				return chars.length;
+
+			if (isWordSep(chars[pos])) {
+				if (pos + 1 <= chars.length) {
+					return pos + 1;
+				} else {
+					return pos;
+				}
+			}
+		}
+	}
+
+	private int getPrevWordPos(int pos) {
+		pos--;
+		char[] chars = this.content.toString().toCharArray();
+		while (true) {
+			pos--;
+
+			if (pos <= 0)
+				return 0;
+
+			if (isWordSep(chars[pos])) {
+				return pos +1;
+			}
+		}
+	}
+
+	/**
+	 * @param c a character
+	 * @return true if the provided character is a word separator
+	 */
+	private boolean isWordSep(char c) {
+		return Character.isWhitespace(c) || c == ',' || c == ';' || c == '.';
 	}
 
 	@Override

@@ -473,11 +473,12 @@ public class FlowBox extends Container {
 				return;
 		}
 
-		acc += this.ew;
 		if (this.expandChild != null) {
 			acc = _mouseHover(expandChild, acc, x, y);
 			if (acc < 0)
 				return;
+		} else {
+			acc += this.ew;
 		}
 
 		for (Widget wid : this.rightChildren) {
@@ -538,12 +539,15 @@ public class FlowBox extends Container {
 			if (this.widgetLeftMouseDown == null && button == 0) {
 				this.widgetLeftMouseDownDecal = this.widgetHoverDecal;
 				this.widgetLeftMouseDown = this.widgetHover;
+				this.widgetLeftMouseDown.mouseDown(button);
 			} else if (this.widgetRightMouseDown == null && button == 1) {
 				this.widgetRightMouseDownDecal = this.widgetHoverDecal;
 				this.widgetRightMouseDown = this.widgetHover;
+				this.widgetRightMouseDown.mouseDown(button);
 			} else if (this.widgetCenterMouseDown == null && button == 2) {
 				this.widgetCenterMouseDownDecal = this.widgetHoverDecal;
 				this.widgetCenterMouseDown = this.widgetHover;
+				this.widgetCenterMouseDown.mouseDown(button);
 			}
 		}
 	}

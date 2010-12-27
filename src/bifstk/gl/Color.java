@@ -208,4 +208,8 @@ public class Color {
 		Logger.warn("Could not read color: " + str);
 		return WHITE;
 	}
+
+	public String toString() {
+		return "[r=" + this.red + ",g=" + this.green + ",b=" + this.blue + "]";
+	}
 }

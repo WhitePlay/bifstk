@@ -25,6 +25,7 @@ import bifstk.wm.ui.Checkbox;
 import bifstk.wm.ui.CustomBorder;
 import bifstk.wm.ui.FlowBox;
 import bifstk.wm.ui.Label;
+import bifstk.wm.ui.Text;
 import bifstk.wm.util.ConfigWindow;
 
 public class Test implements Handler, Root {
@@ -128,6 +129,7 @@ public class Test implements Handler, Root {
 				vBox.addBefore(new CustomBorder(h1, 2));
 				vBox.addBefore(new CustomBorder(h2, 2));
 				vBox.addBefore(new CustomBorder(h3, 2));
+				vBox.addBefore(new CustomBorder(new Text(0), 2));
 				vBox.addAfter(b3);
 
 				f.setContent(vBox);

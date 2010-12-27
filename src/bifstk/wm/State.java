@@ -417,8 +417,10 @@ public class State {
 	 */
 	public void setDockWidth(int w, DockPosition pos) {
 		int val = Util
-				.clampi(w, Config.get().getWmFrameSizeMin(), Display.getDisplayMode()
-						.getWidth() / 2 - Theme.getWindowBorderWidth());
+				.clampi(w,
+						Config.get().getWmFrameSizeMin(),
+						Display.getDisplayMode().getWidth() / 2
+								- Theme.getWindowBorderWidth());
 		List<Window> dock = null;
 
 		int dx = 0;
@@ -478,6 +480,10 @@ public class State {
 					w.setFocused(false);
 				}
 			}
+
+			if (focusedFrame.getKeyboardFocus() != null) {
+				focusedFrame.getKeyboardFocus().setFocus(false);
+			}
 		}
 		this.focusedFrame = tofocus;
 		if (tofocus != null) {
@@ -492,7 +498,18 @@ public class State {
 					w.setFocused(true);
 				}
 			}
+
+			if (focusedFrame.getKeyboardFocus() != null) {
+				focusedFrame.getKeyboardFocus().setFocus(true);
+			}
 		}
+	}
+
+	/**
+	 * @return the currently focused Frame, or null
+	 */
+	public Frame getFocused() {
+		return this.focusedFrame;
 	}
 
 	/**

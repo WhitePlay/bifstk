@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.lwjgl.Sys;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 
 import bifstk.config.Config;
@@ -374,5 +375,7 @@ public class Bifstk {
 
 		// load fonts
 		Fonts.load();
+		
+		Keyboard.enableRepeatEvents(true);
 	}
 }

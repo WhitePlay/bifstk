@@ -21,15 +21,17 @@ public interface Handler {
 	 */
 	public void init();
 
-/**
+	/**
 	 * Called when a keyboard event was sent from the runtime to the client
 	 * <p>
-	 * Events sent to this listener are those that were not processed nor meaningful
-	 * to the Bifstk Window Manager, and forwarded to the user
+	 * Events sent to this listener are those that were not processed nor
+	 * meaningful to the Bifstk Window Manager, and forwarded to the user
 	 * 
 	 * @param key code of the key, see {@link Keyboard#getEventKey()}
-	 * @param state state of the key; up or down, see {@link Keyboard#getEventKeyState()
-	 * @param character actual character of the key if human-readable, see {@link Keyboard#getEventCharacter()}
+	 * @param state state of the key; up or down, see
+	 *            {@link Keyboard#getEventKeyState()}
+	 * @param character actual character of the key if human-readable, see
+	 *            {@link Keyboard#getEventCharacter()}
 	 */
 	public void keyEvent(int key, boolean state, char character);
 

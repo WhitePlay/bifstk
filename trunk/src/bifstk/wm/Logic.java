@@ -163,11 +163,12 @@ public class Logic {
 	 * Updates the logic's state: polls input, modifies WM state
 	 */
 	public void update() {
-		updateKeyboard();
 		updateMouse();
-
 		applyHoveringCursor();
 		applyMouse();
+
+		updateKeyboard();
+
 		this.state.update();
 	}
 
@@ -176,7 +177,22 @@ public class Logic {
 	 */
 	private void updateKeyboard() {
 		while (Keyboard.next()) {
-			if (this.handler != null) {
+			Frame f = this.state.getFocused();
+			boolean reserved = false;
+
+			switch (Keyboard.getEventKey()) {
+			case Keyboard.KEY_ESCAPE:
+				reserved = true;
+			}
+
+			// focused Frame has a Focused widget
+			if (!reserved && f != null && f.getKeyboardFocus() != null) {
+				f.getKeyboardFocus().keyEvent(Keyboard.getEventKey(),
+						Keyboard.getEventKeyState(),
+						Keyboard.getEventCharacter());
+			}
+			// event was not consumed, forward it to the user
+			else if (this.handler != null) {
 				this.handler.keyEvent(Keyboard.getEventKey(),
 						Keyboard.getEventKeyState(),
 						Keyboard.getEventCharacter());

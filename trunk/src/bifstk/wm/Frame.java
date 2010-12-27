@@ -14,6 +14,7 @@ import bifstk.gl.Util;
 import bifstk.wm.geom.Point;
 import bifstk.wm.geom.Rectangle;
 import bifstk.wm.geom.Region;
+import bifstk.wm.ui.Focusable;
 import bifstk.wm.ui.Widget;
 
 /**
@@ -120,6 +121,9 @@ public abstract class Frame implements Drawable, Clickable {
 
 	/** false if this Frame is not part of the WM */
 	private boolean active = false;
+
+	/** Widget that currently has keyboard focus */
+	private Focusable keyboardFocus = null;
 
 	/**
 	 * Default constructor
@@ -415,7 +419,7 @@ public abstract class Frame implements Drawable, Clickable {
 		} else {
 			GL11.glPushMatrix();
 			Util.pushScissor(x + borderWidth, y + borderWidth + titlebarHeight,
-					w - 2 * borderWidth, h - 2 *borderWidth - titlebarHeight);
+					w - 2 * borderWidth, h - 2 * borderWidth - titlebarHeight);
 			GL11.glTranslatef(x + borderWidth,
 					y + titlebarHeight + borderWidth, 0);
 			GL11.glEnable(GL11.GL_SCISSOR_TEST);
@@ -1034,6 +1038,25 @@ public abstract class Frame implements Drawable, Clickable {
 	 */
 	public long getRemovalTime() {
 		return this.removalTime;
+	}
+
+	/**
+	 * @return the Widget that currently holds the Keyboard Focus in this Frame
+	 */
+	public Focusable getKeyboardFocus() {
+		return this.keyboardFocus;
+	}
+
+	/**
+	 * Request keyboard focus for a Widget in this Frame
+	 * 
+	 * @param a the new Widget holding keyboard focus in this Frame
+	 */
+	public void setKeyboardFocus(Focusable a) {
+		if (this.keyboardFocus != null)
+			this.keyboardFocus.setFocus(false);
+		this.keyboardFocus = a;
+		a.setFocus(true);
 	}
 
 	/** @return pixel height of the titlebar */

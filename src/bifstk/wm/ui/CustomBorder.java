@@ -146,9 +146,11 @@ public class CustomBorder extends Border {
 			if (nw > 0 && nh > 0) {
 				GL11.glPushMatrix();
 				GL11.glTranslatef(left, top, 0);
+				Util.pushScissor(left, top, nw, nh, false);
 
 				this.getContent().render(alpha, uiBg, uiAlpha);
 
+				Util.popScissor();
 				GL11.glPopMatrix();
 			}
 		} else {

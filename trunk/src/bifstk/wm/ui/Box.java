@@ -87,12 +87,15 @@ public class Box extends Container {
 				GL11.glPushMatrix();
 				if (this.orientation.equals(Orientation.HORIZONTAL)) {
 					GL11.glTranslatef(acc, 0, 0);
+					Util.pushScissor(acc, 0, widg.getWidth(), widg.getHeight(), false);
 				} else {
 					GL11.glTranslatef(0, acc, 0);
+					Util.pushScissor(0, acc, widg.getWidth(), widg.getHeight(), false);
 				}
 
 				widg.render(alpha, uiBg, uiBgAlpha);
 				GL11.glPopMatrix();
+				Util.popScissor();
 
 				// if the width/height of this widget is smaller
 				// than the visible width/height, fill the gap

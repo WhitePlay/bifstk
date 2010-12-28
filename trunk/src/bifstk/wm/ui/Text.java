@@ -1,5 +1,7 @@
 package bifstk.wm.ui;
 
+import java.util.ArrayList;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
@@ -23,8 +25,13 @@ public class Text extends Actionable implements Focusable {
 	/** false if single line */
 	private boolean multiLine = false;
 
-	/** content of the text editor */
+	/** content of the text editor, current line if multiline */
 	private StringBuffer content = null;
+
+	/** if multiline */
+	private ArrayList<StringBuffer> lines = null;
+	/** current line */
+	private int line = 0;
 
 	/** caret position in Characters */
 	private int pos = 0;
@@ -42,12 +49,18 @@ public class Text extends Actionable implements Focusable {
 	/** there are 2 shift keys, so > 0 mean SHIFT down */
 	private int shiftDown = 0;
 
+	/** scroll for this editor if multiline */
+	private ScrollBox scroll = null;
+
 	/**
 	 * Creates a multiline text that expands horizontally and vertically
 	 */
 	public Text() {
 		this(0);
 		this.multiLine = true;
+		this.lines = new ArrayList<StringBuffer>();
+		this.lines.add(this.content);
+		this.scroll = new ScrollBox(this);
 	}
 
 	/**
@@ -88,23 +101,36 @@ public class Text extends Actionable implements Focusable {
 
 		Util.draw2D(v, c2, GL11.GL_QUADS);
 
-		Color col = Color.BLACK;
-		String str = this.content.toString();
-		Fonts.getNormal().drawString(2 + this.offset, 2, str, col, alpha);
-
-		// caret
-		if (this.focus && System.currentTimeMillis() / 500 % 2 == 0) {
-			int len = this.caretPos + this.offset + 2;
-			int[] cv = {
-					len - 1, 2, //
-					len + 1, 2, //
-					len + 1, h - 2, //
-					len - 1, h - 2
-			};
-			Util.draw2DLineLoop(cv, Color.BLACK.toArray(8, a));
+		if (!this.multiLine) {
+			String str = this.content.toString();
+			renderLine(str, 0, alpha, true);
+		} else {
+			int yOff = 0;
+			for (StringBuffer sb : this.lines) {
+				renderLine(sb.toString(), yOff, alpha, this.content.equals(sb));
+				yOff += Fonts.getNormal().getHeight();
+			}
 		}
 
 		Util.draw2DLineLoop(v, c1);
+	}
+
+	private void renderLine(String str, int yOff, float alpha, boolean drawCaret) {
+		Fonts.getNormal().drawString(2 + this.offset, 2 + yOff, str,
+				Color.BLACK, alpha);
+
+		// caret
+		if (this.focus && System.currentTimeMillis() / 500 % 2 == 0
+				&& drawCaret) {
+			int len = this.caretPos + this.offset + 2;
+			int[] cv = {
+					len - 1, 2 + yOff, //
+					len + 1, 2 + yOff, //
+					len + 1, Fonts.getNormal().getHeight() + yOff, //
+					len - 1, Fonts.getNormal().getHeight() + yOff
+			};
+			Util.draw2DLineLoop(cv, Color.BLACK.toArray(8, alpha));
+		}
 	}
 
 	@Override
@@ -147,45 +173,85 @@ public class Text extends Actionable implements Focusable {
 		// new line
 		case Keyboard.KEY_RETURN:
 			if (this.multiLine) {
-				this.content.insert(this.pos, '\n');
-				this.pos++;
+				StringBuffer nc = new StringBuffer();
+				this.line++;
+				String cut = this.content.substring(this.pos);
+				this.content.delete(this.pos, this.content.length());
+				nc.append(cut);
+				this.lines.add(this.line, nc);
+				this.pos = 0;
+				this.content = nc;
 			}
 			break;
-			
-		// remove character
+
+		// remove previous character
 		case Keyboard.KEY_BACK:
 			if (pos > 0) {
 				this.content.deleteCharAt(this.pos - 1);
 				this.pos--;
+			} else if (pos == 0 && multiLine && line > 0) {
+				String cut = this.lines.remove(line).toString();
+				line--;
+				this.content = this.lines.get(line);
+				this.pos = this.content.length();
+				this.content.append(cut);
 			}
 			break;
+
+		// remove next character
 		case Keyboard.KEY_DELETE:
 			if (pos < this.content.length()) {
 				this.content.deleteCharAt(this.pos);
+			} else if (pos == this.content.length() && multiLine
+					&& line + 1 < lines.size()) {
+				String cut = this.lines.remove(line + 1).toString();
+				this.content.append(cut);
 			}
 			break;
-			
+
 		// move caret right
 		case Keyboard.KEY_RIGHT:
 			if (this.ctrlDown > 0) {
 				this.pos = this.getNextWordPos(this.pos);
-			} else if (this.pos < this.content.length())
+			} else if (this.pos < this.content.length()) {
 				this.pos++;
+			} else if (this.pos == this.content.length() && multiLine
+					&& line + 1 < lines.size()) {
+				this.pos = 0;
+				this.line++;
+				this.content = this.lines.get(line);
+			}
 			break;
-			
+
 		// move caret left
 		case Keyboard.KEY_LEFT:
 			if (this.ctrlDown > 0) {
 				this.pos = this.getPrevWordPos(this.pos);
-			} else if (this.pos > 0)
+			} else if (this.pos > 0) {
 				this.pos--;
+			} else if (this.pos == 0 && multiLine && line > 0) {
+				this.line--;
+				this.content = this.lines.get(line);
+				this.pos = content.length();
+			}
 			break;
-			
+
 		// move caret up
 		case Keyboard.KEY_UP:
-			
-			// move caret down
+			if (this.multiLine && this.line > 0) {
+				this.line--;
+				this.content = this.lines.get(this.line);
+				this.pos = Util.clampi(this.pos, 0, this.content.length());
+			}
+			break;
+
+		// move caret down
 		case Keyboard.KEY_DOWN:
+			if (this.multiLine && this.line + 1 < this.lines.size()) {
+				this.line++;
+				this.content = this.lines.get(this.line);
+				this.pos = Util.clampi(this.pos, 0, this.content.length());
+			}
 			break;
 
 		case Keyboard.KEY_LSHIFT:
@@ -226,18 +292,43 @@ public class Text extends Actionable implements Focusable {
 		String str = this.content.toString();
 		this.caretPos = Fonts.getNormal().getWidth(str.substring(0, this.pos));
 
+		// single line : 'silently' scroll right/left
 		if (!this.multiLine) {
 			if (caretPos + offset > getWidth() - 4) {
 				offset = getWidth() - caretPos - 4;
-			}
-			if (caretPos + offset < 2) {
+			} else if (caretPos + offset < 2) {
 				offset = -caretPos + 2;
 			}
 		}
+		// multiline : scroll the attached ScrollBox
+		else {
+			int sw = (scroll.isScrollVer()) ? scroll.getWidth()
+					- scroll.getScrollBarWidth() : scroll.getWidth();
+			int sh = (scroll.isScrollHor()) ? scroll.getHeight()
+					- scroll.getScrollBarWidth() : scroll.getHeight();
+
+			if (caretPos + scroll.getXTranslate() > sw - 4) {
+				scroll.setXTranslate(caretPos + 4 - sw);
+			} else if (caretPos + scroll.getXTranslate() < 2) {
+				scroll.setXTranslate(caretPos - 2);
+			}
+
+			int mh = (this.line + 1) * Fonts.getNormal().getHeight();
+			if (mh - scroll.getYTranslate() > sh - 4) {
+				scroll.setYTranslate(mh + 4 - sh);
+			} else if (mh - scroll.getYTranslate() < Fonts.getNormal()
+					.getHeight() + 2) {
+				scroll.setYTranslate(mh - 2 - Fonts.getNormal().getHeight());
+			}
+
+			// force scrollBox update
+			this.scroll.resize();
+		}
+
 	}
 
 	/**
-	 * @param pos the current position in the word
+	 * @param pos the current position in the line
 	 * @return the position of the next word on the right
 	 */
 	private int getNextWordPos(int pos) {
@@ -258,6 +349,10 @@ public class Text extends Actionable implements Focusable {
 		}
 	}
 
+	/**
+	 * @param pos the current position in the line
+	 * @return the position of the previous word on the left
+	 */
 	private int getPrevWordPos(int pos) {
 		pos--;
 		char[] chars = this.content.toString().toCharArray();
@@ -268,7 +363,7 @@ public class Text extends Actionable implements Focusable {
 				return 0;
 
 			if (isWordSep(chars[pos])) {
-				return pos +1;
+				return pos + 1;
 			}
 		}
 	}
@@ -279,6 +374,17 @@ public class Text extends Actionable implements Focusable {
 	 */
 	private boolean isWordSep(char c) {
 		return Character.isWhitespace(c) || c == ',' || c == ';' || c == '.';
+	}
+
+	/**
+	 * Using this ScrollBox is not equivalent to creating one with this editor
+	 * as content, as this ScrollBox will be bound to the content and the
+	 * position of the caret as it is moved.
+	 * 
+	 * @return if multiline, returns a ScrollBox containing this editor
+	 */
+	public ScrollBox getScrollBox() {
+		return this.scroll;
 	}
 
 	@Override
@@ -308,21 +414,38 @@ public class Text extends Actionable implements Focusable {
 
 	@Override
 	public int getPreferredWidth(int max) {
-		if (this.length < 1) {
-			return max;
+		if (this.multiLine) {
+			return Math.max(max, getMaxLineLength() + 4);
 		} else {
-			int w = Fonts.getNormal().getFontSize() * this.length;
-			return Math.min(max, w + 4);
+			if (this.length < 1) {
+				return max;
+			} else {
+				int w = Fonts.getNormal().getFontSize() * this.length;
+				return Math.min(max, w + 4);
+			}
 		}
 	}
 
 	@Override
 	public int getPreferredHeight(int max) {
 		if (this.multiLine) {
-			return max;
+			return Math.max(max, this.lines.size()
+					* Fonts.getNormal().getHeight() + 4);
 		} else {
 			return Math.min(max, Fonts.getNormal().getHeight() + 4);
 		}
+	}
+
+	/**
+	 * Only use if multiline
+	 */
+	private int getMaxLineLength() {
+		int res = 0;
+		for (StringBuffer sb : this.lines) {
+			int len = Fonts.getNormal().getWidth(sb.toString());
+			res = Math.max(len, res);
+		}
+		return res;
 	}
 
 	@Override

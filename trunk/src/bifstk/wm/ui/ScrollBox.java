@@ -272,7 +272,7 @@ public class ScrollBox extends Border {
 		int w = this.bounds.getWidth();
 		int h = this.bounds.getHeight();
 		boolean wasContent = this.hoverRegion.equals(Region.content);
-		
+
 		// region detection: very verbose; very fast
 		if (x < 0) {
 			hor = 0;
@@ -471,7 +471,7 @@ public class ScrollBox extends Border {
 	/**
 	 * Called when the ScrollBox geometry changes
 	 */
-	private void resize() {
+	void resize() {
 		Widget content = this.getContent();
 		if (content == null) {
 			return;
@@ -510,7 +510,7 @@ public class ScrollBox extends Border {
 		content.setBounds(prefWidth, prefHeight);
 	}
 
-	private int getScrollBarWidth() {
+	int getScrollBarWidth() {
 		return Fonts.getNormal().getHeight();
 	}
 
@@ -564,6 +564,60 @@ public class ScrollBox extends Border {
 		} else {
 			return 0;
 		}
+	}
+
+	/*
+	 * Set the X view translation.
+	 */
+	void setXTranslate(int x) {
+		int viewWidth = ((scrollVer) ? bounds.getWidth() - getScrollBarWidth()
+				: bounds.getWidth());
+
+		this.horScrollPos = ((float) x)
+				/ Math.max(0, (getContent().getWidth() - viewWidth));
+
+		this.horScrollPos = Util.clampf(this.horScrollPos, 0.0f, 1.0f);
+	}
+
+	/*
+	 * Set the Y view translation.
+	 */
+	void setYTranslate(int y) {
+		int viewHeight = ((this.scrollHor) ? bounds.getHeight()
+				- getScrollBarWidth() : bounds.getHeight());
+
+		this.verScrollPos = ((float) y)
+				/ Math.max(0, (getContent().getHeight() - viewHeight));
+
+		this.verScrollPos = Util.clampf(this.verScrollPos, 0.0f, 1.0f);
+	}
+
+	/*
+	 * @return the X view translation
+	 */
+	int getXTranslate() {
+		return -this.xTranslate;
+	}
+
+	/*
+	 * @return the Y view translatiopn
+	 */
+	int getYTranslate() {
+		return this.yTranslate;
+	}
+	
+	/*
+	 * @return true if this ScrollBox is currently Vertically scrolling
+	 */
+	boolean isScrollVer () {
+		return this.scrollVer;
+	}
+	
+	/*
+	 * @return true if this ScrollBox is currently horizontally scrolling
+	 */
+	boolean isScrollHor () {
+		return this.scrollHor;
 	}
 
 }

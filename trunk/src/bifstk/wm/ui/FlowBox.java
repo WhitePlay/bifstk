@@ -236,19 +236,17 @@ public class FlowBox extends Container {
 
 					acc += ew;
 				} else {
-					GL11.glPushMatrix();
 					if (this.orientation.equals(Orientation.HORIZONTAL)) {
-						GL11.glTranslatef(acc, 0, 0);
-						Util.pushScissor(acc, 0, widg.getWidth(),
-								widg.getHeight(), false);
+						Util.pushTranslate(acc, 0);
+						Util.pushScissor(widg.getWidth(), widg.getHeight());
 					} else {
-						GL11.glTranslatef(0, acc, 0);
-						Util.pushScissor(0, acc, widg.getWidth(),
-								widg.getHeight(), false);
+						Util.pushTranslate(0, acc);
+						Util.pushScissor(widg.getWidth(), widg.getHeight());
 					}
 					widg.render(alpha, uiBg, uiAlpha);
-					GL11.glPopMatrix();
+
 					Util.popScissor();
+					Util.popTranslate();
 
 					if (this.orientation.equals(Orientation.HORIZONTAL)) {
 						if (widg.getHeight() < h) {

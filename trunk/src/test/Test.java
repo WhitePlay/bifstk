@@ -128,8 +128,8 @@ public class Test implements Handler, Root {
 
 				Text t1 = new Text();
 
-				//vBox.addBefore(new CustomBorder(h1, 2));
-				//vBox.addBefore(new CustomBorder(h2, 2));
+				vBox.addBefore(new CustomBorder(h1, 2));
+				vBox.addBefore(new CustomBorder(h2, 2));
 				vBox.addBefore(new CustomBorder(h3, 2));
 				vBox.addBefore(new CustomBorder(new Text(0), 2));
 				vBox.setExpand(new CustomBorder(t1.getScrollBox(), 2));

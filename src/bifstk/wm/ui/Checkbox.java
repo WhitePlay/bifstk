@@ -54,8 +54,8 @@ public class Checkbox extends AbstractButton {
 
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 
-		Util.draw2D(g1, c1, GL11.GL_QUADS);
-		Util.draw2DLineLoop(g2, c2);
+		Util.raster().draw2D(g1, c1, GL11.GL_QUADS);
+		Util.raster().draw2DLineLoop(g2, c2);
 
 		if (this.checked) {
 			float d = pw * 0.2f;
@@ -68,7 +68,7 @@ public class Checkbox extends AbstractButton {
 					d, d, //
 					pw - d
 			};
-			Util.draw2D(g3, c3, GL11.GL_LINES);
+			Util.raster().draw2D(g3, c3, GL11.GL_LINES);
 		}
 	}
 

@@ -176,7 +176,7 @@ public class Renderer {
 					x, acc + w, //
 					0, acc + w
 			};
-			Util.draw2D(v1, c1, GL11.GL_QUADS);
+			Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
 			acc += w;
 		}
 
@@ -196,7 +196,7 @@ public class Renderer {
 					x + w, height
 			};
 
-			Util.draw2D(v1, c1, GL11.GL_QUADS);
+			Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
 		}
 
 		Color c = Theme.getWindowBorderFocusedColor();
@@ -211,7 +211,7 @@ public class Renderer {
 				x + w, height, //
 				x, height
 		};
-		Util.draw2D(v1, c1, GL11.GL_QUADS);
+		Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
 
 		c = Theme.getWindowBorderOuterFocusedColor();
 		if (!focus) {
@@ -223,7 +223,7 @@ public class Renderer {
 				x + w, 0, //
 				x + w, height
 		};
-		Util.draw2D(v1, c1, GL11.GL_LINES);
+		Util.raster().draw2D(v1, c1, GL11.GL_LINES);
 	}
 
 	/**
@@ -263,7 +263,7 @@ public class Renderer {
 					dw - x, acc + w, //
 					dw, acc + w
 			};
-			Util.draw2D(v1, c1, GL11.GL_QUADS);
+			Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
 			acc += w;
 		}
 
@@ -282,7 +282,7 @@ public class Renderer {
 					dw - x - w - radius, height, //
 					dw - x - w, height
 			};
-			Util.draw2D(v1, c1, GL11.GL_QUADS);
+			Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
 		}
 
 		Color c = Theme.getWindowBorderFocusedColor();
@@ -297,7 +297,7 @@ public class Renderer {
 				dw - x - w, height, //
 				dw - x, height
 		};
-		Util.draw2D(v1, c1, GL11.GL_QUADS);
+		Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
 
 		c = Theme.getWindowBorderOuterFocusedColor();
 		if (!focus) {
@@ -309,7 +309,7 @@ public class Renderer {
 				dw - x - w, 0, //
 				dw - x - w, height
 		};
-		Util.draw2D(v1, c1, GL11.GL_LINES);
+		Util.raster().draw2D(v1, c1, GL11.GL_LINES);
 	}
 
 	/**
@@ -355,7 +355,7 @@ public class Renderer {
 						width, height, //
 						0, height
 				};
-				Util.draw2D(v1, c1, GL11.GL_QUADS);
+				Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
 			}
 			float modAlpha = f.getModAlpha();
 
@@ -386,7 +386,7 @@ public class Renderer {
 		int[] v = {
 				0, 0, width, 0, width, height, 0, height
 		};
-		Util.draw2D(v, c, GL11.GL_QUADS);
+		Util.raster().draw2D(v, c, GL11.GL_QUADS);
 	}
 
 	/**

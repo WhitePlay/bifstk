@@ -235,7 +235,7 @@ public abstract class Frame implements Drawable, Clickable {
 				x + w, y + h - borderWidth, //
 				x, y + h - borderWidth
 		};
-		Util.draw2D(v1, c1, GL11.GL_QUADS);
+		Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
 
 		if (borderWidth > 1) {
 			// metaborder
@@ -246,7 +246,7 @@ public abstract class Frame implements Drawable, Clickable {
 					x + w, y + h, //
 					x, y + h
 			};
-			Util.draw2DLineLoop(v2, c2);
+			Util.raster().draw2DLineLoop(v2, c2);
 		}
 
 		// title-bar
@@ -260,7 +260,7 @@ public abstract class Frame implements Drawable, Clickable {
 					x + w - borderWidth, y + borderWidth, //
 					x + borderWidth, y + borderWidth
 			};
-			Util.draw2D(v3, c3, GL11.GL_QUADS);
+			Util.raster().draw2D(v3, c3, GL11.GL_QUADS);
 
 			Color titleCol2 = getFrameTitlebarFocusedColor().blend(
 					getFrameTitlebarUnfocusedColor(), focusAnim);
@@ -279,7 +279,7 @@ public abstract class Frame implements Drawable, Clickable {
 					x + w - dec, y + dec, //
 					x + dec, y + dec
 			};
-			Util.draw2D(v3, c3, GL11.GL_QUADS);
+			Util.raster().draw2D(v3, c3, GL11.GL_QUADS);
 
 			int controlWidth = Theme.getFrameControlsWidth();
 			int controlHeight = Theme.getFrameControlsHeight();
@@ -385,7 +385,7 @@ public abstract class Frame implements Drawable, Clickable {
 								yClickDec + img.getTexHeight(), //
 								0, yClickDec + img.getTexHeight(), //
 						};
-						Util.draw2DTexturedQuad(v2, c2, img.getTexId());
+						Util.raster().draw2DTexturedQuad(v2, c2, img.getTexId());
 
 						Util.popScissor();
 						Util.popTranslate();
@@ -419,7 +419,7 @@ public abstract class Frame implements Drawable, Clickable {
 					x + w - borderWidth, y + h - borderWidth, //
 					x + borderWidth, y + h - borderWidth
 			};
-			Util.draw2D(v, c, GL11.GL_QUADS);
+			Util.raster().draw2D(v, c, GL11.GL_QUADS);
 		} else {
 			Util.pushTranslate(x + borderWidth, y + titlebarHeight
 					+ borderWidth);

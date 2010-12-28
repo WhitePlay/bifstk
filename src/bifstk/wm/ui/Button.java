@@ -80,9 +80,9 @@ public class Button extends AbstractButton {
 		}
 		Color fontCol = Theme.getUiFontColor();
 
-		Util.draw2D(v1, c1, GL11.GL_QUADS);
+		Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
 		Fonts.getNormal().drawString(lx, ly, this.text, fontCol, alpha);
-		Util.draw2DLineLoop(v2, c2);
+		Util.raster().draw2DLineLoop(v2, c2);
 	}
 
 	@Override

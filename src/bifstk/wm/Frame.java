@@ -303,11 +303,15 @@ public abstract class Frame implements Drawable, Clickable {
 									Theme.getWindowTitlebarUnfocusedColor(),
 									focusAnim);
 					GL11.glEnable(GL11.GL_SCISSOR_TEST);
-					Util.pushScissor(x + borderWidth + acc, y + borderWidth,
-							titleWidth, titlebarHeight);
-					Fonts.getNormal().drawString(x + borderWidth + acc,
-							y + borderWidth, this.title, titleFontCol, alpha);
+
+					Util.pushTranslate(x + borderWidth + acc, y + borderWidth);
+					Util.pushScissor(titleWidth, titlebarHeight);
+
+					Fonts.getNormal().drawString(0, 0, this.title,
+							titleFontCol, alpha);
+
 					Util.popScissor();
+					Util.popTranslate();
 					GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
 					acc += titleWidth + controlBorder;
@@ -366,25 +370,25 @@ public abstract class Frame implements Drawable, Clickable {
 					}
 					if (img != null) {
 						GL11.glEnable(GL11.GL_SCISSOR_TEST);
-						Util.pushScissor(x + borderWidth + acc,
-								y + borderWidth, controlWidth, controlHeight);
+
+						Util.pushTranslate(x + borderWidth + acc, y
+								+ borderWidth);
+						Util.pushScissor(controlWidth, controlHeight);
 
 						float[] c2 = col.toArray(4, alpha);
 						int[] v2 = {
-								x + borderWidth + acc,
-								y + yClickDec + borderWidth, //
-								x + borderWidth + acc + img.getTexWidth(),
-								y + yClickDec + borderWidth, //
-								x + borderWidth + acc + img.getTexWidth(),
-								y + yClickDec + borderWidth
-										+ img.getTexHeight(), //
-								x + borderWidth + acc,
-								y + yClickDec + borderWidth
-										+ img.getTexHeight(), //
+								0,
+								yClickDec, //
+								img.getTexWidth(),
+								yClickDec, //
+								img.getTexWidth(),
+								yClickDec + img.getTexHeight(), //
+								0, yClickDec + img.getTexHeight(), //
 						};
 						Util.draw2DTexturedQuad(v2, c2, img.getTexId());
 
 						Util.popScissor();
+						Util.popTranslate();
 						GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
 						if (!Config.get().isWmAnimations()) {
@@ -417,17 +421,17 @@ public abstract class Frame implements Drawable, Clickable {
 			};
 			Util.draw2D(v, c, GL11.GL_QUADS);
 		} else {
-			GL11.glPushMatrix();
-			Util.pushScissor(x + borderWidth, y + borderWidth + titlebarHeight,
-					w - 2 * borderWidth, h - 2 * borderWidth - titlebarHeight);
-			GL11.glTranslatef(x + borderWidth,
-					y + titlebarHeight + borderWidth, 0);
+			Util.pushTranslate(x + borderWidth, y + titlebarHeight
+					+ borderWidth);
+			Util.pushScissor(w - 2 * borderWidth, h - 2 * borderWidth
+					- titlebarHeight);
+
 			GL11.glEnable(GL11.GL_SCISSOR_TEST);
 
 			this.content.render(alpha, uiColor, uiAlpha);
 
-			GL11.glPopMatrix();
 			Util.popScissor();
+			Util.popTranslate();
 		}
 	}
 

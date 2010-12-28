@@ -144,14 +144,13 @@ public class CustomBorder extends Border {
 			int nw = w - left - right;
 			int nh = h - top - bot;
 			if (nw > 0 && nh > 0) {
-				GL11.glPushMatrix();
-				GL11.glTranslatef(left, top, 0);
-				Util.pushScissor(left, top, nw, nh, false);
+				Util.pushTranslate(left, top);
+				Util.pushScissor(w, h);
 
 				this.getContent().render(alpha, uiBg, uiAlpha);
 
 				Util.popScissor();
-				GL11.glPopMatrix();
+				Util.popTranslate();
 			}
 		} else {
 			Color c = this.color;
@@ -170,7 +169,7 @@ public class CustomBorder extends Border {
 		}
 
 		if (this.label != null) {
-		//	Util.pushScissor(0, 0, this.labelWidth, this.labelHeight, false);
+			//	Util.pushScissor(0, 0, this.labelWidth, this.labelHeight, false);
 
 			Color col = Theme.getUiFontColor();
 			Fonts.getNormal().drawString(0, 0, this.label, col, alpha);

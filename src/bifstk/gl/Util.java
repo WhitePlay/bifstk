@@ -1,6 +1,8 @@
 package bifstk.gl;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -443,39 +445,44 @@ public class Util {
 				alpha, col, 0.0f);
 	}
 
-	/**
-	 * Abscissa, ordinate, width and height in pixels
-	 * <p>
-	 * Used for scissor boxes
-	 */
-	private static class Coord {
-		public int x;
-		public int y;
-		public int w;
-		public int h;
+	private static LinkedList<Rectangle> scissors = new LinkedList<Rectangle>();
 
-		public Coord(int x, int y, int w, int h) {
-			this.x = x;
-			this.y = y;
-			this.w = w;
-			this.h = h;
+	private static LinkedList<Point> translation = new LinkedList<Point>();
+
+	/**
+	 * Push a new translation matrix on top of the stack
+	 * <p>
+	 * Use this instead of direct glTranslate as it allows keeping track of
+	 * nested matrix translations, so that nested Widget#render() calls can know
+	 * precisely the render position on screen
+	 * 
+	 * @param x abscissa to add to the current translation
+	 * @param y ordinate to add to the current translation
+	 */
+	public static void pushTranslate(int x, int y) {
+		Point p = new Point(x, y);
+
+		if (!translation.isEmpty()) {
+			Point o = translation.getFirst();
+			p.x += o.x;
+			p.y += o.y;
 		}
+
+		translation.push(p);
+
+		GL11.glPushMatrix();
+		GL11.glTranslatef(x, y, 0.0f);
 	}
 
-	private static LinkedList<Coord> scissors = new LinkedList<Coord>();
-
 	/**
-	 * Push new scissors on top of the Scissor stack
+	 * Removes the last translation
 	 * <p>
-	 * The new Scissor position will be absolute in Display coordinates
-	 * 
-	 * @param x new scissor abscissa
-	 * @param y new scissor ordinate
-	 * @param w new scissor width
-	 * @param h new scissor height
+	 * Restores the matrix as it was before the last call to
+	 * {@link #pushTranslate(int, int)}
 	 */
-	public static void pushScissor(int x, int y, int w, int h) {
-		pushScissor(x, y, w, h, true);
+	public static void popTranslate() {
+		translation.pop();
+		GL11.glPopMatrix();
 	}
 
 	/**
@@ -483,41 +490,59 @@ public class Util {
 	 * <p>
 	 * This handles calls to GL11.glScissor() so that stacking new scissors with
 	 * relative positions is possible.
+	 * <p>
+	 * The position of the new scissor is relative to the current translation as
+	 * accounted by {@link #pushTranslate(int, int)}
 	 * 
-	 * @param x new scissor abscissa
-	 * @param y new scissor ordinate
 	 * @param w new scissor width
 	 * @param h new scissor height
-	 * @param absolute if true, the x and y coordinate parameters will be
-	 *            relative to the Display origin. If false, these coordinates
-	 *            will be relative to the last scissor coordinates pushed
-	 *            through this method.
 	 */
-	public static void pushScissor(int x, int y, int w, int h, boolean absolute) {
-		Coord c = new Coord(x, y, w, h);
+	public static void pushScissor(int w, int h) {
+		Util.pushScissor(0, 0, w, h);
+	}
 
-		if (!absolute) {
-			int prevX = 0;
-			int prevY = 0;
+	/**
+	 * If unsure, you don't need this and should use
+	 * {@link #pushScissor(int, int)} instead.
+	 * <p>
+	 * Otherwise, this allows specifying an additional translation for the
+	 * scissor box instead of using the one from
+	 * {@link #pushTranslate(int, int)} directly
+	 * 
+	 * @param x additional abscissa translation
+	 * @param y additional ordinate translation
+	 * @param w new scissor width
+	 * @param h new scissor height
+	 */
+	public static void pushScissor(int x, int y, int w, int h) {
+		Rectangle c = new Rectangle(x, y, w, h);
 
-			if (!scissors.isEmpty()) {
-				Coord prev = scissors.getFirst();
-				prevX = prev.x;
-				prevY = prev.y;
-			}
-			c.x += prevX;
-			c.y += prevY;
+		if (!translation.isEmpty()) {
+			Point p = translation.getFirst();
+			c.x += p.x;
+			c.y += p.y;
+		}
+		
+		if (!scissors.isEmpty()) {
+			Rectangle p = scissors.getFirst();
+			c = p.intersection(c);
 		}
 
 		scissors.push(c);
 		int dh = Display.getDisplayMode().getHeight();
-		GL11.glScissor(c.x, dh - c.y - c.h, c.w, c.h);
+		GL11.glScissor(c.x, dh - c.y - c.height, c.width, c.height);
 	}
 
+	/**
+	 * Removes the last scissor
+	 * <p>
+	 * Restore the scissor box as it was before the last call to
+	 * {@link #pushScissor(int, int)}
+	 */
 	public static void popScissor() {
-		Coord c = scissors.pop();
+		Rectangle c = scissors.pop();
 
-		if (Config.get().isWmDebugLayout()) {
+		if (Config.get().isWmDebugLayout() && !c.isEmpty()) {
 
 			GL11.glDisable(GL11.GL_SCISSOR_TEST);
 			GL11.glMatrixMode(GL11.GL_MODELVIEW);
@@ -526,9 +551,9 @@ public class Util {
 
 			int[] verts = new int[] {
 					c.x, c.y, //
-					c.x + c.w, c.y, //
-					c.x + c.w, c.y + c.h, //
-					c.x, c.y + c.h
+					c.x + c.width, c.y, //
+					c.x + c.width, c.y + c.height, //
+					c.x, c.y + c.height
 			};
 			float[] cols = Color.RED.toArray(8);
 			Util.draw2DLineLoop(verts, cols);
@@ -541,7 +566,7 @@ public class Util {
 		if (scissors.size() > 0) {
 			c = scissors.getFirst();
 			int dh = Display.getDisplayMode().getHeight();
-			GL11.glScissor(c.x, dh - c.y - c.h, c.w, c.h);
+			GL11.glScissor(c.x, dh - c.y - c.height, c.width, c.height);
 		} else {
 			GL11.glScissor(0, 0, Display.getDisplayMode().getWidth(), Display
 					.getDisplayMode().getHeight());

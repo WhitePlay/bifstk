@@ -150,14 +150,13 @@ public class ScrollBox extends Border {
 		xTranslate = (int) (horScrollPos * Math.max(0, realWidth - viewWidth));
 
 		// draw content
-		GL11.glPushMatrix();
-		GL11.glTranslatef(-xTranslate, -yTranslate, 0.0f);
+		Util.pushTranslate(-xTranslate, -yTranslate);
 
-		Util.pushScissor(0, 0, viewWidth, viewHeight, false);
+		Util.pushScissor(xTranslate, yTranslate, viewWidth, viewHeight);
 		this.getContent().render(alpha, uiBg, uiBgAlpha);
 		Util.popScissor();
 
-		GL11.glPopMatrix();
+		Util.popTranslate();
 
 		Color borderCol = Theme.getUiButtonBorderColor();
 		Color fillCol = null;
@@ -605,18 +604,18 @@ public class ScrollBox extends Border {
 	int getYTranslate() {
 		return this.yTranslate;
 	}
-	
+
 	/*
 	 * @return true if this ScrollBox is currently Vertically scrolling
 	 */
-	boolean isScrollVer () {
+	boolean isScrollVer() {
 		return this.scrollVer;
 	}
-	
+
 	/*
 	 * @return true if this ScrollBox is currently horizontally scrolling
 	 */
-	boolean isScrollHor () {
+	boolean isScrollHor() {
 		return this.scrollHor;
 	}
 

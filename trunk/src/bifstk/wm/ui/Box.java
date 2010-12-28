@@ -78,7 +78,7 @@ public class Box extends Container {
 			int[] v1 = {
 					0, 0, w, 0, w, h, 0, h
 			};
-			Util.draw2D(v1, c1, GL11.GL_QUADS);
+			Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
 		} else {
 			int acc = 0;
 
@@ -107,7 +107,7 @@ public class Box extends Container {
 								acc + widg.getWidth(), h, //
 								acc, h
 						};
-						Util.draw2D(v2, c1, GL11.GL_QUADS);
+						Util.raster().draw2D(v2, c1, GL11.GL_QUADS);
 					}
 				} else {
 					if (widg.getWidth() < w) {
@@ -117,7 +117,7 @@ public class Box extends Container {
 								w, acc + widg.getHeight(), //
 								widg.getWidth(), acc + widg.getHeight()
 						};
-						Util.draw2D(v2, c1, GL11.GL_QUADS);
+						Util.raster().draw2D(v2, c1, GL11.GL_QUADS);
 					}
 				}
 
@@ -138,7 +138,7 @@ public class Box extends Container {
 							w, h, //
 							w, 0
 					};
-					Util.draw2D(v3, c1, GL11.GL_QUADS);
+					Util.raster().draw2D(v3, c1, GL11.GL_QUADS);
 				}
 			} else {
 				if (acc < h) {
@@ -148,7 +148,7 @@ public class Box extends Container {
 							w, h, //
 							0, h
 					};
-					Util.draw2D(v3, c1, GL11.GL_QUADS);
+					Util.raster().draw2D(v3, c1, GL11.GL_QUADS);
 				}
 			}
 		}

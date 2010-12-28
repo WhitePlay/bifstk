@@ -352,7 +352,7 @@ public class TrueTypeFont {
 						x + acc, y + intObject.height
 				};
 
-				Util.draw2DTexturedQuad(v, c, coords, this.fontTexture);
+				Util.raster().draw2DTexturedQuad(v, c, coords, this.fontTexture);
 				acc += intObject.width;
 			}
 		}

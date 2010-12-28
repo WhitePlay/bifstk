@@ -99,7 +99,7 @@ public class Text extends Actionable implements Focusable {
 				0, h
 		};
 
-		Util.draw2D(v, c2, GL11.GL_QUADS);
+		Util.raster().draw2D(v, c2, GL11.GL_QUADS);
 
 		if (!this.multiLine) {
 			String str = this.content.toString();
@@ -112,7 +112,7 @@ public class Text extends Actionable implements Focusable {
 			}
 		}
 
-		Util.draw2DLineLoop(v, c1);
+		Util.raster().draw2DLineLoop(v, c1);
 	}
 
 	private void renderLine(String str, int yOff, float alpha, boolean drawCaret) {
@@ -129,7 +129,7 @@ public class Text extends Actionable implements Focusable {
 					len + 1, Fonts.getNormal().getHeight() + yOff, //
 					len - 1, Fonts.getNormal().getHeight() + yOff
 			};
-			Util.draw2DLineLoop(cv, Color.BLACK.toArray(8, alpha));
+			Util.raster().draw2DLineLoop(cv, Color.BLACK.toArray(8, alpha));
 		}
 	}
 

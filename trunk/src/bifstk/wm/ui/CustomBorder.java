@@ -138,7 +138,7 @@ public class CustomBorder extends Border {
 					left, top, //
 					left, h - bot
 			};
-			Util.draw2D(v1, c1, GL11.GL_QUADS);
+			Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
 
 			// content
 			int nw = w - left - right;
@@ -165,7 +165,7 @@ public class CustomBorder extends Border {
 					w, h,//
 					0, h
 			};
-			Util.draw2D(v1, c1, GL11.GL_QUADS);
+			Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
 		}
 
 		if (this.label != null) {

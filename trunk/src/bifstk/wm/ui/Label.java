@@ -64,7 +64,7 @@ public class Label extends Widget {
 			ly = 0;
 		}
 
-		Util.draw2D(v1, c1, GL11.GL_QUADS);
+		Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
 		Fonts.getNormal().drawString(lx, ly, this.text, col, alpha);
 
 	}

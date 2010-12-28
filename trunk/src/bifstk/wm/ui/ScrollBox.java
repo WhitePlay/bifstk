@@ -197,7 +197,7 @@ public class ScrollBox extends Border {
 						viewWidth, viewHeight, //
 						viewWidth + scrollWidth, viewHeight, //
 				};
-				Util.draw2D(v1, c1, GL11.GL_QUADS);
+				Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
 
 				float[] c2 = borderCol.toArray(8, a);
 				int[] v2 = {
@@ -206,7 +206,7 @@ public class ScrollBox extends Border {
 						viewWidth + scrollWidth, verPos + verLen, //
 						viewWidth, verPos + verLen
 				};
-				Util.draw2DLineLoop(v2, c2);
+				Util.raster().draw2DLineLoop(v2, c2);
 			}
 			if (scrollHor) {
 
@@ -237,7 +237,7 @@ public class ScrollBox extends Border {
 						viewWidth, viewHeight + scrollWidth, //
 						horPos + horLen, viewHeight + scrollWidth, //
 				};
-				Util.draw2D(v1, c1, GL11.GL_QUADS);
+				Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
 
 				float[] c2 = borderCol.toArray(8, a);
 				int[] v2 = {
@@ -246,7 +246,7 @@ public class ScrollBox extends Border {
 						horPos + horLen, viewHeight + scrollWidth, //
 						horPos, viewHeight + scrollWidth
 				};
-				Util.draw2DLineLoop(v2, c2);
+				Util.raster().draw2DLineLoop(v2, c2);
 			}
 
 			if (scrollHor && scrollVer) {
@@ -258,7 +258,7 @@ public class ScrollBox extends Border {
 				};
 
 				float[] c = uiBg.toArray(4, a);
-				Util.draw2D(v, c, GL11.GL_QUADS);
+				Util.raster().draw2D(v, c, GL11.GL_QUADS);
 			}
 		}
 	}

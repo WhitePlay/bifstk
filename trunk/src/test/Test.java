@@ -82,7 +82,7 @@ public class Test implements Handler, Root {
 				imgX + w, imgY + h, //
 				imgX, imgY + h
 		};
-		Util.draw2DTexturedQuad(v1, Color.WHITE.toArray(4),
+		Util.raster().draw2DTexturedQuad(v1, Color.WHITE.toArray(4),
 				this.bgImg.getTexId());
 	}
 

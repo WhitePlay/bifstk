@@ -109,191 +109,11 @@ public class Util {
 		return imageBuffer;
 	}
 
-	private static float[] defaultCoords = {
-			0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-	};
-
 	/**
-	 * Draw a textured quad
-	 * 
-	 * @param vertices 4 2D vertices: 8 values
-	 * @param colors 4 rgba components: 16 values
-	 * @param texCoords 4 2D tex coords
-	 * @param texture GL texture id
+	 * @return {@link Rasterizer#getInstance()}
 	 */
-	public static void draw2DTexturedQuad(int[] vertices, float[] colors,
-			int texture) {
-		Util.draw2DTexturedQuad(vertices, colors, defaultCoords, texture);
-	}
-
-	/**
-	 * Draw a textured quad
-	 * 
-	 * @param vertices 4 2D vertices: 8 values
-	 * @param colors 4 rgba components: 16 values
-	 * @param texCoords 4 2D tex coords
-	 * @param texture GL texture id
-	 */
-	public static void draw2DTexturedQuad(int[] vertices, float[] colors,
-			float[] texCoords, int texture) {
-		if (vertices.length != 8) {
-			throw new IllegalArgumentException(
-					"Vertices array must be size 8: " + "4 2D vertices");
-		}
-		if (colors.length != 16) {
-			throw new IllegalArgumentException(
-					"Colors array must be of size 16: 4 rgba colors");
-		}
-		if (texCoords.length != 8) {
-			throw new IllegalArgumentException(
-					"TexCoords array must be of size 8: 4 2D coords");
-		}
-
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
-
-		GL11.glBegin(GL11.GL_QUADS);
-		for (int i = 0; i < vertices.length / 2; i++) {
-			GL11.glTexCoord2f(texCoords[i * 2], texCoords[i * 2 + 1]);
-			GL11.glColor4f(colors[i * 4], colors[i * 4 + 1], colors[i * 4 + 2],
-					colors[i * 4 + 3]);
-			GL11.glVertex2i(vertices[i * 2], vertices[i * 2 + 1]);
-		}
-		GL11.glEnd();
-
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-
-	}
-
-	private static final float raster_off_1 = 0.2f;
-	private static final float raster_off_2 = 0.2f;
-
-	/**
-	 * Draws a rectangle in line mode
-	 * <p>
-	 * When trying to draw pixel-accurate lines in 2D coordinates, always prefer
-	 * this method as it:
-	 * <ul>
-	 * <li>ensures that corners will not be written twice (ie. when alpha < 1.0)
-	 * <li>ensures that corners will not be skipped using offset magic
-	 * </ul>
-	 * Note that doing glTranslatef(0.375, 0.375, 0.) in MODELVIEW as frequently
-	 * advertised does NOT guarantee pixel accuracy: you have to offset 0.5 top
-	 * left and -0.3 bottom right.
-	 * <p>
-	 * The color array must contain the color for each pixel twice: the vertex
-	 * array will indeed be reconstructed so that each line is drawn
-	 * individually (sending 8 vertices and not 4)
-	 * 
-	 * @param vertices must be of size 8: 4 2D pixels. Order matters: should be
-	 *            clockwise beginning at top left
-	 * @param colors must be of size 32: 4 colors of 4rgba components, repeated
-	 *            twice each
-	 */
-	public static void draw2DLineLoop(int[] vertices, float[] colors) {
-		if (vertices.length != 8) {
-			throw new IllegalArgumentException(
-					"Vertices array must be of size 8: " + "4 2D vertices");
-		}
-		if (colors.length != 32) {
-			throw new IllegalArgumentException(
-					"Colors array must be of size 32: "
-							+ "4 rgba colors repeated 2 times each");
-		}
-
-		float[] verts = new float[16];
-
-		// top left -> top right
-		verts[0] = vertices[0] + raster_off_1 + 1.0f;
-		verts[1] = vertices[1] + raster_off_1;
-		verts[2] = vertices[2];
-		verts[3] = vertices[3];
-
-		// top right -> bot right
-		verts[4] = vertices[2];
-		verts[5] = vertices[3] + 1.0f;
-		verts[6] = vertices[4] - raster_off_2;
-		verts[7] = vertices[5] - raster_off_2;
-
-		// bot rigth -> bot left
-		verts[8] = vertices[4] - raster_off_2 - 1.0f;
-		verts[9] = vertices[5] - raster_off_2;
-		verts[10] = vertices[6];
-		verts[11] = vertices[7];
-
-		// bot left -> top left
-		verts[12] = vertices[6];
-		verts[13] = vertices[7] - 1.0f;
-		verts[14] = vertices[0] + raster_off_1;
-		verts[15] = vertices[1] + raster_off_1;
-
-		Util.draw2D(verts, colors, GL11.GL_LINES);
-
-	}
-
-	/**
-	 * Draw arbitrary geometry in 2D space
-	 * 
-	 * @param vertices 2 coordinates per vertice: x,y
-	 * @param colors 4 elements per color: r,g,b,a
-	 * @param glMode one of the glBegin() primitives
-	 */
-	public static void draw2D(int[] vertices, float[] colors, int glMode) {
-		if (vertices.length / 2 != colors.length / 4) {
-			throw new IllegalArgumentException(
-					"Vertices and Colors array sizes do not match ("
-							+ vertices.length + "/" + colors.length + ")");
-		}
-		GL11.glBegin(glMode);
-		for (int i = 0; i < vertices.length / 2; i++) {
-			GL11.glColor4f(colors[i * 4], colors[i * 4 + 1], colors[i * 4 + 2],
-					colors[i * 4 + 3]);
-			GL11.glVertex2i(vertices[i * 2], vertices[i * 2 + 1]);
-		}
-		GL11.glEnd();
-	}
-
-	/**
-	 * Draw arbitrary geometry in 2D space
-	 * 
-	 * @param vertices 2 coordinates per vertice: x,y
-	 * @param colors 4 elements per color: r,g,b,a
-	 * @param glMode one of the glBegin() primitives
-	 */
-	public static void draw2D(float[] vertices, float[] colors, int glMode) {
-		if (vertices.length / 2 != colors.length / 4) {
-			throw new IllegalArgumentException(
-					"Vertices and Colors array sizes do not match");
-		}
-		GL11.glBegin(glMode);
-		for (int i = 0; i < vertices.length / 2; i++) {
-			GL11.glColor4f(colors[i * 4], colors[i * 4 + 1], colors[i * 4 + 2],
-					colors[i * 4 + 3]);
-			GL11.glVertex2f(vertices[i * 2], vertices[i * 2 + 1]);
-		}
-		GL11.glEnd();
-	}
-
-	/**
-	 * Draw arbitrary geometry in 2D space
-	 * 
-	 * @param vertices 2 coordinates per vertice: x,y
-	 * @param colors 4 elements per color: r,g,b,a
-	 * @param glMode one of the glBegin() primitives
-	 */
-	public static void draw2D(double[] vertices, float[] colors, int glMode) {
-		if (vertices.length / 2 != colors.length / 4) {
-			throw new IllegalArgumentException(
-					"Vertices and Colors array sizes do not match");
-		}
-		GL11.glBegin(glMode);
-		for (int i = 0; i < vertices.length / 2; i++) {
-			GL11.glColor4f(colors[i * 4], colors[i * 4 + 1], colors[i * 4 + 2],
-					colors[i * 4 + 3]);
-			GL11.glVertex2d(vertices[i * 2], vertices[i * 2 + 1]);
-		}
-		GL11.glEnd();
+	public static Rasterizer raster() {
+		return Rasterizer.getInstance();
 	}
 
 	/**
@@ -361,7 +181,7 @@ public class Util {
 			float startAngle, float endAngle, int edges, Color col, float alpha) {
 		double[] vert = getArc(cx, cy, r, startAngle, endAngle, edges, false);
 		float[] cols = col.toArray(vert.length / 2, alpha);
-		Util.draw2D(vert, cols, GL11.GL_LINE_STRIP);
+		raster().draw2D(vert, cols, GL11.GL_LINE_STRIP);
 	}
 
 	/**
@@ -385,7 +205,7 @@ public class Util {
 		float[] cols = new float[(verts.length / 2) * 4];
 		inColor.fillArray(cols, 0, 4, inAlpha);
 		outColor.fillArray(cols, 4, cols.length, outAlpha);
-		Util.draw2D(verts, cols, GL11.GL_TRIANGLE_FAN);
+		raster().draw2D(verts, cols, GL11.GL_TRIANGLE_FAN);
 	}
 
 	/**
@@ -428,7 +248,7 @@ public class Util {
 		col.fillArray(cols, 4 * 14, 4 * 16, alpha);
 		col.fillArray(cols, 4 * 16, 4 * 20, alpha);
 
-		Util.draw2D(verts, cols, GL11.GL_QUADS);
+		raster().draw2D(verts, cols, GL11.GL_QUADS);
 
 		int precision = 5;
 
@@ -522,7 +342,7 @@ public class Util {
 			c.x += p.x;
 			c.y += p.y;
 		}
-		
+
 		if (!scissors.isEmpty()) {
 			Rectangle p = scissors.getFirst();
 			c = p.intersection(c);
@@ -556,7 +376,7 @@ public class Util {
 					c.x, c.y + c.height
 			};
 			float[] cols = Color.RED.toArray(8);
-			Util.draw2DLineLoop(verts, cols);
+			raster().draw2DLineLoop(verts, cols);
 
 			GL11.glMatrixMode(GL11.GL_MODELVIEW);
 			GL11.glPopMatrix();

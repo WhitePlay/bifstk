@@ -260,6 +260,10 @@ public class Bifstk {
 	public static void removeWindow(Window f) throws ThreadAccessException {
 		checkThread();
 
+		f.setKeyboardFocus(null);
+		if (Bifstk.logic.getState().getFocused().equals(f)) {
+			Bifstk.logic.getState().focusFrame(null);
+		}
 		boolean r = Bifstk.logic.getState().removeWindow(f);
 		if (!r) {
 			r = Bifstk.logic.getState().removeFromDock(f, DockPosition.LEFT);

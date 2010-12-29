@@ -337,9 +337,12 @@ public abstract class Frame implements Drawable, Clickable {
 											/ (float) hoverAnimLen, 0.0f, 1.0f);
 						} else {
 							col = Theme.getFrameControlsCloseColor();
-							hoverAnim = 1.0f - Util.clampf(
-									(float) (t - this.controlCloseHoverTime)
-											/ (float) hoverAnimLen, 0.0f, 1.0f);
+							if (!this.controlCloseDown) {
+								hoverAnim = 1.0f - Util
+										.clampf((float) (t - this.controlCloseHoverTime)
+												/ (float) hoverAnimLen, 0.0f,
+												1.0f);
+							}
 						}
 						break;
 					case MAXIMIZE:
@@ -360,10 +363,12 @@ public abstract class Frame implements Drawable, Clickable {
 												1.0f);
 							} else {
 								col = Theme.getFrameControlsMaximizeColor();
-								hoverAnim = 1.0f - Util
-										.clampf((float) (t - this.controlMaximizeHoverTime)
-												/ (float) hoverAnimLen, 0.0f,
-												1.0f);
+								if (!this.controlMaximizeDown) {
+									hoverAnim = 1.0f - Util
+											.clampf((float) (t - this.controlMaximizeHoverTime)
+													/ (float) hoverAnimLen,
+													0.0f, 1.0f);
+								}
 							}
 						}
 						break;
@@ -385,7 +390,8 @@ public abstract class Frame implements Drawable, Clickable {
 								yClickDec + img.getTexHeight(), //
 								0, yClickDec + img.getTexHeight(), //
 						};
-						Util.raster().draw2DTexturedQuad(v2, c2, img.getTexId());
+						Util.raster()
+								.draw2DTexturedQuad(v2, c2, img.getTexId());
 
 						Util.popScissor();
 						Util.popTranslate();
@@ -1054,13 +1060,14 @@ public abstract class Frame implements Drawable, Clickable {
 	/**
 	 * Request keyboard focus for a Widget in this Frame
 	 * 
-	 * @param a the new Widget holding keyboard focus in this Frame
+	 * @param a the new Widget holding keyboard focus in this Frame, can be null
 	 */
 	public void setKeyboardFocus(Focusable a) {
 		if (this.keyboardFocus != null)
 			this.keyboardFocus.setFocus(false);
 		this.keyboardFocus = a;
-		a.setFocus(true);
+		if (a != null)
+			a.setFocus(true);
 	}
 
 	/** @return pixel height of the titlebar */

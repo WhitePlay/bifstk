@@ -457,13 +457,18 @@ public class Logic {
 				this.leftMouse.clickHeight = this.leftMouse.clickedFrame
 						.getHeight();
 				this.leftMouse.clickedFrame.mouseDown(0);
-			}
-			// propagate click to user handler
-			else if (this.handler != null) {
-				this.handler.mouseEvent(0, this.leftMouse.hoverX,
-						this.leftMouse.hoverY, true);
-			}
+			} else {
+				// cancel current Frame / Widget focus
+				if (this.state.getFocused() != null)
+					this.state.getFocused().setKeyboardFocus(null);
+				this.state.focusFrame(null);
 
+				// propagate click to user handler
+				if (this.handler != null) {
+					this.handler.mouseEvent(0, this.leftMouse.hoverX,
+							this.leftMouse.hoverY, true);
+				}
+			}
 			// close frame control
 			if (this.leftMouse.clickedRegion.equals(Region.CLOSE)
 					&& this.leftMouse.clickedFrame != null) {
@@ -497,9 +502,13 @@ public class Logic {
 
 			// close frame control
 			if (this.leftMouse.clickedRegion.equals(Region.CLOSE)) {
+				this.leftMouse.clickedFrame.setControlCloseDown(false);
+				this.leftMouse.clickedFrame.setControlCloseHover(false);
+
 				if (this.leftMouse.hoverRegion.equals(Region.CLOSE)
-						&& this.leftMouse.hoverFrame
-								.equals(this.leftMouse.clickedFrame)) {
+						&& this.leftMouse.clickedFrame
+								.equals(this.leftMouse.hoverFrame)) {
+
 					if (modalWindow == this.leftMouse.clickedFrame) {
 						Bifstk.setModalWindow(null);
 					} else {
@@ -510,18 +519,19 @@ public class Logic {
 					this.leftMouse.clickedFrame = null;
 					this.leftMouse.hoverFrame = null;
 					this.leftMouse.hoverRegion = Region.OUT;
-				} else {
-					this.leftMouse.clickedFrame.setControlCloseDown(false);
 				}
 			}
 
 			// maximize frame control
-			if (this.leftMouse.clickedRegion.equals(Region.MAXIMIZE)
-					&& this.leftMouse.hoverFrame != null
-					&& this.leftMouse.clickedFrame != null) {
+			if (this.leftMouse.clickedRegion.equals(Region.MAXIMIZE)) {
 				this.leftMouse.clickedFrame.setControlMaximizeDown(false);
-				this.leftMouse.clickedFrame.toggleMaximize();
-				this.leftMouse.hoverFrame.setControlMaximizeHover(false);
+				this.leftMouse.clickedFrame.setControlMaximizeHover(false);
+
+				if (this.leftMouse.hoverRegion.equals(Region.MAXIMIZE)
+						&& this.leftMouse.clickedFrame
+								.equals(this.leftMouse.hoverFrame)) {
+					this.leftMouse.clickedFrame.toggleMaximize();
+				}
 			}
 
 			if (this.leftMouse.dragTop) {

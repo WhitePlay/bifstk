@@ -432,7 +432,7 @@ public class Text extends Actionable implements Focusable {
 			return Math.max(max, this.lines.size()
 					* Fonts.getNormal().getHeight() + 4);
 		} else {
-			return Math.min(max, Fonts.getNormal().getHeight() + 4);
+			return Fonts.getNormal().getHeight() + 4;
 		}
 	}
 

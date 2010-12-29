@@ -86,13 +86,17 @@ public abstract class Widget implements Drawable, Clickable {
 	public abstract int getHeight();
 
 	/**
-	 * @param max the maximum width that can be returned by this method
+	 * @param the maximum width that can currently be allocated to this widget.
+	 *            this is a hint, if this value is too low for the widget to
+	 *            display correctly, ignore it
 	 * @return the preferred width for this widget
 	 */
 	public abstract int getPreferredWidth(int max);
 
 	/**
-	 * @param the maximum height that can be returned by this method
+	 * @param the maximum height that can currently be allocated to this widget.
+	 *            this is a hint, if this value is too low for the widget to
+	 *            display correctly, ignore it
 	 * @return the preferred height for this widget
 	 */
 	public abstract int getPreferredHeight(int max);

@@ -57,18 +57,25 @@ public class Checkbox extends AbstractButton {
 		Util.raster().draw2D(g1, c1, GL11.GL_QUADS);
 		Util.raster().draw2DLineLoop(g2, c2);
 
+		Color fillCol = Theme.getUiButtonColor();
+		if (this.isMouseClicked()) {
+			fillCol = Theme.getUiButtonClickColor();
+		} else if (this.isMouseHover()) {
+			fillCol = Theme.getUiButtonHoverColor();
+		}
+
 		if (this.checked) {
-			float d = pw * 0.2f;
-			float[] c3 = Color.BLACK.toArray(4, a);
-			float[] g3 = new float[] {
-					d, d, //
-					pw - d, //
-					pw - d, //
-					pw - d, //
-					d, d, //
-					pw - d
+			int b = (int) (0.2f * pw);
+			float[] c3 = Theme.getUiButtonBorderColor().toArray(8, a);
+			float[] c4 = fillCol.toArray(4, a);
+			int[] g3 = new int[] {
+					b, b, //
+					pw - b, b, //
+					pw - b, pw - b, //
+					b, pw - b //
 			};
-			Util.raster().draw2D(g3, c3, GL11.GL_LINES);
+			Util.raster().draw2D(g3, c4, GL11.GL_QUADS);
+			Util.raster().draw2DLineLoop(g3, c3);
 		}
 	}
 
@@ -95,12 +102,12 @@ public class Checkbox extends AbstractButton {
 	@Override
 	public int getPreferredWidth(int max) {
 		// height of a line of text
-		return Fonts.getNormal().getHeight();
+		return Fonts.getNormal().getHeight() + 2;
 	}
 
 	@Override
 	public int getPreferredHeight(int max) {
 		// height of a line of text
-		return Fonts.getNormal().getHeight();
+		return Fonts.getNormal().getHeight() + 2;
 	}
 }

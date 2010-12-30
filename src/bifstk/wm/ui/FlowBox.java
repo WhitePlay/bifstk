@@ -72,6 +72,8 @@ public class FlowBox extends Container {
 	/** width of the border between each element */
 	private int borderWidth = 2;
 
+	/** true when mouse is hovering this flowbox */
+	private boolean mouseHover = false;
 	/** widget currently hovered by mouse */
 	private Widget widgetHover = null;
 	/** horizontal/vertical offset of the hovered widget */
@@ -91,6 +93,9 @@ public class FlowBox extends Container {
 	private Widget widgetCenterMouseDown = null;
 	/** hor/vert offset of the widget clicked by LMB */
 	private int widgetCenterMouseDownDecal = 0;
+
+	/** the bound button or null */
+	private AbstractButton boundButton = null;
 
 	/**
 	 * Default constructor
@@ -186,6 +191,10 @@ public class FlowBox extends Container {
 	public void render(float alpha, Color uiBg, float uiAlpha) {
 		int w = this.getWidth();
 		int h = this.getHeight();
+
+		if (this.boundButton != null && this.mouseHover) {
+			uiBg = uiBg.highlight();
+		}
 
 		float[] c1 = uiBg.toArray(4, alpha * uiAlpha);
 
@@ -285,11 +294,19 @@ public class FlowBox extends Container {
 	 * top (depending the orientation) flow in fixed fill mode
 	 * 
 	 * @param w new widget to append to the left or top flow
+	 * @throws IllegalStateException if this FlowBox has an AttachedButton and
+	 *             <code>w</code> is a Container
 	 */
 	public void addBefore(Widget w) {
 		if (w == null) {
 			return;
 		}
+		if (this.boundButton != null
+				&& Container.class.isAssignableFrom(w.getClass())) {
+			throw new IllegalStateException(
+					"Cannot insert a Container as this FlowBox has a bound Button");
+		}
+
 		super.add(w);
 		this.leftChildren.add(w);
 		resize();
@@ -300,11 +317,19 @@ public class FlowBox extends Container {
 	 * or bottom (depending the orientation) flow in fixed fill mode
 	 * 
 	 * @param w new widget to append to the right or bottom flow
+	 * @throws IllegalStateException if this FlowBox has an AttachedButton and
+	 *             <code>w</code> is a Container
 	 */
 	public void addAfter(Widget w) {
 		if (w == null) {
 			return;
 		}
+		if (this.boundButton != null
+				&& Container.class.isAssignableFrom(w.getClass())) {
+			throw new IllegalStateException(
+					"Cannot insert a Container as this FlowBox has a bound Button");
+		}
+
 		super.add(w);
 		this.rightChildren.add(w);
 		resize();
@@ -313,12 +338,20 @@ public class FlowBox extends Container {
 	/**
 	 * @param w the Widget to put in expand mode between the left/top and
 	 *            right/bottom flow; can be null
+	 * @throws IllegalStateException if this FlowBox has an AttachedButton and
+	 *             <code>w</code> is a Container
 	 */
 	public void setExpand(Widget w) {
 		super.add(w);
 		if (this.expandChild != null) {
 			this.expandChild.setParent(null);
 		}
+		if (this.boundButton != null
+				&& Container.class.isAssignableFrom(w.getClass())) {
+			throw new IllegalStateException(
+					"Cannot insert a Container as this FlowBox has a bound Button");
+		}
+
 		this.expandChild = w;
 		resize();
 	}
@@ -462,31 +495,93 @@ public class FlowBox extends Container {
 		return this.borderWidth;
 	}
 
-	@Override
-	public void mouseHover(int x, int y) {
-		int acc = 0;
-		for (Widget wid : this.leftChildren) {
-			acc = _mouseHover(wid, acc, x, y);
-			if (acc < 0)
-				return;
+	/**
+	 * Binding a Button to a Container means that mouse events sent to this
+	 * FlowBox will be redirected to the bound button.
+	 * <p>
+	 * Useful when clicking the label attached to a radio/check button activates
+	 * that button
+	 * <p>
+	 * This button has to be contained in this FlowBox
+	 * <p>
+	 * This FlowBox cannot contain other Containers if it has a bound button
+	 * 
+	 * @param button the Button to attach
+	 * @throws NullPointerException argument is null
+	 * @throws IllegalStateException this FlowBox already contains a Container;
+	 *             this FlowBox does not contain <code>button</code>
+	 */
+	public void bindButton(AbstractButton button) {
+		if (button == null)
+			throw new NullPointerException("Argument cannot be null");
+
+		boolean found = false;
+		for (Widget w : this.leftChildren) {
+			if (w.equals(button))
+				found = true;
+			if (Container.class.isAssignableFrom(w.getClass()))
+				throw new IllegalStateException(
+						"Cannot attach a Button to a FlowBox that contains a Container");
 		}
 
 		if (this.expandChild != null) {
-			acc = _mouseHover(expandChild, acc, x, y);
-			if (acc < 0)
-				return;
-		} else {
-			acc += this.ew;
+			if (expandChild.equals(button))
+				found = true;
+			if (Container.class.isAssignableFrom(expandChild.getClass()))
+				throw new IllegalStateException(
+						"Cannot attach a Button to a FlowBox that contains a Container");
 		}
 
-		for (Widget wid : this.rightChildren) {
-			acc = _mouseHover(wid, acc, x, y);
-			if (acc < 0)
-				return;
+		for (Widget w : this.rightChildren) {
+			if (w.equals(button))
+				found = true;
+			if (Container.class.isAssignableFrom(w.getClass()))
+				throw new IllegalStateException(
+						"Cannot attach a Button to a FlowBox that contains a Container");
 		}
-		if (widgetHover != null) {
-			this.widgetHover.mouseOut();
-			widgetHover = null;
+
+		if (!found)
+			throw new IllegalStateException(
+					"The bound Button must be contained in this FlowBox");
+
+		this.boundButton = button;
+	}
+
+	/**
+	 * @return the Button bound to this FlowBox, or null
+	 */
+	public AbstractButton getAttachedButton() {
+		return this.boundButton;
+	}
+
+	@Override
+	public void mouseHover(int x, int y) {
+		this.mouseHover = true;
+		if (this.boundButton == null) {
+			int acc = 0;
+			for (Widget wid : this.leftChildren) {
+				acc = _mouseHover(wid, acc, x, y);
+				if (acc < 0)
+					return;
+			}
+
+			if (this.expandChild != null) {
+				acc = _mouseHover(expandChild, acc, x, y);
+				if (acc < 0)
+					return;
+			} else {
+				acc += this.ew;
+			}
+
+			for (Widget wid : this.rightChildren) {
+				acc = _mouseHover(wid, acc, x, y);
+				if (acc < 0)
+					return;
+			}
+			if (widgetHover != null) {
+				this.widgetHover.mouseOut();
+				widgetHover = null;
+			}
 		}
 	}
 
@@ -528,50 +623,60 @@ public class FlowBox extends Container {
 			this.widgetHover.mouseOut();
 			this.widgetHover = null;
 		}
+		this.mouseHover = false;
 	}
 
 	@Override
 	public void mouseDown(int button) {
-		if (this.widgetHover != null) {
-			this.widgetHover.mouseDown(button);
-			if (this.widgetLeftMouseDown == null && button == 0) {
-				this.widgetLeftMouseDownDecal = this.widgetHoverDecal;
-				this.widgetLeftMouseDown = this.widgetHover;
-				this.widgetLeftMouseDown.mouseDown(button);
-			} else if (this.widgetRightMouseDown == null && button == 1) {
-				this.widgetRightMouseDownDecal = this.widgetHoverDecal;
-				this.widgetRightMouseDown = this.widgetHover;
-				this.widgetRightMouseDown.mouseDown(button);
-			} else if (this.widgetCenterMouseDown == null && button == 2) {
-				this.widgetCenterMouseDownDecal = this.widgetHoverDecal;
-				this.widgetCenterMouseDown = this.widgetHover;
-				this.widgetCenterMouseDown.mouseDown(button);
+		if (this.boundButton != null) {
+			this.boundButton.mouseDown(button);
+		} else {
+			if (this.widgetHover != null) {
+				this.widgetHover.mouseDown(button);
+				if (this.widgetLeftMouseDown == null && button == 0) {
+					this.widgetLeftMouseDownDecal = this.widgetHoverDecal;
+					this.widgetLeftMouseDown = this.widgetHover;
+					this.widgetLeftMouseDown.mouseDown(button);
+				} else if (this.widgetRightMouseDown == null && button == 1) {
+					this.widgetRightMouseDownDecal = this.widgetHoverDecal;
+					this.widgetRightMouseDown = this.widgetHover;
+					this.widgetRightMouseDown.mouseDown(button);
+				} else if (this.widgetCenterMouseDown == null && button == 2) {
+					this.widgetCenterMouseDownDecal = this.widgetHoverDecal;
+					this.widgetCenterMouseDown = this.widgetHover;
+					this.widgetCenterMouseDown.mouseDown(button);
+				}
 			}
 		}
 	}
 
 	@Override
 	public void mouseUp(int button, int x, int y) {
-		int offset = 0;
-		Widget wid = null;
-		if (this.widgetLeftMouseDown != null && button == 0) {
-			wid = widgetLeftMouseDown;
-			this.widgetLeftMouseDown = null;
-			offset = this.widgetLeftMouseDownDecal;
-		} else if (this.widgetRightMouseDown != null && button == 1) {
-			wid = widgetRightMouseDown;
-			this.widgetRightMouseDown = null;
-			offset = this.widgetRightMouseDownDecal;
-		} else if (this.widgetCenterMouseDown != null && button == 2) {
-			wid = widgetCenterMouseDown;
-			this.widgetCenterMouseDown = null;
-			offset = this.widgetCenterMouseDownDecal;
-		}
-		if (wid != null) {
-			if (this.orientation.equals(Orientation.HORIZONTAL)) {
-				wid.mouseUp(button, x - offset, y);
-			} else {
-				wid.mouseUp(button, x, y - offset);
+		if (this.boundButton != null) {
+			// fake event coords: 1,1 so the button thinks the event was legit
+			this.boundButton.mouseUp(button, 1, 1);
+		} else {
+			int offset = 0;
+			Widget wid = null;
+			if (this.widgetLeftMouseDown != null && button == 0) {
+				wid = widgetLeftMouseDown;
+				this.widgetLeftMouseDown = null;
+				offset = this.widgetLeftMouseDownDecal;
+			} else if (this.widgetRightMouseDown != null && button == 1) {
+				wid = widgetRightMouseDown;
+				this.widgetRightMouseDown = null;
+				offset = this.widgetRightMouseDownDecal;
+			} else if (this.widgetCenterMouseDown != null && button == 2) {
+				wid = widgetCenterMouseDown;
+				this.widgetCenterMouseDown = null;
+				offset = this.widgetCenterMouseDownDecal;
+			}
+			if (wid != null) {
+				if (this.orientation.equals(Orientation.HORIZONTAL)) {
+					wid.mouseUp(button, x - offset, y);
+				} else {
+					wid.mouseUp(button, x, y - offset);
+				}
 			}
 		}
 

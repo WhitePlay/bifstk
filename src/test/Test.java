@@ -121,6 +121,7 @@ public class Test implements Handler, Root {
 				c1.setHandler(this);
 				h3.addBefore(new Label("Debug layout"));
 				h3.addAfter(c1);
+				h3.bindButton(c1);
 
 				AbstractButton b3 = new Button("Message");
 				b3.setAction("message");
@@ -131,7 +132,7 @@ public class Test implements Handler, Root {
 				vBox.addBefore(new CustomBorder(h1, 2));
 				vBox.addBefore(new CustomBorder(h2, 2));
 				vBox.addBefore(new CustomBorder(h3, 2));
-				vBox.addBefore(new CustomBorder(new Text(0), 2));
+				vBox.addBefore(new CustomBorder(new Text(5), 2));
 				vBox.setExpand(new CustomBorder(t1.getScrollBox(), 2));
 				vBox.addAfter(b3);
 

@@ -142,6 +142,12 @@ public class Color {
 		}
 	}
 
+	/**
+	 * @param target a Color to blend with this
+	 * @param factor blending factor: 0.0 will return this, 1.0 will return
+	 *            target
+	 * @return a new Color created by blending each component of this and target
+	 */
 	public Color blend(Color target, float factor) {
 		factor = Util.clampf(factor, 0.0f, 1.0f);
 		float invFactor = 1.0f - factor;
@@ -151,6 +157,13 @@ public class Color {
 				this.alpha * factor + target.alpha * invFactor);
 	}
 
+	/**
+	 * @param target a Color to blend with this
+	 * @param factor blending factor: 0.0 will return this, 1.0 will return
+	 *            target
+	 * @param alpha multiply alpha by this factor after blending
+	 * @return a new Color created by blending each component of this and target
+	 */
 	public Color blend(Color target, float factor, float alpha) {
 		factor = Util.clampf(factor, 0.0f, 1.0f);
 		float invFactor = 1.0f - factor;
@@ -158,6 +171,41 @@ public class Color {
 				* factor + target.blue * invFactor, this.green * factor
 				+ target.green * invFactor, alpha
 				* (this.alpha * factor + target.alpha * invFactor));
+	}
+
+	private static final float highlight_off = 0.1f;
+
+	/**
+	 * @return a slightly darker Color with identical alpha
+	 */
+	public Color darker() {
+		return new Color(this.red - highlight_off, //
+				this.green - highlight_off, //
+				this.blue - highlight_off, this.alpha);
+	}
+
+	/**
+	 * @return a slightly lighter Color with identical alpha
+	 */
+	public Color lighter() {
+		return new Color(this.red + highlight_off, //
+				this.green + highlight_off, //
+				this.blue + highlight_off, this.alpha);
+	}
+
+	/**
+	 * @return a slightly lighter or darker Color, depending if this Color is
+	 *         dark or light
+	 * @see #lighter()
+	 * @see #darker()
+	 */
+	public Color highlight() {
+		float mean = (this.red + this.green + this.blue) / 3.0f;
+		if (mean > 0.5f) {
+			return this.darker();
+		} else {
+			return this.lighter();
+		}
 	}
 
 	public static Color parse(String str) {

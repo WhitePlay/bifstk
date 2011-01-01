@@ -55,80 +55,80 @@ public final class ConfigWindow extends Window implements Handler {
 		setTitle("Configuration");
 
 		// Display properties 
-		Box displayBox = new Box(Box.Orientation.VERTICAL);
+		FlowBox displayBox = new FlowBox(FlowBox.Orientation.VERTICAL);
 
 		FlowBox fsBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		fullScreen = new Checkbox();
 		fsBox.addBefore(new Label("Fullscreen"));
 		fsBox.addAfter(fullScreen);
 		fsBox.bindButton(fullScreen);
-		displayBox.add(fsBox);
+		displayBox.addBefore(fsBox);
 
 		FlowBox capBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		capFps = new Checkbox();
 		capBox.addBefore(new Label("Cap FPS"));
 		capBox.addAfter(capFps);
 		capBox.bindButton(capFps);
-		displayBox.add(capBox);
+		displayBox.addBefore(capBox);
 
 		FlowBox vsyncBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		vsync = new Checkbox();
 		vsyncBox.addBefore(new Label("VSync"));
 		vsyncBox.addAfter(vsync);
 		vsyncBox.bindButton(vsync);
-		displayBox.add(vsyncBox);
+		displayBox.addBefore(vsyncBox);
 
 		// WM properties
-		Box wmBox = new Box(Box.Orientation.VERTICAL);
+		FlowBox wmBox = new FlowBox(FlowBox.Orientation.VERTICAL);
 
 		FlowBox focusBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		focusFollowMouse = new Checkbox();
 		focusBox.addBefore(new Label("Focus follow mouse"));
 		focusBox.addAfter(focusFollowMouse);
 		focusBox.bindButton(focusFollowMouse);
-		wmBox.add(focusBox);
+		wmBox.addBefore(focusBox);
 
 		FlowBox debugLayoutBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		debugLayout = new Checkbox();
 		debugLayoutBox.addBefore(new Label("Debug layout"));
 		debugLayoutBox.addAfter(debugLayout);
 		debugLayoutBox.bindButton(debugLayout);
-		wmBox.add(debugLayoutBox);
+		wmBox.addBefore(debugLayoutBox);
 
 		FlowBox snapTopBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		windowSnapTop = new Checkbox();
 		snapTopBox.addBefore(new Label("Snap Windows top"));
 		snapTopBox.addAfter(windowSnapTop);
 		snapTopBox.bindButton(windowSnapTop);
-		wmBox.add(snapTopBox);
+		wmBox.addBefore(snapTopBox);
 
 		FlowBox dockLeftBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		windowDockLeft = new Checkbox();
 		dockLeftBox.addBefore(new Label("Left dock"));
 		dockLeftBox.addAfter(windowDockLeft);
 		dockLeftBox.bindButton(windowDockLeft);
-		wmBox.add(dockLeftBox);
+		wmBox.addBefore(dockLeftBox);
 
 		FlowBox dockRightBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		windowDockRight = new Checkbox();
 		dockRightBox.addBefore(new Label("Right dock"));
 		dockRightBox.addAfter(windowDockRight);
 		dockRightBox.bindButton(windowDockRight);
-		wmBox.add(dockRightBox);
+		wmBox.addBefore(dockRightBox);
 
 		FlowBox frameSnapBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		frameSnap = new Checkbox();
 		frameSnapBox.addBefore(new Label("Magnetic windows"));
 		frameSnapBox.addAfter(frameSnap);
 		frameSnapBox.bindButton(frameSnap);
-		wmBox.add(frameSnapBox);
+		wmBox.addBefore(frameSnapBox);
 
 		FlowBox frameAnimBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		frameAnims = new Checkbox();
 		frameAnimBox.addBefore(new Label("Animations"));
 		frameAnimBox.addAfter(frameAnims);
 		frameAnimBox.bindButton(frameAnims);
-		wmBox.add(frameAnimBox);
+		wmBox.addBefore(frameAnimBox);
 
 		// Buttons
 		FlowBox butBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);

@@ -16,11 +16,11 @@ import bifstk.wm.geom.Rectangle;
  * laid out as follows:
  * 
  * <pre>
- * FlowBox b = new FlowBox();
- * b.addLeft(w1);
- * b.addRight(w2);
+ * FlowBox b = new FlowBox(Orientation.HORIZONTAL);
+ * b.addBefore(w1);
+ * b.addAfter(w2);
  * b.setExpand(w3);
- * b.addLeft(w4);
+ * b.addBefore(w4);
  *  ______________________________
  * | w1 | w4 |       w3      | w2 |
  * |____|____|_______________|____|
@@ -35,13 +35,8 @@ import bifstk.wm.geom.Rectangle;
  * <p>
  * There can be only one expanded widget.
  * <p>
- * LIMITATIONS: nesting multiple FlowBox with the same orientation does not work
- * since a Vertical FlowBox gets all the Vertical space it can take, preventing
- * multiple vertical FlowBox to be inserted in a Vertical FlowBox.
- * <p>
- * Use FlowBox only if you need the contained widget to be expanded, else, use
- * anothe simpler container.
- * 
+ * FlowBox consumes all available vertical/horizontal space UNLESS components
+ * have only been added using {@link #addBefore(Widget)}.
  * 
  */
 public class FlowBox extends Container {
@@ -427,16 +422,20 @@ public class FlowBox extends Container {
 	public int getPreferredWidth(int max) {
 		int cw = 0;
 		if (this.orientation.equals(Orientation.HORIZONTAL)) {
+			boolean expand = false;
 			for (Widget w : this.leftChildren) {
 				cw += w.getPreferredWidth(max - cw);
 			}
 			if (this.expandChild != null) {
 				cw += this.expandChild.getPreferredWidth(max - cw);
+				expand = true;
 			}
 			for (Widget w : this.rightChildren) {
 				cw += w.getPreferredWidth(max - cw);
+				expand = true;
 			}
-			cw = Math.max(cw, max);
+			if (expand)
+				cw = Math.max(cw, max);
 		} else {
 			for (Widget w : this.leftChildren) {
 				cw = Math.max(cw, w.getPreferredWidth(max));
@@ -456,16 +455,20 @@ public class FlowBox extends Container {
 	public int getPreferredHeight(int max) {
 		int mh = 0;
 		if (this.orientation.equals(Orientation.VERTICAL)) {
+			boolean expand = false;
 			for (Widget w : this.leftChildren) {
 				mh += w.getPreferredHeight(max - mh);
 			}
 			if (this.expandChild != null) {
 				mh += this.expandChild.getPreferredHeight(max - mh);
+				expand = true;
 			}
 			for (Widget w : this.rightChildren) {
 				mh += w.getPreferredHeight(max - mh);
+				expand = true;
 			}
-			mh = Math.max(mh, max);
+			if (expand)
+				mh = Math.max(mh, max);
 		} else {
 			for (Widget w : this.leftChildren) {
 				mh = Math.max(mh, w.getPreferredHeight(max));

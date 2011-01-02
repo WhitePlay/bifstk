@@ -105,22 +105,22 @@ public class Test implements Handler, Root {
 				Button b1 = new Button("toggle");
 				b1.setAction("resize");
 				b1.setHandler(this);
-				h1.addBefore(new Label("Resizable"));
-				h1.addAfter(b1);
+				h1.addBegin(new Label("Resizable"));
+				h1.addEnd(b1);
 
 				FlowBox h2 = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 				Button b2 = new Button("toggle");
 				b2.setAction("title");
 				b2.setHandler(this);
-				h2.addBefore(new Label("Titlebar"));
-				h2.addAfter(b2);
+				h2.addBegin(new Label("Titlebar"));
+				h2.addEnd(b2);
 
 				FlowBox h3 = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 				Checkbox c1 = new Checkbox(Config.get().isWmDebugLayout());
 				c1.setAction("debugLayout");
 				c1.setHandler(this);
-				h3.addBefore(new Label("Debug layout"));
-				h3.addAfter(c1);
+				h3.addBegin(new Label("Debug layout"));
+				h3.addEnd(c1);
 				h3.bindButton(c1);
 
 				AbstractButton b3 = new Button("Message");
@@ -129,12 +129,12 @@ public class Test implements Handler, Root {
 
 				Text t1 = new Text();
 
-				vBox.addBefore(new CustomBorder(h1, 2));
-				vBox.addBefore(new CustomBorder(h2, 2));
-				vBox.addBefore(new CustomBorder(h3, 2));
-				vBox.addBefore(new CustomBorder(new Text(5), 2));
+				vBox.addBegin(new CustomBorder(h1, 2));
+				vBox.addBegin(new CustomBorder(h2, 2));
+				vBox.addBegin(new CustomBorder(h3, 2));
+				vBox.addBegin(new CustomBorder(new Text(5), 2));
 				vBox.setExpand(new CustomBorder(t1.getScrollBox(), 2));
-				vBox.addAfter(b3);
+				vBox.addEnd(b3);
 
 				f.setContent(vBox);
 				f.pack();

@@ -36,7 +36,7 @@ import bifstk.wm.geom.Rectangle;
  * There can be only one expanded widget.
  * <p>
  * FlowBox consumes all available vertical/horizontal space UNLESS components
- * have only been added using {@link #addBefore(Widget)}.
+ * have only been added using {@link #addBegin(Widget)}.
  * 
  */
 public class FlowBox extends Container {
@@ -292,7 +292,7 @@ public class FlowBox extends Container {
 	 * @throws IllegalStateException if this FlowBox has an AttachedButton and
 	 *             <code>w</code> is a Container
 	 */
-	public void addBefore(Widget w) {
+	public void addBegin(Widget w) {
 		if (w == null) {
 			return;
 		}
@@ -315,7 +315,7 @@ public class FlowBox extends Container {
 	 * @throws IllegalStateException if this FlowBox has an AttachedButton and
 	 *             <code>w</code> is a Container
 	 */
-	public void addAfter(Widget w) {
+	public void addEnd(Widget w) {
 		if (w == null) {
 			return;
 		}

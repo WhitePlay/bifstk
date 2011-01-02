@@ -6,14 +6,12 @@ import bifstk.config.Config;
 import bifstk.config.ConfigProperty;
 import bifstk.wm.Window;
 import bifstk.wm.ui.Actionable;
-import bifstk.wm.ui.Box;
 import bifstk.wm.ui.Button;
 import bifstk.wm.ui.Checkbox;
 import bifstk.wm.ui.CustomBorder;
 import bifstk.wm.ui.FlowBox;
 import bifstk.wm.ui.Label;
 import bifstk.wm.ui.ScrollBox;
-import bifstk.wm.ui.Text;
 
 /**
  * Stock graphical utility edit all {@link ConfigProperty} values
@@ -59,76 +57,76 @@ public final class ConfigWindow extends Window implements Handler {
 
 		FlowBox fsBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		fullScreen = new Checkbox();
-		fsBox.addBefore(new Label("Fullscreen"));
-		fsBox.addAfter(fullScreen);
+		fsBox.addBegin(new Label("Fullscreen"));
+		fsBox.addEnd(fullScreen);
 		fsBox.bindButton(fullScreen);
-		displayBox.addBefore(fsBox);
+		displayBox.addBegin(fsBox);
 
 		FlowBox capBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		capFps = new Checkbox();
-		capBox.addBefore(new Label("Cap FPS"));
-		capBox.addAfter(capFps);
+		capBox.addBegin(new Label("Cap FPS"));
+		capBox.addEnd(capFps);
 		capBox.bindButton(capFps);
-		displayBox.addBefore(capBox);
+		displayBox.addBegin(capBox);
 
 		FlowBox vsyncBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		vsync = new Checkbox();
-		vsyncBox.addBefore(new Label("VSync"));
-		vsyncBox.addAfter(vsync);
+		vsyncBox.addBegin(new Label("VSync"));
+		vsyncBox.addEnd(vsync);
 		vsyncBox.bindButton(vsync);
-		displayBox.addBefore(vsyncBox);
+		displayBox.addBegin(vsyncBox);
 
 		// WM properties
 		FlowBox wmBox = new FlowBox(FlowBox.Orientation.VERTICAL);
 
 		FlowBox focusBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		focusFollowMouse = new Checkbox();
-		focusBox.addBefore(new Label("Focus follow mouse"));
-		focusBox.addAfter(focusFollowMouse);
+		focusBox.addBegin(new Label("Focus follow mouse"));
+		focusBox.addEnd(focusFollowMouse);
 		focusBox.bindButton(focusFollowMouse);
-		wmBox.addBefore(focusBox);
+		wmBox.addBegin(focusBox);
 
 		FlowBox debugLayoutBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		debugLayout = new Checkbox();
-		debugLayoutBox.addBefore(new Label("Debug layout"));
-		debugLayoutBox.addAfter(debugLayout);
+		debugLayoutBox.addBegin(new Label("Debug layout"));
+		debugLayoutBox.addEnd(debugLayout);
 		debugLayoutBox.bindButton(debugLayout);
-		wmBox.addBefore(debugLayoutBox);
+		wmBox.addBegin(debugLayoutBox);
 
 		FlowBox snapTopBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		windowSnapTop = new Checkbox();
-		snapTopBox.addBefore(new Label("Snap Windows top"));
-		snapTopBox.addAfter(windowSnapTop);
+		snapTopBox.addBegin(new Label("Snap Windows top"));
+		snapTopBox.addEnd(windowSnapTop);
 		snapTopBox.bindButton(windowSnapTop);
-		wmBox.addBefore(snapTopBox);
+		wmBox.addBegin(snapTopBox);
 
 		FlowBox dockLeftBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		windowDockLeft = new Checkbox();
-		dockLeftBox.addBefore(new Label("Left dock"));
-		dockLeftBox.addAfter(windowDockLeft);
+		dockLeftBox.addBegin(new Label("Left dock"));
+		dockLeftBox.addEnd(windowDockLeft);
 		dockLeftBox.bindButton(windowDockLeft);
-		wmBox.addBefore(dockLeftBox);
+		wmBox.addBegin(dockLeftBox);
 
 		FlowBox dockRightBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		windowDockRight = new Checkbox();
-		dockRightBox.addBefore(new Label("Right dock"));
-		dockRightBox.addAfter(windowDockRight);
+		dockRightBox.addBegin(new Label("Right dock"));
+		dockRightBox.addEnd(windowDockRight);
 		dockRightBox.bindButton(windowDockRight);
-		wmBox.addBefore(dockRightBox);
+		wmBox.addBegin(dockRightBox);
 
 		FlowBox frameSnapBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		frameSnap = new Checkbox();
-		frameSnapBox.addBefore(new Label("Magnetic windows"));
-		frameSnapBox.addAfter(frameSnap);
+		frameSnapBox.addBegin(new Label("Magnetic windows"));
+		frameSnapBox.addEnd(frameSnap);
 		frameSnapBox.bindButton(frameSnap);
-		wmBox.addBefore(frameSnapBox);
+		wmBox.addBegin(frameSnapBox);
 
 		FlowBox frameAnimBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		frameAnims = new Checkbox();
-		frameAnimBox.addBefore(new Label("Animations"));
-		frameAnimBox.addAfter(frameAnims);
+		frameAnimBox.addBegin(new Label("Animations"));
+		frameAnimBox.addEnd(frameAnims);
 		frameAnimBox.bindButton(frameAnims);
-		wmBox.addBefore(frameAnimBox);
+		wmBox.addBegin(frameAnimBox);
 
 		// Buttons
 		FlowBox butBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
@@ -138,13 +136,13 @@ public final class ConfigWindow extends Window implements Handler {
 		Button cancelButton = new Button("Cancel");
 		cancelButton.setAction("cancel");
 		cancelButton.setHandler(this);
-		butBox.addAfter(applyButton);
-		butBox.addAfter(cancelButton);
+		butBox.addEnd(applyButton);
+		butBox.addEnd(cancelButton);
 
 		FlowBox vbox = new FlowBox(FlowBox.Orientation.VERTICAL);
-		vbox.addBefore(new CustomBorder(displayBox, "Display"));
-		vbox.addBefore(new CustomBorder(wmBox, "Window manager"));
-		vbox.addAfter(butBox);
+		vbox.addBegin(new CustomBorder(displayBox, "Display"));
+		vbox.addBegin(new CustomBorder(wmBox, "Window manager"));
+		vbox.addEnd(butBox);
 
 		ScrollBox scroll = new ScrollBox(vbox);
 

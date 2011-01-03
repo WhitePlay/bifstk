@@ -287,7 +287,7 @@ public class Renderer {
 
 		Color c = Theme.getWindowBorderFocusedColor();
 		if (!focus) {
-			Theme.getWindowBorderUnfocusedColor();
+			c = Theme.getWindowBorderUnfocusedColor();
 		}
 		/* left border */
 		float[] c1 = c.toArray(4, baseAlpha);

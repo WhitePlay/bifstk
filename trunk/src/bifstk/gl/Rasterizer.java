@@ -214,6 +214,24 @@ public abstract class Rasterizer {
 	}
 
 	public void fillQuad(int x, int y, int w, int h, Color col, float alpha) {
+		// TODO cache Color arrays
+		float[] c = col.toArray(4, alpha);
+		this._fillQuad(x, y, w, h, c);
+	}
+
+	public void fillQuad(int x, int y, int w, int h, Color top, Color bot,
+			float alphaTop, float alphaBot) {
+		float[] c = new float[4 * 4];
+		top.fillArray(c, 0, 8, alphaTop);
+		bot.fillArray(c, 8, 16, alphaBot);
+		this._fillQuad(x, y, w, h, c);
+	}
+
+	public void fillQuad(int x, int y, int w, int h, Image img, float alpha) {
+		// TODO recalculate tex coords when cropping with scissor
+	}
+
+	private void _fillQuad(int x, int y, int w, int h, float[] col) {
 		Rectangle r = new Rectangle(x, y, w, h);
 
 		if (!translation.isEmpty()) {
@@ -228,8 +246,6 @@ public abstract class Rasterizer {
 		if (r.isEmpty())
 			return;
 
-		// TODO cache Color arrays
-		float[] c = col.toArray(4, alpha);
 		int[] v = {
 				r.x, r.y, //
 				r.x + r.width, r.y, //
@@ -239,13 +255,9 @@ public abstract class Rasterizer {
 		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 		GL11.glPushMatrix();
 		GL11.glLoadIdentity();
-		this.draw2D(v, c, GL11.GL_QUADS);
+		this.draw2D(v, col, GL11.GL_QUADS);
 		GL11.glPopMatrix();
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-	}
-
-	public void fillQuad(int x, int y, int w, int h, Image img, float alpha) {
-		// TODO recalculate tex coords when cropping with scissor
 	}
 
 	/**

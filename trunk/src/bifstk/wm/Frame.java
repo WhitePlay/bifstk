@@ -213,30 +213,14 @@ public abstract class Frame implements Drawable, Clickable {
 		Color borderBorderCol = getBorderOuterFocusedColor().blend(
 				getBorderOuterUnfocusedColor(), focusAnim);
 
-		float[] c1 = borderCol.toArray(4 * 4, alpha2);
-		int[] v1 = {
-				// top
-				x, y, //
-				x + w, y, //
-				x + w, y + borderWidth, //
-				x, y + borderWidth, //
-				// left
-				x, y + borderWidth, //
-				x + borderWidth, y + borderWidth, //
-				x + borderWidth, y + h - borderWidth, //
-				x, y + h - borderWidth, //
-				// right
-				x + w, y + borderWidth, //
-				x + w - borderWidth, y + borderWidth, //
-				x + w - borderWidth, y + h - borderWidth, //
-				x + w, y + h - borderWidth, //
-				// bot
-				x, y + h, //
-				x + w, y + h, //
-				x + w, y + h - borderWidth, //
-				x, y + h - borderWidth
-		};
-		Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
+		// border
+		Util.raster().fillQuad(x, y, w, borderWidth, borderCol, alpha2);
+		Util.raster().fillQuad(x, y + borderWidth, borderWidth,
+				h - 2 * borderWidth, borderCol, alpha2);
+		Util.raster().fillQuad(x + w - borderWidth, y + borderWidth,
+				borderWidth, h - 2 * borderWidth, borderCol, alpha2);
+		Util.raster().fillQuad(x, y + h - borderWidth, w, borderWidth,
+				borderCol, alpha2);
 
 		if (borderWidth > 1) {
 			// metaborder
@@ -247,14 +231,8 @@ public abstract class Frame implements Drawable, Clickable {
 		if (this.hasTitlebar) {
 
 			// background
-			float[] c3 = borderCol.toArray(4, alpha2);
-			int[] v3 = {
-					x + borderWidth, y + titlebarHeight + borderWidth, //
-					x + w - borderWidth, y + titlebarHeight + borderWidth, //
-					x + w - borderWidth, y + borderWidth, //
-					x + borderWidth, y + borderWidth
-			};
-			Util.raster().draw2D(v3, c3, GL11.GL_QUADS);
+			Util.raster().fillQuad(x + borderWidth, y + borderWidth,
+					w - borderWidth * 2, titlebarHeight, borderCol, alpha2);
 
 			Color titleCol2 = getFrameTitlebarFocusedColor().blend(
 					getFrameTitlebarUnfocusedColor(), focusAnim);
@@ -265,15 +243,9 @@ public abstract class Frame implements Drawable, Clickable {
 				dec = 0;
 			}
 
-			titleCol2.fillArray(c3, 0, 8, 0.0f);
-			titleCol2.fillArray(c3, 8, 16, alpha2);
-			v3 = new int[] {
-					x + dec, y + titlebarHeight + borderWidth, //
-					x + w - dec, y + titlebarHeight + borderWidth, //
-					x + w - dec, y + dec, //
-					x + dec, y + dec
-			};
-			Util.raster().draw2D(v3, c3, GL11.GL_QUADS);
+			Util.raster().fillQuad(x + dec, y + dec, w - dec * 2,
+					titlebarHeight + borderWidth - dec, titleCol2, titleCol2,
+					alpha2, 0.0f);
 
 			int controlWidth = Theme.getFrameControlsWidth();
 			int controlHeight = Theme.getFrameControlsHeight();
@@ -414,14 +386,9 @@ public abstract class Frame implements Drawable, Clickable {
 
 		// content
 		if (this.content == null) {
-			float[] c = uiColor.toArray(4, alpha2);
-			int[] v = {
-					x + borderWidth, y + titlebarHeight + borderWidth, //
-					x + w - borderWidth, y + titlebarHeight + borderWidth, //
-					x + w - borderWidth, y + h - borderWidth, //
-					x + borderWidth, y + h - borderWidth
-			};
-			Util.raster().draw2D(v, c, GL11.GL_QUADS);
+			Util.raster().drawQuad(x + borderWidth,
+					y + titlebarHeight + borderWidth, w - borderWidth * 2,
+					h - titlebarHeight - 2 * borderWidth, uiColor, alpha2);
 		} else {
 			Rasterizer.pushTranslate(x + borderWidth, y + titlebarHeight
 					+ borderWidth);

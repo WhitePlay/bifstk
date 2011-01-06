@@ -28,7 +28,8 @@ window.focused.alpha = 0.95
 window.unfocused.alpha = 0.8
 window.shadow.enabled = true
 window.shadow.alpha = 0.2
-window.shadow.radius = 10
+window.shadow.corner.image = shadow1.png
+window.shadow.side.image = shadow2.png
 window.shadow.focused.color = white
 window.shadow.unfocused.color = black
 

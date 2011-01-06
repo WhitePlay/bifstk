@@ -3,7 +3,6 @@ package bifstk.wm.ui;
 import java.util.ArrayList;
 
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 import bifstk.config.Fonts;
 import bifstk.config.Theme;
@@ -89,17 +88,7 @@ public class Text extends Actionable implements Focusable {
 		w = Math.max(w, Fonts.getNormal().getFontSize());
 		h = Math.max(h, Fonts.getNormal().getHeight());
 
-		Color borderCol = Theme.getUiButtonBorderColor();
-		float[] c1 = borderCol.toArray(8, a);
-		float[] c2 = Color.WHITE.toArray(4, a);
-		int[] v = new int[] {
-				0, 0, //
-				w, 0, //
-				w, h, //
-				0, h
-		};
-
-		Util.raster().draw2D(v, c2, GL11.GL_QUADS);
+		Util.raster().fillQuad(0, 0, w, h, Color.WHITE, a);
 
 		if (!this.multiLine) {
 			String str = this.content.toString();
@@ -111,8 +100,8 @@ public class Text extends Actionable implements Focusable {
 				yOff += Fonts.getNormal().getHeight();
 			}
 		}
-
-		Util.raster().draw2DLineLoop(v, c1);
+		Color borderCol = Theme.getUiButtonBorderColor();
+		Util.raster().drawQuad(0, 0, w, h, borderCol, a);
 	}
 
 	private void renderLine(String str, int yOff, float alpha, boolean drawCaret) {
@@ -123,13 +112,8 @@ public class Text extends Actionable implements Focusable {
 		if (this.focus && System.currentTimeMillis() / 500 % 2 == 0
 				&& drawCaret) {
 			int len = this.caretPos + this.offset + 2;
-			int[] cv = {
-					len - 1, 2 + yOff, //
-					len + 1, 2 + yOff, //
-					len + 1, Fonts.getNormal().getHeight() + yOff, //
-					len - 1, Fonts.getNormal().getHeight() + yOff
-			};
-			Util.raster().draw2DLineLoop(cv, Color.BLACK.toArray(8, alpha));
+			Util.raster().drawQuad(len - 1, 2 + yOff, 2,
+					Fonts.getNormal().getHeight(), Color.BLACK, alpha);
 		}
 	}
 

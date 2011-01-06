@@ -1,10 +1,9 @@
 package bifstk.wm.ui;
 
-import org.lwjgl.opengl.GL11;
-
 import bifstk.config.Fonts;
 import bifstk.config.Theme;
 import bifstk.gl.Color;
+import bifstk.gl.Rasterizer;
 import bifstk.gl.Util;
 import bifstk.wm.Logic;
 import bifstk.wm.geom.Rectangle;
@@ -150,23 +149,19 @@ public class ScrollBox extends Border {
 		xTranslate = (int) (horScrollPos * Math.max(0, realWidth - viewWidth));
 
 		// draw content
-		Util.pushTranslate(-xTranslate, -yTranslate);
+		Rasterizer.pushTranslate(-xTranslate, -yTranslate);
 
-		Util.pushScissor(xTranslate, yTranslate, viewWidth, viewHeight);
+		Rasterizer.pushScissor(xTranslate, yTranslate, viewWidth, viewHeight);
 		this.getContent().render(alpha, uiBg, uiBgAlpha);
-		Util.popScissor();
+		Rasterizer.popScissor();
 
-		Util.popTranslate();
+		Rasterizer.popTranslate();
 
 		Color borderCol = Theme.getUiButtonBorderColor();
 		Color fillCol = null;
 
 		//  scrollbars
 		if (scrollVer || scrollHor) {
-			float[] c1 = new float[4 * 4 * 3];
-			uiBg.fillArray(c1, 0, 16, a);
-			uiBg.fillArray(c1, 32, 48, a);
-			float[] c2 = borderCol.toArray(8, a);
 
 			if (scrollVer) {
 
@@ -177,51 +172,23 @@ public class ScrollBox extends Border {
 				} else {
 					fillCol = Theme.getUiButtonColor();
 				}
-				fillCol.fillArray(c1, 16, 32, a);
 
-				int[] v1 = {
-						// top gap fill
-						viewWidth + scrollWidth, 0, //
-						viewWidth, 0, //
-						viewWidth, verPos, //
-						viewWidth + scrollWidth, verPos, //
-
-						// scrollbar fill
-						viewWidth + scrollWidth, verPos, //
-						viewWidth, verPos, //
-						viewWidth, verPos + verLen, //
-						viewWidth + scrollWidth, verPos + verLen, //
-
-						// bot gap gill
-						viewWidth + scrollWidth, verPos + verLen, //
-						viewWidth, verPos + verLen, //
-						viewWidth, viewHeight, //
-						viewWidth + scrollWidth, viewHeight, //
-				};
-				Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
+				Util.raster().fillQuad(viewWidth, 0, scrollWidth, verPos, uiBg,
+						a);
+				Util.raster().fillQuad(viewWidth, verPos, scrollWidth, verLen,
+						fillCol, a);
+				Util.raster().fillQuad(viewWidth, verPos + verLen, scrollWidth,
+						viewHeight - (verPos + verLen), uiBg, a);
 
 				// scroll rail
 				int c = viewWidth + scrollWidth / 2;
-				int[] r = {
-						c - 1, 0, //
-						c + 1, 0, //
-						c + 1, verPos, //
-						c - 1, verPos, //
-						c - 1, verPos + verLen, //
-						c + 1, verPos + verLen, //
-						c + 1, viewHeight, //
-						c - 1, viewHeight
-				};
-				Util.raster().draw2D(r, c2, GL11.GL_QUADS);
+				Util.raster().fillQuad(c - 1, 0, 2, verPos, borderCol, a);
+				Util.raster().fillQuad(c - 1, verPos + verLen, 2,
+						viewHeight - verPos - verLen, borderCol, a);
 
 				// bar outline
-				int[] v2 = {
-						viewWidth, verPos, //
-						viewWidth + scrollWidth, verPos, //
-						viewWidth + scrollWidth, verPos + verLen, //
-						viewWidth, verPos + verLen
-				};
-				Util.raster().draw2DLineLoop(v2, c2);
+				Util.raster().drawQuad(viewWidth, verPos, scrollWidth, verLen,
+						borderCol, a);
 			}
 			if (scrollHor) {
 
@@ -232,64 +199,28 @@ public class ScrollBox extends Border {
 				} else {
 					fillCol = Theme.getUiButtonColor();
 				}
-				fillCol.fillArray(c1, 16, 32, a);
-				int[] v1 = {
-						// left gap fill
-						0, viewHeight, //
-						horPos, viewHeight, //
-						horPos, viewHeight + scrollWidth, //
-						0, viewHeight + scrollWidth, //
 
-						// scrollbar fill
-						horPos, viewHeight, //
-						horPos + horLen, viewHeight, //
-						horPos + horLen, viewHeight + scrollWidth, //
-						horPos, viewHeight + scrollWidth, //
+				Util.raster().fillQuad(0, viewHeight, horPos, scrollWidth,
+						uiBg, a);
+				Util.raster().fillQuad(horPos, viewHeight, horLen, scrollWidth,
+						fillCol, a);
+				Util.raster().fillQuad(horPos + horLen, viewHeight,
+						viewWidth - horPos - horLen, scrollWidth, uiBg, a);
 
-						// right gap gill
-						horPos + horLen, viewHeight, //
-						viewWidth, viewHeight, //
-						viewWidth, viewHeight + scrollWidth, //
-						horPos + horLen, viewHeight + scrollWidth, //
-				};
-				Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
-
-				// scroll rail
 				// scroll rail
 				int c = viewHeight + scrollWidth / 2;
-				int[] r = {
-						0, c - 1, //
-						0, c + 1, //
-						horPos, c + 1, //
-						horPos, c - 1, //
-
-						horPos + horLen, c - 1, //
-						horPos + horLen, c + 1, //
-						viewWidth, c + 1, //
-						viewWidth, c - 1
-				};
-				Util.raster().draw2D(r, c2, GL11.GL_QUADS);
+				Util.raster().fillQuad(0, c - 1, horPos, 2, borderCol, a);
+				Util.raster().fillQuad(horPos + horLen, c - 1,
+						viewWidth - horPos - horLen, 2, borderCol, a);
 
 				// bar outline
-				int[] v2 = {
-						horPos, viewHeight, //
-						horPos + horLen, viewHeight, //
-						horPos + horLen, viewHeight + scrollWidth, //
-						horPos, viewHeight + scrollWidth
-				};
-				Util.raster().draw2DLineLoop(v2, c2);
+				Util.raster().drawQuad(horPos, viewHeight, horLen, scrollWidth,
+						borderCol, a);
 			}
 
 			if (scrollHor && scrollVer) {
-				int[] v = {
-						viewWidth, viewHeight, //
-						w, viewHeight, //
-						w, h, //
-						viewWidth, h
-				};
-
-				float[] c = uiBg.toArray(4, a);
-				Util.raster().draw2D(v, c, GL11.GL_QUADS);
+				Util.raster().fillQuad(viewWidth, viewHeight, scrollWidth,
+						scrollWidth, uiBg, a);
 			}
 		}
 	}

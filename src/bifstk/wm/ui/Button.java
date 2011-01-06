@@ -1,7 +1,5 @@
 package bifstk.wm.ui;
 
-import org.lwjgl.opengl.GL11;
-
 import bifstk.config.Fonts;
 import bifstk.config.Theme;
 import bifstk.gl.Color;
@@ -51,22 +49,6 @@ public class Button extends AbstractButton {
 			fillCol = Theme.getUiButtonColor();
 		}
 
-		float[] c1 = fillCol.toArray(4, a);
-		int[] v1 = new int[] {
-				0, 0, //
-				w, 0, //
-				w, h, //
-				0, h
-		};
-
-		float[] c2 = Theme.getUiButtonBorderColor().toArray(8, a);
-		int[] v2 = {
-				0, 0, //
-				w, 0, //
-				w, h, //
-				0, h
-		};
-
 		int lx, ly;
 		if (this.textWidth < w) {
 			lx = (w - this.textWidth) / 2;
@@ -80,9 +62,9 @@ public class Button extends AbstractButton {
 		}
 		Color fontCol = Theme.getUiFontColor();
 
-		Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
+		Util.raster().fillQuad(0, 0, w, h, fillCol, a);
 		Fonts.getNormal().drawString(lx, ly, this.text, fontCol, alpha);
-		Util.raster().draw2DLineLoop(v2, c2);
+		Util.raster().drawQuad(0, 0, w, h, Theme.getUiButtonBorderColor(), a);
 	}
 
 	@Override

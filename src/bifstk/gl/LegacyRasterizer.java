@@ -48,7 +48,7 @@ public class LegacyRasterizer extends Rasterizer {
 	}
 
 	@Override
-	public void draw2DLineLoop(int[] vertices, float[] colors) {
+	protected void draw2DLineLoop(int[] vertices, float[] colors) {
 		if (vertices.length != 8) {
 			throw new IllegalArgumentException(
 					"Vertices array must be of size 8: " + "4 2D vertices");

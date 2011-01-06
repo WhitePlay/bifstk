@@ -1,8 +1,6 @@
 package bifstk.gl;
 
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -14,12 +12,8 @@ import java.awt.image.WritableRaster;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Hashtable;
-import java.util.LinkedList;
 
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-
-import bifstk.config.Config;
+import bifstk.config.Theme;
 
 /**
  * Misc GL utilities
@@ -116,281 +110,148 @@ public class Util {
 		return Rasterizer.getInstance();
 	}
 
-	/**
-	 * Builds the geometry of an arc of a circle
-	 * 
-	 * @param cx abscissa center of the circle
-	 * @param cy ordinate center of the circle
-	 * @param r radius of the circle
-	 * @param startAngle starting angle of the arc
-	 * @param arcAngle angular length of the arc
-	 * @param edges number of edge segments to draw the arc
-	 * @param includeCenter include the center in the vertices return
-	 * @return the vertices in 2D space: x,y,x,y,x,...,y
-	 */
-	public static double[] getArc(float cx, float cy, float r,
-			float startAngle, float arcAngle, int edges, boolean includeCenter) {
-		int len = edges;
-		if (includeCenter) {
-			len++;
-		}
-		double[] vertices = new double[len * 2];
-		float theta = arcAngle / (float) (edges - 1);
-		double tangetial_factor = Math.tan(theta);
-		double radial_factor = Math.cos(theta);
+	private static float[] shadow_coord_l = {
+			0.0f, 0.0f, //
+			1.0f, 0.0f, //
+			1.0f, 1.0f, //
+			0.0f, 1.0f
+	};
+	private static float[] shadow_coord_t = {
+			0.0f, 1.0f, //
+			0.0f, 0.0f, //
+			1.0f, 0.0f, //
+			1.0f, 1.0f
+	};
+	private static float[] shadow_coord_r = {
+			1.0f, 1.0f, //
+			0.0f, 1.0f, //
+			0.0f, 0.0f, //
+			1.0f, 0.0f
+	};
+	private static float[] shadow_coord_b = {
+			1.0f, 0.0f, //
+			1.0f, 1.0f, //
+			0.0f, 1.0f, //
+			0.0f, 0.0f
+	};
 
-		double x = r * Math.cos(startAngle);
-		double y = r * Math.sin(startAngle);
+	public static void drawLeftShadowQuad(int x, int y, int h, float alpha,
+			Color col, boolean smaller) {
+		Image shadowSide = Theme.getWindowShadowSideImage();
 
-		int b = 0;
-		if (includeCenter) {
-			vertices[0] = cx;
-			vertices[1] = cy;
-			b = 1;
-		}
+		int divide = (smaller ? 2 : 1);
 
-		for (int ii = b; ii < len; ii++) {
-			vertices[ii * 2] = x + cx;
-			vertices[ii * 2 + 1] = y + cy;
+		int rl = shadowSide.getWidth() / divide;
+		int wl = shadowSide.getTexWidth() / divide;
+		float[] c = col.toArray(4, alpha);
 
-			double tx = -y;
-			double ty = x;
-
-			x += tx * tangetial_factor;
-			y += ty * tangetial_factor;
-
-			x *= radial_factor;
-			y *= radial_factor;
-		}
-		return vertices;
-	}
-
-	/**
-	 * Draws an arc circle as a colored line segment
-	 * 
-	 * @param cx abscissa center of the circle
-	 * @param cy ordinate center of the circle
-	 * @param r radius of the circle
-	 * @param startAngle starting angle of the arc
-	 * @param arcAngle angular length of the arc
-	 * @param edges number of edge segments to draw the arc
-	 * @param col line color
-	 * @param alpha line opacity
-	 */
-	public static void drawLineArc(float cx, float cy, float r,
-			float startAngle, float endAngle, int edges, Color col, float alpha) {
-		double[] vert = getArc(cx, cy, r, startAngle, endAngle, edges, false);
-		float[] cols = col.toArray(vert.length / 2, alpha);
-		raster().draw2D(vert, cols, GL11.GL_LINE_STRIP);
-	}
-
-	/**
-	 * Draws a filled arc circle
-	 * 
-	 * @param cx abscissa center of the circle
-	 * @param cy ordinate center of the circle
-	 * @param r radius of the circle
-	 * @param startAngle starting angle of the arc
-	 * @param arcAngle angular length of the arc
-	 * @param edges number of edge segments to draw the arc
-	 * @param inColor color of the center of the circle
-	 * @param inAlpha opacity for inColor
-	 * @param outColor color of the edge of the circle
-	 * @param outAlpha opacity for outColor
-	 */
-	public static void drawFilledArc(float cx, float cy, float r,
-			float startAngle, float arcAngle, int edges, Color inColor,
-			float inAlpha, Color outColor, float outAlpha) {
-		double[] verts = getArc(cx, cy, r, startAngle, arcAngle, edges, true);
-		float[] cols = new float[(verts.length / 2) * 4];
-		inColor.fillArray(cols, 0, 4, inAlpha);
-		outColor.fillArray(cols, 4, cols.length, outAlpha);
-		raster().draw2D(verts, cols, GL11.GL_TRIANGLE_FAN);
-	}
-
-	/**
-	 * Draws a dropped shadow around the specified rectangle
-	 * 
-	 * 
-	 * @param x abscissa of the bounds
-	 * @param y ordinate of the bounds
-	 * @param w width of the bounds
-	 * @param h height of the bounds
-	 * @param radius width of the shadow
-	 * @param alpha opacity
-	 * @param col color
-	 */
-	public static void drawDroppedShadow(int x, int y, int w, int h,
-			int radius, float alpha, Color col) {
-		int[] verts = {
-				// shadow top
-				x, y - radius, x + w, y - radius, x + w, y, x,
-				y,
-				// shadow right
-				x + w + radius, y, x + w + radius, y + h, x + w, y + h, x + w,
-				y,
-				// shadow bot
-				x + w, y + h + radius, x, y + h + radius, x, y + h, x + w,
-				y + h,
-				// shadow left
-				x - radius, y + h, x - radius, y, x, y, x, y + h,
-				// center
-				x, y, x, y + h, x + w, y + h, x + w, y
+		int[] v_l = {
+				x - rl, y, //
+				x - rl + wl, y, //
+				x - rl + wl, y + h, //
+				x - rl, y + h
 		};
-		float[] cols = new float[2 * verts.length];
-		col.fillArray(cols, 0, 4 * 2, 0.0f);
-		col.fillArray(cols, 4 * 2, 4 * 4, alpha);
-		col.fillArray(cols, 4 * 4, 4 * 6, 0.0f);
-		col.fillArray(cols, 4 * 6, 4 * 8, alpha);
-		col.fillArray(cols, 4 * 8, 4 * 10, 0.0f);
-		col.fillArray(cols, 4 * 10, 4 * 12, alpha);
-		col.fillArray(cols, 4 * 12, 4 * 14, 0.0f);
-		col.fillArray(cols, 4 * 14, 4 * 16, alpha);
-		col.fillArray(cols, 4 * 16, 4 * 20, alpha);
 
-		raster().draw2D(verts, cols, GL11.GL_QUADS);
-
-		int precision = 5;
-
-		Util.drawFilledArc((float) x, (float) y, (float) radius,
-				(float) Math.PI, (float) Math.PI / 2.0f, precision, col, alpha,
-				col, 0.0f);
-		Util.drawFilledArc((float) x + w, (float) y, (float) radius,
-				(float) -Math.PI / 2.0f, (float) Math.PI / 2.0f, precision,
-				col, alpha, col, 0.0f);
-		Util.drawFilledArc((float) x + w, (float) y + h, (float) radius, 0.0f,
-				(float) Math.PI / 2.0f, precision, col, alpha, col, 0.0f);
-		Util.drawFilledArc((float) x, (float) y + h, (float) radius,
-				(float) Math.PI / 2.0f, (float) Math.PI / 2.0f, precision, col,
-				alpha, col, 0.0f);
+		raster().draw2DTexturedQuad(v_l, c, shadow_coord_l,
+				shadowSide.getTexId());
 	}
 
-	private static LinkedList<Rectangle> scissors = new LinkedList<Rectangle>();
+	public static void drawRightShadowQuad(int x, int y, int h, float alpha,
+			Color col, boolean smaller) {
+		Image shadowSide = Theme.getWindowShadowSideImage();
 
-	private static LinkedList<Point> translation = new LinkedList<Point>();
+		int divide = (smaller ? 2 : 1);
 
-	/**
-	 * Push a new translation matrix on top of the stack
-	 * <p>
-	 * Use this instead of direct glTranslate as it allows keeping track of
-	 * nested matrix translations, so that nested Widget#render() calls can know
-	 * precisely the render position on screen
-	 * 
-	 * @param x abscissa to add to the current translation
-	 * @param y ordinate to add to the current translation
-	 */
-	public static void pushTranslate(int x, int y) {
-		Point p = new Point(x, y);
+		int rl = shadowSide.getWidth() / divide;
+		int wl = shadowSide.getTexWidth() / divide;
 
-		if (!translation.isEmpty()) {
-			Point o = translation.getFirst();
-			p.x += o.x;
-			p.y += o.y;
-		}
+		float[] c = col.toArray(4, alpha);
 
-		translation.push(p);
+		int[] v_r = {
+				x + rl - wl, y, //
+				x + rl, y, //
+				x + rl, y + h, //
+				x + rl - wl, y + h,
+		};
 
-		GL11.glPushMatrix();
-		GL11.glTranslatef(x, y, 0.0f);
+		raster().draw2DTexturedQuad(v_r, c, shadow_coord_r,
+				shadowSide.getTexId());
 	}
 
-	/**
-	 * Removes the last translation
-	 * <p>
-	 * Restores the matrix as it was before the last call to
-	 * {@link #pushTranslate(int, int)}
-	 */
-	public static void popTranslate() {
-		translation.pop();
-		GL11.glPopMatrix();
-	}
+	public static void drawShadowQuad(int x, int y, int w, int h, float alpha,
+			Color col, boolean smaller) {
+		Image shadowCorner = Theme.getWindowShadowCornerImage();
+		Image shadowSide = Theme.getWindowShadowSideImage();
 
-	/**
-	 * Push new scissors on top of the Scissor stack
-	 * <p>
-	 * This handles calls to GL11.glScissor() so that stacking new scissors with
-	 * relative positions is possible.
-	 * <p>
-	 * The position of the new scissor is relative to the current translation as
-	 * accounted by {@link #pushTranslate(int, int)}
-	 * 
-	 * @param w new scissor width
-	 * @param h new scissor height
-	 */
-	public static void pushScissor(int w, int h) {
-		Util.pushScissor(0, 0, w, h);
-	}
+		int divide = (smaller ? 2 : 1);
 
-	/**
-	 * If unsure, you don't need this and should use
-	 * {@link #pushScissor(int, int)} instead.
-	 * <p>
-	 * Otherwise, this allows specifying an additional translation for the
-	 * scissor box instead of using the one from
-	 * {@link #pushTranslate(int, int)} directly
-	 * 
-	 * @param x additional abscissa translation
-	 * @param y additional ordinate translation
-	 * @param w new scissor width
-	 * @param h new scissor height
-	 */
-	public static void pushScissor(int x, int y, int w, int h) {
-		Rectangle c = new Rectangle(x, y, w, h);
+		int rl = shadowSide.getWidth() / divide;
+		int wl = shadowSide.getTexWidth() / divide;
 
-		if (!translation.isEmpty()) {
-			Point p = translation.getFirst();
-			c.x += p.x;
-			c.y += p.y;
-		}
+		int rc = shadowCorner.getWidth() / divide;
+		int wc = shadowCorner.getTexWidth() / divide;
 
-		if (!scissors.isEmpty()) {
-			Rectangle p = scissors.getFirst();
-			c = p.intersection(c);
-		}
+		float[] c = col.toArray(4, alpha);
 
-		scissors.push(c);
-		int dh = Display.getDisplayMode().getHeight();
-		GL11.glScissor(c.x, dh - c.y - c.height, c.width, c.height);
-	}
+		int[] v_tl = {
+				x - rc, y - rc, //
+				x - rc + wc, y - rc, //
+				x - rc + wc, y - rc + wc, //
+				x - rc, y - rc + wc
+		};
 
-	/**
-	 * Removes the last scissor
-	 * <p>
-	 * Restore the scissor box as it was before the last call to
-	 * {@link #pushScissor(int, int)}
-	 */
-	public static void popScissor() {
-		Rectangle c = scissors.pop();
+		int[] v_t = {
+				x, y - rl, //
+				x + w, y - rl, //
+				x + w, y - rl + wl, //
+				x, y - rl + wl
+		};
 
-		if (Config.get().isWmDebugLayout() && !c.isEmpty()) {
+		int[] v_tr = {
+				x + w + rc - wc, y - rc, //
+				x + w + rc, y - rc,//
+				x + w + rc, y - rc + wc,//
+				x + w + rc - wc, y - rc + wc
+		};
 
-			GL11.glDisable(GL11.GL_SCISSOR_TEST);
-			GL11.glMatrixMode(GL11.GL_MODELVIEW);
-			GL11.glPushMatrix();
-			GL11.glLoadIdentity();
+		int[] v_br = {
+				x + w + rc - wc, y + h + rc - wc, //
+				x + w + rc, y + h + rc - wc, //
+				x + w + rc, y + h + rc, //
+				x + w + rc - wc, y + h + rc,
+		};
 
-			int[] verts = new int[] {
-					c.x, c.y, //
-					c.x + c.width, c.y, //
-					c.x + c.width, c.y + c.height, //
-					c.x, c.y + c.height
-			};
-			float[] cols = Color.RED.toArray(8);
-			raster().draw2DLineLoop(verts, cols);
+		int[] v_b = {
+				x, y + h + rl - wl, //
+				x + w, y + h + rl - wl, //
+				x + w, y + h + rl, //
+				x, y + h + rl
+		};
 
-			GL11.glMatrixMode(GL11.GL_MODELVIEW);
-			GL11.glPopMatrix();
-			GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		}
+		int[] v_bl = {
+				x - rc, y + h + rc - wc, //
+				x - rc + wc, y + h + rc - wc, //
+				x - rc + wc, y + h + rc, //
+				x - rc, y + h + rc
+		};
 
-		if (scissors.size() > 0) {
-			c = scissors.getFirst();
-			int dh = Display.getDisplayMode().getHeight();
-			GL11.glScissor(c.x, dh - c.y - c.height, c.width, c.height);
-		} else {
-			GL11.glScissor(0, 0, Display.getDisplayMode().getWidth(), Display
-					.getDisplayMode().getHeight());
-		}
+		drawLeftShadowQuad(x, y, h, alpha, col, smaller);
+		drawRightShadowQuad(x + w, y, h, alpha, col, smaller);
+
+		raster().draw2DTexturedQuad(v_t, c, shadow_coord_t,
+				shadowSide.getTexId());
+
+		raster().draw2DTexturedQuad(v_b, c, shadow_coord_b,
+				shadowSide.getTexId());
+
+		raster().draw2DTexturedQuad(v_tl, c, shadow_coord_l,
+				shadowCorner.getTexId());
+		raster().draw2DTexturedQuad(v_tr, c, shadow_coord_t,
+				shadowCorner.getTexId());
+		raster().draw2DTexturedQuad(v_br, c, shadow_coord_r,
+				shadowCorner.getTexId());
+		raster().draw2DTexturedQuad(v_bl, c, shadow_coord_b,
+				shadowCorner.getTexId());
 	}
 
 	/**

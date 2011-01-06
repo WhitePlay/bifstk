@@ -365,7 +365,9 @@ public class State {
 				dock = this.rightDock;
 			}
 
-			boolean ret = dock.contains(w);
+			if (!dock.contains(w))
+				return false;
+
 			w.setResizable(true);
 			w.setHeight(w.getHeight());
 			w.setResizable(false);
@@ -394,7 +396,7 @@ public class State {
 				acc += h + border;
 			}
 
-			return ret;
+			return true;
 		}
 		return false;
 	}

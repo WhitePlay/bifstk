@@ -182,21 +182,9 @@ public class Renderer {
 
 		/* right shadow */
 		if (Theme.isWindowShadowEnabled()) {
-			int radius = Theme.getWindowShadowRadius();
 			Color col = this.state.getLeftDock().get(0).getShadowColor();
-
-			float[] c1 = new float[16];
-			col.fillArray(c1, 0, 4, Theme.getWindowShadowAlpha());
-			col.fillArray(c1, 4, 12, 0.0f);
-			col.fillArray(c1, 12, 16, Theme.getWindowShadowAlpha());
-			int[] v1 = {
-					x + w, 0, //
-					x + w + radius, 0, //
-					x + w + radius, height, //
-					x + w, height
-			};
-
-			Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
+			Util.drawRightShadowQuad(x + w, 0, height,
+					Theme.getWindowShadowAlpha(), col, false);
 		}
 
 		Color c = Theme.getWindowBorderFocusedColor();
@@ -269,20 +257,9 @@ public class Renderer {
 
 		/* left shadow */
 		if (Theme.isWindowShadowEnabled()) {
-			int radius = Theme.getWindowShadowRadius();
 			Color col = this.state.getRightDock().get(0).getShadowColor();
-
-			float[] c1 = new float[16];
-			col.fillArray(c1, 0, 4, Theme.getWindowShadowAlpha());
-			col.fillArray(c1, 4, 12, 0.0f);
-			col.fillArray(c1, 12, 16, Theme.getWindowShadowAlpha());
-			int[] v1 = {
-					dw - x - w, 0, //
-					dw - x - w - radius, 0, //
-					dw - x - w - radius, height, //
-					dw - x - w, height
-			};
-			Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
+			Util.drawLeftShadowQuad(dw - x - w, 0, height,
+					Theme.getWindowShadowAlpha(), col, false);
 		}
 
 		Color c = Theme.getWindowBorderFocusedColor();
@@ -360,10 +337,9 @@ public class Renderer {
 			float modAlpha = f.getModAlpha();
 
 			if (Theme.isWindowShadowEnabled() && !f.isMaximized()) {
-				Util.drawDroppedShadow(f.getX(), f.getY(), f.getWidth(),
-						f.getHeight(), Theme.getWindowShadowRadius(),
-						Theme.getWindowShadowAlpha() * modAlpha,
-						f.getShadowColor());
+				Util.drawShadowQuad(f.getX(), f.getY(), f.getWidth(),
+						f.getHeight(), Theme.getWindowShadowAlpha() * modAlpha,
+						f.getShadowColor(), false);
 			}
 
 			// render the Window

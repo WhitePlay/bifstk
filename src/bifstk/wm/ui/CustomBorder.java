@@ -1,10 +1,9 @@
 package bifstk.wm.ui;
 
-import org.lwjgl.opengl.GL11;
-
 import bifstk.config.Fonts;
 import bifstk.config.Theme;
 import bifstk.gl.Color;
+import bifstk.gl.Rasterizer;
 import bifstk.gl.Util;
 import bifstk.wm.geom.Rectangle;
 
@@ -108,6 +107,7 @@ public class CustomBorder extends Border {
 	public void render(float alpha, Color uiBg, float uiAlpha) {
 		int w = Math.max(left + right, this.getWidth());
 		int h = Math.max(top + bot, this.getHeight());
+		float a = alpha * uiAlpha;
 
 		if (this.hasChildren()) {
 			Color c = this.color;
@@ -115,57 +115,29 @@ public class CustomBorder extends Border {
 				c = uiBg;
 			}
 
-			float[] c1 = c.toArray(4 * 4, alpha * uiAlpha);
-			int[] v1 = {
-					// top
-					0, 0,//
-					w, 0,//
-					w, top,//
-					0, top,//
-					// right
-					w, top, //
-					w, h - bot, //
-					w - right, h - bot, //
-					w - right, top, //
-					// bot
-					w, h, //
-					0, h, //
-					0, h - bot, //
-					w, h - bot, //
-					// left
-					0, h - bot, //
-					0, top, //
-					left, top, //
-					left, h - bot
-			};
-			Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
+			Util.raster().fillQuad(0, 0, w, top, c, a);
+			Util.raster().fillQuad(w - right, top, right, h - bot - top, c, a);
+			Util.raster().fillQuad(left, h - bot, w - left, bot, c, a);
+			Util.raster().fillQuad(0, top, left, h - top, c, a);
 
 			// content
 			int nw = w - left - right;
 			int nh = h - top - bot;
 			if (nw > 0 && nh > 0) {
-				Util.pushTranslate(left, top);
-				Util.pushScissor(w, h);
+				Rasterizer.pushTranslate(left, top);
+				Rasterizer.pushScissor(w, h);
 
 				this.getContent().render(alpha, uiBg, uiAlpha);
 
-				Util.popScissor();
-				Util.popTranslate();
+				Rasterizer.popScissor();
+				Rasterizer.popTranslate();
 			}
 		} else {
 			Color c = this.color;
 			if (this.color == null) {
 				c = uiBg;
 			}
-
-			float[] c1 = c.toArray(4, uiAlpha * alpha);
-			int[] v1 = {
-					0, 0,//
-					w, 0,//
-					w, h,//
-					0, h
-			};
-			Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
+			Util.raster().fillQuad(0, 0, w, h, c, a);
 		}
 
 		if (this.label != null) {

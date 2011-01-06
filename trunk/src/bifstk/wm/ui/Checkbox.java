@@ -1,7 +1,5 @@
 package bifstk.wm.ui;
 
-import org.lwjgl.opengl.GL11;
-
 import bifstk.config.Fonts;
 import bifstk.config.Theme;
 import bifstk.gl.Color;
@@ -39,23 +37,8 @@ public class Checkbox extends AbstractButton {
 
 		float a = uiBgAlpha * alpha;
 
-		float[] c1 = Color.WHITE.toArray(4, a);
-		int[] g1 = new int[] {
-				0, 0, pw, 0, pw, pw, 0, pw
-		};
-
-		float[] c2 = Theme.getUiButtonBorderColor().toArray(8, a);
-		int[] g2 = new int[] {
-				0, 0, //
-				pw, 0, //
-				pw, pw, //
-				0, pw, //
-		};
-
-		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-
-		Util.raster().draw2D(g1, c1, GL11.GL_QUADS);
-		Util.raster().draw2DLineLoop(g2, c2);
+		Util.raster().fillQuad(0, 0, pw, pw, Color.WHITE, a);
+		Util.raster().drawQuad(0, 0, pw, pw, Theme.getUiButtonBorderColor(), a);
 
 		Color fillCol = Theme.getUiButtonColor();
 		if (this.isMouseClicked()) {
@@ -66,16 +49,9 @@ public class Checkbox extends AbstractButton {
 
 		if (this.checked) {
 			int b = (int) (0.2f * pw);
-			float[] c3 = Theme.getUiButtonBorderColor().toArray(8, a);
-			float[] c4 = fillCol.toArray(4, a);
-			int[] g3 = new int[] {
-					b, b, //
-					pw - b, b, //
-					pw - b, pw - b, //
-					b, pw - b //
-			};
-			Util.raster().draw2D(g3, c4, GL11.GL_QUADS);
-			Util.raster().draw2DLineLoop(g3, c3);
+			Util.raster().fillQuad(b, b, pw - b * 2, pw - b * 2, fillCol, a);
+			Util.raster().drawQuad(b, b, pw - b * 2, pw - b * 2,
+					Theme.getUiButtonBorderColor(), a);
 		}
 	}
 

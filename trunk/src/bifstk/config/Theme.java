@@ -248,15 +248,24 @@ public class Theme {
 		return instance.windowShadowAlpha;
 	}
 
-	private int windowShadowRadius;
-	private int windowShadowRadiusMin = 1, windowShadowRadiusMax = 20;
+	private Image windowShadowSide = null;
 
 	/**
-	 * @return pixel radius of the window shadow
+	 * @return the 'side' window shadow image
 	 */
-	public static int getWindowShadowRadius() {
+	public static Image getWindowShadowSideImage() {
 		check();
-		return instance.windowShadowRadius;
+		return instance.windowShadowSide;
+	}
+
+	private Image windowShadowCorner = null;
+
+	/**
+	 * @return the 'corner' window shadow image
+	 */
+	public static Image getWindowShadowCornerImage() {
+		check();
+		return instance.windowShadowCorner;
 	}
 
 	private Color windowFocusedColor = null;
@@ -613,10 +622,14 @@ public class Theme {
 							Float.parseFloat(sval), 0.0f, 1.0f);
 					break;
 				}
-				case windowShadowRadius: {
-					this.windowShadowRadius = Util.clampi(
-							Integer.parseInt(sval), windowShadowRadiusMin,
-							windowShadowRadiusMax);
+				case windowShadowCornerImage: {
+					this.windowShadowCorner = new Image(this.path + "/" + sval);
+					;
+					break;
+				}
+				case windowShadowSideImage: {
+					this.windowShadowSide = new Image(this.path + "/" + sval);
+					;
 					break;
 				}
 				case windowMovedAlpha: {

@@ -1,7 +1,5 @@
 package bifstk.wm.ui;
 
-import org.lwjgl.opengl.GL11;
-
 import bifstk.config.Fonts;
 import bifstk.config.Theme;
 import bifstk.gl.Color;
@@ -47,11 +45,6 @@ public class Label extends Widget {
 
 		Color col = Theme.getUiFontColor();
 
-		float[] c1 = uiBg.toArray(4, uiAlpha * alpha);
-		int[] v1 = {
-				0, 0, w, 0, w, h, 0, h
-		};
-
 		int lx, ly;
 		if (this.textWidth < w) {
 			lx = (w - this.textWidth) / 2;
@@ -64,7 +57,7 @@ public class Label extends Widget {
 			ly = 0;
 		}
 
-		Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
+		Util.raster().fillQuad(0, 0, w, h, uiBg, uiAlpha * alpha);
 		Fonts.getNormal().drawString(lx, ly, this.text, col, alpha);
 
 	}

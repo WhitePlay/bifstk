@@ -3,9 +3,8 @@ package bifstk.wm.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
 import bifstk.gl.Color;
+import bifstk.gl.Rasterizer;
 import bifstk.gl.Util;
 import bifstk.wm.geom.Rectangle;
 
@@ -191,14 +190,8 @@ public class FlowBox extends Container {
 			uiBg = uiBg.highlight();
 		}
 
-		float[] c1 = uiBg.toArray(4, alpha * uiAlpha);
-
 		if (!hasChildren()) {
-
-			int[] v1 = {
-					0, 0, w, 0, w, h, 0, h
-			};
-			Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
+			Util.raster().fillQuad(0, 0, w, h, uiBg, alpha * uiAlpha);
 		} else {
 			int acc = 0;
 
@@ -221,56 +214,40 @@ public class FlowBox extends Container {
 				}
 				if (widg == null) {
 					if (this.orientation.equals(Orientation.HORIZONTAL)) {
-						int[] v2 = {
-								acc, 0, //
-								acc + ew, 0, //
-								acc + ew, h, //
-								acc, h
-						};
-						Util.raster().draw2D(v2, c1, GL11.GL_QUADS);
+						Util.raster().fillQuad(acc, 0, ew, h, uiBg,
+								uiAlpha * alpha);
 					} else {
-						int[] v2 = {
-								0, acc, //
-								0, acc + ew, //
-								w, acc + ew, //
-								w, acc
-						};
-						Util.raster().draw2D(v2, c1, GL11.GL_QUADS);
+						Util.raster().fillQuad(0, acc, w, ew, uiBg,
+								uiAlpha * alpha);
 					}
 
 					acc += ew;
 				} else {
 					if (this.orientation.equals(Orientation.HORIZONTAL)) {
-						Util.pushTranslate(acc, 0);
-						Util.pushScissor(widg.getWidth(), widg.getHeight());
+						Rasterizer.pushTranslate(acc, 0);
+						Rasterizer.pushScissor(widg.getWidth(),
+								widg.getHeight());
 					} else {
-						Util.pushTranslate(0, acc);
-						Util.pushScissor(widg.getWidth(), widg.getHeight());
+						Rasterizer.pushTranslate(0, acc);
+						Rasterizer.pushScissor(widg.getWidth(),
+								widg.getHeight());
 					}
 					widg.render(alpha, uiBg, uiAlpha);
 
-					Util.popScissor();
-					Util.popTranslate();
+					Rasterizer.popScissor();
+					Rasterizer.popTranslate();
 
 					if (this.orientation.equals(Orientation.HORIZONTAL)) {
 						if (widg.getHeight() < h) {
-							int[] v2 = {
-									acc, widg.getHeight(), //
-									acc + widg.getWidth(), widg.getHeight(), //
-									acc + widg.getWidth(), h, //
-									acc, h
-							};
-							Util.raster().draw2D(v2, c1, GL11.GL_QUADS);
+							Util.raster().fillQuad(acc, widg.getHeight(),
+									widg.getWidth(), h - widg.getHeight(),
+									uiBg, uiAlpha * alpha);
 						}
 					} else {
 						if (widg.getWidth() < w) {
-							int[] v2 = {
-									widg.getWidth(), acc, //
-									w, acc, //
-									w, acc + widg.getHeight(), //
-									widg.getWidth(), acc + widg.getHeight()
-							};
-							Util.raster().draw2D(v2, c1, GL11.GL_QUADS);
+							Util.raster().fillQuad(widg.getWidth(), acc,
+									w - widg.getWidth(), widg.getHeight(),
+									uiBg, uiAlpha * alpha);
 						}
 					}
 

@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 public class LegacyRasterizer extends Rasterizer {
 
 	@Override
-	public void draw2DTexturedQuad(int[] vertices, float[] colors, int texture) {
+	protected void draw2DTexturedQuad(int[] vertices, float[] colors, int texture) {
 		this.draw2DTexturedQuad(vertices, colors, defaultCoords, texture);
 	}
 

@@ -28,10 +28,10 @@ import org.lwjgl.opengl.GL11;
 public class TrueTypeFont {
 
 	/** Array that holds necessary information about the font characters */
-	private IntObject[] charArray = new IntObject[256];
+	private Image[] charArray = new Image[256];
 
 	/** Map of user defined font characters (Character <-> IntObject) */
-	private Map<Character, IntObject> customChars = new HashMap<Character, IntObject>();
+	private Map<Character, Image> customChars = new HashMap<Character, Image>();
 
 	/** Boolean flag on whether AntiAliasing is enabled or not */
 	private boolean antiAlias;
@@ -56,25 +56,6 @@ public class TrueTypeFont {
 
 	/** The font metrics for our Java AWT font */
 	private FontMetrics fontMetrics;
-
-	/**
-	 * This is a special internal class that holds our necessary information for
-	 * the font characters. This includes width, height, and where the character
-	 * is stored on the font texture.
-	 */
-	private class IntObject {
-		/** Character's width */
-		public int width;
-
-		/** Character's height */
-		public int height;
-
-		/** Character's stored x position */
-		public int storedX;
-
-		/** Character's stored y position */
-		public int storedY;
-	}
 
 	/**
 	 * Constructor for the TrueTypeFont class Pass in the preloaded standard
@@ -189,6 +170,8 @@ public class TrueTypeFont {
 		int customCharsLength = (customCharsArray != null) ? customCharsArray.length
 				: 0;
 
+		this.fontTexture = GL11.glGenTextures();
+
 		for (int i = 0; i < 256 + customCharsLength; i++) {
 
 			// get 0-255 characters and then custom characters
@@ -196,32 +179,30 @@ public class TrueTypeFont {
 
 			BufferedImage fontImage = getFontImage(ch);
 
-			IntObject newIntObject = new IntObject();
+			int nw = fontImage.getWidth();
+			int nh = fontImage.getHeight();
 
-			newIntObject.width = fontImage.getWidth();
-			newIntObject.height = fontImage.getHeight();
-
-			if (positionX + newIntObject.width >= textureWidth) {
+			if (positionX + nw >= textureWidth) {
 				positionX = 0;
 				positionY += rowHeight;
 				rowHeight = 0;
 			}
 
-			newIntObject.storedX = positionX;
-			newIntObject.storedY = positionY;
-
-			if (newIntObject.height > fontHeight) {
-				fontHeight = newIntObject.height;
+			if (nh > fontHeight) {
+				fontHeight = nh;
 			}
 
-			if (newIntObject.height > rowHeight) {
-				rowHeight = newIntObject.height;
+			if (nh > rowHeight) {
+				rowHeight = nh;
 			}
+
+			Image newIntObject = new Image(positionX, positionY, nw, nh,
+					textureWidth, textureHeight, this.fontTexture);
 
 			// Draw it here
 			g.drawImage(fontImage, positionX, positionY, null);
 
-			positionX += newIntObject.width;
+			positionX += newIntObject.getWidth();
 
 			if (i < 256) { // standard characters
 				charArray[i] = newIntObject;
@@ -236,7 +217,6 @@ public class TrueTypeFont {
 		// .getTexture(font.toString(), imgTemp).getTextureID();
 
 		ByteBuffer buf = Util.imageToByteBuffer(imgTemp);
-		this.fontTexture = GL11.glGenTextures();
 
 		int width = imgTemp.getWidth();
 		int height = imgTemp.getHeight();
@@ -263,19 +243,18 @@ public class TrueTypeFont {
 	 */
 	public int getWidth(String whatchars) {
 		int totalwidth = 0;
-		IntObject intObject = null;
+		Image intObject = null;
 		int currentChar = 0;
 		for (int i = 0; i < whatchars.length(); i++) {
 			currentChar = whatchars.charAt(i);
 			if (currentChar < 256) {
 				intObject = charArray[currentChar];
 			} else {
-				intObject = (IntObject) customChars.get(new Character(
-						(char) currentChar));
+				intObject = customChars.get(new Character((char) currentChar));
 			}
 
 			if (intObject != null)
-				totalwidth += intObject.width;
+				totalwidth += intObject.getWidth();
 		}
 		return totalwidth;
 	}
@@ -318,9 +297,7 @@ public class TrueTypeFont {
 	 */
 	public void drawString(int x, int y, String whatchars,
 			bifstk.gl.Color color, float alpha) {
-		float[] c = color.toArray(4, alpha);
-
-		IntObject intObject = null;
+		Image intObject = null;
 		int charCurrent;
 
 		int acc = 0;
@@ -329,31 +306,13 @@ public class TrueTypeFont {
 			if (charCurrent < 256) {
 				intObject = charArray[charCurrent];
 			} else {
-				intObject = (IntObject) customChars.get(new Character(
-						(char) charCurrent));
+				intObject = customChars.get(new Character((char) charCurrent));
 			}
 
 			if (intObject != null) {
-				float sx = (float) intObject.storedX / (float) textureWidth;
-				float sy = (float) intObject.storedY / (float) textureHeight;
-				float rx = (float) intObject.width / (float) textureWidth;
-				float ry = (float) intObject.height / (float) textureHeight;
+				Util.raster().fillQuad(x + acc, y, intObject, alpha);
 
-				float[] coords = {
-						sx, sy, //
-						sx + rx, sy, //
-						sx + rx, sy + ry, //
-						sx, sy + ry
-				};
-				int[] v = {
-						x + acc, y, //
-						x + acc + intObject.width, y, //
-						x + acc + intObject.width, y + intObject.height, //
-						x + acc, y + intObject.height
-				};
-
-				Util.raster().draw2DTexturedQuad(v, c, coords, this.fontTexture);
-				acc += intObject.width;
+				acc += intObject.getWidth();
 			}
 		}
 	}

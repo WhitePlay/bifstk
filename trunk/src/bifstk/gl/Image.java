@@ -29,6 +29,11 @@ public class Image {
 	/** height of the texture */
 	private int texHeight;
 
+	/** abscissa of the Image in the texture */
+	private int texX;
+	/** ordinate of the Image in the texture */
+	private int texY;
+
 	/** GL identifier for the texture */
 	private int texId;
 
@@ -49,6 +54,20 @@ public class Image {
 		}
 	}
 
+	public Image(int x, int y, int w, int h, int tw, int th, int id) {
+		this.texX = x;
+		this.texY = y;
+		this.width = w;
+		this.height = h;
+		this.texId = id;
+		this.texWidth = tw;
+		this.texHeight = th;
+		this.hasAlpha = true;
+	}
+
+	public Image() {
+	}
+
 	/**
 	 * internal load
 	 * 
@@ -66,6 +85,8 @@ public class Image {
 		this.texWidth = Util.npot(this.width);
 		this.texHeight = Util.npot(this.height);
 		this.hasAlpha = img.getColorModel().hasAlpha();
+		this.texX = 0;
+		this.texY = 0;
 
 		int srcPixelFormat = hasAlpha ? GL11.GL_RGBA : GL11.GL_RGB;
 		int tg = GL11.GL_TEXTURE_2D;
@@ -119,6 +140,20 @@ public class Image {
 	 */
 	public int getTexHeight() {
 		return this.texHeight;
+	}
+
+	/**
+	 * @return the abscissa of the image in the texture
+	 */
+	public int getTexX() {
+		return this.texX;
+	}
+
+	/**
+	 * @return the ordinate of the image in the texture
+	 */
+	public int getTexY() {
+		return this.texY;
 	}
 
 	/**

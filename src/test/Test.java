@@ -9,7 +9,6 @@ import bifstk.Handler;
 import bifstk.Root;
 import bifstk.config.Config;
 import bifstk.config.Theme;
-import bifstk.gl.Color;
 import bifstk.gl.Image;
 import bifstk.gl.Util;
 import bifstk.util.BifstkException;
@@ -75,15 +74,7 @@ public class Test implements Handler, Root {
 
 		int imgX = (dw - w) / 2;
 		int imgY = (dh - h) / 2;
-
-		int[] v1 = {
-				imgX, imgY, //
-				imgX + w, imgY, //
-				imgX + w, imgY + h, //
-				imgX, imgY + h
-		};
-		Util.raster().draw2DTexturedQuad(v1, Color.WHITE.toArray(4),
-				this.bgImg.getTexId());
+		Util.raster().fillQuad(imgX, imgY, this.bgImg, 1.0f);
 	}
 
 	@Override

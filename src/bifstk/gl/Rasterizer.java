@@ -79,9 +79,6 @@ public abstract class Rasterizer {
 		}
 
 		translation.push(p);
-
-		GL11.glPushMatrix();
-		GL11.glTranslatef(x, y, 0.0f);
 	}
 
 	/**
@@ -92,7 +89,6 @@ public abstract class Rasterizer {
 	 */
 	public static void popTranslate() {
 		translation.pop();
-		GL11.glPopMatrix();
 	}
 
 	/**
@@ -139,8 +135,6 @@ public abstract class Rasterizer {
 		}
 
 		scissors.push(c);
-		int dh = Display.getDisplayMode().getHeight();
-		GL11.glScissor(c.x, dh - c.y - c.height, c.width, c.height);
 	}
 
 	/**
@@ -154,11 +148,6 @@ public abstract class Rasterizer {
 
 		if (Config.get().isWmDebugLayout() && !c.isEmpty()) {
 
-			GL11.glDisable(GL11.GL_SCISSOR_TEST);
-			GL11.glMatrixMode(GL11.GL_MODELVIEW);
-			GL11.glPushMatrix();
-			GL11.glLoadIdentity();
-
 			int[] verts = new int[] {
 					c.x, c.y, //
 					c.x + c.width, c.y, //
@@ -167,22 +156,19 @@ public abstract class Rasterizer {
 			};
 			float[] cols = Color.RED.toArray(8);
 			instance.draw2DLineLoop(verts, cols);
-
-			GL11.glMatrixMode(GL11.GL_MODELVIEW);
-			GL11.glPopMatrix();
-			GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		}
-
-		if (scissors.size() > 0) {
-			c = scissors.getFirst();
-			int dh = Display.getDisplayMode().getHeight();
-			GL11.glScissor(c.x, dh - c.y - c.height, c.width, c.height);
-		} else {
-			GL11.glScissor(0, 0, Display.getDisplayMode().getWidth(), Display
-					.getDisplayMode().getHeight());
 		}
 	}
 
+	/**
+	 * Draw the outline of a 2D Quad
+	 * 
+	 * @param x top left abscissa coordinate
+	 * @param y top left ordinate coordinate
+	 * @param w quad width
+	 * @param h quad height
+	 * @param col color
+	 * @param alpha alpha factor for the color
+	 */
 	public void drawQuad(int x, int y, int w, int h, Color col, float alpha) {
 		Rectangle r = new Rectangle(x, y, w, h);
 
@@ -205,20 +191,37 @@ public abstract class Rasterizer {
 				r.x + r.width, r.y + r.height, //
 				r.x, r.y + r.height
 		};
-		GL11.glDisable(GL11.GL_SCISSOR_TEST);
-		GL11.glPushMatrix();
-		GL11.glLoadIdentity();
 		this.draw2DLineLoop(v, c);
-		GL11.glPopMatrix();
-		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 	}
 
+	/**
+	 * Fill a 2D Quad with a solid color
+	 * 
+	 * @param x top left abscissa coordinate
+	 * @param y top left ordinate coordinate
+	 * @param w quad width
+	 * @param h quad height
+	 * @param col color
+	 * @param alpha alpha factor for the color
+	 */
 	public void fillQuad(int x, int y, int w, int h, Color col, float alpha) {
 		// TODO cache Color arrays
 		float[] c = col.toArray(4, alpha);
 		this._fillQuad(x, y, w, h, c);
 	}
 
+	/**
+	 * Fill a 2D Quad with a gradient color
+	 * 
+	 * @param x top left abscissa coordinate
+	 * @param y top left ordinate coordinate
+	 * @param w quad width
+	 * @param h quad height
+	 * @param top color of the two top vertices
+	 * @param bot color of the two bottom vertices
+	 * @param alphaTop alpha factor of the two top vertices
+	 * @param alphaBot alpha factor of the two bottom vertices
+	 */
 	public void fillQuad(int x, int y, int w, int h, Color top, Color bot,
 			float alphaTop, float alphaBot) {
 		float[] c = new float[4 * 4];
@@ -227,10 +230,70 @@ public abstract class Rasterizer {
 		this._fillQuad(x, y, w, h, c);
 	}
 
-	public void fillQuad(int x, int y, int w, int h, Image img, float alpha) {
-		// TODO recalculate tex coords when cropping with scissor
+	/**
+	 * Fill a 2D Quad with a texture
+	 * 
+	 * @param x top left ascissa coordinate
+	 * @param y top left ordinate coordinate
+	 * @param img texture image
+	 * @param alpha alpha factor for the image
+	 */
+	public void fillQuad(int x, int y, Image img, float alpha) {
+		Rectangle r = new Rectangle(x, y, img.getWidth(), img.getHeight());
+
+		if (!translation.isEmpty()) {
+			Point trans = translation.getFirst();
+			r.x += trans.x;
+			r.y += trans.y;
+		}
+		if (r.isEmpty())
+			return;
+
+		int[] v = {
+				r.x, r.y, //
+				r.x + r.width, r.y, //
+				r.x + r.width, r.y + r.height, //
+				r.x, r.y + r.height
+		};
+
+		float[] c = Color.WHITE.toArray(4, alpha);
+
+		if (!scissors.isEmpty()) {
+			GL11.glEnable(GL11.GL_SCISSOR_TEST);
+			Rectangle sci = scissors.getFirst();
+			int dh = Display.getDisplayMode().getHeight();
+			GL11.glScissor(sci.x, dh - sci.y - sci.height, sci.width,
+					sci.height);
+		}
+
+		float sx = (float) img.getTexX() / (float) img.getTexWidth();
+		float sy = (float) img.getTexY() / (float) img.getTexHeight();
+		float rx = (float) img.getWidth() / (float) img.getTexWidth();
+		float ry = (float) img.getHeight() / (float) img.getTexHeight();
+
+		float[] coords = {
+				sx, sy, //
+				sx + rx, sy, //
+				sx + rx, sy + ry, //
+				sx, sy + ry
+		};
+
+		this.draw2DTexturedQuad(v, c, coords, img.getTexId());
+
+		if (!scissors.isEmpty()) {
+			GL11.glDisable(GL11.GL_SCISSOR_TEST);
+		}
 	}
 
+	/**
+	 * Internal fillquad
+	 * 
+	 * @param x
+	 * @param y
+	 * @param w
+	 * @param h
+	 * @param col
+	 */
 	private void _fillQuad(int x, int y, int w, int h, float[] col) {
 		Rectangle r = new Rectangle(x, y, w, h);
 
@@ -252,12 +315,7 @@ public abstract class Rasterizer {
 				r.x + r.width, r.y + r.height, //
 				r.x, r.y + r.height
 		};
-		GL11.glDisable(GL11.GL_SCISSOR_TEST);
-		GL11.glPushMatrix();
-		GL11.glLoadIdentity();
 		this.draw2D(v, col, GL11.GL_QUADS);
-		GL11.glPopMatrix();
-		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 	}
 
 	/**
@@ -268,7 +326,8 @@ public abstract class Rasterizer {
 	 * @param texCoords 4 2D tex coords
 	 * @param texture GL texture id
 	 */
-	public abstract void draw2DTexturedQuad(int[] vertices, float[] colors,
+	@Deprecated
+	protected abstract void draw2DTexturedQuad(int[] vertices, float[] colors,
 			int texture);
 
 	/**
@@ -279,7 +338,8 @@ public abstract class Rasterizer {
 	 * @param texCoords 4 2D tex coords
 	 * @param texture GL texture id
 	 */
-	public abstract void draw2DTexturedQuad(int[] vertices, float[] colors,
+	@Deprecated
+	protected abstract void draw2DTexturedQuad(int[] vertices, float[] colors,
 			float[] texCoords, int texture);
 
 	/**

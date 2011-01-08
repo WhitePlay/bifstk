@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
 
 import bifstk.config.Config;
 import bifstk.config.Fonts;
@@ -268,7 +267,6 @@ public abstract class Frame implements Drawable, Clickable {
 							.getWindowTitlebarFocusedFontColor().blend(
 									Theme.getWindowTitlebarUnfocusedColor(),
 									focusAnim);
-					GL11.glEnable(GL11.GL_SCISSOR_TEST);
 
 					Rasterizer.pushTranslate(x + borderWidth + acc, y
 							+ borderWidth);
@@ -279,7 +277,6 @@ public abstract class Frame implements Drawable, Clickable {
 
 					Rasterizer.popScissor();
 					Rasterizer.popTranslate();
-					GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
 					acc += titleWidth + controlBorder;
 				} else {
@@ -341,28 +338,14 @@ public abstract class Frame implements Drawable, Clickable {
 						break;
 					}
 					if (img != null) {
-						GL11.glEnable(GL11.GL_SCISSOR_TEST);
-
 						Rasterizer.pushTranslate(x + borderWidth + acc, y
 								+ borderWidth);
 						Rasterizer.pushScissor(controlWidth, controlHeight);
 
-						float[] c2 = col.toArray(4, alpha);
-						int[] v2 = {
-								0,
-								yClickDec, //
-								img.getTexWidth(),
-								yClickDec, //
-								img.getTexWidth(),
-								yClickDec + img.getTexHeight(), //
-								0, yClickDec + img.getTexHeight(), //
-						};
-						Util.raster()
-								.draw2DTexturedQuad(v2, c2, img.getTexId());
+						Util.raster().fillQuad(0, yClickDec, img, alpha);
 
 						Rasterizer.popScissor();
 						Rasterizer.popTranslate();
-						GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
 						if (!Config.get().isWmAnimations()) {
 							hoverAnim = (hover ? 1.0f : 0.0f);
@@ -394,8 +377,6 @@ public abstract class Frame implements Drawable, Clickable {
 					+ borderWidth);
 			Rasterizer.pushScissor(w - 2 * borderWidth, h - 2 * borderWidth
 					- titlebarHeight);
-
-			GL11.glEnable(GL11.GL_SCISSOR_TEST);
 
 			this.content.render(alpha, uiColor, uiAlpha);
 

@@ -313,8 +313,7 @@ public abstract class Rasterizer {
 	 * @param colors 4 elements per color: r,g,b,a
 	 * @param glMode one of the glBegin() primitives
 	 */
-	@Deprecated
-	public abstract void draw2D(int[] vertices, float[] colors, int glMode);
+	protected abstract void draw2D(int[] vertices, float[] colors, int glMode);
 
 	/**
 	 * Draw arbitrary geometry in 2D space
@@ -323,8 +322,7 @@ public abstract class Rasterizer {
 	 * @param colors 4 elements per color: r,g,b,a
 	 * @param glMode one of the glBegin() primitives
 	 */
-	@Deprecated
-	public abstract void draw2D(float[] vertices, float[] colors, int glMode);
+	protected abstract void draw2D(float[] vertices, float[] colors, int glMode);
 
 	/**
 	 * Draw arbitrary geometry in 2D space
@@ -333,7 +331,6 @@ public abstract class Rasterizer {
 	 * @param colors 4 elements per color: r,g,b,a
 	 * @param glMode one of the glBegin() primitives
 	 */
-	@Deprecated
-	public abstract void draw2D(double[] vertices, float[] colors, int glMode);
+	protected abstract void draw2D(double[] vertices, float[] colors, int glMode);
 
 }

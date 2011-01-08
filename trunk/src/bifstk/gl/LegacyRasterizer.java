@@ -89,7 +89,7 @@ public class LegacyRasterizer extends Rasterizer {
 	}
 
 	@Override
-	public void draw2D(int[] vertices, float[] colors, int glMode) {
+	protected void draw2D(int[] vertices, float[] colors, int glMode) {
 		if (vertices.length / 2 != colors.length / 4) {
 			throw new IllegalArgumentException(
 					"Vertices and Colors array sizes do not match ("
@@ -105,7 +105,7 @@ public class LegacyRasterizer extends Rasterizer {
 	}
 
 	@Override
-	public void draw2D(float[] vertices, float[] colors, int glMode) {
+	protected void draw2D(float[] vertices, float[] colors, int glMode) {
 		if (vertices.length / 2 != colors.length / 4) {
 			throw new IllegalArgumentException(
 					"Vertices and Colors array sizes do not match");
@@ -120,7 +120,7 @@ public class LegacyRasterizer extends Rasterizer {
 	}
 
 	@Override
-	public void draw2D(double[] vertices, float[] colors, int glMode) {
+	protected void draw2D(double[] vertices, float[] colors, int glMode) {
 		if (vertices.length / 2 != colors.length / 4) {
 			throw new IllegalArgumentException(
 					"Vertices and Colors array sizes do not match");

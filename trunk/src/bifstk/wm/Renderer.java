@@ -169,14 +169,8 @@ public class Renderer {
 			if (!focus) {
 				col = Theme.getWindowBorderUnfocusedColor();
 			}
-			float[] c1 = col.toArray(4, baseAlpha);
-			int[] v1 = {
-					0, acc, //
-					x, acc, //
-					x, acc + w, //
-					0, acc + w
-			};
-			Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
+			Util.raster().fillQuad(0, acc, x, w, col, baseAlpha);
+
 			acc += w;
 		}
 
@@ -192,26 +186,14 @@ public class Renderer {
 			c = Theme.getWindowBorderUnfocusedColor();
 		}
 		/* right border */
-		float[] c1 = c.toArray(4, baseAlpha);
-		int[] v1 = {
-				x, 0, //
-				x + w, 0, //
-				x + w, height, //
-				x, height
-		};
-		Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
+		Util.raster().fillQuad(x, 0, w, height, c, baseAlpha);
 
 		c = Theme.getWindowBorderOuterFocusedColor();
 		if (!focus) {
 			c = Theme.getWindowBorderOuterUnfocusedColor();
 		}
 		/* right outer border */
-		c1 = c.toArray(2);
-		v1 = new int[] {
-				x + w, 0, //
-				x + w, height
-		};
-		Util.raster().draw2D(v1, c1, GL11.GL_LINES);
+		Util.raster().fillQuad(x + w, 0, 1, height, c, baseAlpha);
 	}
 
 	/**
@@ -244,14 +226,7 @@ public class Renderer {
 			if (!focus) {
 				c = Theme.getWindowBorderUnfocusedColor();
 			}
-			float[] c1 = c.toArray(4, baseAlpha);
-			int[] v1 = {
-					dw, acc, //
-					dw - x, acc, //
-					dw - x, acc + w, //
-					dw, acc + w
-			};
-			Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
+			Util.raster().fillQuad(dw - x, acc, x, w, c, baseAlpha);
 			acc += w;
 		}
 
@@ -267,26 +242,14 @@ public class Renderer {
 			c = Theme.getWindowBorderUnfocusedColor();
 		}
 		/* left border */
-		float[] c1 = c.toArray(4, baseAlpha);
-		int[] v1 = {
-				dw - x, 0, //
-				dw - x - w, 0, //
-				dw - x - w, height, //
-				dw - x, height
-		};
-		Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
+		Util.raster().fillQuad(dw - x - w, 0, w, height, c, baseAlpha);
 
 		c = Theme.getWindowBorderOuterFocusedColor();
 		if (!focus) {
 			c = Theme.getWindowBorderOuterUnfocusedColor();
 		}
 		/* left outer border */
-		c1 = c.toArray(2);
-		v1 = new int[] {
-				dw - x - w, 0, //
-				dw - x - w, height
-		};
-		Util.raster().draw2D(v1, c1, GL11.GL_LINES);
+		Util.raster().fillQuad(dw - x - w, 0, 1, height, c, baseAlpha);
 	}
 
 	/**
@@ -324,15 +287,8 @@ public class Renderer {
 					modalAlpha *= aApp * aRem;
 				}
 
-				float[] c1 = Theme.getRootBackgroundModalColor().toArray(4,
-						modalAlpha);
-				int[] v1 = {
-						0, 0, //
-						width, 0, //
-						width, height, //
-						0, height
-				};
-				Util.raster().draw2D(v1, c1, GL11.GL_QUADS);
+				Util.raster().fillQuad(0, 0, width, height,
+						Theme.getRootBackgroundModalColor(), modalAlpha);
 			}
 			float modAlpha = f.getModAlpha();
 
@@ -358,11 +314,8 @@ public class Renderer {
 		// GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
 		// drawing a quad seems to be faster than glClear for some reason
-		float[] c = Theme.getRootBackgroundColor().toArray(4);
-		int[] v = {
-				0, 0, width, 0, width, height, 0, height
-		};
-		Util.raster().draw2D(v, c, GL11.GL_QUADS);
+		Util.raster().fillQuad(0, 0, width, height,
+				Theme.getRootBackgroundColor(), 1.0f);
 	}
 
 	/**

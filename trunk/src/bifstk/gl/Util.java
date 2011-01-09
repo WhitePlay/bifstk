@@ -13,7 +13,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Hashtable;
 
-import bifstk.config.Theme;
+import bifstk.config.TextureLoader;
+import bifstk.gl.Rasterizer.Rotation;
 
 /**
  * Misc GL utilities
@@ -110,148 +111,83 @@ public class Util {
 		return Rasterizer.getInstance();
 	}
 
-	private static float[] shadow_coord_l = {
-			0.0f, 0.0f, //
-			1.0f, 0.0f, //
-			1.0f, 1.0f, //
-			0.0f, 1.0f
-	};
-	private static float[] shadow_coord_t = {
-			0.0f, 1.0f, //
-			0.0f, 0.0f, //
-			1.0f, 0.0f, //
-			1.0f, 1.0f
-	};
-	private static float[] shadow_coord_r = {
-			1.0f, 1.0f, //
-			0.0f, 1.0f, //
-			0.0f, 0.0f, //
-			1.0f, 0.0f
-	};
-	private static float[] shadow_coord_b = {
-			1.0f, 0.0f, //
-			1.0f, 1.0f, //
-			0.0f, 1.0f, //
-			0.0f, 0.0f
-	};
-
+	/**
+	 * Draws a smooth shadow at the left of an edge
+	 * 
+	 * @param x top abscissa coordinate
+	 * @param y top ordinate coordinate
+	 * @param h height of the edge
+	 * @param alpha transparency
+	 * @param col color
+	 * @param smaller the shadow will be slightly thinner if true
+	 */
 	public static void drawLeftShadowQuad(int x, int y, int h, float alpha,
 			Color col, boolean smaller) {
-		Image shadowSide = Theme.getWindowShadowSideImage();
+		Image img = TextureLoader.getShadowLeft();
 
-		int divide = (smaller ? 2 : 1);
+		int w = img.getWidth();
+		if (smaller)
+			w /= 2;
 
-		int rl = shadowSide.getWidth() / divide;
-		int wl = shadowSide.getTexWidth() / divide;
-		float[] c = col.toArray(4, alpha);
-
-		int[] v_l = {
-				x - rl, y, //
-				x - rl + wl, y, //
-				x - rl + wl, y + h, //
-				x - rl, y + h
-		};
-
-		raster().draw2DTexturedQuad(v_l, c, shadow_coord_l,
-				shadowSide.getTexId());
+		raster().fillQuad(x - w, y, w, h, img, col, alpha, Rotation.ROTATE_0);
 	}
 
+	/**
+	 * Draws a smooth shadow at the right of an edge
+	 * 
+	 * @param x top abscissa coordinate
+	 * @param y top ordinate coordinate
+	 * @param h height of the edge
+	 * @param alpha transparency
+	 * @param col color
+	 * @param smaller the shadow will be slightly thinner if true
+	 */
 	public static void drawRightShadowQuad(int x, int y, int h, float alpha,
 			Color col, boolean smaller) {
-		Image shadowSide = Theme.getWindowShadowSideImage();
+		Image img = TextureLoader.getShadowLeft();
 
-		int divide = (smaller ? 2 : 1);
+		int w = img.getWidth();
+		if (smaller)
+			w /= 2;
 
-		int rl = shadowSide.getWidth() / divide;
-		int wl = shadowSide.getTexWidth() / divide;
-
-		float[] c = col.toArray(4, alpha);
-
-		int[] v_r = {
-				x + rl - wl, y, //
-				x + rl, y, //
-				x + rl, y + h, //
-				x + rl - wl, y + h,
-		};
-
-		raster().draw2DTexturedQuad(v_r, c, shadow_coord_r,
-				shadowSide.getTexId());
+		raster().fillQuad(x, y, w, h, img, col, alpha, Rotation.ROTATE_180);
 	}
 
+	/**
+	 * Draws a smooth shadow around a rectangle
+	 * 
+	 * @param x top left abscissa coordinate
+	 * @param y top left ordinate coordinate
+	 * @param w width of the rectangle
+	 * @param h height of the rectangle
+	 * @param alpha transparency
+	 * @param col color
+	 * @param smaller the shadow will be slightly thinner if true
+	 */
 	public static void drawShadowQuad(int x, int y, int w, int h, float alpha,
 			Color col, boolean smaller) {
-		Image shadowCorner = Theme.getWindowShadowCornerImage();
-		Image shadowSide = Theme.getWindowShadowSideImage();
+		Image corner = TextureLoader.getShadowTopLeft();
+		Image side = TextureLoader.getShadowLeft();
 
-		int divide = (smaller ? 2 : 1);
-
-		int rl = shadowSide.getWidth() / divide;
-		int wl = shadowSide.getTexWidth() / divide;
-
-		int rc = shadowCorner.getWidth() / divide;
-		int wc = shadowCorner.getTexWidth() / divide;
-
-		float[] c = col.toArray(4, alpha);
-
-		int[] v_tl = {
-				x - rc, y - rc, //
-				x - rc + wc, y - rc, //
-				x - rc + wc, y - rc + wc, //
-				x - rc, y - rc + wc
-		};
-
-		int[] v_t = {
-				x, y - rl, //
-				x + w, y - rl, //
-				x + w, y - rl + wl, //
-				x, y - rl + wl
-		};
-
-		int[] v_tr = {
-				x + w + rc - wc, y - rc, //
-				x + w + rc, y - rc,//
-				x + w + rc, y - rc + wc,//
-				x + w + rc - wc, y - rc + wc
-		};
-
-		int[] v_br = {
-				x + w + rc - wc, y + h + rc - wc, //
-				x + w + rc, y + h + rc - wc, //
-				x + w + rc, y + h + rc, //
-				x + w + rc - wc, y + h + rc,
-		};
-
-		int[] v_b = {
-				x, y + h + rl - wl, //
-				x + w, y + h + rl - wl, //
-				x + w, y + h + rl, //
-				x, y + h + rl
-		};
-
-		int[] v_bl = {
-				x - rc, y + h + rc - wc, //
-				x - rc + wc, y + h + rc - wc, //
-				x - rc + wc, y + h + rc, //
-				x - rc, y + h + rc
-		};
+		int sw = corner.getWidth();
+		if (smaller)
+			sw /= 2;
 
 		drawLeftShadowQuad(x, y, h, alpha, col, smaller);
 		drawRightShadowQuad(x + w, y, h, alpha, col, smaller);
+		raster().fillQuad(x, y - sw, w, sw, side, col, alpha,
+				Rotation.ROTATE_90);
+		raster().fillQuad(x, y + h, w, sw, side, col, alpha,
+				Rotation.ROTATE_270);
 
-		raster().draw2DTexturedQuad(v_t, c, shadow_coord_t,
-				shadowSide.getTexId());
-
-		raster().draw2DTexturedQuad(v_b, c, shadow_coord_b,
-				shadowSide.getTexId());
-
-		raster().draw2DTexturedQuad(v_tl, c, shadow_coord_l,
-				shadowCorner.getTexId());
-		raster().draw2DTexturedQuad(v_tr, c, shadow_coord_t,
-				shadowCorner.getTexId());
-		raster().draw2DTexturedQuad(v_br, c, shadow_coord_r,
-				shadowCorner.getTexId());
-		raster().draw2DTexturedQuad(v_bl, c, shadow_coord_b,
-				shadowCorner.getTexId());
+		raster().fillQuad(x - sw, y - sw, sw, sw, corner, col, alpha,
+				Rotation.ROTATE_0);
+		raster().fillQuad(x + w, y - sw, sw, sw, corner, col, alpha,
+				Rotation.ROTATE_90);
+		raster().fillQuad(x + w, y + h, sw, sw, corner, col, alpha,
+				Rotation.ROTATE_180);
+		raster().fillQuad(x - sw, y + h, sw, sw, corner, col, alpha,
+				Rotation.ROTATE_270);
 	}
 
 	/**

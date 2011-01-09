@@ -239,7 +239,58 @@ public abstract class Rasterizer {
 	 * @param alpha alpha factor for the image
 	 */
 	public void fillQuad(int x, int y, Image img, float alpha) {
-		Rectangle r = new Rectangle(x, y, img.getWidth(), img.getHeight());
+		fillQuad(x, y, img, Color.WHITE, alpha);
+	}
+
+	/**
+	 * Fill a 2D Quad with a texture
+	 * 
+	 * @param x top left ascissa coordinate
+	 * @param y top left ordinate coordinate
+	 * @param img texture image
+	 * @param col texture color
+	 * @param alpha alpha factor for the image
+	 */
+	public void fillQuad(int x, int y, Image img, Color col, float alpha) {
+		fillQuad(x, y, img.getWidth(), img.getHeight(), img, col, alpha,
+				Rotation.ROTATE_0);
+	}
+
+	/**
+	 * Clockwise rotation in degrees
+	 */
+	public static enum Rotation {
+		ROTATE_0, ROTATE_90, ROTATE_180, ROTATE_270;
+	}
+
+	private static float[] coord_0 = {
+			0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f
+	};
+	private static float[] coord_90 = {
+			0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f
+	};
+	private static float[] coord_180 = {
+			1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f
+	};
+	private static float[] coord_270 = {
+			1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f
+	};
+
+	/**
+	 * Fill a 2D Quad with a texture
+	 * 
+	 * @param x top left ascissa coordinate
+	 * @param y top left ordinate coordinate
+	 * @param w quad width
+	 * @param h quad height
+	 * @param img texture image
+	 * @param col texture color
+	 * @param alpha alpha factor for the image
+	 * @param rotation use one of
+	 */
+	public void fillQuad(int x, int y, int w, int h, Image img, Color col,
+			float alpha, Rotation rotation) {
+		Rectangle r = new Rectangle(x, y, w, h);
 
 		if (!translation.isEmpty()) {
 			Point trans = translation.getFirst();
@@ -256,7 +307,7 @@ public abstract class Rasterizer {
 				r.x, r.y + r.height
 		};
 
-		float[] c = Color.WHITE.toArray(4, alpha);
+		float[] c = col.toArray(4, alpha);
 
 		if (!scissors.isEmpty()) {
 			GL11.glEnable(GL11.GL_SCISSOR_TEST);
@@ -271,11 +322,27 @@ public abstract class Rasterizer {
 		float rx = (float) img.getWidth() / (float) img.getTexWidth();
 		float ry = (float) img.getHeight() / (float) img.getTexHeight();
 
+		float[] cf = null;
+		switch (rotation) {
+		case ROTATE_0:
+			cf = coord_0;
+			break;
+		case ROTATE_90:
+			cf = coord_90;
+			break;
+		case ROTATE_180:
+			cf = coord_180;
+			break;
+		case ROTATE_270:
+			cf = coord_270;
+			break;
+		}
+
 		float[] coords = {
-				sx, sy, //
-				sx + rx, sy, //
-				sx + rx, sy + ry, //
-				sx, sy + ry
+				sx + rx * cf[0], sy + ry * cf[1], //
+				sx + rx * cf[2], sy + ry * cf[3], //
+				sx + rx * cf[4], sy + ry * cf[5], //
+				sx + rx * cf[6], sy + ry * cf[7]
 		};
 
 		this.draw2DTexturedQuad(v, c, coords, img.getTexId());
@@ -326,7 +393,6 @@ public abstract class Rasterizer {
 	 * @param texCoords 4 2D tex coords
 	 * @param texture GL texture id
 	 */
-	@Deprecated
 	protected abstract void draw2DTexturedQuad(int[] vertices, float[] colors,
 			int texture);
 
@@ -338,7 +404,6 @@ public abstract class Rasterizer {
 	 * @param texCoords 4 2D tex coords
 	 * @param texture GL texture id
 	 */
-	@Deprecated
 	protected abstract void draw2DTexturedQuad(int[] vertices, float[] colors,
 			float[] texCoords, int texture);
 

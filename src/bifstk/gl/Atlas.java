@@ -84,6 +84,14 @@ public class Atlas {
 		return this.offset;
 	}
 
+	/**
+	 * Load new textures in the Atlas
+	 * 
+	 * @param buf a BufferedImage containing the new textures to load
+	 * @param height the height of the image; can be different than
+	 *            bug.getHeight() if this buffered image is higher than the
+	 *            actual height of the content
+	 */
 	public void load(BufferedImage buf, int height) {
 		Graphics2D g = (Graphics2D) this.img.getGraphics();
 		g.drawImage(buf, 0, this.offset, null);

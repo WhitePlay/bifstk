@@ -377,26 +377,6 @@ public class Theme {
 		return instance.frameControlsBorder;
 	}
 
-	private Image frameControlCloseImage;
-
-	/**
-	 * @return the image for the close frame control
-	 */
-	public static Image getFrameControlCloseImage() {
-		check();
-		return instance.frameControlCloseImage;
-	}
-
-	private Image frameControlMaximizeImage;
-
-	/**
-	 * @return the image for the maximize frame control
-	 */
-	public static Image getFrameControlMaximizeImage() {
-		check();
-		return instance.frameControlMaximizeImage;
-	}
-
 	private Color frameControlsCloseColor;
 
 	/**
@@ -570,6 +550,10 @@ public class Theme {
 
 			try {
 				switch (prop.getKey()) {
+				case texturesImage: {
+					TextureLoader.load(this.path + "/" + sval);
+					break;
+				}
 				case rootBackgroundColor: {
 					this.rootBackgroundColor = Color.parse(sval);
 					break;
@@ -756,16 +740,6 @@ public class Theme {
 							Integer.parseInt(sval),
 							this.frameControlsBorderMin,
 							this.frameControlsBorderMax);
-					break;
-				}
-				case frameControlsCloseImage: {
-					this.frameControlCloseImage = new Image(this.path + "/"
-							+ sval);
-					break;
-				}
-				case frameControlsMaximizeImage: {
-					this.frameControlMaximizeImage = new Image(this.path + "/"
-							+ sval);
 					break;
 				}
 				case frameControlsCloseColor: {

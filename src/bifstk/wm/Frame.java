@@ -7,6 +7,7 @@ import org.lwjgl.opengl.Display;
 
 import bifstk.config.Config;
 import bifstk.config.Fonts;
+import bifstk.config.TextureLoader;
 import bifstk.config.Theme;
 import bifstk.gl.Color;
 import bifstk.gl.Rasterizer;
@@ -289,7 +290,7 @@ public abstract class Frame implements Drawable, Clickable {
 
 					switch (c) {
 					case CLOSE:
-						img = Theme.getFrameControlCloseImage();
+						img = TextureLoader.getWindowClose();
 						if (this.controlCloseDown && this.controlCloseHover) {
 							col = Theme.getFrameControlsCloseClickColor();
 							yClickDec = 1;
@@ -311,7 +312,7 @@ public abstract class Frame implements Drawable, Clickable {
 						break;
 					case MAXIMIZE:
 						if (this.isResizable()) {
-							img = Theme.getFrameControlMaximizeImage();
+							img = TextureLoader.getWindowMaximize();
 							if (this.controlMaximizeDown
 									&& this.controlMaximizeHover) {
 								col = Theme
@@ -353,9 +354,9 @@ public abstract class Frame implements Drawable, Clickable {
 
 						if (hover || hoverAnim > 0.0f) {
 							Util.drawShadowQuad(x + borderWidth + acc, y
-									+ yClickDec + borderWidth,
-									img.getTexWidth(), img.getTexHeight(),
-									0.3f * hoverAnim, col, true);
+									+ yClickDec + borderWidth, img.getWidth(),
+									img.getHeight(), 0.3f * hoverAnim, col,
+									true);
 
 						}
 

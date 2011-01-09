@@ -46,6 +46,7 @@ public class Image {
 	 * @param path path to the image on the local filesystem
 	 * @throws BifstkException
 	 */
+	@Deprecated
 	public Image(String path) throws BifstkException {
 		try {
 			this.load(path);
@@ -106,16 +107,6 @@ public class Image {
 		GL11.glTexImage2D(tg, 0, GL11.GL_RGBA, this.texWidth, this.texHeight,
 				0, srcPixelFormat, GL11.GL_UNSIGNED_BYTE, buf);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-	}
-
-	@Override
-	public void finalize() throws Throwable {
-		try {
-			GL11.glDeleteTextures(this.texId);
-		} catch (Throwable e) {
-			Logger.error("Could not finalize texture", e);
-		}
-		super.finalize();
 	}
 
 	/**

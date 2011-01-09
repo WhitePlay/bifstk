@@ -54,19 +54,27 @@ public class Image {
 		}
 	}
 
-	public Image(int x, int y, int w, int h, int tw, int th, int id) {
+	/**
+	 * Creates a new image for an existing texture
+	 * 
+	 * @param x abscissa of the image in the underlying texture
+	 * @param y ordinate of the image in the underlying texture
+	 * @param w width of the image
+	 * @param h height of the image
+	 * @param tw width of the underlying texture
+	 * @param th height of the underlying texture
+	 * @param id id of the underlying texture
+	 */
+	public Image(int x, int y, int w, int h) {
 		this.texX = x;
 		this.texY = y;
 		this.width = w;
 		this.height = h;
-		this.texId = id;
-		this.texWidth = tw;
-		this.texHeight = th;
 		this.hasAlpha = true;
+		atlas = true;
 	}
 
-	public Image() {
-	}
+	boolean atlas = false;
 
 	/**
 	 * internal load
@@ -131,7 +139,10 @@ public class Image {
 	 *         larger than the original image)
 	 */
 	public int getTexWidth() {
-		return this.texWidth;
+		if (atlas)
+			return Atlas.getInstance().getWidth();
+		else
+			return this.texWidth;
 	}
 
 	/**
@@ -139,7 +150,10 @@ public class Image {
 	 *         larger than the original image)
 	 */
 	public int getTexHeight() {
-		return this.texHeight;
+		if (atlas)
+			return Atlas.getInstance().getHeight();
+		else
+			return this.texHeight;
 	}
 
 	/**
@@ -160,7 +174,10 @@ public class Image {
 	 * @return the texture ID in the current GL context
 	 */
 	public int getTexId() {
-		return this.texId;
+		if (atlas)
+			return Atlas.getInstance().getTexId();
+		else
+			return this.texId;
 	}
 
 	/**

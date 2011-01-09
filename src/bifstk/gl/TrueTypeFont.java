@@ -42,15 +42,6 @@ public class TrueTypeFont {
 	/** Font's height */
 	private int fontHeight = 0;
 
-	/** Texture used to cache the font 0-255 characters */
-	private int fontTexture;
-
-	/** Default font texture width */
-	private int textureWidth = 512;
-
-	/** Default font texture height */
-	private int textureHeight = 512;
-
 	/** A reference to Java's AWT Font that we create our font texture from */
 	private java.awt.Font font;
 
@@ -145,16 +136,9 @@ public class TrueTypeFont {
 	 *            cache.
 	 */
 	private void createSet(char[] customCharsArray) {
-		// If there are custom chars then I expand the font texture twice
-		if (customCharsArray != null && customCharsArray.length > 0) {
-			textureWidth *= 2;
-		}
-
-		// In any case this should be done in other way. Texture with size
-		// 512x512
-		// can maintain only 256 characters with resolution of 32x32. The
-		// texture
-		// size should be calculated dynamicaly by looking at character sizes.
+		int textureWidth = Atlas.getInstance().getWidth();
+		int textureHeight = Atlas.getInstance().getHeight();
+		int offset = Atlas.getInstance().getOffset();
 
 		BufferedImage imgTemp = new BufferedImage(textureWidth, textureHeight,
 				BufferedImage.TYPE_INT_ARGB);
@@ -169,8 +153,6 @@ public class TrueTypeFont {
 
 		int customCharsLength = (customCharsArray != null) ? customCharsArray.length
 				: 0;
-
-		this.fontTexture = GL11.glGenTextures();
 
 		for (int i = 0; i < 256 + customCharsLength; i++) {
 
@@ -196,8 +178,8 @@ public class TrueTypeFont {
 				rowHeight = nh;
 			}
 
-			Image newIntObject = new Image(positionX, positionY, nw, nh,
-					textureWidth, textureHeight, this.fontTexture);
+			Image newIntObject = new Image(positionX, positionY + offset, nw,
+					nh);
 
 			// Draw it here
 			g.drawImage(fontImage, positionX, positionY, null);
@@ -213,24 +195,7 @@ public class TrueTypeFont {
 			fontImage = null;
 		}
 
-		// fontTexture = BufferedImageUtil
-		// .getTexture(font.toString(), imgTemp).getTextureID();
-
-		ByteBuffer buf = Util.imageToByteBuffer(imgTemp);
-
-		int width = imgTemp.getWidth();
-		int height = imgTemp.getHeight();
-		int texWidth = Util.npot(width);
-		int texHeight = Util.npot(height);
-
-		int tg = GL11.GL_TEXTURE_2D;
-		GL11.glEnable(tg);
-		GL11.glBindTexture(tg, fontTexture);
-		GL11.glTexParameteri(tg, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-		GL11.glTexParameteri(tg, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-		GL11.glTexImage2D(tg, 0, GL11.GL_RGBA, texWidth, texHeight, 0,
-				GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buf);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+		Atlas.getInstance().load(imgTemp, positionY + rowHeight);
 
 	}
 

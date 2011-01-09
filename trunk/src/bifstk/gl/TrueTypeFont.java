@@ -272,7 +272,7 @@ public class TrueTypeFont {
 			}
 
 			if (intObject != null) {
-				Util.raster().fillQuad(x + acc, y, intObject, alpha);
+				Util.raster().fillQuad(x + acc, y, intObject, color, alpha);
 
 				acc += intObject.getWidth();
 			}

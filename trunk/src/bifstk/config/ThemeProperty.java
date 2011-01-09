@@ -5,6 +5,9 @@ package bifstk.config;
  */
 public enum ThemeProperty {
 
+	/** STRING path to the textures map image */
+	texturesImage("textures.image"),
+
 	/** COLOR root background color */
 	rootBackgroundColor("root.background.color"),
 	/** COLOR color superposed to the root bg when a modal frame is shown */
@@ -54,7 +57,7 @@ public enum ThemeProperty {
 	windowShadowFocusedColor("window.shadow.focused.color"),
 	/** COLOR color of the window shadow when not focused */
 	windowShadowUnfocusedColor("window.shadow.unfocused.color"),
-	
+
 	/** INT pixel width of the border around the area */
 	areaBorderWidth("area.border.width"),
 	/** COLOR focused color of the area */
@@ -78,16 +81,12 @@ public enum ThemeProperty {
 	frameControlsHeight("frame.controls.height"),
 	/** INT spacing border between frame controls */
 	frameControlsBorder("frame.controls.border"),
-	/** STRING path to the image for the close frame control */
-	frameControlsCloseImage("frame.controls.close.image"),
 	/** COLOR close frame control color */
 	frameControlsCloseColor("frame.controls.close.color"),
 	/** COLOR close frame control color when hovered */
 	frameControlsCloseHoverColor("frame.controls.close.hover.color"),
 	/** COLOR close frame control color when clicked */
 	frameControlsCloseClickColor("frame.controls.close.click.color"),
-	/** STRING path to the image for the maximize frame control */
-	frameControlsMaximizeImage("frame.controls.maximize.image"),
 	/** COLOR maximize frame control color */
 	frameControlsMaximizeColor("frame.controls.maximize.color"),
 	/** COLOR maximize frame control color when hovered */

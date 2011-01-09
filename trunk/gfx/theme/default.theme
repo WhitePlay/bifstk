@@ -1,12 +1,12 @@
+textures.image = textures.png
+
 frame.controls.order = Title Maximize Close
 frame.controls.border = 2
 frame.controls.width = 16
 frame.controls.height = 16
-frame.controls.maximize.image = default_maximize.png
 frame.controls.maximize.color = 200 200 255
 frame.controls.maximize.hover.color = white
 frame.controls.maximize.click.color = 200 200 255
-frame.controls.close.image = default_close.png
 frame.controls.close.color = 200 200 255
 frame.controls.close.hover.color = 255 220 220
 frame.controls.close.click.color = 255 200 200

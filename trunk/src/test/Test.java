@@ -9,6 +9,7 @@ import bifstk.Bifstk;
 import bifstk.Handler;
 import bifstk.Root;
 import bifstk.config.Config;
+import bifstk.config.TextureLoader;
 import bifstk.config.Theme;
 import bifstk.gl.Atlas;
 import bifstk.gl.Image;
@@ -33,8 +34,6 @@ public class Test implements Handler, Root {
 
 	private int frameCount = 1;
 
-	private Image bgImg = null;
-
 	private int fps_acc = 0;
 	private long dt = 0, dt2 = 0;
 
@@ -46,13 +45,6 @@ public class Test implements Handler, Root {
 		fpsLabel = new Label("FPS: ");
 		fpsArea.setContent(fpsLabel);
 		Bifstk.addArea(fpsArea);
-
-		try {
-			this.bgImg = new Image("gfx/art/bifstk_256.png");
-		} catch (BifstkException e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
 	}
 
 	@Override
@@ -69,14 +61,15 @@ public class Test implements Handler, Root {
 		}
 
 		// render background image
-		int w = this.bgImg.getTexWidth();
-		int h = this.bgImg.getTexHeight();
+		Image bgImg = TextureLoader.getBifstk256();
+		int w = bgImg.getWidth();
+		int h = bgImg.getHeight();
 		int dw = Display.getDisplayMode().getWidth();
 		int dh = Display.getDisplayMode().getHeight();
 
 		int imgX = (dw - w) / 2;
 		int imgY = (dh - h) / 2;
-		Util.raster().fillQuad(imgX, imgY, this.bgImg, 1.0f);
+		Util.raster().fillQuad(imgX, imgY, bgImg, 1.0f);
 
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
@@ -91,8 +84,6 @@ public class Test implements Handler, Root {
 		GL11.glTexCoord2f(0.0f, 1.0f);
 		GL11.glVertex2i(0, 512);
 		GL11.glEnd();
-
-
 	}
 
 	@Override

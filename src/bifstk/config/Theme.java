@@ -12,7 +12,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import bifstk.gl.Color;
-import bifstk.gl.Image;
 import bifstk.gl.Util;
 import bifstk.util.BifstkException;
 import bifstk.util.Logger;
@@ -246,26 +245,6 @@ public class Theme {
 	public static float getWindowShadowAlpha() {
 		check();
 		return instance.windowShadowAlpha;
-	}
-
-	private Image windowShadowSide = null;
-
-	/**
-	 * @return the 'side' window shadow image
-	 */
-	public static Image getWindowShadowSideImage() {
-		check();
-		return instance.windowShadowSide;
-	}
-
-	private Image windowShadowCorner = null;
-
-	/**
-	 * @return the 'corner' window shadow image
-	 */
-	public static Image getWindowShadowCornerImage() {
-		check();
-		return instance.windowShadowCorner;
 	}
 
 	private Color windowFocusedColor = null;
@@ -604,16 +583,6 @@ public class Theme {
 				case windowShadowAlpha: {
 					this.windowShadowAlpha = Util.clampf(
 							Float.parseFloat(sval), 0.0f, 1.0f);
-					break;
-				}
-				case windowShadowCornerImage: {
-					this.windowShadowCorner = new Image(this.path + "/" + sval);
-					;
-					break;
-				}
-				case windowShadowSideImage: {
-					this.windowShadowSide = new Image(this.path + "/" + sval);
-					;
 					break;
 				}
 				case windowMovedAlpha: {

@@ -43,10 +43,6 @@ public enum ThemeProperty {
 	windowShadowEnabled("window.shadow.enabled"),
 	/** FLOAT opacity of the window shadow */
 	windowShadowAlpha("window.shadow.alpha"),
-	/** STRING path to the 'corner' shadow image */
-	windowShadowCornerImage("window.shadow.corner.image"),
-	/** STRING path to the 'side' shadow image */
-	windowShadowSideImage("window.shadow.side.image"),
 	/** COLOR base color of a Window ui */
 	windowFocusedColor("window.focused.color"),
 	/** COLOR base color of a Window ui when not focused */

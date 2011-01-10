@@ -8,6 +8,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import bifstk.config.Config;
+import bifstk.config.TextureLoader;
 
 /**
  * 2D drawing operations
@@ -37,6 +38,26 @@ public abstract class Rasterizer {
 	 * coordinate used for 2D drawing
 	 */
 	private static LinkedList<Point> translation = new LinkedList<Point>();
+
+	/**
+	 * Clockwise rotation in degrees
+	 */
+	public static enum Rotation {
+		ROTATE_0, ROTATE_90, ROTATE_180, ROTATE_270;
+	}
+
+	protected static float[] coord_0 = {
+			0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f
+	};
+	protected static float[] coord_90 = {
+			0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f
+	};
+	protected static float[] coord_180 = {
+			1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f
+	};
+	protected static float[] coord_270 = {
+			1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f
+	};
 
 	/**
 	 * Create the singleton instance
@@ -205,9 +226,8 @@ public abstract class Rasterizer {
 	 * @param alpha alpha factor for the color
 	 */
 	public void fillQuad(int x, int y, int w, int h, Color col, float alpha) {
-		// TODO cache Color arrays
-		float[] c = col.toArray(4, alpha);
-		this._fillQuad(x, y, w, h, c);
+		this.fillQuad(x, y, w, h, TextureLoader.getBlank(), col, alpha,
+				Rotation.ROTATE_0);
 	}
 
 	/**
@@ -227,7 +247,8 @@ public abstract class Rasterizer {
 		float[] c = new float[4 * 4];
 		top.fillArray(c, 0, 8, alphaTop);
 		bot.fillArray(c, 8, 16, alphaBot);
-		this._fillQuad(x, y, w, h, c);
+		this.fillQuad(x, y, w, h, TextureLoader.getBlank(), c,
+				Rotation.ROTATE_0);
 	}
 
 	/**
@@ -257,26 +278,6 @@ public abstract class Rasterizer {
 	}
 
 	/**
-	 * Clockwise rotation in degrees
-	 */
-	public static enum Rotation {
-		ROTATE_0, ROTATE_90, ROTATE_180, ROTATE_270;
-	}
-
-	private static float[] coord_0 = {
-			0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f
-	};
-	private static float[] coord_90 = {
-			0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f
-	};
-	private static float[] coord_180 = {
-			1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f
-	};
-	private static float[] coord_270 = {
-			1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f
-	};
-
-	/**
 	 * Fill a 2D Quad with a texture
 	 * 
 	 * @param x top left ascissa coordinate
@@ -290,6 +291,23 @@ public abstract class Rasterizer {
 	 */
 	public void fillQuad(int x, int y, int w, int h, Image img, Color col,
 			float alpha, Rotation rotation) {
+		float[] c = col.toArray(4, alpha);
+		fillQuad(x, y, w, h, img, c, rotation);
+	}
+
+	/**
+	 * Fill a 2D Quad with a texture
+	 * 
+	 * @param x top left ascissa coordinate
+	 * @param y top left ordinate coordinate
+	 * @param w quad width
+	 * @param h quad height
+	 * @param img texture image
+	 * @param col texture color: 4 * rgba
+	 * @param rotation use one of
+	 */
+	private void fillQuad(int x, int y, int w, int h, Image img, float[] col,
+			Rotation rotation) {
 		Rectangle r = new Rectangle(x, y, w, h);
 
 		if (!translation.isEmpty()) {
@@ -306,8 +324,6 @@ public abstract class Rasterizer {
 				r.x + r.width, r.y + r.height, //
 				r.x, r.y + r.height
 		};
-
-		float[] c = col.toArray(4, alpha);
 
 		if (!scissors.isEmpty()) {
 			GL11.glEnable(GL11.GL_SCISSOR_TEST);
@@ -345,7 +361,7 @@ public abstract class Rasterizer {
 				sx + rx * cf[6], sy + ry * cf[7]
 		};
 
-		this.draw2DTexturedQuad(v, c, coords, img.getTexId());
+		this.draw2DTexturedQuad(v, col, coords);
 
 		if (!scissors.isEmpty()) {
 			GL11.glDisable(GL11.GL_SCISSOR_TEST);
@@ -353,59 +369,14 @@ public abstract class Rasterizer {
 	}
 
 	/**
-	 * Internal fillquad
-	 * 
-	 * @param x
-	 * @param y
-	 * @param w
-	 * @param h
-	 * @param col
-	 */
-	private void _fillQuad(int x, int y, int w, int h, float[] col) {
-		Rectangle r = new Rectangle(x, y, w, h);
-
-		if (!translation.isEmpty()) {
-			Point trans = translation.getFirst();
-			r.x += trans.x;
-			r.y += trans.y;
-		}
-		if (!scissors.isEmpty()) {
-			Rectangle sci = scissors.getFirst();
-			r = sci.intersection(r);
-		}
-		if (r.isEmpty())
-			return;
-
-		int[] v = {
-				r.x, r.y, //
-				r.x + r.width, r.y, //
-				r.x + r.width, r.y + r.height, //
-				r.x, r.y + r.height
-		};
-		this.draw2D(v, col, GL11.GL_QUADS);
-	}
-
-	/**
 	 * Draw a textured quad
 	 * 
 	 * @param vertices 4 2D vertices: 8 values
 	 * @param colors 4 rgba components: 16 values
 	 * @param texCoords 4 2D tex coords
-	 * @param texture GL texture id
 	 */
 	protected abstract void draw2DTexturedQuad(int[] vertices, float[] colors,
-			int texture);
-
-	/**
-	 * Draw a textured quad
-	 * 
-	 * @param vertices 4 2D vertices: 8 values
-	 * @param colors 4 rgba components: 16 values
-	 * @param texCoords 4 2D tex coords
-	 * @param texture GL texture id
-	 */
-	protected abstract void draw2DTexturedQuad(int[] vertices, float[] colors,
-			float[] texCoords, int texture);
+			float[] texCoords);
 
 	/**
 	 * Draws a rectangle in line mode
@@ -432,30 +403,10 @@ public abstract class Rasterizer {
 	protected abstract void draw2DLineLoop(int[] vertices, float[] colors);
 
 	/**
-	 * Draw arbitrary geometry in 2D space
-	 * 
-	 * @param vertices 2 coordinates per vertice: x,y
-	 * @param colors 4 elements per color: r,g,b,a
-	 * @param glMode one of the glBegin() primitives
+	 * This Rasterizer might be buffering current drawing operations so that all
+	 * geometry is sent in one batch.
+	 * <p>
+	 * Calling this method causes the actual drawing off all buffered geometry
 	 */
-	protected abstract void draw2D(int[] vertices, float[] colors, int glMode);
-
-	/**
-	 * Draw arbitrary geometry in 2D space
-	 * 
-	 * @param vertices 2 coordinates per vertice: x,y
-	 * @param colors 4 elements per color: r,g,b,a
-	 * @param glMode one of the glBegin() primitives
-	 */
-	protected abstract void draw2D(float[] vertices, float[] colors, int glMode);
-
-	/**
-	 * Draw arbitrary geometry in 2D space
-	 * 
-	 * @param vertices 2 coordinates per vertice: x,y
-	 * @param colors 4 elements per color: r,g,b,a
-	 * @param glMode one of the glBegin() primitives
-	 */
-	protected abstract void draw2D(double[] vertices, float[] colors, int glMode);
-
+	public abstract void flush();
 }

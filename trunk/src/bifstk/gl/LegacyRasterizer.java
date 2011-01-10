@@ -11,13 +11,8 @@ import org.lwjgl.opengl.GL11;
 public class LegacyRasterizer extends Rasterizer {
 
 	@Override
-	protected void draw2DTexturedQuad(int[] vertices, float[] colors, int texture) {
-		this.draw2DTexturedQuad(vertices, colors, defaultCoords, texture);
-	}
-
-	@Override
 	public void draw2DTexturedQuad(int[] vertices, float[] colors,
-			float[] texCoords, int texture) {
+			float[] texCoords) {
 		if (vertices.length != 8) {
 			throw new IllegalArgumentException(
 					"Vertices array must be size 8: " + "4 2D vertices");
@@ -32,7 +27,7 @@ public class LegacyRasterizer extends Rasterizer {
 		}
 
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, Atlas.getInstance().getTexId());
 
 		GL11.glBegin(GL11.GL_QUADS);
 		for (int i = 0; i < vertices.length / 2; i++) {
@@ -85,53 +80,18 @@ public class LegacyRasterizer extends Rasterizer {
 		verts[14] = vertices[0] + raster_off_1;
 		verts[15] = vertices[1] + raster_off_1;
 
-		this.draw2D(verts, colors, GL11.GL_LINES);
-	}
-
-	@Override
-	protected void draw2D(int[] vertices, float[] colors, int glMode) {
-		if (vertices.length / 2 != colors.length / 4) {
-			throw new IllegalArgumentException(
-					"Vertices and Colors array sizes do not match ("
-							+ vertices.length + "/" + colors.length + ")");
-		}
-		GL11.glBegin(glMode);
-		for (int i = 0; i < vertices.length / 2; i++) {
+		GL11.glBegin(GL11.GL_LINES);
+		for (int i = 0; i < verts.length / 2; i++) {
 			GL11.glColor4f(colors[i * 4], colors[i * 4 + 1], colors[i * 4 + 2],
 					colors[i * 4 + 3]);
-			GL11.glVertex2i(vertices[i * 2], vertices[i * 2 + 1]);
+			GL11.glVertex2f(verts[i * 2], verts[i * 2 + 1]);
 		}
 		GL11.glEnd();
 	}
 
 	@Override
-	protected void draw2D(float[] vertices, float[] colors, int glMode) {
-		if (vertices.length / 2 != colors.length / 4) {
-			throw new IllegalArgumentException(
-					"Vertices and Colors array sizes do not match");
-		}
-		GL11.glBegin(glMode);
-		for (int i = 0; i < vertices.length / 2; i++) {
-			GL11.glColor4f(colors[i * 4], colors[i * 4 + 1], colors[i * 4 + 2],
-					colors[i * 4 + 3]);
-			GL11.glVertex2f(vertices[i * 2], vertices[i * 2 + 1]);
-		}
-		GL11.glEnd();
-	}
+	public void flush() {
 
-	@Override
-	protected void draw2D(double[] vertices, float[] colors, int glMode) {
-		if (vertices.length / 2 != colors.length / 4) {
-			throw new IllegalArgumentException(
-					"Vertices and Colors array sizes do not match");
-		}
-		GL11.glBegin(glMode);
-		for (int i = 0; i < vertices.length / 2; i++) {
-			GL11.glColor4f(colors[i * 4], colors[i * 4 + 1], colors[i * 4 + 2],
-					colors[i * 4 + 3]);
-			GL11.glVertex2d(vertices[i * 2], vertices[i * 2 + 1]);
-		}
-		GL11.glEnd();
 	}
 
 }

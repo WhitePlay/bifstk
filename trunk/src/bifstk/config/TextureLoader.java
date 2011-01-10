@@ -33,6 +33,8 @@ public class TextureLoader {
 	private Image windowMaximize;
 	private Image windowClose;
 
+	private Image blank;
+
 	private TextureLoader(String path) throws BifstkException {
 		File f = new File(path);
 		BufferedImage img = null;
@@ -56,6 +58,8 @@ public class TextureLoader {
 
 		this.windowMaximize = new Image(357, 130, 16, 16);
 		this.windowClose = new Image(374, 130, 16, 16);
+
+		this.blank = new Image(323, 147, 16, 16);
 	}
 
 	/**
@@ -119,6 +123,13 @@ public class TextureLoader {
 	 */
 	public static Image getWindowClose() {
 		return instance.windowClose;
+	}
+
+	/**
+	 * @return a completely blank Image
+	 */
+	public static Image getBlank() {
+		return instance.blank;
 	}
 
 	/**

@@ -168,20 +168,13 @@ public abstract class Rasterizer {
 		Rectangle c = scissors.pop();
 
 		if (Config.get().isWmDebugLayout() && !c.isEmpty()) {
-
-			int[] verts = new int[] {
-					c.x, c.y, //
-					c.x + c.width, c.y, //
-					c.x + c.width, c.y + c.height, //
-					c.x, c.y + c.height
-			};
-			float[] cols = Color.RED.toArray(8);
-			instance.draw2DLineLoop(verts, cols);
+			instance.drawQuad(0, 0, c.width, c.height, Color.RED, 1.0f);
 		}
 	}
 
 	/**
 	 * Draw the outline of a 2D Quad
+	 * <p>
 	 * 
 	 * @param x top left abscissa coordinate
 	 * @param y top left ordinate coordinate
@@ -191,28 +184,34 @@ public abstract class Rasterizer {
 	 * @param alpha alpha factor for the color
 	 */
 	public void drawQuad(int x, int y, int w, int h, Color col, float alpha) {
-		Rectangle r = new Rectangle(x, y, w, h);
+		/* drawing the contour of a quad is achieved by
+		 * drawing 4 1-pixel thick quads
+		 * 
+		 * this allows working around GL_LINES rasterization accuracy in OpenGL,
+		 * which differs depending the driver
+		 * 
+		 * Also, this allows using only GL_QUADS for all drawing operations:
+		 * all the geometry can be sent to the GPU in one batch per render,
+		 * providing important performance improvement
+		 */
 
-		if (!translation.isEmpty()) {
-			Point trans = translation.getFirst();
-			r.x += trans.x;
-			r.y += trans.y;
-		}
-		if (!scissors.isEmpty()) {
-			Rectangle sci = scissors.getFirst();
-			r = sci.intersection(r);
-		}
-		if (r.isEmpty())
-			return;
+		// top left : top right
+		fillQuad(x + 1, y, //
+				w - 1, 1, //
+				col, alpha);
+		// top right : bot right
+		fillQuad(x + w - 1, y + 1, //
+				1, h - 1, //
+				col, alpha);
+		// bot right : bot left
+		fillQuad(x, y + h - 1, //
+				w - 1, 1, //
+				col, alpha);
+		// bot left : top left
+		fillQuad(x, y, //
+				1, h - 1, //
+				col, alpha);
 
-		float[] c = col.toArray(8, alpha);
-		int[] v = {
-				r.x, r.y, //
-				r.x + r.width, r.y, //
-				r.x + r.width, r.y + r.height, //
-				r.x, r.y + r.height
-		};
-		this.draw2DLineLoop(v, c);
 	}
 
 	/**
@@ -377,30 +376,6 @@ public abstract class Rasterizer {
 	 */
 	protected abstract void draw2DTexturedQuad(int[] vertices, float[] colors,
 			float[] texCoords);
-
-	/**
-	 * Draws a rectangle in line mode
-	 * <p>
-	 * When trying to draw pixel-accurate lines in 2D coordinates, always prefer
-	 * this method as it:
-	 * <ul>
-	 * <li>ensures that corners will not be written twice (ie. when alpha < 1.0)
-	 * <li>ensures that corners will not be skipped using offset magic
-	 * </ul>
-	 * Note that doing glTranslatef(0.375, 0.375, 0.) in MODELVIEW as frequently
-	 * advertised does NOT guarantee pixel accuracy: you have to offset 0.5 top
-	 * left and -0.3 bottom right.
-	 * <p>
-	 * The color array must contain the color for each pixel twice: the vertex
-	 * array will indeed be reconstructed so that each line is drawn
-	 * individually (sending 8 vertices and not 4)
-	 * 
-	 * @param vertices must be of size 8: 4 2D pixels. Order matters: should be
-	 *            clockwise beginning at top left
-	 * @param colors must be of size 32: 4 colors of 4rgba components, repeated
-	 *            twice each
-	 */
-	protected abstract void draw2DLineLoop(int[] vertices, float[] colors);
 
 	/**
 	 * This Rasterizer might be buffering current drawing operations so that all

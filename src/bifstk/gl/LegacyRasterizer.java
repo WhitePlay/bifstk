@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 public class LegacyRasterizer extends Rasterizer {
 
 	@Override
-	public void draw2DTexturedQuad(int[] vertices, float[] colors,
+	protected void draw2DTexturedQuad(int[] vertices, float[] colors,
 			float[] texCoords) {
 		if (vertices.length != 8) {
 			throw new IllegalArgumentException(
@@ -43,55 +43,7 @@ public class LegacyRasterizer extends Rasterizer {
 	}
 
 	@Override
-	protected void draw2DLineLoop(int[] vertices, float[] colors) {
-		if (vertices.length != 8) {
-			throw new IllegalArgumentException(
-					"Vertices array must be of size 8: " + "4 2D vertices");
-		}
-		if (colors.length != 32) {
-			throw new IllegalArgumentException(
-					"Colors array must be of size 32: "
-							+ "4 rgba colors repeated 2 times each");
-		}
-
-		float[] verts = new float[16];
-
-		// top left -> top right
-		verts[0] = vertices[0] + raster_off_1 + 1.0f;
-		verts[1] = vertices[1] + raster_off_1;
-		verts[2] = vertices[2];
-		verts[3] = vertices[3];
-
-		// top right -> bot right
-		verts[4] = vertices[2];
-		verts[5] = vertices[3] + 1.0f;
-		verts[6] = vertices[4] - raster_off_2;
-		verts[7] = vertices[5] - raster_off_2;
-
-		// bot rigth -> bot left
-		verts[8] = vertices[4] - raster_off_2 - 1.0f;
-		verts[9] = vertices[5] - raster_off_2;
-		verts[10] = vertices[6];
-		verts[11] = vertices[7];
-
-		// bot left -> top left
-		verts[12] = vertices[6];
-		verts[13] = vertices[7] - 1.0f;
-		verts[14] = vertices[0] + raster_off_1;
-		verts[15] = vertices[1] + raster_off_1;
-
-		GL11.glBegin(GL11.GL_LINES);
-		for (int i = 0; i < verts.length / 2; i++) {
-			GL11.glColor4f(colors[i * 4], colors[i * 4 + 1], colors[i * 4 + 2],
-					colors[i * 4 + 3]);
-			GL11.glVertex2f(verts[i * 2], verts[i * 2 + 1]);
-		}
-		GL11.glEnd();
-	}
-
-	@Override
 	public void flush() {
 
 	}
-
 }

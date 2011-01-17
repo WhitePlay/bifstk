@@ -314,8 +314,33 @@ public abstract class Rasterizer {
 			r.x += trans.x;
 			r.y += trans.y;
 		}
+
 		if (r.isEmpty())
 			return;
+
+		Rectangle imgBounds = new Rectangle(img.getTexX(), img.getTexY(),
+				img.getWidth(), img.getHeight());
+
+		if (!scissors.isEmpty()) {
+			Rectangle sci = scissors.getFirst();
+
+			Rectangle tmp = new Rectangle(r.x, r.y, imgBounds.width,
+					imgBounds.height);
+			Rectangle crop = sci.intersection(tmp);
+
+			// this test kind of sucks but this is a truly unique special case
+			if (!img.equals(TextureLoader.getBlank())) {
+				imgBounds.x += (crop.x - r.x);
+				imgBounds.y += (crop.y - r.y);
+				imgBounds.width = crop.width;
+				imgBounds.height = crop.height;
+			}
+
+			r = r.intersection(sci);
+			if (r.isEmpty())
+				return;
+
+		}
 
 		int[] v = {
 				r.x, r.y, //
@@ -324,18 +349,10 @@ public abstract class Rasterizer {
 				r.x, r.y + r.height
 		};
 
-		if (!scissors.isEmpty()) {
-			GL11.glEnable(GL11.GL_SCISSOR_TEST);
-			Rectangle sci = scissors.getFirst();
-			int dh = Display.getDisplayMode().getHeight();
-			GL11.glScissor(sci.x, dh - sci.y - sci.height, sci.width,
-					sci.height);
-		}
-
-		float sx = (float) img.getTexX() / (float) img.getTexWidth();
-		float sy = (float) img.getTexY() / (float) img.getTexHeight();
-		float rx = (float) img.getWidth() / (float) img.getTexWidth();
-		float ry = (float) img.getHeight() / (float) img.getTexHeight();
+		float sx = (float) imgBounds.x / (float) img.getTexWidth();
+		float sy = (float) imgBounds.y / (float) img.getTexHeight();
+		float rx = (float) imgBounds.width / (float) img.getTexWidth();
+		float ry = (float) imgBounds.height / (float) img.getTexHeight();
 
 		float[] cf = null;
 		switch (rotation) {
@@ -362,9 +379,6 @@ public abstract class Rasterizer {
 
 		this.draw2DTexturedQuad(v, col, coords);
 
-		if (!scissors.isEmpty()) {
-			GL11.glDisable(GL11.GL_SCISSOR_TEST);
-		}
 	}
 
 	/**

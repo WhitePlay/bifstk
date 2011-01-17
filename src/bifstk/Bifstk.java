@@ -13,6 +13,7 @@ import bifstk.config.Cursors;
 import bifstk.config.Cursors.Type;
 import bifstk.config.Fonts;
 import bifstk.config.Theme;
+import bifstk.gl.Rasterizer;
 import bifstk.util.BifstkException;
 import bifstk.util.Logger;
 import bifstk.util.SharedFrameException;
@@ -152,7 +153,7 @@ public class Bifstk {
 								renderer.render();
 							}
 						}
-
+						
 						// swap buffers
 						Display.update(false);
 

@@ -13,6 +13,7 @@ import bifstk.Root;
 import bifstk.config.Config;
 import bifstk.config.Theme;
 import bifstk.gl.Color;
+import bifstk.gl.Rasterizer;
 import bifstk.gl.Util;
 import bifstk.util.BifstkException;
 import bifstk.util.Logger;
@@ -125,6 +126,9 @@ public class Renderer {
 
 		/* top layer: windows */
 		this.renderWindows(width, height);
+		
+		/* send data to OpenGL */
+		Rasterizer.getInstance().flush();
 	}
 
 	/**

@@ -190,8 +190,18 @@ public class Util {
 				Rotation.ROTATE_270);
 	}
 
-	public static void drawRoundedQuad(int x, int y, int w, int h, float alpha,
-			Color fillCol) {
+	/**
+	 * Draw a quad with rounded corners
+	 * 
+	 * @param x top left abscissa
+	 * @param y top left ordinate
+	 * @param w width
+	 * @param h height
+	 * @param fillCol color
+	 * @param alpha opacity [0.0, 1.0]
+	 */
+	public static void drawRoundedQuad(int x, int y, int w, int h,
+			Color fillCol, float alpha) {
 
 		Image cd = TextureLoader.getUiCornerDraw();
 
@@ -212,8 +222,20 @@ public class Util {
 
 	}
 
-	public static void fillRoundedQuad(int x, int y, int w, int h, float alpha,
-			Color fillCol, Color negCol) {
+	/**
+	 * Fill a quad with rounded corners
+	 * 
+	 * @param x top left abscissa
+	 * @param y top left ordinate
+	 * @param w width
+	 * @param h height
+	 * @param fillCol color
+	 * @param negCol color of the corner, use {@link Color#TRANSP_WHITE} for
+	 *            full transparency
+	 * @param alpha opacity
+	 */
+	public static void fillRoundedQuad(int x, int y, int w, int h,
+			Color fillCol, Color negCol, float alpha) {
 		Image cf = TextureLoader.getUiCornerFill();
 		Image cn = TextureLoader.getUiCornerInv();
 

@@ -177,7 +177,7 @@ public class ScrollBox extends Border {
 						a);
 				if (Theme.isWidgetsRounded()) {
 					Util.fillRoundedQuad(viewWidth, verPos, scrollWidth,
-							verLen, a, fillCol, uiBg);
+							verLen, fillCol, uiBg, a);
 				} else {
 					Util.raster().fillQuad(viewWidth, verPos, scrollWidth,
 							verLen, fillCol, a);
@@ -194,7 +194,7 @@ public class ScrollBox extends Border {
 				// bar outline
 				if (Theme.isWidgetsRounded()) {
 					Util.drawRoundedQuad(viewWidth, verPos, scrollWidth,
-							verLen, a, borderCol);
+							verLen, borderCol, a);
 				} else {
 					Util.raster().drawQuad(viewWidth, verPos, scrollWidth,
 							verLen, borderCol, a);
@@ -217,7 +217,7 @@ public class ScrollBox extends Border {
 							scrollWidth, fillCol, a);
 				} else {
 					Util.fillRoundedQuad(horPos, viewHeight, horLen,
-							scrollWidth, a, fillCol, uiBg);
+							scrollWidth, fillCol, uiBg, a);
 				}
 				Util.raster().fillQuad(horPos + horLen, viewHeight,
 						viewWidth - horPos - horLen, scrollWidth, uiBg, a);
@@ -231,7 +231,7 @@ public class ScrollBox extends Border {
 				// bar outline
 				if (Theme.isWidgetsRounded()) {
 					Util.drawRoundedQuad(horPos, viewHeight, horLen,
-							scrollWidth, a, borderCol);
+							scrollWidth, borderCol, a);
 				} else {
 					Util.raster().drawQuad(horPos, viewHeight, horLen,
 							scrollWidth, borderCol, a);

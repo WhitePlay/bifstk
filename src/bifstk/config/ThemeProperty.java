@@ -94,8 +94,8 @@ public enum ThemeProperty {
 	uiFontColor("ui.font.color"),
 	/** BOOLEAN true if UI widgets should be rounded */
 	uiWidgetsRounded("ui.widgets.rounded"),
-	/** COLOR color of the ui button border */
-	uiButtonBorderColor("ui.button.border.color"),
+	/** COLOR color of the ui widgets border color */
+	uiBorderColor("ui.border.color"),
 	/** COLOR color of the ui button background */
 	uiButtonColor("ui.button.color"),
 	/** COLOR color of the ui button background when focused */
@@ -104,8 +104,6 @@ public enum ThemeProperty {
 	uiButtonClickColor("ui.button.click.color"),
 	/** COLOR color of the ui entries (text,radio,..) bg color */
 	uiEntryColor("ui.entry.color"),
-	/** COLOR color of the ui entries (text,radio,..) border color */
-	uiEntryBorderColor("ui.entry.border.color"),
 	/** COLOR fg font color for ui entry widgets (text) */
 	uiEntryFontColor("ui.entry.font.color");
 

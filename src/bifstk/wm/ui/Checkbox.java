@@ -38,7 +38,7 @@ public class Checkbox extends AbstractButton {
 		float a = uiBgAlpha * alpha;
 
 		Color entryFill = Theme.getUiEntryColor();
-		Color entryBorder = Theme.getUiEntryBorderColor();
+		Color entryBorder = Theme.getUiBorderColor();
 
 		if (Theme.isWidgetsRounded()) {
 			Util.fillRoundedQuad(0, 0, pw, pw, entryFill, uiBg, a);
@@ -61,12 +61,12 @@ public class Checkbox extends AbstractButton {
 				Util.fillRoundedQuad(b, b, pw - b * 2, pw - b * 2, fillCol,
 						Color.TRANSP_WHITE, a);
 				Util.drawRoundedQuad(b, b, pw - b * 2, pw - b * 2,
-						Theme.getUiButtonBorderColor(), a);
+						Theme.getUiBorderColor(), a);
 			} else {
 				Util.raster()
 						.fillQuad(b, b, pw - b * 2, pw - b * 2, fillCol, a);
 				Util.raster().drawQuad(b, b, pw - b * 2, pw - b * 2,
-						Theme.getUiButtonBorderColor(), a);
+						Theme.getUiBorderColor(), a);
 			}
 		}
 	}

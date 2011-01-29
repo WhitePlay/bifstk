@@ -446,14 +446,14 @@ public class Theme {
 		return instance.uiButtonClickColor;
 	}
 
-	private Color uiButtonBorderColor = null;
+	private Color uiBorderColor = null;
 
 	/**
-	 * @return the border color of a Button
+	 * @return the border color of a widget
 	 */
-	public static Color getUiButtonBorderColor() {
+	public static Color getUiBorderColor() {
 		check();
-		return instance.uiButtonBorderColor;
+		return instance.uiBorderColor;
 	}
 
 	private Color uiEntryColor;
@@ -463,15 +463,6 @@ public class Theme {
 	 */
 	public static Color getUiEntryColor() {
 		return instance.uiEntryColor;
-	}
-
-	private Color uiEntryBorderColor;
-
-	/**
-	 * @return the border color for Entry UI widgets (text,radio,...)
-	 */
-	public static Color getUiEntryBorderColor() {
-		return instance.uiEntryBorderColor;
 	}
 
 	private Color uiEntryFontColor;
@@ -783,16 +774,12 @@ public class Theme {
 					this.uiButtonClickColor = Color.parse(sval);
 					break;
 				}
-				case uiButtonBorderColor: {
-					this.uiButtonBorderColor = Color.parse(sval);
+				case uiBorderColor: {
+					this.uiBorderColor = Color.parse(sval);
 					break;
 				}
 				case uiEntryColor: {
 					this.uiEntryColor = Color.parse(sval);
-					break;
-				}
-				case uiEntryBorderColor: {
-					this.uiEntryBorderColor = Color.parse(sval);
 					break;
 				}
 				case uiEntryFontColor: {

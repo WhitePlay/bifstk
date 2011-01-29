@@ -190,6 +190,61 @@ public class Util {
 				Rotation.ROTATE_270);
 	}
 
+	public static void drawRoundedQuad(int x, int y, int w, int h, float alpha,
+			Color fillCol) {
+
+		Image cd = TextureLoader.getUiCornerDraw();
+
+		int sw = cd.getWidth();
+
+		raster().fillQuad(x, y, sw, sw, cd, fillCol, alpha, Rotation.ROTATE_0);
+		raster().fillQuad(x + w - sw, y, sw, sw, cd, fillCol, alpha,
+				Rotation.ROTATE_90);
+		raster().fillQuad(x + w - sw, y + h - sw, sw, sw, cd, fillCol, alpha,
+				Rotation.ROTATE_180);
+		raster().fillQuad(x, y + h - sw, sw, sw, cd, fillCol, alpha,
+				Rotation.ROTATE_270);
+
+		raster().fillQuad(x, y + sw, 1, h - 2 * sw, fillCol, alpha);
+		raster().fillQuad(x + sw, y, w - sw * 2, 1, fillCol, alpha);
+		raster().fillQuad(x + w - 1, y + sw, 1, h - 2 * sw, fillCol, alpha);
+		raster().fillQuad(x + sw, y + h - 1, w - sw * 2, 1, fillCol, alpha);
+
+	}
+
+	public static void fillRoundedQuad(int x, int y, int w, int h, float alpha,
+			Color fillCol, Color negCol) {
+		Image cf = TextureLoader.getUiCornerFill();
+		Image cn = TextureLoader.getUiCornerInv();
+
+		int sw = cf.getWidth();
+
+		raster().fillQuad(x, y, sw, sw, cn, negCol, alpha, Rotation.ROTATE_0);
+		raster().fillQuad(x + w - sw, y, sw, sw, cn, negCol, alpha,
+				Rotation.ROTATE_90);
+		raster().fillQuad(x + w - sw, y + h - sw, sw, sw, cn, negCol, alpha,
+				Rotation.ROTATE_180);
+		raster().fillQuad(x, y + h - sw, sw, sw, cn, negCol, alpha,
+				Rotation.ROTATE_270);
+
+		raster().fillQuad(x, y, sw, sw, cf, fillCol, alpha, Rotation.ROTATE_0);
+		raster().fillQuad(x + w - sw, y, sw, sw, cf, fillCol, alpha,
+				Rotation.ROTATE_90);
+		raster().fillQuad(x + w - sw, y + h - sw, sw, sw, cf, fillCol, alpha,
+				Rotation.ROTATE_180);
+		raster().fillQuad(x, y + h - sw, sw, sw, cf, fillCol, alpha,
+				Rotation.ROTATE_270);
+
+		raster().fillQuad(x, y + sw, sw, h - 2 * sw, fillCol, alpha);
+		raster().fillQuad(x + sw, y, w - 2 * sw, sw, fillCol, alpha);
+		raster().fillQuad(x + w - sw, y + sw, sw, h - 2 * sw, fillCol, alpha);
+		raster().fillQuad(x + sw, y + h - sw, w - 2 * sw, sw, fillCol, alpha);
+
+		raster().fillQuad(x + sw, y + sw, w - 2 * sw, h - 2 * sw, fillCol,
+				alpha);
+
+	}
+
 	/**
 	 * Clamp integer in specified range
 	 * 

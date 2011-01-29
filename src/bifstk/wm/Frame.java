@@ -265,8 +265,8 @@ public abstract class Frame implements Drawable, Clickable {
 					int titleWidth = spaceLeft - controlsNum
 							* (controlWidth + controlBorder);
 					Color titleFontCol = Theme
-							.getWindowTitlebarFocusedFontColor().blend(
-									Theme.getWindowTitlebarUnfocusedColor(),
+							.getWindowTitlebarFocusedFontColor()
+							.blend(Theme.getWindowTitlebarUnfocusedFontColor(),
 									focusAnim);
 
 					Rasterizer.pushTranslate(x + borderWidth + acc, y

@@ -456,6 +456,33 @@ public class Theme {
 		return instance.uiButtonBorderColor;
 	}
 
+	private Color uiEntryColor;
+
+	/**
+	 * @return the background color for Entry UI widgets (text,radio,...)
+	 */
+	public static Color getUiEntryColor() {
+		return instance.uiEntryColor;
+	}
+
+	private Color uiEntryBorderColor;
+
+	/**
+	 * @return the border color for Entry UI widgets (text,radio,...)
+	 */
+	public static Color getUiEntryBorderColor() {
+		return instance.uiEntryBorderColor;
+	}
+
+	private Color uiEntryFontColor;
+
+	/**
+	 * @return the font color for entry ui widgets
+	 */
+	public static Color getUiEntryFontColor() {
+		return instance.uiEntryFontColor;
+	}
+
 	private Color uiFontColor;
 
 	/**
@@ -463,6 +490,15 @@ public class Theme {
 	 */
 	public static Color getUiFontColor() {
 		return instance.uiFontColor;
+	}
+
+	private boolean uiWidgetsRounded;
+
+	/**
+	 * @return true if the ui widgets should be rounded
+	 */
+	public static boolean isWidgetsRounded() {
+		return instance.uiWidgetsRounded;
 	}
 
 	/** singleton instance */
@@ -751,8 +787,23 @@ public class Theme {
 					this.uiButtonBorderColor = Color.parse(sval);
 					break;
 				}
+				case uiEntryColor: {
+					this.uiEntryColor = Color.parse(sval);
+					break;
+				}
+				case uiEntryBorderColor: {
+					this.uiEntryBorderColor = Color.parse(sval);
+					break;
+				}
+				case uiEntryFontColor: {
+					this.uiEntryFontColor = Color.parse(sval);
+				}
 				case uiFontColor: {
 					this.uiFontColor = Color.parse(sval);
+					break;
+				}
+				case uiWidgetsRounded: {
+					this.uiWidgetsRounded = Boolean.parseBoolean(sval);
 					break;
 				}
 				}

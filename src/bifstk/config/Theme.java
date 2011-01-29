@@ -386,6 +386,16 @@ public class Theme {
 		return instance.frameControlsCloseClickColor;
 	}
 
+	private Color frameControlsCloseUnfocusedColor;
+
+	/**
+	 * @return close frame control color when not focused
+	 */
+	public static Color getFrameControlsCloseUnfocusedColor() {
+		check();
+		return instance.frameControlsCloseUnfocusedColor;
+	}
+
 	private Color frameControlsMaximizeColor;
 
 	/**
@@ -414,6 +424,16 @@ public class Theme {
 	public static Color getFrameControlsMaximizeClickColor() {
 		check();
 		return instance.frameControlsMaximizeClickColor;
+	}
+
+	private Color frameControlsMaximizeUnfocusedColor;
+
+	/**
+	 * @return maximize frame control color when not focused
+	 */
+	public static Color getFrameControlsMaximizeUnfocusedColor() {
+		check();
+		return instance.frameControlsMaximizeUnfocusedColor;
 	}
 
 	private Color uiButtonColor = null;
@@ -750,6 +770,10 @@ public class Theme {
 					this.frameControlsCloseClickColor = Color.parse(sval);
 					break;
 				}
+				case frameControlsCloseUnfocusedColor: {
+					this.frameControlsCloseUnfocusedColor = Color.parse(sval);
+					break;
+				}
 				case frameControlsMaximizeColor: {
 					this.frameControlsMaximizeColor = Color.parse(sval);
 					break;
@@ -760,6 +784,11 @@ public class Theme {
 				}
 				case frameControlsMaximizeClickColor: {
 					this.frameControlsMaximizeClickColor = Color.parse(sval);
+					break;
+				}
+				case frameControlsMaximizeUnfocusedColor: {
+					this.frameControlsMaximizeUnfocusedColor = Color
+							.parse(sval);
 					break;
 				}
 				case uiButtonColor: {

@@ -120,7 +120,7 @@ public class Text extends Actionable implements Focusable {
 				yOff += Fonts.getNormal().getHeight();
 			}
 		}
-		Color borderCol = Theme.getUiEntryBorderColor();
+		Color borderCol = Theme.getUiBorderColor();
 
 		if (Theme.isWidgetsRounded()) {
 			Util.drawRoundedQuad(x, y, w, h, borderCol, a);

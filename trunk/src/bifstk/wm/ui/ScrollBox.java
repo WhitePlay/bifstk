@@ -157,7 +157,7 @@ public class ScrollBox extends Border {
 
 		Rasterizer.popTranslate();
 
-		Color borderCol = Theme.getUiButtonBorderColor();
+		Color borderCol = Theme.getUiBorderColor();
 		Color fillCol = null;
 
 		//  scrollbars

@@ -301,7 +301,12 @@ public abstract class Frame implements Drawable, Clickable {
 									(float) (t - this.controlCloseHoverTime)
 											/ (float) hoverAnimLen, 0.0f, 1.0f);
 						} else {
-							col = Theme.getFrameControlsCloseColor();
+							if (focused) {
+								col = Theme.getFrameControlsCloseColor();
+							} else {
+								col = Theme
+										.getFrameControlsCloseUnfocusedColor();
+							}
 							if (!this.controlCloseDown) {
 								hoverAnim = 1.0f - Util
 										.clampf((float) (t - this.controlCloseHoverTime)
@@ -327,7 +332,12 @@ public abstract class Frame implements Drawable, Clickable {
 												/ (float) hoverAnimLen, 0.0f,
 												1.0f);
 							} else {
-								col = Theme.getFrameControlsMaximizeColor();
+								if (focused) {
+									col = Theme.getFrameControlsMaximizeColor();
+								} else {
+									col = Theme
+											.getFrameControlsMaximizeUnfocusedColor();
+								}
 								if (!this.controlMaximizeDown) {
 									hoverAnim = 1.0f - Util
 											.clampf((float) (t - this.controlMaximizeHoverTime)
@@ -343,7 +353,7 @@ public abstract class Frame implements Drawable, Clickable {
 								+ borderWidth);
 						Rasterizer.pushScissor(controlWidth, controlHeight);
 
-						Util.raster().fillQuad(0, yClickDec, img, alpha);
+						Util.raster().fillQuad(0, yClickDec, img, col, alpha);
 
 						Rasterizer.popScissor();
 						Rasterizer.popTranslate();

@@ -127,7 +127,7 @@ public class Util {
 
 		int w = img.getWidth();
 		if (smaller)
-			w /= 2;
+			w /= 3;
 
 		raster().fillQuad(x - w, y, w, h, img, col, alpha, Rotation.ROTATE_0);
 	}
@@ -148,7 +148,7 @@ public class Util {
 
 		int w = img.getWidth();
 		if (smaller)
-			w /= 2;
+			w /= 3;
 
 		raster().fillQuad(x, y, w, h, img, col, alpha, Rotation.ROTATE_180);
 	}
@@ -171,7 +171,7 @@ public class Util {
 
 		int sw = corner.getWidth();
 		if (smaller)
-			sw /= 2;
+			sw /= 3;
 
 		drawLeftShadowQuad(x, y, h, alpha, col, smaller);
 		drawRightShadowQuad(x + w, y, h, alpha, col, smaller);

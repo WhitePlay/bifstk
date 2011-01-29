@@ -70,8 +70,7 @@ public class Button extends AbstractButton {
 		} else {
 			Util.raster().fillQuad(0, 0, w, h, fillCol, a);
 			Fonts.getNormal().drawString(lx, ly, this.text, fontCol, alpha);
-			Util.raster().drawQuad(0, 0, w, h, Theme.getUiBorderColor(),
-					a);
+			Util.raster().drawQuad(0, 0, w, h, Theme.getUiBorderColor(), a);
 		}
 	}
 

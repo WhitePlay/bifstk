@@ -83,12 +83,17 @@ public enum ThemeProperty {
 	frameControlsCloseHoverColor("frame.controls.close.hover.color"),
 	/** COLOR close frame control color when clicked */
 	frameControlsCloseClickColor("frame.controls.close.click.color"),
+	/** COLOR close frame control color when not focused */
+	frameControlsCloseUnfocusedColor("frame.controls.close.unfocused.color"),
 	/** COLOR maximize frame control color */
 	frameControlsMaximizeColor("frame.controls.maximize.color"),
 	/** COLOR maximize frame control color when hovered */
 	frameControlsMaximizeHoverColor("frame.controls.maximize.hover.color"),
 	/** COLOR maximize frame control color when hovered */
 	frameControlsMaximizeClickColor("frame.controls.maximize.click.color"),
+	/** COLOR maximize frame control color when not focused */
+	frameControlsMaximizeUnfocusedColor(
+			"frame.controls.maximize.unfocused.color"),
 
 	/** COLOR base font color of the UI */
 	uiFontColor("ui.font.color"),

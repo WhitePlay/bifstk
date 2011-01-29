@@ -87,8 +87,28 @@ public class Text extends Actionable implements Focusable {
 
 		w = Math.max(w, Fonts.getNormal().getFontSize());
 		h = Math.max(h, Fonts.getNormal().getHeight());
+		int x = 0, y = 0;
 
-		Util.raster().fillQuad(0, 0, w, h, Color.WHITE, a);
+		if (this.multiLine) {
+			w = (scroll.isScrollHor() ? scroll.getWidth() : w);
+			h = (scroll.isScrollVer() ? scroll.getHeight() : h);
+
+			if (scroll.isScrollHor() && scroll.isScrollVer()) {
+				w -= scroll.getScrollBarWidth();
+				h -= scroll.getScrollBarWidth();
+			}
+
+			x = -scroll.getXTranslate();
+			y = scroll.getYTranslate();
+		}
+
+		Color fillCol = Theme.getUiEntryColor();
+
+		if (Theme.isWidgetsRounded()) {
+			Util.fillRoundedQuad(x, y, w, h, a, fillCol, uiBg);
+		} else {
+			Util.raster().fillQuad(x, y, w, h, fillCol, a);
+		}
 
 		if (!this.multiLine) {
 			String str = this.content.toString();
@@ -100,20 +120,27 @@ public class Text extends Actionable implements Focusable {
 				yOff += Fonts.getNormal().getHeight();
 			}
 		}
-		Color borderCol = Theme.getUiButtonBorderColor();
-		Util.raster().drawQuad(0, 0, w, h, borderCol, a);
+		Color borderCol = Theme.getUiEntryBorderColor();
+
+		if (Theme.isWidgetsRounded()) {
+			Util.drawRoundedQuad(x, y, w, h, a, borderCol);
+		} else {
+			Util.raster().drawQuad(x, y, w, h, borderCol, a);
+		}
 	}
 
 	private void renderLine(String str, int yOff, float alpha, boolean drawCaret) {
-		Fonts.getNormal().drawString(2 + this.offset, 2 + yOff, str,
-				Color.BLACK, alpha);
+		Color textCol = Theme.getUiEntryFontColor();
+
+		Fonts.getNormal().drawString(2 + this.offset, 2 + yOff, str, textCol,
+				alpha);
 
 		// caret
 		if (this.focus && System.currentTimeMillis() / 500 % 2 == 0
 				&& drawCaret) {
 			int len = this.caretPos + this.offset + 2;
 			Util.raster().drawQuad(len - 1, 2 + yOff, 2,
-					Fonts.getNormal().getHeight(), Color.BLACK, alpha);
+					Fonts.getNormal().getHeight(), textCol, alpha);
 		}
 	}
 

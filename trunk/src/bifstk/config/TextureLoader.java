@@ -21,6 +21,8 @@ public class TextureLoader {
 	/** singleton instance */
 	private static TextureLoader instance = null;
 
+	private Image blank;
+
 	private Image bifstk256;
 	private Image bifstk128;
 	private Image bifstk64;
@@ -33,7 +35,9 @@ public class TextureLoader {
 	private Image windowMaximize;
 	private Image windowClose;
 
-	private Image blank;
+	private Image uiCornerDraw;
+	private Image uiCornerFill;
+	private Image uiCornerInv;
 
 	private TextureLoader(String path) throws BifstkException {
 		File f = new File(path);
@@ -47,6 +51,8 @@ public class TextureLoader {
 		Atlas.getInstance().load(img, img.getHeight());
 
 		// this is hardcoded, deal with it
+		this.blank = new Image(323, 147, 16, 16);
+
 		this.bifstk256 = new Image(1, 1, 256, 256);
 		this.bifstk128 = new Image(258, 1, 128, 128);
 		this.bifstk64 = new Image(258, 130, 64, 64);
@@ -59,7 +65,17 @@ public class TextureLoader {
 		this.windowMaximize = new Image(357, 130, 16, 16);
 		this.windowClose = new Image(374, 130, 16, 16);
 
-		this.blank = new Image(323, 147, 16, 16);
+		this.uiCornerDraw = new Image(308, 195, 3, 3);
+		this.uiCornerFill = new Image(312, 195, 3, 3);
+		this.uiCornerInv = new Image(316, 195, 3, 3);
+
+	}
+
+	/**
+	 * @return a completely blank Image
+	 */
+	public static Image getBlank() {
+		return instance.blank;
 	}
 
 	/**
@@ -126,10 +142,25 @@ public class TextureLoader {
 	}
 
 	/**
-	 * @return a completely blank Image
+	 * @return the line drawing rounded ui corner
 	 */
-	public static Image getBlank() {
-		return instance.blank;
+	public static Image getUiCornerDraw() {
+		return instance.uiCornerDraw;
+	}
+
+	/**
+	 * @return the filling rounded ui corner
+	 */
+	public static Image getUiCornerFill() {
+		return instance.uiCornerFill;
+	}
+
+	/**
+	 * @return the inverse of the filling corner; so that both images combined
+	 *         fill a square
+	 */
+	public static Image getUiCornerInv() {
+		return instance.uiCornerInv;
 	}
 
 	/**
@@ -143,7 +174,8 @@ public class TextureLoader {
 		if (instance == null) {
 			instance = new TextureLoader(path);
 		} else {
-			throw new IllegalStateException("Textures have already been loaded");
+			//	throw new IllegalStateException("Textures have already been loaded");
+			// Logger.debug("Textures have already been loaded");
 		}
 	}
 }

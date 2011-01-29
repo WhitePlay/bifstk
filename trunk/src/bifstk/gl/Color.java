@@ -152,8 +152,8 @@ public class Color {
 		factor = Util.clampf(factor, 0.0f, 1.0f);
 		float invFactor = 1.0f - factor;
 		return new Color(this.red * factor + target.red * invFactor, //
-				this.blue * factor + target.blue * invFactor, //
 				this.green * factor + target.green * invFactor, //
+				this.blue * factor + target.blue * invFactor, //
 				this.alpha * factor + target.alpha * invFactor);
 	}
 
@@ -167,9 +167,9 @@ public class Color {
 	public Color blend(Color target, float factor, float alpha) {
 		factor = Util.clampf(factor, 0.0f, 1.0f);
 		float invFactor = 1.0f - factor;
-		return new Color(this.red * factor + target.red * invFactor, this.blue
-				* factor + target.blue * invFactor, this.green * factor
-				+ target.green * invFactor, alpha
+		return new Color(this.red * factor + target.red * invFactor, this.green
+				* factor + target.green * invFactor, this.blue * factor
+				+ target.blue * invFactor, alpha
 				* (this.alpha * factor + target.alpha * invFactor));
 	}
 

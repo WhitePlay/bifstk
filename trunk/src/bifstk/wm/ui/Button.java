@@ -62,9 +62,17 @@ public class Button extends AbstractButton {
 		}
 		Color fontCol = Theme.getUiFontColor();
 
-		Util.raster().fillQuad(0, 0, w, h, fillCol, a);
-		Fonts.getNormal().drawString(lx, ly, this.text, fontCol, alpha);
-		Util.raster().drawQuad(0, 0, w, h, Theme.getUiButtonBorderColor(), a);
+		if (Theme.isWidgetsRounded()) {
+			Util.fillRoundedQuad(0, 0, w, h, a, fillCol, uiBg);
+			Fonts.getNormal().drawString(lx, ly, this.text, fontCol, alpha);
+			Util.drawRoundedQuad(0, 0, w, h, a, Theme.getUiButtonBorderColor());
+
+		} else {
+			Util.raster().fillQuad(0, 0, w, h, fillCol, a);
+			Fonts.getNormal().drawString(lx, ly, this.text, fontCol, alpha);
+			Util.raster().drawQuad(0, 0, w, h, Theme.getUiButtonBorderColor(),
+					a);
+		}
 	}
 
 	@Override

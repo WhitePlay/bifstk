@@ -92,6 +92,8 @@ public enum ThemeProperty {
 
 	/** COLOR base font color of the UI */
 	uiFontColor("ui.font.color"),
+	/** BOOLEAN true if UI widgets should be rounded */
+	uiWidgetsRounded("ui.widgets.rounded"),
 	/** COLOR color of the ui button border */
 	uiButtonBorderColor("ui.button.border.color"),
 	/** COLOR color of the ui button background */
@@ -99,7 +101,13 @@ public enum ThemeProperty {
 	/** COLOR color of the ui button background when focused */
 	uiButtonHoverColor("ui.button.hover.color"),
 	/** COLOR color of the ui button background when clicked */
-	uiButtonClickColor("ui.button.click.color");
+	uiButtonClickColor("ui.button.click.color"),
+	/** COLOR color of the ui entries (text,radio,..) bg color */
+	uiEntryColor("ui.entry.color"),
+	/** COLOR color of the ui entries (text,radio,..) border color */
+	uiEntryBorderColor("ui.entry.border.color"),
+	/** COLOR fg font color for ui entry widgets (text) */
+	uiEntryFontColor("ui.entry.font.color");
 
 	private String name = "";
 

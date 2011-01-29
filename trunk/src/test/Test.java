@@ -11,6 +11,7 @@ import bifstk.config.Config;
 import bifstk.config.TextureLoader;
 import bifstk.config.Theme;
 import bifstk.gl.Image;
+import bifstk.gl.Rasterizer;
 import bifstk.gl.Util;
 import bifstk.util.BifstkException;
 import bifstk.util.Logger;
@@ -24,6 +25,7 @@ import bifstk.wm.ui.Button;
 import bifstk.wm.ui.Checkbox;
 import bifstk.wm.ui.CustomBorder;
 import bifstk.wm.ui.FlowBox;
+import bifstk.wm.ui.FlowBox.Orientation;
 import bifstk.wm.ui.Label;
 import bifstk.wm.ui.Text;
 import bifstk.wm.util.ConfigWindow;
@@ -36,13 +38,20 @@ public class Test implements Handler, Root {
 	private long dt = 0, dt2 = 0;
 
 	private Label fpsLabel = null;
+	private Label quadsLabel = null;
 
 	@Override
 	public void init() {
-		Area fpsArea = new Area(5, 5, 80, 40);
-		fpsLabel = new Label("FPS: ");
-		fpsArea.setContent(fpsLabel);
-		Bifstk.addArea(fpsArea);
+		Area info = new Area(5, 5, 90, 45);
+		FlowBox fb = new FlowBox(Orientation.VERTICAL);
+
+		fpsLabel = new Label("FPS  : ");
+		quadsLabel = new Label("Quads: ");
+		fb.addBegin(fpsLabel);
+		fb.addBegin(quadsLabel);
+
+		info.setContent(fb);
+		Bifstk.addArea(info);
 	}
 
 	@Override
@@ -51,12 +60,13 @@ public class Test implements Handler, Root {
 		// calculate framerate
 		dt = Sys.getTime();
 		if (dt - dt2 > 1000) {
-			this.fpsLabel.setText("FPS: " + fps_acc);
+			this.fpsLabel.setText("FPS  : " + fps_acc);
 			fps_acc = 0;
 			dt2 = dt;
 		} else {
 			fps_acc++;
 		}
+		quadsLabel.setText("Quads:" + Rasterizer.getInstance().getQuadCount());
 
 		// render background image
 		Image bgImg = TextureLoader.getBifstk256();

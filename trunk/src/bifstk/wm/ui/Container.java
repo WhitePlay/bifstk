@@ -43,4 +43,9 @@ public abstract class Container extends Widget {
 		w.setParent(this);
 	}
 
+	/**
+	 * Explicitely request an update of the intenal layout.
+	 */
+	protected abstract void update();
+
 }

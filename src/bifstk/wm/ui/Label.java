@@ -68,6 +68,9 @@ public class Label extends Widget {
 	public void setText(String t) {
 		this.text = t;
 		this.textWidth = Fonts.getNormal().getWidth(this.text);
+		if (this.getParent() != null) {
+			this.getParent().update();
+		}
 	}
 
 	/**

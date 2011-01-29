@@ -69,4 +69,9 @@ public abstract class Border extends Container {
 		return this.parent;
 	}
 
+	@Override
+	protected void update() {
+		// has no real meaning here
+	}
+
 }

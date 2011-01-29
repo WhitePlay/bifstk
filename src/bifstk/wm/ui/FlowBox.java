@@ -116,6 +116,11 @@ public class FlowBox extends Container {
 	private boolean drawExpanded = false;
 	private int ew = 0;
 
+	@Override
+	protected void update() {
+		resize();
+	}
+
 	/**
 	 * Called when the geometry of the box has changed: need to subsequently
 	 * resize children widgets

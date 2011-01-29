@@ -14,11 +14,15 @@ import org.lwjgl.opengl.GL11;
  */
 public class LegacyRasterizer extends Rasterizer {
 
-	private static final int MAX_SIZE = 2048;
+	private static final int MAX_SIZE = 32768;
 
 	private IntBuffer vertexBuffer = null;
 	private FloatBuffer colorBuffer = null;
 	private FloatBuffer coordBuffer = null;
+
+	boolean resetQuadCount = true;
+	private int quads = 0;
+	private int quadsAcc = 0;
 
 	/** counts the number of objects cached since last flush */
 	private int indexCount = 0;
@@ -34,7 +38,6 @@ public class LegacyRasterizer extends Rasterizer {
 	@Override
 	protected void draw2DTexturedQuad(int[] vertices, float[] colors,
 			float[] texCoords) {
-
 		if (vertices.length != 8)
 			throw new IllegalArgumentException("");
 
@@ -48,14 +51,23 @@ public class LegacyRasterizer extends Rasterizer {
 		colorBuffer.put(colors);
 		coordBuffer.put(texCoords);
 
-		indexCount += 4;
+		this.indexCount += 4;
 
-		if ((indexCount + 4) * 16 > MAX_SIZE)
+		if ((indexCount + 4) * 8 > MAX_SIZE) {
+			resetQuadCount = false;
 			this.flush();
+			resetQuadCount = true;
+		}
 	}
 
 	@Override
 	public void flush() {
+		this.quadsAcc += indexCount / 4;
+
+		if (resetQuadCount) {
+			this.quads = quadsAcc;
+			this.quadsAcc = 0;
+		}
 
 		if (indexCount == 0)
 			return;
@@ -87,5 +99,10 @@ public class LegacyRasterizer extends Rasterizer {
 		this.colorBuffer.clear();
 		this.coordBuffer.clear();
 		this.indexCount = 0;
+	}
+
+	@Override
+	public int getQuadCount() {
+		return this.quads;
 	}
 }

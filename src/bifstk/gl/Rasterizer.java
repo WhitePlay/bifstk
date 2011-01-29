@@ -395,4 +395,10 @@ public abstract class Rasterizer {
 	 * Calling this method causes the actual drawing off all buffered geometry
 	 */
 	public abstract void flush();
+
+	/**
+	 * @return the number of quads rendered between the last two calls of
+	 *         {@link #flush()}
+	 */
+	public abstract int getQuadCount();
 }

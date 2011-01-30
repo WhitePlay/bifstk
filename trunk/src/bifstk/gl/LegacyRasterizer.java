@@ -20,7 +20,6 @@ public class LegacyRasterizer extends Rasterizer {
 	private FloatBuffer colorBuffer = null;
 	private FloatBuffer coordBuffer = null;
 
-	boolean resetQuadCount = true;
 	private int quads = 0;
 	private int quadsAcc = 0;
 
@@ -54,17 +53,19 @@ public class LegacyRasterizer extends Rasterizer {
 		this.indexCount += 4;
 
 		if ((indexCount + 4) * 8 > MAX_SIZE) {
-			resetQuadCount = false;
-			this.flush();
-			resetQuadCount = true;
+			this.flush(false);
 		}
 	}
 
 	@Override
 	public void flush() {
+		this.flush(true);
+	}
+
+	private void flush(boolean ext) {
 		this.quadsAcc += indexCount / 4;
 
-		if (resetQuadCount) {
+		if (ext) {
 			this.quads = quadsAcc;
 			this.quadsAcc = 0;
 		}

@@ -1172,6 +1172,9 @@ public abstract class Frame implements Drawable, Clickable {
 			} else if (this.isDragged()) {
 				ra *= movedAlpha;
 			}
+			if (!this.isActive()) {
+				ra = 0.0f;
+			}
 			return ra;
 		}
 	}

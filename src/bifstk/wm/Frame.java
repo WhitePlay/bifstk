@@ -191,22 +191,13 @@ public abstract class Frame implements Drawable, Clickable {
 		int borderWidth = getBorderWidth();
 		int titlebarHeight = getTitleBarHeight();
 		long t = Sys.getTime();
-		float animLen = (float) Config.get().getWmAnimationsLength();
 
 		x = this.getX();
 		y = this.getY();
 		w = this.getWidth();
 		h = this.getHeight();
 
-		float focusAnim = Util.clampf((float) (t - this.getFocusChangeTime())
-				/ animLen, 0.0f, 1.0f);
-		if (!this.isFocused()) {
-			focusAnim = 1.0f - focusAnim;
-		}
-
-		if (!Config.get().isWmAnimations()) {
-			focusAnim = ((this.isFocused()) ? 1.0f : 0.0f);
-		}
+		float focusAnim = getFocusAnim();
 
 		Color borderCol = getBorderFocusedColor().blend(
 				getBorderUnfocusedColor(), focusAnim);
@@ -301,12 +292,11 @@ public abstract class Frame implements Drawable, Clickable {
 									(float) (t - this.controlCloseHoverTime)
 											/ (float) hoverAnimLen, 0.0f, 1.0f);
 						} else {
-							if (focused) {
-								col = Theme.getFrameControlsCloseColor();
-							} else {
-								col = Theme
-										.getFrameControlsCloseUnfocusedColor();
-							}
+							col = Theme
+									.getFrameControlsCloseColor()
+									.blend(Theme
+											.getFrameControlsCloseUnfocusedColor(),
+											focusAnim);
 							if (!this.controlCloseDown) {
 								hoverAnim = 1.0f - Util
 										.clampf((float) (t - this.controlCloseHoverTime)
@@ -332,12 +322,11 @@ public abstract class Frame implements Drawable, Clickable {
 												/ (float) hoverAnimLen, 0.0f,
 												1.0f);
 							} else {
-								if (focused) {
-									col = Theme.getFrameControlsMaximizeColor();
-								} else {
-									col = Theme
-											.getFrameControlsMaximizeUnfocusedColor();
-								}
+								col = Theme
+										.getFrameControlsMaximizeColor()
+										.blend(Theme
+												.getFrameControlsMaximizeUnfocusedColor(),
+												focusAnim);
 								if (!this.controlMaximizeDown) {
 									hoverAnim = 1.0f - Util
 											.clampf((float) (t - this.controlMaximizeHoverTime)
@@ -1213,4 +1202,26 @@ public abstract class Frame implements Drawable, Clickable {
 			}
 		}
 	}
+
+	/**
+	 * When focused/unfocused, if animations are enabled, the frame
+	 * progressively moves graphically from one state to another
+	 * 
+	 * @return 0.0 if the frame is focused, 1.0 if it is not focused, or a value
+	 *         in between
+	 */
+	public float getFocusAnim() {
+		long t = Sys.getTime();
+		float animLen = (float) Config.get().getWmAnimationsLength();
+		float focusAnim = Util.clampf((float) (t - this.getFocusChangeTime())
+				/ animLen, 0.0f, 1.0f);
+		if (!this.isFocused()) {
+			focusAnim = 1.0f - focusAnim;
+		}
+		if (!Config.get().isWmAnimations()) {
+			focusAnim = ((this.isFocused()) ? 1.0f : 0.0f);
+		}
+		return focusAnim;
+	}
+
 }

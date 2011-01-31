@@ -126,7 +126,7 @@ public class Renderer {
 
 		/* top layer: windows */
 		this.renderWindows(width, height);
-		
+
 		/* send data to OpenGL */
 		Rasterizer.getInstance().flush();
 	}
@@ -157,23 +157,18 @@ public class Renderer {
 		int x = this.state.getDockWidth(DockPosition.LEFT);
 		int w = Theme.getWindowBorderWidth();
 
-		boolean focus = true;
+		float focusAnim = this.state.getLeftDock().get(0).getFocusAnim();
+		Color c = Theme.getWindowBorderFocusedColor().blend(
+				Theme.getWindowBorderUnfocusedColor(), focusAnim);
 		int acc = 0;
 		float baseAlpha = this.state.getLeftDock().get(0).getUiAlpha();
 		/* draw the windows */
 		for (Window win : this.state.getLeftDock()) {
-			if (!win.isFocused()) {
-				focus = false;
-			}
 			win.render(win.getModAlpha(), win.getUiColor(), baseAlpha);
 
 			acc += win.getHeight();
-			Color col = Theme.getWindowBorderFocusedColor();
 			// bot border
-			if (!focus) {
-				col = Theme.getWindowBorderUnfocusedColor();
-			}
-			Util.raster().fillQuad(0, acc, x, w, col, baseAlpha);
+			Util.raster().fillQuad(0, acc, x, w, c, baseAlpha);
 
 			acc += w;
 		}
@@ -185,17 +180,11 @@ public class Renderer {
 					Theme.getWindowShadowAlpha(), col, false);
 		}
 
-		Color c = Theme.getWindowBorderFocusedColor();
-		if (!focus) {
-			c = Theme.getWindowBorderUnfocusedColor();
-		}
 		/* right border */
 		Util.raster().fillQuad(x, 0, w, height, c, baseAlpha);
 
-		c = Theme.getWindowBorderOuterFocusedColor();
-		if (!focus) {
-			c = Theme.getWindowBorderOuterUnfocusedColor();
-		}
+		c = Theme.getWindowBorderOuterFocusedColor().blend(
+				Theme.getWindowBorderOuterUnfocusedColor(), focusAnim);
 		/* right outer border */
 		Util.raster().fillQuad(x + w, 0, 1, height, c, baseAlpha);
 	}
@@ -215,21 +204,16 @@ public class Renderer {
 		int dw = Display.getDisplayMode().getWidth();
 
 		float baseAlpha = this.state.getRightDock().get(0).getUiAlpha();
-		boolean focus = true;
+		float focusAnim = this.state.getRightDock().get(0).getFocusAnim();
+		Color c = Theme.getWindowBorderFocusedColor().blend(
+				Theme.getWindowBorderUnfocusedColor(), focusAnim);
 		int acc = 0;
 		/* draw the windows */
 		for (Window win : this.state.getRightDock()) {
-			if (!win.isFocused()) {
-				focus = false;
-			}
 			win.render(win.getModAlpha(), win.getUiColor(), baseAlpha);
 
 			acc += win.getHeight();
 			// bot border
-			Color c = Theme.getWindowBorderFocusedColor();
-			if (!focus) {
-				c = Theme.getWindowBorderUnfocusedColor();
-			}
 			Util.raster().fillQuad(dw - x, acc, x, w, c, baseAlpha);
 			acc += w;
 		}
@@ -241,17 +225,11 @@ public class Renderer {
 					Theme.getWindowShadowAlpha(), col, false);
 		}
 
-		Color c = Theme.getWindowBorderFocusedColor();
-		if (!focus) {
-			c = Theme.getWindowBorderUnfocusedColor();
-		}
 		/* left border */
 		Util.raster().fillQuad(dw - x - w, 0, w, height, c, baseAlpha);
 
-		c = Theme.getWindowBorderOuterFocusedColor();
-		if (!focus) {
-			c = Theme.getWindowBorderOuterUnfocusedColor();
-		}
+		c = Theme.getWindowBorderOuterFocusedColor().blend(
+				Theme.getWindowBorderOuterUnfocusedColor(), focusAnim);
 		/* left outer border */
 		Util.raster().fillQuad(dw - x - w, 0, 1, height, c, baseAlpha);
 	}

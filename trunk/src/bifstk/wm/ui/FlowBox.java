@@ -577,12 +577,14 @@ public class FlowBox extends Container {
 				acc = _mouseHover(wid, acc, x, y);
 				if (acc < 0)
 					return;
+				acc += this.borderWidth;
 			}
 
 			if (this.expandChild != null) {
 				acc = _mouseHover(expandChild, acc, x, y);
 				if (acc < 0)
 					return;
+				acc += this.borderWidth;
 			} else {
 				acc += this.ew;
 			}
@@ -591,6 +593,7 @@ public class FlowBox extends Container {
 				acc = _mouseHover(wid, acc, x, y);
 				if (acc < 0)
 					return;
+				acc += this.borderWidth;
 			}
 			if (widgetHover != null) {
 				this.widgetHover.mouseOut();

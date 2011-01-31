@@ -87,7 +87,8 @@ public class Checkbox extends AbstractButton {
 
 	@Override
 	public void mouseUp(int button, int x, int y) {
-		this.checked = !this.checked;
+		if (button == 0)
+			this.checked = !this.checked;
 		super.mouseUp(button, x, y);
 	}
 

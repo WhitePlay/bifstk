@@ -42,7 +42,7 @@ public class Test implements Handler, Root {
 
 	@Override
 	public void init() {
-		Area info = new Area(5, 5, 90, 45);
+		Area info = new Area(5, 5, 90, 50);
 		FlowBox fb = new FlowBox(Orientation.VERTICAL);
 
 		fpsLabel = new Label("FPS  : ");

@@ -142,6 +142,7 @@ public class FlowBox extends Container {
 				nh = Util.clampi(widg.getPreferredHeight(h), 0, h - tacc);
 				tacc += nh;
 			}
+			tacc += borderWidth;
 			widg.setBounds(nw, nh);
 		}
 
@@ -158,6 +159,8 @@ public class FlowBox extends Container {
 			}
 			widg.setBounds(nw, nh);
 		}
+		if (this.rightChildren.size() > 0)
+			tacc += (this.rightChildren.size() - 1) * this.borderWidth;
 
 		if (this.orientation.equals(Orientation.HORIZONTAL)) {
 			ew = Math.max(0, w - tacc);
@@ -165,6 +168,7 @@ public class FlowBox extends Container {
 			ew = Math.max(0, h - tacc);
 		}
 		if (this.expandChild != null && ew > 0) {
+			ew -= borderWidth;
 			int exPw, exPh;
 			if (this.orientation.equals(Orientation.HORIZONTAL)) {
 				exPh = Util.clampi(expandChild.getPreferredHeight(h), 0, h);
@@ -198,7 +202,7 @@ public class FlowBox extends Container {
 		if (!hasChildren()) {
 			Util.raster().fillQuad(0, 0, w, h, uiBg, alpha * uiAlpha);
 		} else {
-			int acc = 0;
+			int acc = 0, i = 0;
 
 			List<Widget> wiz = new ArrayList<Widget>(this.leftChildren.size()
 					+ 1 + this.rightChildren.size());
@@ -211,6 +215,8 @@ public class FlowBox extends Container {
 			wiz.addAll(this.rightChildren);
 
 			for (Widget widg : wiz) {
+				i++;
+
 				if (this.orientation.equals(Orientation.HORIZONTAL) && acc > w) {
 					break;
 				} else if (this.orientation.equals(Orientation.VERTICAL)
@@ -248,18 +254,25 @@ public class FlowBox extends Container {
 									widg.getWidth(), h - widg.getHeight(),
 									uiBg, uiAlpha * alpha);
 						}
+						acc += widg.getWidth();
 					} else {
 						if (widg.getWidth() < w) {
 							Util.raster().fillQuad(widg.getWidth(), acc,
 									w - widg.getWidth(), widg.getHeight(),
 									uiBg, uiAlpha * alpha);
 						}
+						acc += widg.getHeight();
 					}
 
-					if (this.orientation.equals(Orientation.HORIZONTAL)) {
-						acc += widg.getWidth();
-					} else {
-						acc += widg.getHeight();
+					if (i != wiz.size()) {
+						if (this.orientation.equals(Orientation.HORIZONTAL)) {
+							Util.raster().fillQuad(acc, 0, borderWidth, h,
+									uiBg, uiAlpha * alpha);
+						} else {
+							Util.raster().fillQuad(0, acc, w, borderWidth,
+									uiBg, uiAlpha * alpha);
+						}
+						acc += this.borderWidth;
 					}
 				}
 			}
@@ -405,8 +418,11 @@ public class FlowBox extends Container {
 		int cw = 0;
 		if (this.orientation.equals(Orientation.HORIZONTAL)) {
 			boolean expand = false;
+			int lc = 0, rc = 0;
+
 			for (Widget w : this.leftChildren) {
 				cw += w.getPreferredWidth(max - cw);
+				lc++;
 			}
 			if (this.expandChild != null) {
 				cw += this.expandChild.getPreferredWidth(max - cw);
@@ -415,7 +431,12 @@ public class FlowBox extends Container {
 			for (Widget w : this.rightChildren) {
 				cw += w.getPreferredWidth(max - cw);
 				expand = true;
+				rc++;
 			}
+			if (rc > 0)
+				rc--;
+			cw += this.borderWidth * (lc + rc);
+
 			if (expand)
 				cw = Math.max(cw, max);
 		} else {
@@ -438,8 +459,11 @@ public class FlowBox extends Container {
 		int mh = 0;
 		if (this.orientation.equals(Orientation.VERTICAL)) {
 			boolean expand = false;
+			int lc = 0, rc = 0;
+
 			for (Widget w : this.leftChildren) {
 				mh += w.getPreferredHeight(max - mh);
+				lc++;
 			}
 			if (this.expandChild != null) {
 				mh += this.expandChild.getPreferredHeight(max - mh);
@@ -448,7 +472,12 @@ public class FlowBox extends Container {
 			for (Widget w : this.rightChildren) {
 				mh += w.getPreferredHeight(max - mh);
 				expand = true;
+				rc++;
 			}
+			if (rc > 0)
+				rc--;
+			mh += this.borderWidth * (lc + rc);
+
 			if (expand)
 				mh = Math.max(mh, max);
 		} else {

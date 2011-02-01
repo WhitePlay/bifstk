@@ -165,7 +165,14 @@ public abstract class Rasterizer {
 		Rectangle c = scissors.pop();
 
 		if (Config.get().isWmDebugLayout() && !c.isEmpty()) {
-			instance.drawQuad(0, 0, c.width, c.height, Color.RED, 1.0f);
+			int dx = 0, dy = 0;
+			if (!translation.isEmpty()) {
+				Point p = translation.getFirst();
+				dx = p.x;
+				dy = p.y;
+			}
+			instance.drawQuad(c.x - dx, c.y - dy, c.width, c.height, Color.RED,
+					1.0f);
 		}
 	}
 

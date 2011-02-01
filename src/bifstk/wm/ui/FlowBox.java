@@ -91,6 +91,11 @@ public class FlowBox extends Container {
 	/** the bound button or null */
 	private AbstractButton boundButton = null;
 
+	/** true if expandChild has room to be rendered */
+	private boolean drawExpanded = false;
+	/** the size of the expand space as last computed in #resize() */
+	private int expandWidth = 0;
+
 	/**
 	 * Default constructor
 	 */
@@ -112,10 +117,6 @@ public class FlowBox extends Container {
 		this.orientation = orient;
 	}
 
-	// true if expandChild has room to be rendered
-	private boolean drawExpanded = false;
-	private int ew = 0;
-
 	@Override
 	protected void update() {
 		resize();
@@ -128,7 +129,7 @@ public class FlowBox extends Container {
 	private void resize() {
 		int w = this.getWidth();
 		int h = this.getHeight();
-		ew = 0;
+		expandWidth = 0;
 		int tacc = 0;
 
 		for (Widget widg : this.leftChildren) {
@@ -163,25 +164,25 @@ public class FlowBox extends Container {
 			tacc += (this.rightChildren.size() - 1) * this.borderWidth;
 
 		if (this.orientation.equals(Orientation.HORIZONTAL)) {
-			ew = Math.max(0, w - tacc);
+			expandWidth = Math.max(0, w - tacc);
 		} else {
-			ew = Math.max(0, h - tacc);
+			expandWidth = Math.max(0, h - tacc);
 		}
-		if (this.expandChild != null && ew > 0) {
-			ew -= borderWidth;
+		if (this.expandChild != null && expandWidth > 0) {
+			expandWidth = Math.max(0, expandWidth - borderWidth);
 			int exPw, exPh;
 			if (this.orientation.equals(Orientation.HORIZONTAL)) {
 				exPh = Util.clampi(expandChild.getPreferredHeight(h), 0, h);
 				if (exPh <= 0) {
 					exPh = h;
 				}
-				exPw = ew;
+				exPw = expandWidth;
 			} else {
 				exPw = Util.clampi(expandChild.getPreferredWidth(w), 0, w);
 				if (exPw <= 0) {
 					exPw = w;
 				}
-				exPh = ew;
+				exPh = expandWidth;
 			}
 			this.expandChild.setBounds(exPw, exPh);
 			this.drawExpanded = true;
@@ -225,14 +226,14 @@ public class FlowBox extends Container {
 				}
 				if (widg == null) {
 					if (this.orientation.equals(Orientation.HORIZONTAL)) {
-						Util.raster().fillQuad(acc, 0, ew, h, uiBg,
+						Util.raster().fillQuad(acc, 0, expandWidth, h, uiBg,
 								uiAlpha * alpha);
 					} else {
-						Util.raster().fillQuad(0, acc, w, ew, uiBg,
+						Util.raster().fillQuad(0, acc, w, expandWidth, uiBg,
 								uiAlpha * alpha);
 					}
 
-					acc += ew;
+					acc += expandWidth;
 				} else {
 					if (this.orientation.equals(Orientation.HORIZONTAL)) {
 						Rasterizer.pushTranslate(acc, 0);
@@ -586,7 +587,7 @@ public class FlowBox extends Container {
 					return;
 				acc += this.borderWidth;
 			} else {
-				acc += this.ew;
+				acc += this.expandWidth;
 			}
 
 			for (Widget wid : this.rightChildren) {

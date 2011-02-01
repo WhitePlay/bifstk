@@ -428,6 +428,7 @@ public class FlowBox extends Container {
 			if (this.expandChild != null) {
 				cw += this.expandChild.getPreferredWidth(max - cw);
 				expand = true;
+				rc++;
 			}
 			for (Widget w : this.rightChildren) {
 				cw += w.getPreferredWidth(max - cw);
@@ -469,6 +470,7 @@ public class FlowBox extends Container {
 			if (this.expandChild != null) {
 				mh += this.expandChild.getPreferredHeight(max - mh);
 				expand = true;
+				rc++;
 			}
 			for (Widget w : this.rightChildren) {
 				mh += w.getPreferredHeight(max - mh);

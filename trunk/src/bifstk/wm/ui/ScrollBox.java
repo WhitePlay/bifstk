@@ -126,6 +126,16 @@ public class ScrollBox extends Border {
 		int viewWidth = ((this.scrollVer) ? w - scrollWidth : w);
 		int viewHeight = ((this.scrollHor) ? h - scrollWidth : h);
 		float a = alpha * uiBgAlpha;
+		int dh = 0, dw = 0;
+
+		if (realHeight - yTranslate < viewHeight) {
+			dh = viewHeight - realHeight - yTranslate;
+			Util.raster().fillQuad(0, realHeight, viewWidth, dh, uiBg, a);
+		}
+		if (realWidth - xTranslate < viewWidth) {
+			dw = viewWidth - realWidth - xTranslate;
+			Util.raster().fillQuad(realWidth, 0, dw, viewHeight, uiBg, a);
+		}
 
 		/*
 		 * update the position of the scrollbars
@@ -483,9 +493,11 @@ public class ScrollBox extends Border {
 		}
 
 		verLen = (int) (h * ((float) h / (float) prefHeight));
+		verLen = Util.clampi(verLen, 0, h);
 		verPos = (int) (verScrollPos * (h - verLen));
 
 		horLen = (int) (w * ((float) w / (float) prefWidth));
+		horLen = Util.clampi(horLen, 0, w);
 		horPos = (int) (horScrollPos * (w - horLen));
 
 		content.setBounds(prefWidth, prefHeight);

@@ -10,6 +10,7 @@ import bifstk.wm.ui.Button;
 import bifstk.wm.ui.Checkbox;
 import bifstk.wm.ui.CustomBorder;
 import bifstk.wm.ui.FlowBox;
+import bifstk.wm.ui.FlowBox.Orientation;
 import bifstk.wm.ui.Label;
 import bifstk.wm.ui.ScrollBox;
 
@@ -142,11 +143,14 @@ public final class ConfigWindow extends Window implements Handler {
 		FlowBox vbox = new FlowBox(FlowBox.Orientation.VERTICAL);
 		vbox.addBegin(new CustomBorder(displayBox, "Display"));
 		vbox.addBegin(new CustomBorder(wmBox, "Window manager"));
-		vbox.addEnd(butBox);
 
 		ScrollBox scroll = new ScrollBox(vbox);
 
-		setContent(scroll);
+		FlowBox contentBox = new FlowBox(Orientation.VERTICAL);
+		contentBox.setExpand(scroll);
+		contentBox.addEnd(butBox);
+
+		setContent(contentBox);
 
 		pack();
 	}

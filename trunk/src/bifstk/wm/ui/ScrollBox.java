@@ -271,7 +271,7 @@ public class ScrollBox extends Border {
 			hor = 1;
 		} else if (x < horPos + horLen) {
 			hor = 2;
-		} else if (x < w - scrollWidth) {
+		} else if (x < w - (scrollVer ? scrollWidth : 0)) {
 			hor = 3;
 		} else if (x < w) {
 			hor = 4;
@@ -284,7 +284,7 @@ public class ScrollBox extends Border {
 			ver = 1;
 		} else if (y < verPos + verLen) {
 			ver = 2;
-		} else if (y < h - scrollWidth) {
+		} else if (y < h - (scrollHor ? scrollWidth : 0)) {
 			ver = 3;
 		} else if (y < h) {
 			ver = 4;

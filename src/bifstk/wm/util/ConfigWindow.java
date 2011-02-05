@@ -13,6 +13,7 @@ import bifstk.wm.ui.FlowBox;
 import bifstk.wm.ui.FlowBox.Orientation;
 import bifstk.wm.ui.Label;
 import bifstk.wm.ui.ScrollBox;
+import bifstk.wm.ui.Text;
 
 /**
  * Stock graphical utility edit all {@link ConfigProperty} values
@@ -24,9 +25,14 @@ public final class ConfigWindow extends Window implements Handler {
 	private static ConfigWindow instance = null;
 
 	/* Display */
+	private Text width;
+	private Text height;
 	private Checkbox fullScreen;
+	private Text title;
+	private Text fps;
 	private Checkbox capFps;
 	private Checkbox vsync;
+	private Text samples;
 
 	/* WM */
 	private Checkbox focusFollowMouse;
@@ -56,26 +62,56 @@ public final class ConfigWindow extends Window implements Handler {
 		// Display properties 
 		FlowBox displayBox = new FlowBox(FlowBox.Orientation.VERTICAL);
 
+		FlowBox widthBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
+		width = new Text(4);
+		widthBox.addBegin(new Label("Width"));
+		widthBox.addEnd(width);
+		displayBox.addBegin(widthBox);
+
+		FlowBox heightBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
+		height = new Text(4);
+		heightBox.addBegin(new Label("Height"));
+		heightBox.addEnd(height);
+		displayBox.addBegin(heightBox);
+
 		FlowBox fsBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		fullScreen = new Checkbox();
+		fsBox.addBegin(fullScreen);
 		fsBox.addBegin(new Label("Fullscreen"));
-		fsBox.addEnd(fullScreen);
 		fsBox.bindButton(fullScreen);
 		displayBox.addBegin(fsBox);
 
+		FlowBox titleBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
+		title = new Text(4);
+		titleBox.addBegin(new Label("Title"));
+		titleBox.addEnd(title);
+		displayBox.addBegin(titleBox);
+
+		FlowBox fpsBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
+		fps = new Text(2);
+		fpsBox.addBegin(new Label("FPS"));
+		fpsBox.addEnd(fps);
+		displayBox.addBegin(fpsBox);
+
 		FlowBox capBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		capFps = new Checkbox();
+		capBox.addBegin(capFps);
 		capBox.addBegin(new Label("Cap FPS"));
-		capBox.addEnd(capFps);
 		capBox.bindButton(capFps);
 		displayBox.addBegin(capBox);
 
 		FlowBox vsyncBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		vsync = new Checkbox();
+		vsyncBox.addBegin(vsync);
 		vsyncBox.addBegin(new Label("VSync"));
-		vsyncBox.addEnd(vsync);
 		vsyncBox.bindButton(vsync);
 		displayBox.addBegin(vsyncBox);
+
+		FlowBox samplesBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
+		samples = new Text(2);
+		samplesBox.addBegin(new Label("AA samples"));
+		samplesBox.addEnd(samples);
+		displayBox.addBegin(samplesBox);
 
 		// WM properties
 		FlowBox wmBox = new FlowBox(FlowBox.Orientation.VERTICAL);
@@ -158,9 +194,14 @@ public final class ConfigWindow extends Window implements Handler {
 	private void reset() {
 		Config c = Config.get();
 
+		this.width.setText("" + c.getDisplayWidth());
+		this.height.setText("" + c.getDisplayHeight());
 		this.fullScreen.setChecked(c.isDisplayFullscreen());
+		this.title.setText(c.getDisplayTitle());
+		this.fps.setText("" + c.getDisplayFps());
 		this.capFps.setChecked(c.isDisplayFpsCap());
 		this.vsync.setChecked(c.isDisplayVsync());
+		this.samples.setText("" + c.getDisplayAntialiasSamples());
 
 		this.focusFollowMouse.setChecked(c.isWmFocusFollowmouse());
 		this.debugLayout.setChecked(c.isWmDebugLayout());

@@ -75,6 +75,26 @@ public class Text extends Actionable implements Focusable {
 		this.content = new StringBuffer();
 	}
 
+	/**
+	 * Set the content of this widget
+	 * 
+	 * @param text a single or multiline string ('\n' is the valid separator)
+	 */
+	public void setText(String text) {
+		if (this.multiLine) {
+			this.lines.clear();
+			if (text == null || text.length() == 0) {
+				this.lines.add(new StringBuffer());
+			} else {
+				for (String line : text.split("\n")) {
+					this.lines.add(new StringBuffer(line));
+				}
+			}
+		} else {
+			this.content = new StringBuffer(text);
+		}
+	}
+
 	@Override
 	public void render(float alpha, Color uiBg, float uiBgAlpha) {
 		int w = this.getWidth();

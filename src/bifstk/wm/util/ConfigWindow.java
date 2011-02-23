@@ -8,11 +8,11 @@ import bifstk.wm.Window;
 import bifstk.wm.ui.Actionable;
 import bifstk.wm.ui.Button;
 import bifstk.wm.ui.Checkbox;
-import bifstk.wm.ui.CustomBorder;
 import bifstk.wm.ui.FlowBox;
 import bifstk.wm.ui.FlowBox.Orientation;
 import bifstk.wm.ui.Label;
 import bifstk.wm.ui.ScrollBox;
+import bifstk.wm.ui.Tabs;
 import bifstk.wm.ui.Text;
 
 /**
@@ -59,7 +59,7 @@ public final class ConfigWindow extends Window implements Handler {
 	private void build() {
 		setTitle("Configuration");
 
-		// Display properties 
+		// Display properties
 		FlowBox displayBox = new FlowBox(FlowBox.Orientation.VERTICAL);
 
 		FlowBox widthBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
@@ -176,14 +176,14 @@ public final class ConfigWindow extends Window implements Handler {
 		butBox.addEnd(applyButton);
 		butBox.addEnd(cancelButton);
 
-		FlowBox vbox = new FlowBox(FlowBox.Orientation.VERTICAL);
-		vbox.addBegin(new CustomBorder(displayBox, "Display"));
-		vbox.addBegin(new CustomBorder(wmBox, "Window manager"));
+		Tabs tabs = new Tabs();
+		tabs.addTab(new ScrollBox(displayBox), "Display");
+		tabs.addTab(new ScrollBox(wmBox), "Windows");
 
-		ScrollBox scroll = new ScrollBox(vbox);
+		// ScrollBox scroll = new ScrollBox(tabs);
 
 		FlowBox contentBox = new FlowBox(Orientation.VERTICAL);
-		contentBox.setExpand(scroll);
+		contentBox.setExpand(tabs);
 		contentBox.addEnd(butBox);
 
 		setContent(contentBox);

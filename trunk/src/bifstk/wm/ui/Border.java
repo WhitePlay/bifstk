@@ -10,9 +10,6 @@ public abstract class Border extends Container {
 	/** content */
 	private Widget content = null;
 
-	/** Container containing this Border */
-	private Container parent = null;
-
 	/**
 	 * Default constructor
 	 * 
@@ -57,16 +54,6 @@ public abstract class Border extends Container {
 	public void clearChildren() {
 		this.content.setParent(null);
 		this.content = null;
-	}
-
-	@Override
-	public void setParent(Container c) {
-		this.parent = c;
-	}
-
-	@Override
-	public Container getParent() {
-		return this.parent;
 	}
 
 	@Override

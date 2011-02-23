@@ -109,7 +109,8 @@ public class ScrollBox extends Border {
 	/**
 	 * Default constructor
 	 * 
-	 * @param content contained widget
+	 * @param content
+	 *            contained widget
 	 */
 	public ScrollBox(Widget content) {
 		super(content);
@@ -138,10 +139,9 @@ public class ScrollBox extends Border {
 		}
 
 		/*
-		 * update the position of the scrollbars
-		 * it really sucks to update the logic in the render method,
-		 * but this stuff is absolutely trivial and it avoid calling another
-		 * method everytime the mouse is moved
+		 * update the position of the scrollbars it really sucks to update the
+		 * logic in the render method, but this stuff is absolutely trivial and
+		 * it avoid calling another method everytime the mouse is moved
 		 */
 		if (this.verDrag) {
 			int my = Logic.getMouseY();
@@ -170,7 +170,7 @@ public class ScrollBox extends Border {
 		Color borderCol = Theme.getUiBorderColor();
 		Color fillCol = null;
 
-		//  scrollbars
+		// scrollbars
 		if (scrollVer || scrollHor) {
 
 			if (scrollVer) {
@@ -544,7 +544,12 @@ public class ScrollBox extends Border {
 	@Override
 	public int getPreferredWidth(int max) {
 		if (this.getContent() != null) {
-			return this.getContent().getPreferredWidth(max);
+			int taken = 0;
+			if (this.verDrag)
+				taken = this.getScrollBarWidth();
+			int m = this.getContent().getPreferredWidth(max - taken);
+			m += taken;
+			return Math.max(max, m);
 		} else {
 			return 0;
 		}
@@ -553,7 +558,12 @@ public class ScrollBox extends Border {
 	@Override
 	public int getPreferredHeight(int max) {
 		if (this.getContent() != null) {
-			return this.getContent().getPreferredHeight(max);
+			int taken = 0;
+			if (this.horDrag)
+				taken = this.getScrollBarWidth();
+			int m = this.getContent().getPreferredHeight(max - taken);
+			m += taken;
+			return Math.max(max, m);
 		} else {
 			return 0;
 		}

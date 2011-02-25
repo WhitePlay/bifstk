@@ -185,13 +185,8 @@ public class ScrollBox extends Border {
 
 				Util.raster().fillQuad(viewWidth, 0, scrollWidth, verPos, uiBg,
 						a);
-				if (Theme.isWidgetsRounded()) {
-					Util.fillRoundedQuad(viewWidth, verPos, scrollWidth,
-							verLen, fillCol, uiBg, a);
-				} else {
-					Util.raster().fillQuad(viewWidth, verPos, scrollWidth,
-							verLen, fillCol, a);
-				}
+				Util.fillRoundedQuad(viewWidth, verPos, scrollWidth, verLen,
+						fillCol, uiBg, a);
 				Util.raster().fillQuad(viewWidth, verPos + verLen, scrollWidth,
 						viewHeight - (verPos + verLen), uiBg, a);
 
@@ -202,13 +197,8 @@ public class ScrollBox extends Border {
 						viewHeight - verPos - verLen, borderCol, a);
 
 				// bar outline
-				if (Theme.isWidgetsRounded()) {
-					Util.drawRoundedQuad(viewWidth, verPos, scrollWidth,
-							verLen, borderCol, a);
-				} else {
-					Util.raster().drawQuad(viewWidth, verPos, scrollWidth,
-							verLen, borderCol, a);
-				}
+				Util.drawRoundedQuad(viewWidth, verPos, scrollWidth, verLen,
+						borderCol, a);
 			}
 			if (scrollHor) {
 
@@ -222,13 +212,8 @@ public class ScrollBox extends Border {
 
 				Util.raster().fillQuad(0, viewHeight, horPos, scrollWidth,
 						uiBg, a);
-				if (Theme.isWidgetsRounded()) {
-					Util.raster().fillQuad(horPos, viewHeight, horLen,
-							scrollWidth, fillCol, a);
-				} else {
-					Util.fillRoundedQuad(horPos, viewHeight, horLen,
-							scrollWidth, fillCol, uiBg, a);
-				}
+				Util.raster().fillQuad(horPos, viewHeight, horLen, scrollWidth,
+						fillCol, a);
 				Util.raster().fillQuad(horPos + horLen, viewHeight,
 						viewWidth - horPos - horLen, scrollWidth, uiBg, a);
 
@@ -239,13 +224,8 @@ public class ScrollBox extends Border {
 						viewWidth - horPos - horLen, 2, borderCol, a);
 
 				// bar outline
-				if (Theme.isWidgetsRounded()) {
-					Util.drawRoundedQuad(horPos, viewHeight, horLen,
-							scrollWidth, borderCol, a);
-				} else {
-					Util.raster().drawQuad(horPos, viewHeight, horLen,
-							scrollWidth, borderCol, a);
-				}
+				Util.drawRoundedQuad(horPos, viewHeight, horLen, scrollWidth,
+						borderCol, a);
 			}
 
 			if (scrollHor && scrollVer) {

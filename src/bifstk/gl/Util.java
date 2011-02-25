@@ -48,15 +48,13 @@ public class Util {
 		int height = image.getHeight();
 
 		ColorModel glAlphaColorModel = new ComponentColorModel(
-				ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] {
-						8, 8, 8, 8
-				}, true, false, ComponentColorModel.TRANSLUCENT,
+				ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8,
+						8, 8 }, true, false, ComponentColorModel.TRANSLUCENT,
 				DataBuffer.TYPE_BYTE);
 
 		ColorModel glColorModel = new ComponentColorModel(
-				ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] {
-						8, 8, 8, 0
-				}, false, false, ComponentColorModel.OPAQUE,
+				ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8,
+						8, 0 }, false, false, ComponentColorModel.OPAQUE,
 				DataBuffer.TYPE_BYTE);
 
 		// create a raster that can be used by OpenGL as a source
@@ -191,7 +189,7 @@ public class Util {
 	}
 
 	/**
-	 * Draw a quad with rounded corners
+	 * Draw a quad with rounded corners (2px radius)
 	 * 
 	 * @param x top left abscissa
 	 * @param y top left ordinate
@@ -203,22 +201,15 @@ public class Util {
 	public static void drawRoundedQuad(int x, int y, int w, int h,
 			Color fillCol, float alpha) {
 
-		Image cd = TextureLoader.getUiCornerDraw();
+		raster().fillQuad(x + 1, y, w - 2, 1, fillCol, alpha);
+		raster().fillQuad(x + 1, y + h - 1, w - 2, 1, fillCol, alpha);
+		raster().fillQuad(x, y + 1, 1, h - 2, fillCol, alpha);
+		raster().fillQuad(x + w - 1, y + 1, 1, h - 2, fillCol, alpha);
 
-		int sw = cd.getWidth();
-
-		raster().fillQuad(x, y, sw, sw, cd, fillCol, alpha, Rotation.ROTATE_0);
-		raster().fillQuad(x + w - sw, y, sw, sw, cd, fillCol, alpha,
-				Rotation.ROTATE_90);
-		raster().fillQuad(x + w - sw, y + h - sw, sw, sw, cd, fillCol, alpha,
-				Rotation.ROTATE_180);
-		raster().fillQuad(x, y + h - sw, sw, sw, cd, fillCol, alpha,
-				Rotation.ROTATE_270);
-
-		raster().fillQuad(x, y + sw, 1, h - 2 * sw, fillCol, alpha);
-		raster().fillQuad(x + sw, y, w - sw * 2, 1, fillCol, alpha);
-		raster().fillQuad(x + w - 1, y + sw, 1, h - 2 * sw, fillCol, alpha);
-		raster().fillQuad(x + sw, y + h - 1, w - sw * 2, 1, fillCol, alpha);
+		raster().fillQuad(x + 1, y + 1, 1, 1, fillCol, alpha);
+		raster().fillQuad(x + w - 2, y + 1, 1, 1, fillCol, alpha);
+		raster().fillQuad(x + w - 2, y + h - 2, 1, 1, fillCol, alpha);
+		raster().fillQuad(x + 1, y + h - 2, 1, 1, fillCol, alpha);
 
 	}
 
@@ -236,35 +227,14 @@ public class Util {
 	 */
 	public static void fillRoundedQuad(int x, int y, int w, int h,
 			Color fillCol, Color negCol, float alpha) {
-		Image cf = TextureLoader.getUiCornerFill();
-		Image cn = TextureLoader.getUiCornerInv();
 
-		int sw = cf.getWidth();
-
-		raster().fillQuad(x, y, sw, sw, cn, negCol, alpha, Rotation.ROTATE_0);
-		raster().fillQuad(x + w - sw, y, sw, sw, cn, negCol, alpha,
-				Rotation.ROTATE_90);
-		raster().fillQuad(x + w - sw, y + h - sw, sw, sw, cn, negCol, alpha,
-				Rotation.ROTATE_180);
-		raster().fillQuad(x, y + h - sw, sw, sw, cn, negCol, alpha,
-				Rotation.ROTATE_270);
-
-		raster().fillQuad(x, y, sw, sw, cf, fillCol, alpha, Rotation.ROTATE_0);
-		raster().fillQuad(x + w - sw, y, sw, sw, cf, fillCol, alpha,
-				Rotation.ROTATE_90);
-		raster().fillQuad(x + w - sw, y + h - sw, sw, sw, cf, fillCol, alpha,
-				Rotation.ROTATE_180);
-		raster().fillQuad(x, y + h - sw, sw, sw, cf, fillCol, alpha,
-				Rotation.ROTATE_270);
-
-		raster().fillQuad(x, y + sw, sw, h - 2 * sw, fillCol, alpha);
-		raster().fillQuad(x + sw, y, w - 2 * sw, sw, fillCol, alpha);
-		raster().fillQuad(x + w - sw, y + sw, sw, h - 2 * sw, fillCol, alpha);
-		raster().fillQuad(x + sw, y + h - sw, w - 2 * sw, sw, fillCol, alpha);
-
-		raster().fillQuad(x + sw, y + sw, w - 2 * sw, h - 2 * sw, fillCol,
-				alpha);
-
+		raster().fillQuad(x + 1, y, w - 2, h, fillCol, alpha);
+		raster().fillQuad(x, y + 1, 1, h - 2, fillCol, alpha);
+		raster().fillQuad(x + w - 1, y + 1, 1, h - 2, fillCol, alpha);
+		raster().fillQuad(x, y, 1, 1, negCol, alpha);
+		raster().fillQuad(x + w - 1, y, 1, 1, negCol, alpha);
+		raster().fillQuad(x + w - 1, y + h - 1, 1, 1, negCol, alpha);
+		raster().fillQuad(x, y + h - 1, 1, 1, negCol, alpha);
 	}
 
 	/**

@@ -179,8 +179,7 @@ public final class ConfigWindow extends Window implements Handler {
 		Tabs tabs = new Tabs();
 		tabs.addTab(new ScrollBox(displayBox), "Display");
 		tabs.addTab(new ScrollBox(wmBox), "Windows");
-
-		// ScrollBox scroll = new ScrollBox(tabs);
+		tabs.addTab(new Label("Sample text"), "Tab");
 
 		FlowBox contentBox = new FlowBox(Orientation.VERTICAL);
 		contentBox.setExpand(tabs);

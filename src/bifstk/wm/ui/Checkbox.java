@@ -40,13 +40,8 @@ public class Checkbox extends AbstractButton {
 		Color entryFill = Theme.getUiEntryColor();
 		Color entryBorder = Theme.getUiBorderColor();
 
-		if (Theme.isWidgetsRounded()) {
-			Util.fillRoundedQuad(0, 0, pw, pw, entryFill, uiBg, a);
-			Util.drawRoundedQuad(0, 0, pw, pw, entryBorder, a);
-		} else {
-			Util.raster().fillQuad(0, 0, pw, pw, entryFill, a);
-			Util.raster().drawQuad(0, 0, pw, pw, entryBorder, a);
-		}
+		Util.fillRoundedQuad(0, 0, pw, pw, entryFill, uiBg, a);
+		Util.drawRoundedQuad(0, 0, pw, pw, entryBorder, a);
 
 		Color fillCol = Theme.getUiButtonColor();
 		if (this.isMouseClicked()) {
@@ -57,17 +52,10 @@ public class Checkbox extends AbstractButton {
 
 		if (this.checked) {
 			int b = (int) (0.2f * pw);
-			if (Theme.isWidgetsRounded()) {
-				Util.fillRoundedQuad(b, b, pw - b * 2, pw - b * 2, fillCol,
-						Color.TRANSP_WHITE, a);
-				Util.drawRoundedQuad(b, b, pw - b * 2, pw - b * 2,
-						Theme.getUiBorderColor(), a);
-			} else {
-				Util.raster()
-						.fillQuad(b, b, pw - b * 2, pw - b * 2, fillCol, a);
-				Util.raster().drawQuad(b, b, pw - b * 2, pw - b * 2,
-						Theme.getUiBorderColor(), a);
-			}
+			Util.fillRoundedQuad(b, b, pw - b * 2, pw - b * 2, fillCol,
+					Color.TRANSP_WHITE, a);
+			Util.drawRoundedQuad(b, b, pw - b * 2, pw - b * 2,
+					Theme.getUiBorderColor(), a);
 		}
 	}
 

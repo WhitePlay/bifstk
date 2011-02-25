@@ -304,6 +304,10 @@ public class Logic {
 			}
 		}
 
+		int leftDx = mx - this.leftMouse.clickX;
+		int leftDy = my - this.leftMouse.clickY;
+		boolean leftDiffPos = (leftDx != 0) && (leftDy != 0);
+
 		// for each mouse event since last call
 		while (Mouse.next()) {
 			int button = Mouse.getEventButton();
@@ -356,12 +360,6 @@ public class Logic {
 				break;
 			}
 		}
-
-		Mouse.poll();
-		int leftDx = mx - this.leftMouse.clickX;
-		int leftDy = my - this.leftMouse.clickY;
-
-		boolean leftDiffPos = (leftDx != 0) && (leftDy != 0);
 
 		/* the mouse is dragged if it was down the last time this method was
 		 * called, and the mouse's position diff is > 0 */

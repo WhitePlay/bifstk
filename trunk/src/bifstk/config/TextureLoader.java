@@ -35,10 +35,6 @@ public class TextureLoader {
 	private Image windowMaximize;
 	private Image windowClose;
 
-	private Image uiCornerDraw;
-	private Image uiCornerFill;
-	private Image uiCornerInv;
-
 	private TextureLoader(String path) throws BifstkException {
 		File f = new File(path);
 		BufferedImage img = null;
@@ -64,11 +60,6 @@ public class TextureLoader {
 
 		this.windowMaximize = new Image(357, 130, 16, 16);
 		this.windowClose = new Image(374, 130, 16, 16);
-
-		this.uiCornerDraw = new Image(308, 195, 3, 3);
-		this.uiCornerFill = new Image(312, 195, 3, 3);
-		this.uiCornerInv = new Image(316, 195, 3, 3);
-
 	}
 
 	/**
@@ -139,28 +130,6 @@ public class TextureLoader {
 	 */
 	public static Image getWindowClose() {
 		return instance.windowClose;
-	}
-
-	/**
-	 * @return the line drawing rounded ui corner
-	 */
-	public static Image getUiCornerDraw() {
-		return instance.uiCornerDraw;
-	}
-
-	/**
-	 * @return the filling rounded ui corner
-	 */
-	public static Image getUiCornerFill() {
-		return instance.uiCornerFill;
-	}
-
-	/**
-	 * @return the inverse of the filling corner; so that both images combined
-	 *         fill a square
-	 */
-	public static Image getUiCornerInv() {
-		return instance.uiCornerInv;
 	}
 
 	/**

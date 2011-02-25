@@ -123,12 +123,7 @@ public class Text extends Actionable implements Focusable {
 		}
 
 		Color fillCol = Theme.getUiEntryColor();
-
-		if (Theme.isWidgetsRounded()) {
-			Util.fillRoundedQuad(x, y, w, h, fillCol, uiBg, a);
-		} else {
-			Util.raster().fillQuad(x, y, w, h, fillCol, a);
-		}
+		Util.fillRoundedQuad(x, y, w, h, fillCol, uiBg, a);
 
 		if (!this.multiLine) {
 			String str = this.content.toString();
@@ -141,12 +136,7 @@ public class Text extends Actionable implements Focusable {
 			}
 		}
 		Color borderCol = Theme.getUiBorderColor();
-
-		if (Theme.isWidgetsRounded()) {
-			Util.drawRoundedQuad(x, y, w, h, borderCol, a);
-		} else {
-			Util.raster().drawQuad(x, y, w, h, borderCol, a);
-		}
+		Util.drawRoundedQuad(x, y, w, h, borderCol, a);
 	}
 
 	private void renderLine(String str, int yOff, float alpha, boolean drawCaret) {

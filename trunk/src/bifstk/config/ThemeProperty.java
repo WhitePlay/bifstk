@@ -97,8 +97,6 @@ public enum ThemeProperty {
 
 	/** COLOR base font color of the UI */
 	uiFontColor("ui.font.color"),
-	/** BOOLEAN true if UI widgets should be rounded */
-	uiWidgetsRounded("ui.widgets.rounded"),
 	/** COLOR color of the ui widgets border color */
 	uiBorderColor("ui.border.color"),
 	/** COLOR color of the ui button background */

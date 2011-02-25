@@ -503,15 +503,6 @@ public class Theme {
 		return instance.uiFontColor;
 	}
 
-	private boolean uiWidgetsRounded;
-
-	/**
-	 * @return true if the ui widgets should be rounded
-	 */
-	public static boolean isWidgetsRounded() {
-		return instance.uiWidgetsRounded;
-	}
-
 	/** singleton instance */
 	private static Theme instance = null;
 
@@ -816,10 +807,6 @@ public class Theme {
 				}
 				case uiFontColor: {
 					this.uiFontColor = Color.parse(sval);
-					break;
-				}
-				case uiWidgetsRounded: {
-					this.uiWidgetsRounded = Boolean.parseBoolean(sval);
 					break;
 				}
 				}

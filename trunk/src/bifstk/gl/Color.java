@@ -54,6 +54,10 @@ public class Color {
 
 	/**
 	 * Default constructor
+	 * 
+	 * @param r [0.0, 1.0]
+	 * @param g [0.0, 1.0]
+	 * @param b [0.0, 1.0]
 	 */
 	public Color(float r, float g, float b) {
 		this(r, g, b, 1.0f);
@@ -61,6 +65,11 @@ public class Color {
 
 	/**
 	 * Default constructor
+	 *
+	 * @param r [0.0, 1.0]
+	 * @param g [0.0, 1.0]
+	 * @param b [0.0, 1.0]
+	 * @param a [0.0, 1.0]
 	 */
 	public Color(float r, float g, float b, float a) {
 		r = Math.min(1.0f, Math.max(r, 0.0f));

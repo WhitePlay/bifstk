@@ -22,8 +22,7 @@ public class Tabs extends Container {
 
 	private Rectangle bounds = null;
 
-	/** border around the tab content in pixels */
-	private static final int border = 4;
+	private final static int border = 3;
 
 	/** sorted tabs */
 	private LinkedList<Tab> tabs = null;
@@ -93,13 +92,21 @@ public class Tabs extends Container {
 
 			/* tab bar */
 			if (acc > w)
-				break;
+				continue;
 
 			if (tab.equals(this.activeTab)) {
 				Util.raster().fillQuad(acc, 0, tw, bh, uiBg.lighter(), uiBg, a,
 						a);
 			} else {
-				Util.raster().fillQuad(acc, 0, tw, bh, uiBg.darker(), a);
+				Util.raster().fillQuad(acc, 0, tw, bh, uiBg, uiBg.darker(), a,
+						a);
+
+				Color hl = new Color(0.45f, 0.45f, 0.45f);
+
+				Util.raster().fillQuad(acc, 0, tw, 1, hl, uiBgAlpha);
+				Util.raster().fillQuad(acc + tw - 1, 1, 1, bh - 1, hl,
+						uiBgAlpha);
+				Util.raster().fillQuad(acc, 1, 1, bh - 1, hl, uiBgAlpha);
 			}
 
 			Fonts.getNormal().drawString(acc + 2, 2, tab.title,
@@ -113,15 +120,19 @@ public class Tabs extends Container {
 			Util.raster().fillQuad(acc, 0, w - acc, bh, uiBg, a);
 		}
 
-		/* hightlight */
-		Color hl = uiBg.highlight();
-		Util.raster().drawQuad(0, bh, 1, h - bh, hl, a);
-		Util.raster().drawQuad(w - 1, bh, 1, h - bh, hl, a);
-		Util.raster().drawQuad(0, h - 1, w, 1, hl, a);
-		Util.raster().drawQuad(0, bh, activeAccL, 1, hl, a);
-		Util.raster().drawQuad(activeAccR, bh, w - activeAccR, 1, hl, a);
-		Util.raster().drawQuad(activeAccR, 0, 1, bh, hl, a);
-		Util.raster().drawQuad(activeAccL - 1, 0, 1, bh, hl, a);
+		/* content and active tab hightlight */
+		Color hl = Theme.getUiBorderColor();
+		Util.raster().fillQuad(0, bh + 1, 1, h - bh - 2, hl, a);
+		Util.raster().fillQuad(w - 1, bh + 1, 1, h - bh - 2, hl, a);
+		Util.raster().fillQuad(1, h - 1, w - 2, 1, hl, a);
+		Util.raster().fillQuad(1, bh, activeAccL, 1, hl, a);
+		Util.raster().fillQuad(activeAccR - 1, bh, w - activeAccR, 1, hl, a);
+		Util.raster().fillQuad(activeAccR - 1, 0, 1, bh, hl, a);
+		Util.raster().fillQuad(activeAccL, 0, 1, bh, hl, a);
+		Util.raster().fillQuad(1, bh + 1, 1, 1, hl, a);
+		Util.raster().fillQuad(w - 2, bh + 1, 1, 1, hl, a);
+		Util.raster().fillQuad(w - 2, h - 2, 1, 1, hl, a);
+		Util.raster().fillQuad(1, h - 2, 1, 1, hl, a);
 
 	}
 
@@ -272,9 +283,6 @@ public class Tabs extends Container {
 
 	@Override
 	public void mouseHover(int x, int y) {
-		// this.hoverTab = null;
-		// this.contentHover = false;
-
 		if (border < x && x < getWidth() - border
 				&& border + getTabsHeight() < y && y < getHeight() - border) {
 			if (this.activeTab != null) {
@@ -283,7 +291,6 @@ public class Tabs extends Container {
 				this.contentHover = true;
 			}
 		} else if (this.contentHover) {
-			System.out.println("Tabs.mouseHover()");
 			this.contentHover = false;
 			if (this.hoverTab != null) {
 				this.hoverTab.content.mouseOut();
@@ -349,5 +356,4 @@ public class Tabs extends Container {
 					* getTabsHeight());
 		}
 	}
-
 }

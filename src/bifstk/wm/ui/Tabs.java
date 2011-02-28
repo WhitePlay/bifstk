@@ -94,23 +94,26 @@ public class Tabs extends Container {
 			if (acc > w)
 				continue;
 
+			Color fontCol = Theme.getUiFontColor();
 			if (tab.equals(this.activeTab)) {
-				Util.raster().fillQuad(acc, 0, tw, bh, uiBg.lighter(), uiBg, a,
-						a);
+				Util.raster().fillQuad(acc + 1, 0, tw - 2, bh, uiBg.lighter(),
+						uiBg, a, a);
 			} else {
-				Util.raster().fillQuad(acc, 0, tw, bh, uiBg, uiBg.darker(), a,
-						a);
+				Util.raster().fillQuad(acc + 2, 1, tw - 4, bh - 1, uiBg,
+						uiBg.darker(), a, a);
 
-				Color hl = new Color(0.45f, 0.45f, 0.45f);
+				Color hl = new Color(.42f, .42f, .42f);
+				fontCol = Color.GRAY;
 
-				Util.raster().fillQuad(acc, 0, tw, 1, hl, uiBgAlpha);
-				Util.raster().fillQuad(acc + tw - 1, 1, 1, bh - 1, hl,
-						uiBgAlpha);
-				Util.raster().fillQuad(acc, 1, 1, bh - 1, hl, uiBgAlpha);
+				Util.raster().fillQuad(acc + 1, 0, tw - 2, 1, hl, a);
+				Util.raster().fillQuad(acc + tw - 2, 1, 1, bh - 1, hl, a);
+				Util.raster().fillQuad(acc + 1, 1, 1, bh - 1, hl, a);
 			}
 
-			Fonts.getNormal().drawString(acc + 2, 2, tab.title,
-					Theme.getUiFontColor(), alpha);
+			Util.raster().fillQuad(acc, 0, 1, bh, uiBg, a);
+			Util.raster().fillQuad(acc + tw - 1, 0, 1, bh, uiBg, a);
+
+			Fonts.getNormal().drawString(acc + 4, 2, tab.title, fontCol, alpha);
 
 			acc += tw;
 		}
@@ -125,15 +128,17 @@ public class Tabs extends Container {
 		Util.raster().fillQuad(0, bh + 1, 1, h - bh - 2, hl, a);
 		Util.raster().fillQuad(w - 1, bh + 1, 1, h - bh - 2, hl, a);
 		Util.raster().fillQuad(1, h - 1, w - 2, 1, hl, a);
-		Util.raster().fillQuad(1, bh, activeAccL, 1, hl, a);
-		Util.raster().fillQuad(activeAccR - 1, bh, w - activeAccR, 1, hl, a);
-		Util.raster().fillQuad(activeAccR - 1, 0, 1, bh, hl, a);
-		Util.raster().fillQuad(activeAccL, 0, 1, bh, hl, a);
+		Util.raster().fillQuad(1, bh, activeAccL + 1, 1, hl, a);
+		Util.raster()
+				.fillQuad(activeAccR - 2, bh, w - activeAccR + 1, 1, hl, a);
+		Util.raster().fillQuad(activeAccR - 2, 0, 1, bh, hl, a);
+		Util.raster().fillQuad(activeAccL + 1, 0, 1, bh, hl, a);
+		Util.raster().fillQuad(activeAccL + 2, 0, activeAccR - activeAccL - 4,
+				1, hl, a);
 		Util.raster().fillQuad(1, bh + 1, 1, 1, hl, a);
 		Util.raster().fillQuad(w - 2, bh + 1, 1, 1, hl, a);
 		Util.raster().fillQuad(w - 2, h - 2, 1, 1, hl, a);
 		Util.raster().fillQuad(1, h - 2, 1, 1, hl, a);
-
 	}
 
 	@Override

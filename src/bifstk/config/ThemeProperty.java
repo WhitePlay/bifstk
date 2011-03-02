@@ -108,7 +108,17 @@ public enum ThemeProperty {
 	/** COLOR color of the ui entries (text,radio,..) bg color */
 	uiEntryColor("ui.entry.color"),
 	/** COLOR fg font color for ui entry widgets (text) */
-	uiEntryFontColor("ui.entry.font.color");
+	uiEntryFontColor("ui.entry.font.color"),
+	/** COLOR color of the gradient on top of the focused tab */
+	uiTabFocusedHighlightColor("ui.tab.focused.highlight.color"),
+	/** COLOR border color of unfocused tabs */
+	uiTabUnfocusedBorderColor("ui.tab.unfocused.border.color"),
+	/** COLOR font color of unfocused tabs */
+	uiTabUnfocusedFontColor("ui.tab.unfocused.font.color"),
+	/** COLOR bg color of unfocused tabs */
+	uiTabUnfocusedBackgroundColor("ui.tab.unfocused.background.color"),
+	/** COLOR color of the gradient on top of unfocused tabs */
+	uiTabUnfocusedHighlightColor("ui.tab.unfocused.highlight.color");
 
 	private String name = "";
 

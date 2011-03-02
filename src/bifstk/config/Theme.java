@@ -503,6 +503,55 @@ public class Theme {
 		return instance.uiFontColor;
 	}
 
+	private Color uiTabFocusedHighlightColor;
+
+	/**
+	 * @return color of the gradient on top of the focused tab
+	 */
+	public static Color getUiTabFocusedHighlightColor() {
+		return instance.uiTabFocusedHighlightColor;
+	}
+
+	private float uiTabFocusedHighlightAlpha;
+
+	private Color uiTabUnfocusedBorderColor;
+
+	/**
+	 * @return border color of unfocused tabs
+	 */
+	public static Color getUiTabUnfocusedBorderColor() {
+		return instance.uiTabUnfocusedBorderColor;
+	}
+
+	private Color uiTabUnfocusedFontColor;
+
+	/**
+	 * @return font color of unfocused tabs
+	 */
+	public static Color getUiTabUnfocusedFontColor() {
+		return instance.uiTabUnfocusedFontColor;
+	}
+
+	private Color uiTabUnfocusedBackgroundColor;
+
+	/**
+	 * @return bg color of unfocused tabs 
+	 */
+	public static Color getUiTabUnfocusedBackgroundColor() {
+		return instance.uiTabUnfocusedBackgroundColor;
+	}
+
+	private Color uiTabUnfocusedHighlightColor;
+
+	/**
+	 * @return color of the gradient on top of unfocused tabs
+	 */
+	public static Color getUiTabUnfocusedHighlightColor() {
+		return instance.uiTabUnfocusedHighlightColor;
+	}
+
+	private float uiTabUnfocusedHighlightAlpha;
+
 	/** singleton instance */
 	private static Theme instance = null;
 
@@ -807,6 +856,26 @@ public class Theme {
 				}
 				case uiFontColor: {
 					this.uiFontColor = Color.parse(sval);
+					break;
+				}
+				case uiTabFocusedHighlightColor: {
+					this.uiTabFocusedHighlightColor = Color.parse(sval);
+					break;
+				}
+				case uiTabUnfocusedBorderColor: {
+					this.uiTabUnfocusedBorderColor = Color.parse(sval);
+					break;
+				}
+				case uiTabUnfocusedFontColor: {
+					this.uiTabUnfocusedFontColor = Color.parse(sval);
+					break;
+				}
+				case uiTabUnfocusedBackgroundColor: {
+					this.uiTabUnfocusedBackgroundColor = Color.parse(sval);
+					break;
+				}
+				case uiTabUnfocusedHighlightColor: {
+					this.uiTabUnfocusedHighlightColor = Color.parse(sval);
 					break;
 				}
 				}

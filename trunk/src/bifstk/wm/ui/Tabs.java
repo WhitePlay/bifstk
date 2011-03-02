@@ -96,14 +96,14 @@ public class Tabs extends Container {
 
 			Color fontCol = Theme.getUiFontColor();
 			if (tab.equals(this.activeTab)) {
-				Util.raster().fillQuad(acc + 1, 0, tw - 2, bh, uiBg.lighter(),
-						uiBg, a, a);
+				Util.raster().fillQuad(acc + 1, 0, tw - 2, bh,
+						Theme.getUiTabFocusedHighlightColor(), uiBg, a, a);
 			} else {
 				Util.raster().fillQuad(acc + 2, 1, tw - 4, bh - 1, uiBg,
-						uiBg.darker(), a, a);
+						Theme.getUiTabUnfocusedHighlightColor(), a, a);
 
-				Color hl = new Color(.42f, .42f, .42f);
-				fontCol = Color.GRAY;
+				Color hl = Theme.getUiTabUnfocusedBorderColor();
+				fontCol = Theme.getUiTabUnfocusedFontColor();
 
 				Util.raster().fillQuad(acc + 1, 0, tw - 2, 1, hl, a);
 				Util.raster().fillQuad(acc + tw - 2, 1, 1, bh - 1, hl, a);

@@ -8,6 +8,8 @@ import bifstk.wm.geom.Rectangle;
 
 /**
  * Display text in a Widget
+ * <p>
+ * Single line, does not wrap
  * 
  */
 public class Label extends Widget {

@@ -16,6 +16,20 @@ import bifstk.wm.geom.Rectangle;
  */
 public class Text extends Actionable implements Focusable {
 
+	/**
+	 * Authorized characters in single-line mode
+	 */
+	public static enum Filter {
+		/** letters */
+		ALPHA,
+		/** numbers */
+		NUM,
+		/** letters, numbers, some other common characters */
+		ALNUM,
+		/** all character */
+		ALL;
+	}
+
 	/** dimensions */
 	private Rectangle bounds = null;
 
@@ -26,6 +40,9 @@ public class Text extends Actionable implements Focusable {
 
 	/** content of the text editor, current line if multiline */
 	private StringBuffer content = null;
+
+	/** character filter in single-line mode */
+	private Filter filter = Filter.ALL;
 
 	/** if multiline */
 	private ArrayList<StringBuffer> lines = null;
@@ -69,10 +86,23 @@ public class Text extends Actionable implements Focusable {
 	 *            expand
 	 */
 	public Text(int length) {
+		this(length, Filter.ALL);
+	}
+
+	/**
+	 * Creates a single line text
+	 * 
+	 * @param length number of characters to display. < 1 means the widget will
+	 *            expand
+	 * @param filter
+	 *            character filter
+	 */
+	public Text(int length, Filter filter) {
 		this.bounds = new Rectangle();
 		this.length = length;
 		this.multiLine = false;
 		this.content = new StringBuffer();
+		this.filter = filter;
 	}
 
 	/**
@@ -91,7 +121,9 @@ public class Text extends Actionable implements Focusable {
 				}
 			}
 		} else {
-			this.content = new StringBuffer(text);
+			char[] chars = text.toCharArray();
+			for (int i = chars.length - 1; i >= 0; i--)
+				this.insertChar(chars[i]);
 		}
 	}
 
@@ -304,8 +336,8 @@ public class Text extends Actionable implements Focusable {
 					break;
 				}
 
-				this.content.insert(this.pos, c);
-				this.pos++;
+				if (this.insertChar(c))
+					this.pos++;
 			}
 			break;
 		}
@@ -349,7 +381,40 @@ public class Text extends Actionable implements Focusable {
 	}
 
 	/**
-	 * @param pos the current position in the line
+	 * Insert a character in the current line
+	 * <p>
+	 * may return and do nothing if the character is filtered
+	 * 
+	 * @param c character to insert
+	 * @return true if the character was inserted; false if it was filtered
+	 */
+	private boolean insertChar(char c) {
+		if (!this.multiLine) {
+			switch (this.filter) {
+			case NUM:
+				if (!Character.isDigit(c))
+					return false;
+				break;
+			case ALNUM:
+				if (!(Character.isLetterOrDigit(c) || c == '_' || c == '-'
+						|| c == '.' || c == ' '))
+					return false;
+				break;
+			case ALPHA:
+				if (!Character.isLetter(c))
+					return false;
+				break;
+			case ALL:
+				break;
+			}
+		}
+		this.content.insert(this.pos, c);
+		return true;
+	}
+
+	/**
+	 * @param pos
+	 *            the current position in the line
 	 * @return the position of the next word on the right
 	 */
 	private int getNextWordPos(int pos) {

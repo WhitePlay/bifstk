@@ -512,8 +512,6 @@ public class Theme {
 		return instance.uiTabFocusedHighlightColor;
 	}
 
-	private float uiTabFocusedHighlightAlpha;
-
 	private Color uiTabUnfocusedBorderColor;
 
 	/**
@@ -549,8 +547,6 @@ public class Theme {
 	public static Color getUiTabUnfocusedHighlightColor() {
 		return instance.uiTabUnfocusedHighlightColor;
 	}
-
-	private float uiTabUnfocusedHighlightAlpha;
 
 	/** singleton instance */
 	private static Theme instance = null;

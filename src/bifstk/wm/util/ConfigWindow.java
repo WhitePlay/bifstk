@@ -14,6 +14,7 @@ import bifstk.wm.ui.Label;
 import bifstk.wm.ui.ScrollBox;
 import bifstk.wm.ui.Tabs;
 import bifstk.wm.ui.Text;
+import bifstk.wm.ui.Text.Filter;
 
 /**
  * Stock graphical utility edit all {@link ConfigProperty} values
@@ -42,16 +43,19 @@ public final class ConfigWindow extends Window implements Handler {
 	private Checkbox windowDockRight;
 	private Checkbox frameSnap;
 	private Checkbox frameAnims;
+	private Text frameAnimLen;
+	private Text frameMinSize;
+	private Text frameSnapRadius;
 
-	private ConfigWindow(int x, int y) {
-		super(x, y);
+	private ConfigWindow() {
+		super(50, 50, 300, 200);
 		this.build();
 		this.reset();
 	}
 
 	public static ConfigWindow getInstance() {
 		if (ConfigWindow.instance == null) {
-			ConfigWindow.instance = new ConfigWindow(50, 20);
+			ConfigWindow.instance = new ConfigWindow();
 		}
 		return ConfigWindow.instance;
 	}
@@ -63,13 +67,13 @@ public final class ConfigWindow extends Window implements Handler {
 		FlowBox displayBox = new FlowBox(FlowBox.Orientation.VERTICAL);
 
 		FlowBox widthBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
-		width = new Text(4);
+		width = new Text(4, Filter.NUM);
 		widthBox.addBegin(new Label("Width"));
 		widthBox.addEnd(width);
 		displayBox.addBegin(widthBox);
 
 		FlowBox heightBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
-		height = new Text(4);
+		height = new Text(4, Filter.NUM);
 		heightBox.addBegin(new Label("Height"));
 		heightBox.addEnd(height);
 		displayBox.addBegin(heightBox);
@@ -82,13 +86,13 @@ public final class ConfigWindow extends Window implements Handler {
 		displayBox.addBegin(fsBox);
 
 		FlowBox titleBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
-		title = new Text(4);
+		title = new Text(4, Filter.ALNUM);
 		titleBox.addBegin(new Label("Title"));
 		titleBox.addEnd(title);
 		displayBox.addBegin(titleBox);
 
 		FlowBox fpsBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
-		fps = new Text(2);
+		fps = new Text(2, Filter.NUM);
 		fpsBox.addBegin(new Label("FPS"));
 		fpsBox.addEnd(fps);
 		displayBox.addBegin(fpsBox);
@@ -108,7 +112,7 @@ public final class ConfigWindow extends Window implements Handler {
 		displayBox.addBegin(vsyncBox);
 
 		FlowBox samplesBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
-		samples = new Text(2);
+		samples = new Text(2, Filter.NUM);
 		samplesBox.addBegin(new Label("AA samples"));
 		samplesBox.addEnd(samples);
 		displayBox.addBegin(samplesBox);
@@ -118,52 +122,70 @@ public final class ConfigWindow extends Window implements Handler {
 
 		FlowBox focusBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		focusFollowMouse = new Checkbox();
+		focusBox.addBegin(focusFollowMouse);
 		focusBox.addBegin(new Label("Focus follow mouse"));
-		focusBox.addEnd(focusFollowMouse);
 		focusBox.bindButton(focusFollowMouse);
 		wmBox.addBegin(focusBox);
 
 		FlowBox debugLayoutBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		debugLayout = new Checkbox();
+		debugLayoutBox.addBegin(debugLayout);
 		debugLayoutBox.addBegin(new Label("Debug layout"));
-		debugLayoutBox.addEnd(debugLayout);
 		debugLayoutBox.bindButton(debugLayout);
 		wmBox.addBegin(debugLayoutBox);
 
+		FlowBox frameAnimBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
+		frameAnims = new Checkbox();
+		frameAnimBox.addBegin(frameAnims);
+		frameAnimBox.addBegin(new Label("Animations"));
+		frameAnimBox.bindButton(frameAnims);
+		wmBox.addBegin(frameAnimBox);
+
+		FlowBox frameAnimLenBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
+		frameAnimLen = new Text(4, Filter.NUM);
+		frameAnimLenBox.addBegin(new Label("Animation duration"));
+		frameAnimLenBox.addEnd(frameAnimLen);
+		wmBox.addBegin(frameAnimLenBox);
+
 		FlowBox snapTopBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		windowSnapTop = new Checkbox();
+		snapTopBox.addBegin(windowSnapTop);
 		snapTopBox.addBegin(new Label("Snap Windows top"));
-		snapTopBox.addEnd(windowSnapTop);
 		snapTopBox.bindButton(windowSnapTop);
 		wmBox.addBegin(snapTopBox);
 
+		FlowBox frameSizeBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
+		frameMinSize = new Text(4, Filter.NUM);
+		frameSizeBox.addBegin(new Label("Minimum window size"));
+		frameSizeBox.addEnd(frameMinSize);
+		wmBox.addBegin(frameSizeBox);
+
 		FlowBox dockLeftBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		windowDockLeft = new Checkbox();
+		dockLeftBox.addBegin(windowDockLeft);
 		dockLeftBox.addBegin(new Label("Left dock"));
-		dockLeftBox.addEnd(windowDockLeft);
 		dockLeftBox.bindButton(windowDockLeft);
 		wmBox.addBegin(dockLeftBox);
 
 		FlowBox dockRightBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		windowDockRight = new Checkbox();
+		dockRightBox.addBegin(windowDockRight);
 		dockRightBox.addBegin(new Label("Right dock"));
-		dockRightBox.addEnd(windowDockRight);
 		dockRightBox.bindButton(windowDockRight);
 		wmBox.addBegin(dockRightBox);
 
 		FlowBox frameSnapBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
 		frameSnap = new Checkbox();
+		frameSnapBox.addBegin(frameSnap);
 		frameSnapBox.addBegin(new Label("Magnetic windows"));
-		frameSnapBox.addEnd(frameSnap);
 		frameSnapBox.bindButton(frameSnap);
 		wmBox.addBegin(frameSnapBox);
 
-		FlowBox frameAnimBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
-		frameAnims = new Checkbox();
-		frameAnimBox.addBegin(new Label("Animations"));
-		frameAnimBox.addEnd(frameAnims);
-		frameAnimBox.bindButton(frameAnims);
-		wmBox.addBegin(frameAnimBox);
+		FlowBox frameSnapRadBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
+		frameSnapRadius = new Text(3, Filter.NUM);
+		frameSnapRadBox.addBegin(new Label("Attraction threshold"));
+		frameSnapRadBox.addEnd(frameSnapRadius);
+		wmBox.addBegin(frameSnapRadBox);
 
 		// Buttons
 		FlowBox butBox = new FlowBox(FlowBox.Orientation.HORIZONTAL);
@@ -209,6 +231,9 @@ public final class ConfigWindow extends Window implements Handler {
 		this.windowDockRight.setChecked(c.isWmWindowDockRight());
 		this.frameSnap.setChecked(c.isWmFrameSnap());
 		this.frameAnims.setChecked(c.isWmAnimations());
+		this.frameAnimLen.setText("" + c.getWmAnimationsLength());
+		this.frameMinSize.setText("" + c.getWmFrameSizeMin());
+		this.frameSnapRadius.setText("" + c.getWmFrameSnapRadius());
 	}
 
 	@Override

@@ -638,13 +638,13 @@ public class Config {
 				case displayAntialiasSamples:
 					setDisplayAntialiasSamples(Integer.parseInt(sval));
 					break;
-				case fontPath:
+				case gfxFontPath:
 					setFontPath(sval);
 					break;
-				case fontSizeNormal:
+				case gfxFontSizeNormal:
 					setFontSizeNormal(Integer.parseInt(sval));
 					break;
-				case fontSizeSmall:
+				case gfxFontSizeSmall:
 					setFontSizeSmall(Integer.parseInt(sval));
 					break;
 				case loggerDateFormat:

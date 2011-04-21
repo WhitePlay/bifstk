@@ -22,7 +22,7 @@ import bifstk.wm.State.DockPosition;
 /**
  * Root of the Window Manager
  * <p>
- * Managed the display and renders the WM
+ * Manages the display and renders the WM
  * 
  */
 public class Renderer {
@@ -164,11 +164,11 @@ public class Renderer {
 		float baseAlpha = this.state.getLeftDock().get(0).getUiAlpha();
 		/* draw the windows */
 		for (Window win : this.state.getLeftDock()) {
-			win.render(win.getModAlpha(), win.getUiColor(), baseAlpha);
+			win.render(1.0f, win.getUiColor(), win.getUiAlpha());
 
 			acc += win.getHeight();
 			// bot border
-			Util.raster().fillQuad(0, acc, x, w, c, baseAlpha);
+			Util.raster().fillQuad(0, acc, x, w, c, win.getUiAlpha());
 
 			acc += w;
 		}
@@ -210,7 +210,7 @@ public class Renderer {
 		int acc = 0;
 		/* draw the windows */
 		for (Window win : this.state.getRightDock()) {
-			win.render(win.getModAlpha(), win.getUiColor(), baseAlpha);
+			win.render(1.0f, win.getUiColor(), win.getUiAlpha());
 
 			acc += win.getHeight();
 			// bot border

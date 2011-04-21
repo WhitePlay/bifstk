@@ -47,19 +47,15 @@ public enum ConfigProperty {
 	/** INT number of antialias samples for Multisampling */
 	displayAntialiasSamples("display.antialias.samples"),
 
-	// /////////////////////////
-	// /// Fonts
-	// /////////////////////////
-	/** STRING Path to the ttf font file */
-	fontPath("font.path"),
-	/** INT Point size of the normal font size */
-	fontSizeSmall("font.size.small"),
-	/** INT point size of the small font size */
-	fontSizeNormal("font.size.normal"),
-
 	// //////////////////////////
 	// /// Graphical resources
 	// //////////////////////////
+	/** STRING Path to the ttf font file */
+	gfxFontPath("gfx.font.path"),
+	/** INT Point size of the small font size */
+	gfxFontSizeSmall("gfx.font.size.small"),
+	/** INT point size of the normal font size */
+	gfxFontSizeNormal("gfx.font.size.normal"),
 	/** STRING Path to the directory containing the mouse cursor bitmaps */
 	cursorsPath("gfx.cursors.path"),
 	/** STRING Path to the theme file */

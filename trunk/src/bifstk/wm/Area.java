@@ -57,7 +57,8 @@ public class Area extends Frame {
 
 	@Override
 	protected Color getBorderUnfocusedColor() {
-		return Theme.get().areaBorderUnfocusedColor;
+		return Theme.get().areaBorderFocusedColor
+				.add(Theme.get().areaUnfocusedMask);
 	}
 
 	@Override
@@ -79,7 +80,7 @@ public class Area extends Frame {
 
 	@Override
 	protected Color getFrameUnfocusedColor() {
-		return Theme.get().areaUnfocusedColor;
+		return Theme.get().areaFocusedColor.add(Theme.get().areaUnfocusedMask);
 	}
 
 	@Override

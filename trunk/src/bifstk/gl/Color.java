@@ -182,6 +182,19 @@ public class Color {
 				* (this.alpha * factor + target.alpha * invFactor));
 	}
 
+	/**
+	 * Create a new Color object which components are this + param
+	 * @param rgb value to add to each component in range [-1.0f, 1.0f]
+	 * @return a new Color Object reflecting this + parameters
+	 */
+	public Color add(float[] rgb) {
+		if (rgb.length != 3)
+			throw new IllegalArgumentException(
+					"Expected 3 floats for RGB components");
+		return new Color(this.red + rgb[0], this.green + rgb[1], this.blue
+				+ rgb[2], this.alpha);
+	}
+
 	private static final float highlight_off = 0.1f;
 
 	/**

@@ -18,13 +18,15 @@ public enum ThemeProperty {
 	// INT pixel width of the border around the window 
 	windowBorderWidth("window.border.width"),
 	// COLOR color of the border of the window 
-	windowBorderFocusedColor("window.border.focused.color"),
-	// COLOR color of the border of the window 
-	windowBorderUnfocusedColor("window.border.unfocused.color"),
+	windowBorderColor("window.border.color"),
+	// COLOR base color of a Window ui 
+	windowColor("window.color"),
 	// COLOR window titlebar color when focused 
-	windowTitlebarFocusedColor("window.titlebar.focused.color"),
-	// COLOR window titlebar color when not focused 
-	windowTitlebarUnfocusedColor("window.titlebar.unfocused.color"),
+	windowTitlebarColor("window.titlebar.color"),
+	// STRING 3 strings in [-255,255] separated by spaces
+	windowUnfocusedMask("window.unfocused.mask"),
+	// FLOAT base opacity of the window ui 
+	windowAlpha("window.alpha"),
 	// FLOAT window opacity when moved 
 	windowMovedAlpha("window.moved.alpha"),
 	// FLOAT window opacity when resized 
@@ -35,12 +37,6 @@ public enum ThemeProperty {
 	windowShadowEnabled("window.shadow.enabled"),
 	// FLOAT opacity of the window shadow 
 	windowShadowAlpha("window.shadow.alpha"),
-	// COLOR base color of a Window ui 
-	windowFocusedColor("window.focused.color"),
-	// COLOR base color of a Window ui when not focused 
-	windowUnfocusedColor("window.unfocused.color"),
-	// FLOAT base opacity of the window ui 
-	windowFocusedAlpha("window.focused.alpha"),
 	// COLOR color of the window shadow when focused 
 	windowShadowFocusedColor("window.shadow.focused.color"),
 	// COLOR color of the window shadow when not focused 
@@ -48,14 +44,12 @@ public enum ThemeProperty {
 
 	// INT pixel width of the border around the area 
 	areaBorderWidth("area.border.width"),
+	// STRING 3 strings in [-255,255] separated by spaces
+	areaUnfocusedMask("area.unfocused.mask"),
 	// COLOR focused color of the area 
 	areaFocusedColor("area.focused.color"),
-	// COLOR unfocused color of the area 
-	areaUnfocusedColor("area.unfocused.color"),
 	// COLOR focused color of the outer border 
 	areaBorderFocusedColor("area.border.focused.color"),
-	// COLOR unfocused color of the outer border 
-	areaBorderUnfocusedColor("area.border.unfocused.color"),
 	// FLOAT opacity of the area ui 
 	areaFocusedAlpha("area.focused.alpha"),
 	// FLOAT opacity if of the area when not focused 

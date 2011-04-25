@@ -35,32 +35,35 @@ public class Window extends Frame {
 
 	@Override
 	protected Color getBorderFocusedColor() {
-		return Theme.get().windowBorderFocusedColor;
+		return Theme.get().windowBorderColor;
 	}
 
 	@Override
 	protected Color getBorderUnfocusedColor() {
-		return Theme.get().windowBorderUnfocusedColor;
+		return Theme.get().windowBorderColor
+				.add(Theme.get().windowUnfocusedMask);
 	}
 
 	@Override
 	protected Color getFrameTitlebarFocusedColor() {
-		return Theme.get().windowTitlebarFocusedColor;
+		return Theme.get().windowTitlebarColor;
 	}
 
 	@Override
 	protected Color getFrameTitlebarUnfocusedColor() {
-		return Theme.get().windowTitlebarUnfocusedColor;
+		return Theme.get().windowTitlebarColor
+				.add(Theme.get().windowUnfocusedMask);
 	}
 
 	@Override
 	protected Color getFrameFocusedColor() {
-		return Theme.get().windowFocusedColor;
+		return Theme.get().windowColor;
 	}
 
 	@Override
 	protected Color getFrameUnfocusedColor() {
-		return Theme.get().windowUnfocusedColor;
+		return Theme.get().windowColor
+				.add(Theme.get().windowUnfocusedMask);
 	}
 
 	@Override
@@ -85,7 +88,7 @@ public class Window extends Frame {
 
 	@Override
 	protected float getFrameFocusedAlpha() {
-		return Theme.get().windowFocusedAlpha;
+		return Theme.get().windowAlpha;
 	}
 
 	@Override

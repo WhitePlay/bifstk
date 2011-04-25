@@ -361,7 +361,8 @@ public class Bifstk {
 		Logger.debug("JAVA_HOME:  " + System.getProperty("java.home"));
 
 		Logger.debug("LWJGL:      " + Sys.getVersion());
-
+		Logger.debug("PWD:        " + System.getProperty("user.dir"));
+		
 		Logger.info("Config loaded from: " + config);
 	}
 

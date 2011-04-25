@@ -25,8 +25,8 @@ import bifstk.wm.Frame.Controls;
  */
 public class Theme {
 
-	public Color rootBackgroundColor = null;
-	public Color rootBackgroundModalColor = null;
+	public Color rootBackgroundColor;
+	public Color rootBackgroundModalColor;
 	public float rootBackgroundModalAlpha;
 
 	public List<Controls> frameControlsOrder = null;
@@ -46,35 +46,32 @@ public class Theme {
 	public Color frameControlsMaximizeUnfocusedColor;
 
 	public int windowBorderWidth;
-	private int windowBorderWidthMin = 1, windowBorderWidthMax = 10;
-	public Color windowBorderFocusedColor;
-	public Color windowBorderUnfocusedColor;
-	public Color windowTitlebarFocusedColor = null;
-	public Color windowTitlebarUnfocusedColor = null;
+	public float[] windowUnfocusedMask;
+	private final int windowBorderWidthMin = 1, windowBorderWidthMax = 10;
+	public Color windowBorderColor;
+	public Color windowTitlebarColor;
 	public float windowMovedAlpha;
 	public float windowResizedAlpha;
 	public float windowUnfocusedAlpha;
 	public boolean windowShadowEnabled;
 	public float windowShadowAlpha;
-	public Color windowFocusedColor = null;
-	public Color windowUnfocusedColor = null;
-	public float windowFocusedAlpha = 1.0f;
+	public Color windowColor;
+	public float windowAlpha;
 	public Color windowShadowFocusedColor;
 	public Color windowShadowUnfocusedColor;
 
 	public int areaBorderWidth;
-	private static final int areaBorderMin = 1, areaBorderMax = 20;
-	public Color areaFocusedColor = null;
-	public Color areaUnfocusedColor = null;
-	public Color areaBorderFocusedColor = null;
-	public Color areaBorderUnfocusedColor = null;
+	public float[] areaUnfocusedMask;
+	private final int areaBorderMin = 1, areaBorderMax = 20;
+	public Color areaFocusedColor;
+	public Color areaBorderFocusedColor;
 	public float areaFocusedAlpha;
 	public float areaUnfocusedAlpha;
 
-	public Color uiButtonColor = null;
-	public Color uiButtonHoverColor = null;
-	public Color uiButtonClickColor = null;
-	public Color uiBorderColor = null;
+	public Color uiButtonColor;
+	public Color uiButtonHoverColor;
+	public Color uiButtonClickColor;
+	public Color uiBorderColor;
 	public Color uiEntryColor;
 	public Color uiEntryFontColor;
 	public Color uiFontColor;
@@ -178,20 +175,26 @@ public class Theme {
 							windowBorderWidthMax);
 					break;
 				}
-				case windowBorderFocusedColor: {
-					this.windowBorderFocusedColor = Color.parse(sval);
+				case windowUnfocusedMask: {
+					String[] expl = sval.split(" ");
+					if (expl.length < 3) {
+						throw new BifstkException(
+								"Expected 3 Integers separated by spaces for value: "
+										+ sval);
+					}
+					int r = Integer.parseInt(expl[0]);
+					int g = Integer.parseInt(expl[1]);
+					int b = Integer.parseInt(expl[2]);
+					this.windowUnfocusedMask = new float[] { r / 255.0f,
+							g / 255.0f, b / 255.0f };
 					break;
 				}
-				case windowBorderUnfocusedColor: {
-					this.windowBorderUnfocusedColor = Color.parse(sval);
+				case windowBorderColor: {
+					this.windowBorderColor = Color.parse(sval);
 					break;
 				}
-				case windowTitlebarFocusedColor: {
-					this.windowTitlebarFocusedColor = Color.parse(sval);
-					break;
-				}
-				case windowTitlebarUnfocusedColor: {
-					this.windowTitlebarUnfocusedColor = Color.parse(sval);
+				case windowTitlebarColor: {
+					this.windowTitlebarColor = Color.parse(sval);
 					break;
 				}
 				case windowShadowEnabled: {
@@ -218,16 +221,12 @@ public class Theme {
 							Float.parseFloat(sval), 0.0f, 1.0f);
 					break;
 				}
-				case windowFocusedColor: {
-					this.windowFocusedColor = Color.parse(sval);
+				case windowColor: {
+					this.windowColor = Color.parse(sval);
 					break;
 				}
-				case windowUnfocusedColor: {
-					this.windowUnfocusedColor = Color.parse(sval);
-					break;
-				}
-				case windowFocusedAlpha: {
-					this.windowFocusedAlpha = Util.clampf(
+				case windowAlpha: {
+					this.windowAlpha = Util.clampf(
 							Float.parseFloat(sval), 0.0f, 1.0f);
 					break;
 				}
@@ -244,20 +243,26 @@ public class Theme {
 							areaBorderMin, areaBorderMax);
 					break;
 				}
+				case areaUnfocusedMask: {
+					String[] expl = sval.split(" ");
+					if (expl.length < 3) {
+						throw new BifstkException(
+								"Expected 3 Integers separated by spaces for value: "
+										+ sval);
+					}
+					int r = Integer.parseInt(expl[0]);
+					int g = Integer.parseInt(expl[1]);
+					int b = Integer.parseInt(expl[2]);
+					this.areaUnfocusedMask = new float[] { r / 255.0f,
+							g / 255.0f, b / 255.0f };
+					break;
+				}
 				case areaFocusedColor: {
 					this.areaFocusedColor = Color.parse(sval);
 					break;
 				}
-				case areaUnfocusedColor: {
-					this.areaUnfocusedColor = Color.parse(sval);
-					break;
-				}
 				case areaBorderFocusedColor: {
 					this.areaBorderFocusedColor = Color.parse(sval);
-					break;
-				}
-				case areaBorderUnfocusedColor: {
-					this.areaBorderUnfocusedColor = Color.parse(sval);
 					break;
 				}
 				case areaFocusedAlpha: {

@@ -344,8 +344,12 @@ public abstract class Frame implements Drawable, Clickable {
 						if (hover || hoverAnim > 0.0f) {
 							Util.drawShadowQuad(x + borderWidth + acc, y
 									+ yClickDec + borderWidth, img.getWidth(),
-									img.getHeight(), 0.3f * hoverAnim, col,
+									img.getHeight(), 0.2f * hoverAnim, col,
 									true);
+							Util.raster().fillQuad(x + borderWidth + acc,
+									y + yClickDec + borderWidth,
+									img.getWidth(), img.getHeight(), col,
+									0.2f * hoverAnim);
 
 						}
 

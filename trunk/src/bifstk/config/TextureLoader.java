@@ -58,8 +58,8 @@ public class TextureLoader {
 		this.shadowLeft = new Image(323, 130, 16, 16);
 		this.shadowTopLeft = new Image(340, 130, 16, 16);
 
-		this.windowMaximize = new Image(357, 130, 16, 16);
-		this.windowClose = new Image(374, 130, 16, 16);
+		this.windowMaximize = new Image(357, 130, 12, 12);
+		this.windowClose = new Image(370, 130, 12, 12);
 	}
 
 	/**

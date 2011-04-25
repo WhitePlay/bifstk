@@ -25,534 +25,81 @@ import bifstk.wm.Frame.Controls;
  */
 public class Theme {
 
-	private Color rootBackgroundColor = null;
+	public Color rootBackgroundColor = null;
+	public Color rootBackgroundModalColor = null;
+	public float rootBackgroundModalAlpha;
 
-	/**
-	 * @return root background color
-	 */
-	public static Color getRootBackgroundColor() {
-		check();
-		return instance.rootBackgroundColor;
-	}
-
-	private Color rootBackgroundModalColor = null;
-
-	/**
-	 * @return color of the mask displayed when a modal is shown
-	 */
-	public static Color getRootBackgroundModalColor() {
-		check();
-		return instance.rootBackgroundModalColor;
-	}
-
-	private float rootBackgroundModalAlpha;
-
-	/**
-	 * @return opacity of the mask displayed when a modal is shown
-	 */
-	public static float getRootBackgroundModalAlpha() {
-		check();
-		return instance.rootBackgroundModalAlpha;
-	}
-
-	private int windowBorderWidth;
-	private int windowBorderWidthMin = 1, windowBorderWidthMax = 10;
-
-	/**
-	 * @return pixel width of the border around the window
-	 */
-	public static int getWindowBorderWidth() {
-		check();
-		return instance.windowBorderWidth;
-	}
-
-	private Color windowBorderFocusedColor = null;
-
-	/**
-	 * @return window border color when focused
-	 */
-	public static Color getWindowBorderFocusedColor() {
-		check();
-		return instance.windowBorderFocusedColor;
-	}
-
-	private Color windowBorderUnfocusedColor = null;
-
-	/**
-	 * @return window border color when not focused
-	 */
-	public static Color getWindowBorderUnfocusedColor() {
-		check();
-		return instance.windowBorderUnfocusedColor;
-	}
-
-	private Color windowBorderOuterFocusedColor;
-
-	/**
-	 * @return the color of the 1px border of the window border when focused
-	 */
-	public static Color getWindowBorderOuterFocusedColor() {
-		check();
-		return instance.windowBorderOuterFocusedColor;
-	}
-
-	private Color windowBorderOuterUnfocusedColor;
-
-	/**
-	 * @return the color of the 1px border of the window border when not focused
-	 */
-	public static Color getWindowBorderOuterUnfocusedColor() {
-		check();
-		return instance.windowBorderOuterUnfocusedColor;
-	}
-
-	private Color windowTitlebarFocusedColor = null;
-
-	/**
-	 * @return window titlebar color when focused
-	 */
-	public static Color getWindowTitlebarFocusedColor() {
-		check();
-		return instance.windowTitlebarFocusedColor;
-	}
-
-	private Color windowTitlebarUnfocusedColor = null;
-
-	/**
-	 * @return window titlebar color when not focused
-	 */
-	public static Color getWindowTitlebarUnfocusedColor() {
-		check();
-		return instance.windowTitlebarUnfocusedColor;
-	}
-
-	private int areaBorderWidth;
-	private static final int areaBorderMin = 1, areaBorderMax = 20;
-
-	/**
-	 * @return pixel width of the border around areas
-	 */
-	public static int getAreaBorderWidth() {
-		check();
-		return instance.areaBorderWidth;
-	}
-
-	private Color areaFocusedColor = null;
-
-	/**
-	 * @return the focused color of the area
-	 */
-	public static Color getAreaFocusedColor() {
-		check();
-		return instance.areaFocusedColor;
-	}
-
-	private Color areaUnfocusedColor = null;
-
-	/**
-	 * @return the unfocused color of the area
-	 */
-	public static Color getAreaUnfocusedColor() {
-		check();
-		return instance.areaUnfocusedColor;
-	}
-
-	private Color areaBorderFocusedColor = null;
-
-	/**
-	 * @return the focused color of the outer border of the area
-	 */
-	public static Color getAreaBorderFocusedColor() {
-		check();
-		return instance.areaBorderFocusedColor;
-	}
-
-	private Color areaBorderUnfocusedColor = null;
-
-	/**
-	 * @return the unfocused color of the outer border of the area
-	 */
-	public static Color getAreaBorderUnfocusedColor() {
-		check();
-		return instance.areaBorderUnfocusedColor;
-	}
-
-	private float areaFocusedAlpha;
-
-	/**
-	 * @return the opacity of the area ui when focused
-	 */
-	public static float getAreaFocusedAlpha() {
-		check();
-		return instance.areaFocusedAlpha;
-	}
-
-	private float areaUnfocusedAlpha;
-
-	/**
-	 * @return the opacity of an area when not focused
-	 */
-	public static float getAreaUnfocusedAlpha() {
-		check();
-		return instance.areaUnfocusedAlpha;
-	}
-
-	private float windowMovedAlpha;
-
-	/**
-	 * @return window opacity when moved
-	 */
-	public static float getWindowMovedAlpha() {
-		check();
-		return instance.windowMovedAlpha;
-	}
-
-	private float windowResizedAlpha;
-
-	/**
-	 * @return window opacity when resized
-	 */
-	public static float getWindowResizedAlpha() {
-		check();
-		return instance.windowResizedAlpha;
-	}
-
-	private float windowUnfocusedAlpha;
-
-	/**
-	 * @return window opacity when not focused
-	 */
-	public static float getWindowUnfocusedAlpha() {
-		check();
-		return instance.windowUnfocusedAlpha;
-	}
-
-	private boolean windowShadowEnabled;
-
-	/**
-	 * @return true to enable dropped shadows around windows
-	 */
-	public static boolean isWindowShadowEnabled() {
-		check();
-		return instance.windowShadowEnabled;
-	}
-
-	private float windowShadowAlpha;
-
-	/**
-	 * @return opacity of the window shadow
-	 */
-	public static float getWindowShadowAlpha() {
-		check();
-		return instance.windowShadowAlpha;
-	}
-
-	private Color windowFocusedColor = null;
-
-	/**
-	 * @return color of the Window ui
-	 */
-	public static Color getWindowFocusedColor() {
-		check();
-		return instance.windowFocusedColor;
-	}
-
-	private Color windowUnfocusedColor = null;
-
-	/**
-	 * @return color of the Window ui when not focused
-	 */
-	public static Color getWindowUnfocusedColor() {
-		check();
-		return instance.windowUnfocusedColor;
-	}
-
-	private float windowFocusedAlpha = 1.0f;
-
-	/**
-	 * @return opacity of a window UI when focused
-	 */
-	public static float getWindowFocusedAlpha() {
-		check();
-		return instance.windowFocusedAlpha;
-	}
-
-	private Color windowTitlebarFocusedFontColor;
-
-	/**
-	 * @return the font color of the Window titlebar when focused
-	 */
-	public static Color getWindowTitlebarFocusedFontColor() {
-		return instance.windowTitlebarFocusedFontColor;
-	}
-
-	private Color windowTitlebarUnfocusedFontColor;
-
-	/**
-	 * @return the font color of the Window titlebar when not focused
-	 */
-	public static Color getWindowTitlebarUnfocusedFontColor() {
-		return instance.windowTitlebarUnfocusedFontColor;
-	}
-
-	private Color windowShadowFocusedColor;
-
-	/**
-	 * @return the color of Window shadows when focused
-	 */
-	public static Color getWindowShadowFocusedColor() {
-		return instance.windowShadowFocusedColor;
-	}
-
-	private Color windowShadowUnfocusedColor;
-
-	/**
-	 * @return the color of Window shadows when not focused
-	 */
-	public static Color getWindowShadowUnfocusedColor() {
-		return instance.windowShadowUnfocusedColor;
-	}
-
-	private List<Controls> frameControlsOrder = null;
-
-	/**
-	 * @return title frame controls order
-	 */
-	public static List<Controls> getFrameControlsOrder() {
-		check();
-		return instance.frameControlsOrder;
-	}
-
-	private int frameControlsWidth;
+	public List<Controls> frameControlsOrder = null;
+	public int frameControlsWidth;
 	private int frameControlsWidthMin = 10, frameControlsWidthMax = 32;
-
-	/**
-	 * @return width of the frame controls
-	 */
-	public static int getFrameControlsWidth() {
-		check();
-		return instance.frameControlsWidth;
-	}
-
-	private int frameControlsHeight;
+	public int frameControlsHeight;
 	private int frameControlsHeightMin = 10, frameControlsHeightMax = 32;
-
-	/**
-	 * @return height of the frame controls
-	 */
-	public static int getFrameControlsHeight() {
-		check();
-		return instance.frameControlsHeight;
-	}
-
-	private int frameControlsBorder;
+	public int frameControlsBorder;
 	private int frameControlsBorderMin = 0, frameControlsBorderMax = 10;
+	public Color frameControlsCloseColor;
+	public Color frameControlsCloseHoverColor;
+	public Color frameControlsCloseClickColor;
+	public Color frameControlsCloseUnfocusedColor;
+	public Color frameControlsMaximizeColor;
+	public Color frameControlsMaximizeHoverColor;
+	public Color frameControlsMaximizeClickColor;
+	public Color frameControlsMaximizeUnfocusedColor;
 
-	/**
-	 * @return width of the frame controls
-	 */
-	public static int getFrameControlsBorder() {
-		check();
-		return instance.frameControlsBorder;
-	}
+	public int windowBorderWidth;
+	private int windowBorderWidthMin = 1, windowBorderWidthMax = 10;
+	public Color windowBorderFocusedColor = null;
+	public Color windowBorderUnfocusedColor = null;
+	public Color windowBorderOuterFocusedColor;
+	public Color windowBorderOuterUnfocusedColor;
+	public Color windowTitlebarFocusedColor = null;
+	public Color windowTitlebarUnfocusedColor = null;
+	public float windowMovedAlpha;
+	public float windowResizedAlpha;
+	public float windowUnfocusedAlpha;
+	public boolean windowShadowEnabled;
+	public float windowShadowAlpha;
+	public Color windowFocusedColor = null;
+	public Color windowUnfocusedColor = null;
+	public float windowFocusedAlpha = 1.0f;
+	public Color windowTitlebarFocusedFontColor;
+	public Color windowTitlebarUnfocusedFontColor;
+	public Color windowShadowFocusedColor;
+	public Color windowShadowUnfocusedColor;
 
-	private Color frameControlsCloseColor;
+	public int areaBorderWidth;
+	private static final int areaBorderMin = 1, areaBorderMax = 20;
+	public Color areaFocusedColor = null;
+	public Color areaUnfocusedColor = null;
+	public Color areaBorderFocusedColor = null;
+	public Color areaBorderUnfocusedColor = null;
+	public float areaFocusedAlpha;
+	public float areaUnfocusedAlpha;
 
-	/**
-	 * @return frame close control color
-	 */
-	public static Color getFrameControlsCloseColor() {
-		check();
-		return instance.frameControlsCloseColor;
-	}
-
-	private Color frameControlsCloseHoverColor;
-
-	/**
-	 * @return close frame control color when hovered
-	 */
-	public static Color getFrameControlsCloseHoverColor() {
-		check();
-		return instance.frameControlsCloseHoverColor;
-	}
-
-	private Color frameControlsCloseClickColor;
-
-	/**
-	 * @return close frame control color when clicked
-	 */
-	public static Color getFrameControlsCloseClickColor() {
-		check();
-		return instance.frameControlsCloseClickColor;
-	}
-
-	private Color frameControlsCloseUnfocusedColor;
-
-	/**
-	 * @return close frame control color when not focused
-	 */
-	public static Color getFrameControlsCloseUnfocusedColor() {
-		check();
-		return instance.frameControlsCloseUnfocusedColor;
-	}
-
-	private Color frameControlsMaximizeColor;
-
-	/**
-	 * @return frame Maximize control color
-	 */
-	public static Color getFrameControlsMaximizeColor() {
-		check();
-		return instance.frameControlsMaximizeColor;
-	}
-
-	private Color frameControlsMaximizeHoverColor;
-
-	/**
-	 * @return Maximize frame control color when hovered
-	 */
-	public static Color getFrameControlsMaximizeHoverColor() {
-		check();
-		return instance.frameControlsMaximizeHoverColor;
-	}
-
-	private Color frameControlsMaximizeClickColor;
-
-	/**
-	 * @return Maximize frame control color when clicked
-	 */
-	public static Color getFrameControlsMaximizeClickColor() {
-		check();
-		return instance.frameControlsMaximizeClickColor;
-	}
-
-	private Color frameControlsMaximizeUnfocusedColor;
-
-	/**
-	 * @return maximize frame control color when not focused
-	 */
-	public static Color getFrameControlsMaximizeUnfocusedColor() {
-		check();
-		return instance.frameControlsMaximizeUnfocusedColor;
-	}
-
-	private Color uiButtonColor = null;
-
-	/**
-	 * @return the background color of a Button
-	 */
-	public static Color getUiButtonColor() {
-		check();
-		return instance.uiButtonColor;
-	}
-
-	private Color uiButtonHoverColor = null;
-
-	/**
-	 * @return the background color of a Button when hovered
-	 */
-	public static Color getUiButtonHoverColor() {
-		check();
-		return instance.uiButtonHoverColor;
-	}
-
-	private Color uiButtonClickColor = null;
-
-	/**
-	 * @return the background color of a Button when clicked
-	 */
-	public static Color getUiButtonClickColor() {
-		check();
-		return instance.uiButtonClickColor;
-	}
-
-	private Color uiBorderColor = null;
-
-	/**
-	 * @return the border color of a widget
-	 */
-	public static Color getUiBorderColor() {
-		check();
-		return instance.uiBorderColor;
-	}
-
-	private Color uiEntryColor;
-
-	/**
-	 * @return the background color for Entry UI widgets (text,radio,...)
-	 */
-	public static Color getUiEntryColor() {
-		return instance.uiEntryColor;
-	}
-
-	private Color uiEntryFontColor;
-
-	/**
-	 * @return the font color for entry ui widgets
-	 */
-	public static Color getUiEntryFontColor() {
-		return instance.uiEntryFontColor;
-	}
-
-	private Color uiFontColor;
-
-	/**
-	 * @return base color of the ui font
-	 */
-	public static Color getUiFontColor() {
-		return instance.uiFontColor;
-	}
-
-	private Color uiTabFocusedHighlightColor;
-
-	/**
-	 * @return color of the gradient on top of the focused tab
-	 */
-	public static Color getUiTabFocusedHighlightColor() {
-		return instance.uiTabFocusedHighlightColor;
-	}
-
-	private Color uiTabUnfocusedBorderColor;
-
-	/**
-	 * @return border color of unfocused tabs
-	 */
-	public static Color getUiTabUnfocusedBorderColor() {
-		return instance.uiTabUnfocusedBorderColor;
-	}
-
-	private Color uiTabUnfocusedFontColor;
-
-	/**
-	 * @return font color of unfocused tabs
-	 */
-	public static Color getUiTabUnfocusedFontColor() {
-		return instance.uiTabUnfocusedFontColor;
-	}
-
-	private Color uiTabUnfocusedBackgroundColor;
-
-	/**
-	 * @return bg color of unfocused tabs 
-	 */
-	public static Color getUiTabUnfocusedBackgroundColor() {
-		return instance.uiTabUnfocusedBackgroundColor;
-	}
-
-	private Color uiTabUnfocusedHighlightColor;
-
-	/**
-	 * @return color of the gradient on top of unfocused tabs
-	 */
-	public static Color getUiTabUnfocusedHighlightColor() {
-		return instance.uiTabUnfocusedHighlightColor;
-	}
+	public Color uiButtonColor = null;
+	public Color uiButtonHoverColor = null;
+	public Color uiButtonClickColor = null;
+	public Color uiBorderColor = null;
+	public Color uiEntryColor;
+	public Color uiEntryFontColor;
+	public Color uiFontColor;
+	public Color uiTabFocusedHighlightColor;
+	public Color uiTabUnfocusedBorderColor;
+	public Color uiTabUnfocusedFontColor;
+	public Color uiTabUnfocusedBackgroundColor;
+	public Color uiTabUnfocusedHighlightColor;
 
 	/** singleton instance */
 	private static Theme instance = null;
 
 	/** path to this file */
 	private String path = "";
+
+	/**
+	 * @return the singleton instance if {@link #load(String)} has been called
+	 */
+	public static Theme get() {
+		return instance;
+	}
 
 	/**
 	 * Default constructor
@@ -879,12 +426,6 @@ public class Theme {
 				throw new BifstkException("Could not read value for "
 						+ prop.getKey().getName(), t);
 			}
-		}
-	}
-
-	private static void check() throws IllegalStateException {
-		if (instance == null) {
-			throw new IllegalStateException("Config has not been loaded");
 		}
 	}
 

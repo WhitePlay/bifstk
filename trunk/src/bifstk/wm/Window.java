@@ -29,78 +29,78 @@ public class Window extends Frame {
 		if (this.isMaximized() || this.isDocked()) {
 			return 0;
 		} else {
-			return Theme.getWindowBorderWidth();
+			return Theme.get().windowBorderWidth;
 		}
 	}
 
 	@Override
 	protected Color getBorderFocusedColor() {
-		return Theme.getWindowBorderFocusedColor();
+		return Theme.get().windowBorderFocusedColor;
 	}
 
 	@Override
 	protected Color getBorderUnfocusedColor() {
-		return Theme.getWindowBorderUnfocusedColor();
+		return Theme.get().windowBorderUnfocusedColor;
 	}
 
 	@Override
 	protected Color getBorderOuterFocusedColor() {
-		return Theme.getWindowBorderOuterFocusedColor();
+		return Theme.get().windowBorderOuterFocusedColor;
 	}
 
 	@Override
 	protected Color getBorderOuterUnfocusedColor() {
-		return Theme.getWindowBorderOuterUnfocusedColor();
+		return Theme.get().windowBorderOuterUnfocusedColor;
 	}
 
 	@Override
 	protected Color getFrameTitlebarFocusedColor() {
-		return Theme.getWindowTitlebarFocusedColor();
+		return Theme.get().windowTitlebarFocusedColor;
 	}
 
 	@Override
 	protected Color getFrameTitlebarUnfocusedColor() {
-		return Theme.getWindowTitlebarUnfocusedColor();
+		return Theme.get().windowTitlebarUnfocusedColor;
 	}
 
 	@Override
 	protected Color getFrameFocusedColor() {
-		return Theme.getWindowFocusedColor();
+		return Theme.get().windowFocusedColor;
 	}
 
 	@Override
 	protected Color getFrameUnfocusedColor() {
-		return Theme.getWindowUnfocusedColor();
+		return Theme.get().windowUnfocusedColor;
 	}
 
 	@Override
 	protected Color getFrameShadowFocusedColor() {
-		return Theme.getWindowShadowFocusedColor();
+		return Theme.get().windowShadowFocusedColor;
 	}
 
 	@Override
 	protected Color getFrameShadowUnfocusedColor() {
-		return Theme.getWindowShadowUnfocusedColor();
+		return Theme.get().windowShadowUnfocusedColor;
 	}
 
 	@Override
 	protected float getFrameMovedAlpha() {
-		return Theme.getWindowMovedAlpha();
+		return Theme.get().windowMovedAlpha;
 	}
 
 	@Override
 	protected float getFrameResizedAlpha() {
-		return Theme.getWindowResizedAlpha();
+		return Theme.get().windowResizedAlpha;
 	}
 
 	@Override
 	protected float getFrameFocusedAlpha() {
-		return Theme.getWindowFocusedAlpha();
+		return Theme.get().windowFocusedAlpha;
 	}
 
 	@Override
 	protected float getFrameUnfocusedAlpha() {
-		return Theme.getWindowUnfocusedAlpha();
+		return Theme.get().windowUnfocusedAlpha;
 	}
 
 }

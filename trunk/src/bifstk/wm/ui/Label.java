@@ -45,7 +45,7 @@ public class Label extends Widget {
 			return;
 		}
 
-		Color col = Theme.getUiFontColor();
+		Color col = Theme.get().uiFontColor;
 
 		int lx, ly;
 		if (this.textWidth < w) {

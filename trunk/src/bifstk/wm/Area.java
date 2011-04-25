@@ -47,27 +47,27 @@ public class Area extends Frame {
 
 	@Override
 	protected int getBorderWidth() {
-		return Theme.getAreaBorderWidth();
+		return Theme.get().areaBorderWidth;
 	}
 
 	@Override
 	protected Color getBorderFocusedColor() {
-		return Theme.getAreaFocusedColor();
+		return Theme.get().areaFocusedColor;
 	}
 
 	@Override
 	protected Color getBorderUnfocusedColor() {
-		return Theme.getAreaUnfocusedColor();
+		return Theme.get().areaUnfocusedColor;
 	}
 
 	@Override
 	protected Color getBorderOuterFocusedColor() {
-		return Theme.getAreaBorderFocusedColor();
+		return Theme.get().areaBorderFocusedColor;
 	}
 
 	@Override
 	protected Color getBorderOuterUnfocusedColor() {
-		return Theme.getAreaBorderUnfocusedColor();
+		return Theme.get().areaBorderUnfocusedColor;
 	}
 
 	@Override
@@ -84,12 +84,12 @@ public class Area extends Frame {
 
 	@Override
 	protected Color getFrameFocusedColor() {
-		return Theme.getAreaFocusedColor();
+		return Theme.get().areaFocusedColor;
 	}
 
 	@Override
 	protected Color getFrameUnfocusedColor() {
-		return Theme.getAreaUnfocusedColor();
+		return Theme.get().areaUnfocusedColor;
 	}
 
 	@Override
@@ -116,12 +116,12 @@ public class Area extends Frame {
 
 	@Override
 	protected float getFrameFocusedAlpha() {
-		return Theme.getAreaFocusedAlpha();
+		return Theme.get().areaFocusedAlpha;
 	}
 
 	@Override
 	protected float getFrameUnfocusedAlpha() {
-		return Theme.getAreaUnfocusedAlpha();
+		return Theme.get().areaUnfocusedAlpha;
 	}
 
 }

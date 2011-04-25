@@ -154,7 +154,7 @@ public class Text extends Actionable implements Focusable {
 			y = scroll.getYTranslate();
 		}
 
-		Color fillCol = Theme.getUiEntryColor();
+		Color fillCol = Theme.get().uiEntryColor;
 		Util.fillRoundedQuad(x, y, w, h, fillCol, uiBg, a);
 
 		if (!this.multiLine) {
@@ -167,12 +167,12 @@ public class Text extends Actionable implements Focusable {
 				yOff += Fonts.getNormal().getHeight();
 			}
 		}
-		Color borderCol = Theme.getUiBorderColor();
+		Color borderCol = Theme.get().uiBorderColor;
 		Util.drawRoundedQuad(x, y, w, h, borderCol, a);
 	}
 
 	private void renderLine(String str, int yOff, float alpha, boolean drawCaret) {
-		Color textCol = Theme.getUiEntryFontColor();
+		Color textCol = Theme.get().uiEntryFontColor;
 
 		Fonts.getNormal().drawString(2 + this.offset, 2 + yOff, str, textCol,
 				alpha);

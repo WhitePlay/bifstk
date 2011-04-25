@@ -301,6 +301,7 @@ public class Tabs extends Container {
 		}
 
 		if (x > border && y < getTabsHeight()) {
+			this.hoverTab = null;
 			int acc = border;
 			for (Tab tab : tabs) {
 				int tw = getTabWidth(tab.title);

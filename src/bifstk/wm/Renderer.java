@@ -155,11 +155,11 @@ public class Renderer {
 			return;
 		}
 		int x = this.state.getDockWidth(DockPosition.LEFT);
-		int w = Theme.getWindowBorderWidth();
+		int w = Theme.get().windowBorderWidth;
 
 		float focusAnim = this.state.getLeftDock().get(0).getFocusAnim();
-		Color c = Theme.getWindowBorderFocusedColor().blend(
-				Theme.getWindowBorderUnfocusedColor(), focusAnim);
+		Color c = Theme.get().windowBorderFocusedColor.blend(
+				Theme.get().windowBorderUnfocusedColor, focusAnim);
 		int acc = 0;
 		float baseAlpha = this.state.getLeftDock().get(0).getUiAlpha();
 		/* draw the windows */
@@ -174,17 +174,17 @@ public class Renderer {
 		}
 
 		/* right shadow */
-		if (Theme.isWindowShadowEnabled()) {
+		if (Theme.get().windowShadowEnabled) {
 			Color col = this.state.getLeftDock().get(0).getShadowColor();
 			Util.drawRightShadowQuad(x + w, 0, height,
-					Theme.getWindowShadowAlpha(), col, false);
+					Theme.get().windowShadowAlpha, col, false);
 		}
 
 		/* right border */
 		Util.raster().fillQuad(x, 0, w, height, c, baseAlpha);
 
-		c = Theme.getWindowBorderOuterFocusedColor().blend(
-				Theme.getWindowBorderOuterUnfocusedColor(), focusAnim);
+		c = Theme.get().windowBorderOuterFocusedColor.blend(
+				Theme.get().windowBorderOuterUnfocusedColor, focusAnim);
 		/* right outer border */
 		Util.raster().fillQuad(x + w, 0, 1, height, c, baseAlpha);
 	}
@@ -200,13 +200,13 @@ public class Renderer {
 			return;
 		}
 		int x = this.state.getDockWidth(DockPosition.RIGHT);
-		int w = Theme.getWindowBorderWidth();
+		int w = Theme.get().windowBorderWidth;
 		int dw = Display.getDisplayMode().getWidth();
 
 		float baseAlpha = this.state.getRightDock().get(0).getUiAlpha();
 		float focusAnim = this.state.getRightDock().get(0).getFocusAnim();
-		Color c = Theme.getWindowBorderFocusedColor().blend(
-				Theme.getWindowBorderUnfocusedColor(), focusAnim);
+		Color c = Theme.get().windowBorderFocusedColor.blend(
+				Theme.get().windowBorderUnfocusedColor, focusAnim);
 		int acc = 0;
 		/* draw the windows */
 		for (Window win : this.state.getRightDock()) {
@@ -219,17 +219,17 @@ public class Renderer {
 		}
 
 		/* left shadow */
-		if (Theme.isWindowShadowEnabled()) {
+		if (Theme.get().windowShadowEnabled) {
 			Color col = this.state.getRightDock().get(0).getShadowColor();
 			Util.drawLeftShadowQuad(dw - x - w, 0, height,
-					Theme.getWindowShadowAlpha(), col, false);
+					Theme.get().windowShadowAlpha, col, false);
 		}
 
 		/* left border */
 		Util.raster().fillQuad(dw - x - w, 0, w, height, c, baseAlpha);
 
-		c = Theme.getWindowBorderOuterFocusedColor().blend(
-				Theme.getWindowBorderOuterUnfocusedColor(), focusAnim);
+		c = Theme.get().windowBorderOuterFocusedColor.blend(
+				Theme.get().windowBorderOuterUnfocusedColor, focusAnim);
 		/* left outer border */
 		Util.raster().fillQuad(dw - x - w, 0, 1, height, c, baseAlpha);
 	}
@@ -250,7 +250,7 @@ public class Renderer {
 
 			// display a mask when a modal is shown
 			if (this.state.getModalWindow() == f) {
-				float modalAlpha = Theme.getRootBackgroundModalAlpha();
+				float modalAlpha = Theme.get().rootBackgroundModalAlpha;
 
 				if (Config.get().isWmAnimations()) {
 					long t = Sys.getTime();
@@ -270,13 +270,14 @@ public class Renderer {
 				}
 
 				Util.raster().fillQuad(0, 0, width, height,
-						Theme.getRootBackgroundModalColor(), modalAlpha);
+						Theme.get().rootBackgroundModalColor, modalAlpha);
 			}
 			float modAlpha = f.getModAlpha();
 
-			if (Theme.isWindowShadowEnabled() && !f.isMaximized()) {
+			if (Theme.get().windowShadowEnabled && !f.isMaximized()) {
 				Util.drawShadowQuad(f.getX(), f.getY(), f.getWidth(),
-						f.getHeight(), Theme.getWindowShadowAlpha() * modAlpha,
+						f.getHeight(),
+						Theme.get().windowShadowAlpha * modAlpha,
 						f.getShadowColor(), false);
 			}
 
@@ -297,7 +298,7 @@ public class Renderer {
 
 		// drawing a quad seems to be faster than glClear for some reason
 		Util.raster().fillQuad(0, 0, width, height,
-				Theme.getRootBackgroundColor(), 1.0f);
+				Theme.get().rootBackgroundColor, 1.0f);
 	}
 
 	/**

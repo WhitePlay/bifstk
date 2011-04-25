@@ -245,7 +245,7 @@ public class State {
 			dock.add(pos, w);
 			focusFrame(w);
 
-			int border = Theme.getWindowBorderWidth();
+			int border = Theme.get().windowBorderWidth;
 			int num = dock.size();
 			int i = 0, acc = 0, totPix = 0;
 			int pixels = Display.getDisplayMode().getHeight() / num;
@@ -372,7 +372,7 @@ public class State {
 			w.setHeight(w.getHeight());
 			w.setResizable(false);
 
-			int border = Theme.getWindowBorderWidth();
+			int border = Theme.get().windowBorderWidth;
 			int pixels = w.getHeight() + border;
 			int num = dock.size() - 1;
 			int i = 0;
@@ -418,11 +418,10 @@ public class State {
 	 * @param pos the left or right dock
 	 */
 	public void setDockWidth(int w, DockPosition pos) {
-		int val = Util
-				.clampi(w,
-						Config.get().getWmFrameSizeMin(),
-						Display.getDisplayMode().getWidth() / 2
-								- Theme.getWindowBorderWidth());
+		int val = Util.clampi(w, Config.get().getWmFrameSizeMin(), Display
+				.getDisplayMode().getWidth()
+				/ 2
+				- Theme.get().windowBorderWidth);
 		List<Window> dock = null;
 
 		int dx = 0;
@@ -561,7 +560,7 @@ public class State {
 			int displayWidth = Display.getDisplayMode().getWidth();
 
 			if (Config.get().isWmWindowDockLeft() && this.leftDock.size() > 0) {
-				int w = this.leftDockWidth + Theme.getWindowBorderWidth();
+				int w = this.leftDockWidth + Theme.get().windowBorderWidth;
 				int d = x - w;
 				if (-radius <= d && d < radius) {
 					x = w;
@@ -569,7 +568,7 @@ public class State {
 			}
 			if (Config.get().isWmWindowDockRight() && this.rightDock.size() > 0) {
 				int w = displayWidth - this.rightDockWidth
-						- Theme.getWindowBorderWidth();
+						- Theme.get().windowBorderWidth;
 				int d = w - x - fw;
 				if (-radius <= d && d < radius) {
 					x = w - fw - 1;

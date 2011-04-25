@@ -42,11 +42,11 @@ public class Button extends AbstractButton {
 		Color fillCol = null;
 
 		if (this.isMouseClicked() && this.isMouseHover()) {
-			fillCol = Theme.getUiButtonClickColor();
+			fillCol = Theme.get().uiButtonClickColor;
 		} else if (this.isMouseHover()) {
-			fillCol = Theme.getUiButtonHoverColor();
+			fillCol = Theme.get().uiButtonHoverColor;
 		} else {
-			fillCol = Theme.getUiButtonColor();
+			fillCol = Theme.get().uiButtonColor;
 		}
 
 		int lx, ly;
@@ -60,11 +60,11 @@ public class Button extends AbstractButton {
 		} else {
 			ly = 0;
 		}
-		Color fontCol = Theme.getUiFontColor();
+		Color fontCol = Theme.get().uiFontColor;
 
 		Util.fillRoundedQuad(0, 0, w, h, fillCol, uiBg, a);
 		Fonts.getNormal().drawString(lx, ly, this.text, fontCol, alpha);
-		Util.drawRoundedQuad(0, 0, w, h, Theme.getUiBorderColor(), a);
+		Util.drawRoundedQuad(0, 0, w, h, Theme.get().uiBorderColor, a);
 	}
 
 	@Override

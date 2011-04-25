@@ -238,9 +238,9 @@ public abstract class Frame implements Drawable, Clickable {
 					titlebarHeight + borderWidth - dec, titleCol2, titleCol2,
 					alpha2, 0.0f);
 
-			int controlWidth = Theme.getFrameControlsWidth();
-			int controlHeight = Theme.getFrameControlsHeight();
-			int controlBorder = Theme.getFrameControlsBorder();
+			int controlWidth = Theme.get().frameControlsWidth;
+			int controlHeight = Theme.get().frameControlsHeight;
+			int controlBorder = Theme.get().frameControlsBorder;
 			int spaceLeft = w - 2 * borderWidth;
 			int acc = 0;
 			int controlsNum = 2;
@@ -250,14 +250,13 @@ public abstract class Frame implements Drawable, Clickable {
 			}
 
 			// title & controls
-			List<Controls> controls = Theme.getFrameControlsOrder();
+			List<Controls> controls = Theme.get().frameControlsOrder;
 			for (Controls c : controls) {
 				if (c.equals(Controls.TITLE)) {
 					int titleWidth = spaceLeft - controlsNum
 							* (controlWidth + controlBorder);
-					Color titleFontCol = Theme
-							.getWindowTitlebarFocusedFontColor()
-							.blend(Theme.getWindowTitlebarUnfocusedFontColor(),
+					Color titleFontCol = Theme.get().windowTitlebarFocusedFontColor
+							.blend(Theme.get().windowTitlebarUnfocusedFontColor,
 									focusAnim);
 
 					Rasterizer.pushTranslate(x + borderWidth + acc, y
@@ -283,19 +282,17 @@ public abstract class Frame implements Drawable, Clickable {
 					case CLOSE:
 						img = TextureLoader.getWindowClose();
 						if (this.controlCloseDown && this.controlCloseHover) {
-							col = Theme.getFrameControlsCloseClickColor();
+							col = Theme.get().frameControlsCloseClickColor;
 							yClickDec = 1;
 						} else if (this.controlCloseHover) {
-							col = Theme.getFrameControlsCloseHoverColor();
+							col = Theme.get().frameControlsCloseHoverColor;
 							hover = true;
 							hoverAnim = Util.clampf(
 									(float) (t - this.controlCloseHoverTime)
 											/ (float) hoverAnimLen, 0.0f, 1.0f);
 						} else {
-							col = Theme
-									.getFrameControlsCloseColor()
-									.blend(Theme
-											.getFrameControlsCloseUnfocusedColor(),
+							col = Theme.get().frameControlsCloseColor
+									.blend(Theme.get().frameControlsCloseUnfocusedColor,
 											focusAnim);
 							if (!this.controlCloseDown) {
 								hoverAnim = 1.0f - Util
@@ -310,22 +307,18 @@ public abstract class Frame implements Drawable, Clickable {
 							img = TextureLoader.getWindowMaximize();
 							if (this.controlMaximizeDown
 									&& this.controlMaximizeHover) {
-								col = Theme
-										.getFrameControlsMaximizeClickColor();
+								col = Theme.get().frameControlsMaximizeClickColor;
 								yClickDec = 1;
 							} else if (this.controlMaximizeHover) {
-								col = Theme
-										.getFrameControlsMaximizeHoverColor();
+								col = Theme.get().frameControlsMaximizeHoverColor;
 								hover = true;
 								hoverAnim = Util
 										.clampf((float) (t - this.controlMaximizeHoverTime)
 												/ (float) hoverAnimLen, 0.0f,
 												1.0f);
 							} else {
-								col = Theme
-										.getFrameControlsMaximizeColor()
-										.blend(Theme
-												.getFrameControlsMaximizeUnfocusedColor(),
+								col = Theme.get().frameControlsMaximizeColor
+										.blend(Theme.get().frameControlsMaximizeUnfocusedColor,
 												focusAnim);
 								if (!this.controlMaximizeDown) {
 									hoverAnim = 1.0f - Util
@@ -936,13 +929,13 @@ public abstract class Frame implements Drawable, Clickable {
 		if (isTitle && !this.hasTitlebar()) {
 			return Region.CONTENT;
 		} else if (isTitle) {
-			int controlWidth = Theme.getFrameControlsWidth();
-			int controlBorder = Theme.getFrameControlsBorder();
+			int controlWidth = Theme.get().frameControlsWidth;
+			int controlBorder = Theme.get().frameControlsBorder;
 			int spaceLeft = w - 2 * borderWidth;
 			int acc = 0;
 			int controlsNum = 2;
 
-			List<Controls> controls = Theme.getFrameControlsOrder();
+			List<Controls> controls = Theme.get().frameControlsOrder;
 			for (Controls c : controls) {
 				if (c.equals(Controls.TITLE)) {
 					int titleWidth = spaceLeft - controlsNum

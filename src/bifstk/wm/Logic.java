@@ -231,7 +231,7 @@ public class Logic {
 		if (this.state.getLeftDock().size() > 0
 				&& this.state.getDockWidth(DockPosition.LEFT) <= mx
 				&& mx < this.state.getDockWidth(DockPosition.LEFT)
-						+ Theme.getWindowBorderWidth()) {
+						+ Theme.get().windowBorderWidth) {
 			this.leftMouse.leftDockVBorderHover = true;
 		} else {
 			this.leftMouse.leftDockVBorderHover = false;
@@ -242,7 +242,7 @@ public class Logic {
 				&& mx <= this.state.getDockWidth(DockPosition.LEFT)) {
 			int acc = 0;
 			int maxHeight = Display.getDisplayMode().getHeight();
-			int border = Theme.getWindowBorderWidth();
+			int border = Theme.get().windowBorderWidth;
 			Iterator<Window> it = null;
 			for (it = this.state.getLeftDock().iterator(); it.hasNext();) {
 				Window win = it.next();
@@ -269,7 +269,7 @@ public class Logic {
 		// right dock border mouse hover
 		if (this.state.getRightDock().size() > 0
 				&& dw - this.state.getDockWidth(DockPosition.RIGHT)
-						- Theme.getWindowBorderWidth() <= mx
+						- Theme.get().windowBorderWidth <= mx
 				&& mx < dw - this.state.getDockWidth(DockPosition.RIGHT)) {
 			this.leftMouse.rightDockVBorderHover = true;
 		} else {
@@ -281,7 +281,7 @@ public class Logic {
 				&& mx > dw - this.state.getDockWidth(DockPosition.RIGHT)) {
 			int acc = 0;
 			int maxHeight = Display.getDisplayMode().getHeight();
-			int border = Theme.getWindowBorderWidth();
+			int border = Theme.get().windowBorderWidth;
 			Iterator<Window> it = null;
 			for (it = this.state.getRightDock().iterator(); it.hasNext();) {
 				Window win = it.next();
@@ -303,7 +303,7 @@ public class Logic {
 				acc += border;
 			}
 		}
-		
+
 		// for each mouse event since last call
 		while (Mouse.next()) {
 			int button = Mouse.getEventButton();
@@ -360,7 +360,7 @@ public class Logic {
 		int leftDx = mx - this.leftMouse.clickX;
 		int leftDy = my - this.leftMouse.clickY;
 		boolean leftDiffPos = (leftDx != 0) && (leftDy != 0);
-		
+
 		/* the mouse is dragged if it was down the last time this method was
 		 * called, and the mouse's position diff is > 0 */
 		if (leftMouse.downLastPoll && leftMouse.down && leftDiffPos) {
@@ -1078,7 +1078,7 @@ public class Logic {
 
 			Window top = this.leftMouse.leftDockHBCTopWin;
 			Window bot = this.leftMouse.leftDockHBCBotWin;
-			int border = Theme.getWindowBorderWidth();
+			int border = Theme.get().windowBorderWidth;
 			int space = top.getHeight() + bot.getHeight();
 			int minH = Config.get().getWmFrameSizeMin();
 
@@ -1121,7 +1121,7 @@ public class Logic {
 
 			Window top = this.leftMouse.rightDockHBCTopWin;
 			Window bot = this.leftMouse.rightDockHBCBotWin;
-			int border = Theme.getWindowBorderWidth();
+			int border = Theme.get().windowBorderWidth;
 			int space = top.getHeight() + bot.getHeight();
 			int minH = Config.get().getWmFrameSizeMin();
 

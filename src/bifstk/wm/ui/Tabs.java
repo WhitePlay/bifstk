@@ -94,16 +94,16 @@ public class Tabs extends Container {
 			if (acc > w)
 				continue;
 
-			Color fontCol = Theme.getUiFontColor();
+			Color fontCol = Theme.get().uiFontColor;
 			if (tab.equals(this.activeTab)) {
 				Util.raster().fillQuad(acc + 1, 0, tw - 2, bh,
-						Theme.getUiTabFocusedHighlightColor(), uiBg, a, a);
+						Theme.get().uiTabFocusedHighlightColor, uiBg, a, a);
 			} else {
 				Util.raster().fillQuad(acc + 2, 1, tw - 4, bh - 1, uiBg,
-						Theme.getUiTabUnfocusedHighlightColor(), a, a);
+						Theme.get().uiTabUnfocusedHighlightColor, a, a);
 
-				Color hl = Theme.getUiTabUnfocusedBorderColor();
-				fontCol = Theme.getUiTabUnfocusedFontColor();
+				Color hl = Theme.get().uiTabUnfocusedBorderColor;
+				fontCol = Theme.get().uiTabUnfocusedFontColor;
 
 				Util.raster().fillQuad(acc + 1, 0, tw - 2, 1, hl, a);
 				Util.raster().fillQuad(acc + tw - 2, 1, 1, bh - 1, hl, a);
@@ -124,7 +124,7 @@ public class Tabs extends Container {
 		}
 
 		/* content and active tab hightlight */
-		Color hl = Theme.getUiBorderColor();
+		Color hl = Theme.get().uiBorderColor;
 		Util.raster().fillQuad(0, bh + 1, 1, h - bh - 2, hl, a);
 		Util.raster().fillQuad(w - 1, bh + 1, 1, h - bh - 2, hl, a);
 		Util.raster().fillQuad(1, h - 1, w - 2, 1, hl, a);

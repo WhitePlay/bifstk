@@ -44,16 +44,6 @@ public class Window extends Frame {
 	}
 
 	@Override
-	protected Color getBorderOuterFocusedColor() {
-		return Theme.get().windowBorderOuterFocusedColor;
-	}
-
-	@Override
-	protected Color getBorderOuterUnfocusedColor() {
-		return Theme.get().windowBorderOuterUnfocusedColor;
-	}
-
-	@Override
 	protected Color getFrameTitlebarFocusedColor() {
 		return Theme.get().windowTitlebarFocusedColor;
 	}

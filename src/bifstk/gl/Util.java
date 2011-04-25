@@ -189,55 +189,6 @@ public class Util {
 	}
 
 	/**
-	 * Draw a quad with rounded corners (2px radius)
-	 * 
-	 * @param x top left abscissa
-	 * @param y top left ordinate
-	 * @param w width
-	 * @param h height
-	 * @param fillCol color
-	 * @param alpha opacity [0.0, 1.0]
-	 */
-	public static void drawRoundedQuad(int x, int y, int w, int h,
-			Color fillCol, float alpha) {
-
-		raster().fillQuad(x + 1, y, w - 2, 1, fillCol, alpha);
-		raster().fillQuad(x + 1, y + h - 1, w - 2, 1, fillCol, alpha);
-		raster().fillQuad(x, y + 1, 1, h - 2, fillCol, alpha);
-		raster().fillQuad(x + w - 1, y + 1, 1, h - 2, fillCol, alpha);
-
-		raster().fillQuad(x + 1, y + 1, 1, 1, fillCol, alpha);
-		raster().fillQuad(x + w - 2, y + 1, 1, 1, fillCol, alpha);
-		raster().fillQuad(x + w - 2, y + h - 2, 1, 1, fillCol, alpha);
-		raster().fillQuad(x + 1, y + h - 2, 1, 1, fillCol, alpha);
-
-	}
-
-	/**
-	 * Fill a quad with rounded corners
-	 * 
-	 * @param x top left abscissa
-	 * @param y top left ordinate
-	 * @param w width
-	 * @param h height
-	 * @param fillCol color
-	 * @param negCol color of the corner, use {@link Color#TRANSP_WHITE} for
-	 *            full transparency
-	 * @param alpha opacity
-	 */
-	public static void fillRoundedQuad(int x, int y, int w, int h,
-			Color fillCol, Color negCol, float alpha) {
-
-		raster().fillQuad(x + 1, y, w - 2, h, fillCol, alpha);
-		raster().fillQuad(x, y + 1, 1, h - 2, fillCol, alpha);
-		raster().fillQuad(x + w - 1, y + 1, 1, h - 2, fillCol, alpha);
-		raster().fillQuad(x, y, 1, 1, negCol, alpha);
-		raster().fillQuad(x + w - 1, y, 1, 1, negCol, alpha);
-		raster().fillQuad(x + w - 1, y + h - 1, 1, 1, negCol, alpha);
-		raster().fillQuad(x, y + h - 1, 1, 1, negCol, alpha);
-	}
-
-	/**
 	 * Clamp integer in specified range
 	 * 
 	 * @param val value to clamp

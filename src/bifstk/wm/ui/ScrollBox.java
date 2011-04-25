@@ -185,8 +185,8 @@ public class ScrollBox extends Border {
 
 				Util.raster().fillQuad(viewWidth, 0, scrollWidth, verPos, uiBg,
 						a);
-				Util.fillRoundedQuad(viewWidth, verPos, scrollWidth, verLen,
-						fillCol, uiBg, a);
+				Util.raster().fillQuad(viewWidth, verPos, scrollWidth, verLen,
+						fillCol, a);
 				Util.raster().fillQuad(viewWidth, verPos + verLen, scrollWidth,
 						viewHeight - (verPos + verLen), uiBg, a);
 
@@ -197,7 +197,7 @@ public class ScrollBox extends Border {
 						viewHeight - verPos - verLen, borderCol, a);
 
 				// bar outline
-				Util.drawRoundedQuad(viewWidth, verPos, scrollWidth, verLen,
+				Util.raster().drawQuad(viewWidth, verPos, scrollWidth, verLen,
 						borderCol, a);
 			}
 			if (scrollHor) {
@@ -224,7 +224,7 @@ public class ScrollBox extends Border {
 						viewWidth - horPos - horLen, 2, borderCol, a);
 
 				// bar outline
-				Util.drawRoundedQuad(horPos, viewHeight, horLen, scrollWidth,
+				Util.raster().drawQuad(horPos, viewHeight, horLen, scrollWidth,
 						borderCol, a);
 			}
 

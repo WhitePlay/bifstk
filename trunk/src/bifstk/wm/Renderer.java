@@ -157,9 +157,7 @@ public class Renderer {
 		int x = this.state.getDockWidth(DockPosition.LEFT);
 		int w = Theme.get().windowBorderWidth;
 
-		float focusAnim = this.state.getLeftDock().get(0).getFocusAnim();
-		Color c = Theme.get().windowBorderFocusedColor.blend(
-				Theme.get().windowBorderUnfocusedColor, focusAnim);
+		Color c = this.state.getLeftDock().get(0).getUiColor();
 		int acc = 0;
 		float baseAlpha = this.state.getLeftDock().get(0).getUiAlpha();
 		/* draw the windows */
@@ -183,8 +181,6 @@ public class Renderer {
 		/* right border */
 		Util.raster().fillQuad(x, 0, w, height, c, baseAlpha);
 
-		c = Theme.get().windowBorderOuterFocusedColor.blend(
-				Theme.get().windowBorderOuterUnfocusedColor, focusAnim);
 		/* right outer border */
 		Util.raster().fillQuad(x + w, 0, 1, height, c, baseAlpha);
 	}
@@ -204,9 +200,7 @@ public class Renderer {
 		int dw = Display.getDisplayMode().getWidth();
 
 		float baseAlpha = this.state.getRightDock().get(0).getUiAlpha();
-		float focusAnim = this.state.getRightDock().get(0).getFocusAnim();
-		Color c = Theme.get().windowBorderFocusedColor.blend(
-				Theme.get().windowBorderUnfocusedColor, focusAnim);
+		Color c = this.state.getRightDock().get(0).getUiColor();
 		int acc = 0;
 		/* draw the windows */
 		for (Window win : this.state.getRightDock()) {
@@ -228,8 +222,6 @@ public class Renderer {
 		/* left border */
 		Util.raster().fillQuad(dw - x - w, 0, w, height, c, baseAlpha);
 
-		c = Theme.get().windowBorderOuterFocusedColor.blend(
-				Theme.get().windowBorderOuterUnfocusedColor, focusAnim);
 		/* left outer border */
 		Util.raster().fillQuad(dw - x - w, 0, 1, height, c, baseAlpha);
 	}

@@ -47,10 +47,8 @@ public class Theme {
 
 	public int windowBorderWidth;
 	private int windowBorderWidthMin = 1, windowBorderWidthMax = 10;
-	public Color windowBorderFocusedColor = null;
-	public Color windowBorderUnfocusedColor = null;
-	public Color windowBorderOuterFocusedColor;
-	public Color windowBorderOuterUnfocusedColor;
+	public Color windowBorderFocusedColor;
+	public Color windowBorderUnfocusedColor;
 	public Color windowTitlebarFocusedColor = null;
 	public Color windowTitlebarUnfocusedColor = null;
 	public float windowMovedAlpha;
@@ -186,14 +184,6 @@ public class Theme {
 				}
 				case windowBorderUnfocusedColor: {
 					this.windowBorderUnfocusedColor = Color.parse(sval);
-					break;
-				}
-				case windowBorderOuterFocusedColor: {
-					this.windowBorderOuterFocusedColor = Color.parse(sval);
-					break;
-				}
-				case windowBorderOuterUnfocusedColor: {
-					this.windowBorderOuterUnfocusedColor = Color.parse(sval);
 					break;
 				}
 				case windowTitlebarFocusedColor: {

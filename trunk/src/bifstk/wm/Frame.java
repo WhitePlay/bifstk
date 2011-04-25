@@ -199,19 +199,17 @@ public abstract class Frame implements Drawable, Clickable {
 
 		float focusAnim = getFocusAnim();
 
-		Color borderCol = getBorderFocusedColor().blend(
+		Color borderBorderCol = getBorderFocusedColor().blend(
 				getBorderUnfocusedColor(), focusAnim);
-		Color borderBorderCol = getBorderOuterFocusedColor().blend(
-				getBorderOuterUnfocusedColor(), focusAnim);
 
 		// border
-		Util.raster().fillQuad(x, y, w, borderWidth, borderCol, alpha2);
+		Util.raster().fillQuad(x, y, w, borderWidth, uiColor, alpha2);
 		Util.raster().fillQuad(x, y + borderWidth, borderWidth,
-				h - 2 * borderWidth, borderCol, alpha2);
+				h - 2 * borderWidth, uiColor, alpha2);
 		Util.raster().fillQuad(x + w - borderWidth, y + borderWidth,
-				borderWidth, h - 2 * borderWidth, borderCol, alpha2);
-		Util.raster().fillQuad(x, y + h - borderWidth, w, borderWidth,
-				borderCol, alpha2);
+				borderWidth, h - 2 * borderWidth, uiColor, alpha2);
+		Util.raster().fillQuad(x, y + h - borderWidth, w, borderWidth, uiColor,
+				alpha2);
 
 		if (borderWidth > 1) {
 			// metaborder
@@ -223,7 +221,7 @@ public abstract class Frame implements Drawable, Clickable {
 
 			// background
 			Util.raster().fillQuad(x + borderWidth, y + borderWidth,
-					w - borderWidth * 2, titlebarHeight, borderCol, alpha2);
+					w - borderWidth * 2, titlebarHeight, uiColor, alpha2);
 
 			Color titleCol2 = getFrameTitlebarFocusedColor().blend(
 					getFrameTitlebarUnfocusedColor(), focusAnim);
@@ -1010,28 +1008,16 @@ public abstract class Frame implements Drawable, Clickable {
 			a.setFocus(true);
 	}
 
-	/** @return pixel height of the titlebar */
 	protected abstract int getTitleBarHeight();
 
-	/** @return pixel width of the frame border */
 	protected abstract int getBorderWidth();
 
-	/** @return Color of the border when focused */
 	protected abstract Color getBorderFocusedColor();
 
-	/** @return Color of the border when not focused */
 	protected abstract Color getBorderUnfocusedColor();
 
-	/** @return Color of the outer border when focused */
-	protected abstract Color getBorderOuterFocusedColor();
-
-	/** @return Color of the outer border when not focused */
-	protected abstract Color getBorderOuterUnfocusedColor();
-
-	/** @return the color of the focused titlebar */
 	protected abstract Color getFrameTitlebarFocusedColor();
 
-	/** @return the color of the unfocused titlebar */
 	protected abstract Color getFrameTitlebarUnfocusedColor();
 
 	protected abstract Color getFrameFocusedColor();

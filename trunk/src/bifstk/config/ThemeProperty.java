@@ -17,14 +17,10 @@ public enum ThemeProperty {
 
 	// INT pixel width of the border around the window 
 	windowBorderWidth("window.border.width"),
-	// COLOR window border color when focused 
+	// COLOR color of the border of the window 
 	windowBorderFocusedColor("window.border.focused.color"),
-	// COLOR window border color when not focused 
+	// COLOR color of the border of the window 
 	windowBorderUnfocusedColor("window.border.unfocused.color"),
-	// COLOR color of the border of the window border 
-	windowBorderOuterFocusedColor("window.border.outer.focused.color"),
-	// COLOR color of the border of the window border 
-	windowBorderOuterUnfocusedColor("window.border.outer.unfocused.color"),
 	// COLOR window titlebar color when focused 
 	windowTitlebarFocusedColor("window.titlebar.focused.color"),
 	// COLOR window titlebar color when not focused 

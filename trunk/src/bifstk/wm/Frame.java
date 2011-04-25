@@ -234,9 +234,11 @@ public abstract class Frame implements Drawable, Clickable {
 				dec = 0;
 			}
 
-			Util.raster().fillQuad(x + dec, y + dec, w - dec * 2,
-					titlebarHeight + borderWidth - dec, titleCol2, titleCol2,
-					alpha2, 0.0f);
+			if (!this.isDocked()) {
+				Util.raster().fillQuad(x + dec, y + dec, w - dec * 2,
+						titlebarHeight + borderWidth - dec, titleCol2,
+						titleCol2, alpha2, 0.0f);
+			}
 
 			int controlWidth = Theme.get().frameControlsWidth;
 			int controlHeight = Theme.get().frameControlsHeight;

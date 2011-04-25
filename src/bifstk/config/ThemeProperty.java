@@ -29,10 +29,6 @@ public enum ThemeProperty {
 	windowTitlebarFocusedColor("window.titlebar.focused.color"),
 	// COLOR window titlebar color when not focused 
 	windowTitlebarUnfocusedColor("window.titlebar.unfocused.color"),
-	// COLOR window titlebar font color when focused 
-	windowTitlebarFocusedFontColor("window.titlebar.focused.font.color"),
-	// COLOR window titlebar font color when not focused 
-	windowTitlebarUnfocusedFontColor("window.titlebar.unfocused.font.color"),
 	// FLOAT window opacity when moved 
 	windowMovedAlpha("window.moved.alpha"),
 	// FLOAT window opacity when resized 

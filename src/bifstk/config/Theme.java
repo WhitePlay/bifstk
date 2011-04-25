@@ -61,8 +61,6 @@ public class Theme {
 	public Color windowFocusedColor = null;
 	public Color windowUnfocusedColor = null;
 	public float windowFocusedAlpha = 1.0f;
-	public Color windowTitlebarFocusedFontColor;
-	public Color windowTitlebarUnfocusedFontColor;
 	public Color windowShadowFocusedColor;
 	public Color windowShadowUnfocusedColor;
 
@@ -241,14 +239,6 @@ public class Theme {
 				case windowFocusedAlpha: {
 					this.windowFocusedAlpha = Util.clampf(
 							Float.parseFloat(sval), 0.0f, 1.0f);
-					break;
-				}
-				case windowTitlebarFocusedFontColor: {
-					this.windowTitlebarFocusedFontColor = Color.parse(sval);
-					break;
-				}
-				case windowTitlebarUnfocusedFontColor: {
-					this.windowTitlebarUnfocusedFontColor = Color.parse(sval);
 					break;
 				}
 				case windowShadowFocusedColor: {

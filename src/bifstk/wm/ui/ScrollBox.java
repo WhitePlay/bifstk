@@ -167,7 +167,7 @@ public class ScrollBox extends Border {
 
 		Rasterizer.popTranslate();
 
-		Color borderCol = Theme.get().uiBorderColor;
+		Color borderCol = uiBg.add(Theme.get().uiBorderMask);
 		Color fillCol = null;
 
 		// scrollbars
@@ -176,11 +176,11 @@ public class ScrollBox extends Border {
 			if (scrollVer) {
 
 				if (this.verDrag) {
-					fillCol = Theme.get().uiButtonClickColor;
+					fillCol = uiBg.add(Theme.get().uiButtonClickMask);
 				} else if (this.hoverRegion.equals(Region.verButton)) {
-					fillCol = Theme.get().uiButtonHoverColor;
+					fillCol = uiBg.add(Theme.get().uiButtonHoverMask);
 				} else {
-					fillCol = Theme.get().uiButtonColor;
+					fillCol = uiBg.add(Theme.get().uiButtonMask);
 				}
 
 				Util.raster().fillQuad(viewWidth, 0, scrollWidth, verPos, uiBg,
@@ -203,11 +203,11 @@ public class ScrollBox extends Border {
 			if (scrollHor) {
 
 				if (this.horDrag) {
-					fillCol = Theme.get().uiButtonClickColor;
+					fillCol = uiBg.add(Theme.get().uiButtonClickMask);
 				} else if (this.hoverRegion.equals(Region.horButton)) {
-					fillCol = Theme.get().uiButtonHoverColor;
+					fillCol = uiBg.add(Theme.get().uiButtonHoverMask);
 				} else {
-					fillCol = Theme.get().uiButtonColor;
+					fillCol = uiBg.add(Theme.get().uiButtonMask);
 				}
 
 				Util.raster().fillQuad(0, viewHeight, horPos, scrollWidth,

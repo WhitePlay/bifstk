@@ -37,24 +37,24 @@ public class Checkbox extends AbstractButton {
 
 		float a = uiBgAlpha * alpha;
 
-		Color entryFill = Theme.get().uiEntryColor;
-		Color entryBorder = Theme.get().uiBorderColor;
+		Color entryFill = uiBg.add(Theme.get().uiEntryMask);
+		Color entryBorder = uiBg.add(Theme.get().uiBorderMask);
 
 		Util.raster().fillQuad(0, 0, pw, pw, entryFill, a);
 		Util.raster().drawQuad(0, 0, pw, pw, entryBorder, a);
 
-		Color fillCol = Theme.get().uiButtonColor;
+		Color fillCol = uiBg.add(Theme.get().uiButtonMask);
 		if (this.isMouseClicked()) {
-			fillCol = Theme.get().uiButtonClickColor;
+			fillCol = uiBg.add(Theme.get().uiButtonClickMask);
 		} else if (this.isMouseHover()) {
-			fillCol = Theme.get().uiButtonHoverColor;
+			fillCol = uiBg.add(Theme.get().uiButtonHoverMask);
 		}
 
 		if (this.checked) {
 			int b = (int) (0.2f * pw);
 			Util.raster().fillQuad(b, b, pw - b * 2, pw - b * 2, fillCol, a);
 			Util.raster().drawQuad(b, b, pw - b * 2, pw - b * 2,
-					Theme.get().uiBorderColor, a);
+					uiBg.add(Theme.get().uiBorderMask), a);
 		}
 	}
 

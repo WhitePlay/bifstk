@@ -15,6 +15,32 @@ public enum ThemeProperty {
 	// FLOAT opacity of the color layered when a modal is shown 
 	rootBackgroundModalAlpha("root.background.modal.alpha"),
 
+	// List<bifstk.wm.Frame.Controls> title frame controls order 
+	frameControlsOrder("frame.controls.order"),
+	// INT width of the frame controls 
+	frameControlsWidth("frame.controls.width"),
+	// INT height of the frame controls 
+	frameControlsHeight("frame.controls.height"),
+	// INT spacing border between frame controls 
+	frameControlsBorder("frame.controls.border"),
+	// COLOR close frame control color 
+	frameControlsCloseColor("frame.controls.close.color"),
+	// COLOR close frame control color when hovered 
+	frameControlsCloseHoverColor("frame.controls.close.hover.color"),
+	// COLOR close frame control color when clicked 
+	frameControlsCloseClickColor("frame.controls.close.click.color"),
+	// COLOR close frame control color when not focused 
+	frameControlsCloseUnfocusedColor("frame.controls.close.unfocused.color"),
+	// COLOR maximize frame control color 
+	frameControlsMaximizeColor("frame.controls.maximize.color"),
+	// COLOR maximize frame control color when hovered 
+	frameControlsMaximizeHoverColor("frame.controls.maximize.hover.color"),
+	// COLOR maximize frame control color when hovered 
+	frameControlsMaximizeClickColor("frame.controls.maximize.click.color"),
+	// COLOR maximize frame control color when not focused 
+	frameControlsMaximizeUnfocusedColor(
+			"frame.controls.maximize.unfocused.color"),
+
 	// INT pixel width of the border around the window 
 	windowBorderWidth("window.border.width"),
 	// COLOR color of the border of the window 
@@ -23,7 +49,7 @@ public enum ThemeProperty {
 	windowColor("window.color"),
 	// COLOR window titlebar color when focused 
 	windowTitlebarColor("window.titlebar.color"),
-	// STRING 3 strings in [-255,255] separated by spaces
+	// MASK color mask to add when not focused
 	windowUnfocusedMask("window.unfocused.mask"),
 	// FLOAT base opacity of the window ui 
 	windowAlpha("window.alpha"),
@@ -55,56 +81,30 @@ public enum ThemeProperty {
 	// FLOAT opacity if of the area when not focused 
 	areaUnfocusedAlpha("area.unfocused.alpha"),
 
-	// List<bifstk.wm.Frame.Controls> title frame controls order 
-	frameControlsOrder("frame.controls.order"),
-	// INT width of the frame controls 
-	frameControlsWidth("frame.controls.width"),
-	// INT height of the frame controls 
-	frameControlsHeight("frame.controls.height"),
-	// INT spacing border between frame controls 
-	frameControlsBorder("frame.controls.border"),
-	// COLOR close frame control color 
-	frameControlsCloseColor("frame.controls.close.color"),
-	// COLOR close frame control color when hovered 
-	frameControlsCloseHoverColor("frame.controls.close.hover.color"),
-	// COLOR close frame control color when clicked 
-	frameControlsCloseClickColor("frame.controls.close.click.color"),
-	// COLOR close frame control color when not focused 
-	frameControlsCloseUnfocusedColor("frame.controls.close.unfocused.color"),
-	// COLOR maximize frame control color 
-	frameControlsMaximizeColor("frame.controls.maximize.color"),
-	// COLOR maximize frame control color when hovered 
-	frameControlsMaximizeHoverColor("frame.controls.maximize.hover.color"),
-	// COLOR maximize frame control color when hovered 
-	frameControlsMaximizeClickColor("frame.controls.maximize.click.color"),
-	// COLOR maximize frame control color when not focused 
-	frameControlsMaximizeUnfocusedColor(
-			"frame.controls.maximize.unfocused.color"),
-
 	// COLOR base font color of the UI 
 	uiFontColor("ui.font.color"),
-	// COLOR color of the ui widgets border color 
-	uiBorderColor("ui.border.color"),
-	// COLOR color of the ui button background 
-	uiButtonColor("ui.button.color"),
-	// COLOR color of the ui button background when focused 
-	uiButtonHoverColor("ui.button.hover.color"),
-	// COLOR color of the ui button background when clicked 
-	uiButtonClickColor("ui.button.click.color"),
-	// COLOR color of the ui entries (text,radio,..) bg color 
-	uiEntryColor("ui.entry.color"),
+	// MASK color mask of the ui widgets border 
+	uiBorderMask("ui.border.mask"),
+	// MASK color mask of the ui button background 
+	uiButtonMask("ui.button.mask"),
+	// MASK color mask of the ui button background 
+	uiButtonHoverMask("ui.button.hover.mask"),
+	// MASK color mask of the ui button background when clicked 
+	uiButtonClickMask("ui.button.click.mask"),
+	// MASK color of the ui entries (text,radio,..) bg 
+	uiEntryMask("ui.entry.mask"),
 	// COLOR fg font color for ui entry widgets (text) 
 	uiEntryFontColor("ui.entry.font.color"),
-	// COLOR color of the gradient on top of the focused tab 
-	uiTabFocusedHighlightColor("ui.tab.focused.highlight.color"),
-	// COLOR border color of unfocused tabs 
-	uiTabUnfocusedBorderColor("ui.tab.unfocused.border.color"),
-	// COLOR font color of unfocused tabs 
-	uiTabUnfocusedFontColor("ui.tab.unfocused.font.color"),
-	// COLOR bg color of unfocused tabs 
-	uiTabUnfocusedBackgroundColor("ui.tab.unfocused.background.color"),
-	// COLOR color of the gradient on top of unfocused tabs 
-	uiTabUnfocusedHighlightColor("ui.tab.unfocused.highlight.color");
+	// MASK color mask of the gradient on top of the focused tab 
+	uiTabFocusedHighlightMask("ui.tab.focused.highlight.mask"),
+	// MASK border color mask of unfocused tabs 
+	uiTabUnfocusedBorderMask("ui.tab.unfocused.border.mask"),
+	// MASK font color mask of unfocused tabs 
+	uiTabUnfocusedFontMask("ui.tab.unfocused.font.mask"),
+	// MASK bg color mask of unfocused tabs 
+	uiTabUnfocusedBackgroundMask("ui.tab.unfocused.background.mask"),
+	// MASK color mask of the gradient on top of unfocused tabs 
+	uiTabUnfocusedHighlightMask("ui.tab.unfocused.highlight.mask");
 
 	private String name = "";
 

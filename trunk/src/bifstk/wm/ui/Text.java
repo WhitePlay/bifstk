@@ -154,7 +154,7 @@ public class Text extends Actionable implements Focusable {
 			y = scroll.getYTranslate();
 		}
 
-		Color fillCol = Theme.get().uiEntryColor;
+		Color fillCol = uiBg.add(Theme.get().uiEntryMask);
 		Util.raster().fillQuad(x, y, w, h, fillCol, a);
 
 		if (!this.multiLine) {
@@ -167,7 +167,7 @@ public class Text extends Actionable implements Focusable {
 				yOff += Fonts.getNormal().getHeight();
 			}
 		}
-		Color borderCol = Theme.get().uiBorderColor;
+		Color borderCol = uiBg.add(Theme.get().uiBorderMask);
 		Util.raster().drawQuad(x, y, w, h, borderCol, a);
 	}
 

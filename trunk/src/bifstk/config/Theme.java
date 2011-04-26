@@ -68,18 +68,18 @@ public class Theme {
 	public float areaFocusedAlpha;
 	public float areaUnfocusedAlpha;
 
-	public Color uiButtonColor;
-	public Color uiButtonHoverColor;
-	public Color uiButtonClickColor;
-	public Color uiBorderColor;
-	public Color uiEntryColor;
+	public float[] uiButtonMask;
+	public float[] uiButtonHoverMask;
+	public float[] uiButtonClickMask;
+	public float[] uiBorderMask;
+	public float[] uiEntryMask;
 	public Color uiEntryFontColor;
 	public Color uiFontColor;
-	public Color uiTabFocusedHighlightColor;
-	public Color uiTabUnfocusedBorderColor;
-	public Color uiTabUnfocusedFontColor;
-	public Color uiTabUnfocusedBackgroundColor;
-	public Color uiTabUnfocusedHighlightColor;
+	public float[] uiTabFocusedHighlightMask;
+	public float[] uiTabUnfocusedBorderMask;
+	public float[] uiTabUnfocusedFontMask;
+	public float[] uiTabUnfocusedBackgroundMask;
+	public float[] uiTabUnfocusedHighlightMask;
 
 	/** singleton instance */
 	private static Theme instance = null;
@@ -176,17 +176,7 @@ public class Theme {
 					break;
 				}
 				case windowUnfocusedMask: {
-					String[] expl = sval.split(" ");
-					if (expl.length < 3) {
-						throw new BifstkException(
-								"Expected 3 Integers separated by spaces for value: "
-										+ sval);
-					}
-					int r = Integer.parseInt(expl[0]);
-					int g = Integer.parseInt(expl[1]);
-					int b = Integer.parseInt(expl[2]);
-					this.windowUnfocusedMask = new float[] { r / 255.0f,
-							g / 255.0f, b / 255.0f };
+					this.windowUnfocusedMask = parseMask(sval);
 					break;
 				}
 				case windowBorderColor: {
@@ -226,8 +216,8 @@ public class Theme {
 					break;
 				}
 				case windowAlpha: {
-					this.windowAlpha = Util.clampf(
-							Float.parseFloat(sval), 0.0f, 1.0f);
+					this.windowAlpha = Util.clampf(Float.parseFloat(sval),
+							0.0f, 1.0f);
 					break;
 				}
 				case windowShadowFocusedColor: {
@@ -244,17 +234,7 @@ public class Theme {
 					break;
 				}
 				case areaUnfocusedMask: {
-					String[] expl = sval.split(" ");
-					if (expl.length < 3) {
-						throw new BifstkException(
-								"Expected 3 Integers separated by spaces for value: "
-										+ sval);
-					}
-					int r = Integer.parseInt(expl[0]);
-					int g = Integer.parseInt(expl[1]);
-					int b = Integer.parseInt(expl[2]);
-					this.areaUnfocusedMask = new float[] { r / 255.0f,
-							g / 255.0f, b / 255.0f };
+					this.areaUnfocusedMask = parseMask(sval);
 					break;
 				}
 				case areaFocusedColor: {
@@ -359,24 +339,24 @@ public class Theme {
 							.parse(sval);
 					break;
 				}
-				case uiButtonColor: {
-					this.uiButtonColor = Color.parse(sval);
+				case uiButtonMask: {
+					this.uiButtonMask = parseMask(sval);
 					break;
 				}
-				case uiButtonHoverColor: {
-					this.uiButtonHoverColor = Color.parse(sval);
+				case uiButtonHoverMask: {
+					this.uiButtonHoverMask = parseMask(sval);
 					break;
 				}
-				case uiButtonClickColor: {
-					this.uiButtonClickColor = Color.parse(sval);
+				case uiButtonClickMask: {
+					this.uiButtonClickMask = parseMask(sval);
 					break;
 				}
-				case uiBorderColor: {
-					this.uiBorderColor = Color.parse(sval);
+				case uiBorderMask: {
+					this.uiBorderMask = parseMask(sval);
 					break;
 				}
-				case uiEntryColor: {
-					this.uiEntryColor = Color.parse(sval);
+				case uiEntryMask: {
+					this.uiEntryMask = parseMask(sval);
 					break;
 				}
 				case uiEntryFontColor: {
@@ -386,24 +366,24 @@ public class Theme {
 					this.uiFontColor = Color.parse(sval);
 					break;
 				}
-				case uiTabFocusedHighlightColor: {
-					this.uiTabFocusedHighlightColor = Color.parse(sval);
+				case uiTabFocusedHighlightMask: {
+					this.uiTabFocusedHighlightMask = parseMask(sval);
 					break;
 				}
-				case uiTabUnfocusedBorderColor: {
-					this.uiTabUnfocusedBorderColor = Color.parse(sval);
+				case uiTabUnfocusedBorderMask: {
+					this.uiTabUnfocusedBorderMask = parseMask(sval);
 					break;
 				}
-				case uiTabUnfocusedFontColor: {
-					this.uiTabUnfocusedFontColor = Color.parse(sval);
+				case uiTabUnfocusedFontMask: {
+					this.uiTabUnfocusedFontMask = parseMask(sval);
 					break;
 				}
-				case uiTabUnfocusedBackgroundColor: {
-					this.uiTabUnfocusedBackgroundColor = Color.parse(sval);
+				case uiTabUnfocusedBackgroundMask: {
+					this.uiTabUnfocusedBackgroundMask = parseMask(sval);
 					break;
 				}
-				case uiTabUnfocusedHighlightColor: {
-					this.uiTabUnfocusedHighlightColor = Color.parse(sval);
+				case uiTabUnfocusedHighlightMask: {
+					this.uiTabUnfocusedHighlightMask = parseMask(sval);
 					break;
 				}
 				}
@@ -412,6 +392,19 @@ public class Theme {
 						+ prop.getKey().getName(), t);
 			}
 		}
+	}
+
+	private float[] parseMask(String sval) throws BifstkException {
+		String[] expl = sval.split(" ");
+		if (expl.length < 3) {
+			throw new BifstkException(
+					"Expected 3 Integers separated by spaces for value: "
+							+ sval);
+		}
+		int r = Integer.parseInt(expl[0]);
+		int g = Integer.parseInt(expl[1]);
+		int b = Integer.parseInt(expl[2]);
+		return new float[] { r / 255.0f, g / 255.0f, b / 255.0f };
 	}
 
 	/**

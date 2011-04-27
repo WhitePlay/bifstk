@@ -94,7 +94,7 @@ public class Tabs extends Container {
 			if (acc > w)
 				continue;
 
-			Color fontCol = Theme.get().uiFontColor;
+			Color fontCol = uiBg.add(Theme.get().uiFontMask);
 			if (tab.equals(this.activeTab)) {
 				Util.raster().fillQuad(acc + 1, 0, tw - 2, bh,
 						uiBg.add(Theme.get().uiTabFocusedHighlightMask), uiBg,

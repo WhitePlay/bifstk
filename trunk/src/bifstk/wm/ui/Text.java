@@ -159,11 +159,12 @@ public class Text extends Actionable implements Focusable {
 
 		if (!this.multiLine) {
 			String str = this.content.toString();
-			renderLine(str, 0, alpha, true);
+			renderLine(str, 0, uiBg, alpha, true);
 		} else {
 			int yOff = 0;
 			for (StringBuffer sb : this.lines) {
-				renderLine(sb.toString(), yOff, alpha, this.content.equals(sb));
+				renderLine(sb.toString(), yOff, uiBg, alpha,
+						this.content.equals(sb));
 				yOff += Fonts.getNormal().getHeight();
 			}
 		}
@@ -171,8 +172,9 @@ public class Text extends Actionable implements Focusable {
 		Util.raster().drawQuad(x, y, w, h, borderCol, a);
 	}
 
-	private void renderLine(String str, int yOff, float alpha, boolean drawCaret) {
-		Color textCol = Theme.get().uiEntryFontColor;
+	private void renderLine(String str, int yOff, Color uiBg, float alpha,
+			boolean drawCaret) {
+		Color textCol = uiBg.add(Theme.get().uiEntryFontMask);
 
 		Fonts.getNormal().drawString(2 + this.offset, 2 + yOff, str, textCol,
 				alpha);

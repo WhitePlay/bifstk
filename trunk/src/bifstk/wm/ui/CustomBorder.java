@@ -143,7 +143,7 @@ public class CustomBorder extends Border {
 		if (this.label != null) {
 			//	Util.pushScissor(0, 0, this.labelWidth, this.labelHeight, false);
 
-			Color col = Theme.get().uiFontColor;
+			Color col = uiBg.add(Theme.get().uiFontMask);
 			Fonts.getNormal().drawString(0, 0, this.label, col, alpha);
 
 			//Util.popScissor();

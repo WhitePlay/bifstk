@@ -60,7 +60,7 @@ public class Button extends AbstractButton {
 		} else {
 			ly = 0;
 		}
-		Color fontCol = Theme.get().uiFontColor;
+		Color fontCol = uiBg.add(Theme.get().uiFontMask);
 
 		Util.raster().fillQuad(0, 0, w, h, fillCol, a);
 		Fonts.getNormal().drawString(lx, ly, this.text, fontCol, alpha);

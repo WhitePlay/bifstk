@@ -261,7 +261,7 @@ public abstract class Frame implements Drawable, Clickable {
 					Rasterizer.pushScissor(titleWidth, titlebarHeight);
 
 					Fonts.getNormal().drawString(0, 0, this.title,
-							Theme.get().uiFontColor, alpha);
+							uiColor.add(Theme.get().uiFontMask), alpha);
 
 					Rasterizer.popScissor();
 					Rasterizer.popTranslate();

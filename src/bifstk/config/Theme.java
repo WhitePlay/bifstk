@@ -74,8 +74,8 @@ public class Theme {
 	public float[] uiButtonClickMask;
 	public float[] uiBorderMask;
 	public float[] uiEntryMask;
-	public Color uiEntryFontColor;
-	public Color uiFontColor;
+	public float[] uiEntryFontMask;
+	public float[] uiFontMask;
 	public float[] uiTabFocusedHighlightMask;
 	public float[] uiTabUnfocusedBorderMask;
 	public float[] uiTabUnfocusedFontMask;
@@ -364,11 +364,11 @@ public class Theme {
 					this.uiEntryMask = parseMask(sval);
 					break;
 				}
-				case uiEntryFontColor: {
-					this.uiEntryFontColor = Color.parse(sval);
+				case uiEntryFontMask: {
+					this.uiEntryFontMask = parseMask(sval);
 				}
-				case uiFontColor: {
-					this.uiFontColor = Color.parse(sval);
+				case uiFontMask: {
+					this.uiFontMask = parseMask(sval);
 					break;
 				}
 				case uiTabFocusedHighlightMask: {

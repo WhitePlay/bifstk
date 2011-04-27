@@ -81,8 +81,8 @@ public enum ThemeProperty {
 	// FLOAT opacity if of the area when not focused 
 	areaUnfocusedAlpha("area.unfocused.alpha"),
 
-	// COLOR base font color of the UI 
-	uiFontColor("ui.font.color"),
+	// COLOR font color mask of the UI 
+	uiFontMask("ui.font.mask"),
 	// MASK color mask of the ui widgets border 
 	uiBorderMask("ui.border.mask"),
 	// MASK color mask of the ui button background 
@@ -95,8 +95,8 @@ public enum ThemeProperty {
 	uiButtonLabelHoverMask("ui.button.label.hover.mask"),
 	// MASK color of the ui entries (text,radio,..) bg 
 	uiEntryMask("ui.entry.mask"),
-	// COLOR fg font color for ui entry widgets (text) 
-	uiEntryFontColor("ui.entry.font.color"),
+	// COLOR fg font color mask for ui entry widgets (text) 
+	uiEntryFontMask("ui.entry.font.mask"),
 	// MASK color mask of the gradient on top of the focused tab 
 	uiTabFocusedHighlightMask("ui.tab.focused.highlight.mask"),
 	// MASK border color mask of unfocused tabs 

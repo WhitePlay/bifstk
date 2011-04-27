@@ -32,7 +32,7 @@ window.shadow.focused.color = white
 window.shadow.unfocused.color = black
 
 area.border.width = 4
-area.unfocused.mask = -20 -20 -20
+area.unfocused.mask = -15 -15 -15
 area.focused.color = 130 130 130
 area.border.focused.color = 150 150 150
 area.focused.alpha = 0.8
@@ -41,6 +41,7 @@ area.unfocused.alpha = 0.5
 ui.font.color = white
 ui.button.mask = 15 15 15
 ui.button.hover.mask = 30 30 30
+ui.button.label.hover.mask = 15 15 20
 ui.button.click.mask = 5 5 5
 ui.border.mask = 40 40 40
 ui.entry.mask = -40 -40 -40

@@ -91,6 +91,8 @@ public enum ThemeProperty {
 	uiButtonHoverMask("ui.button.hover.mask"),
 	// MASK color mask of the ui button background when clicked 
 	uiButtonClickMask("ui.button.click.mask"),
+	// MASK color mask of the ui label bound to a button when hovered
+	uiButtonLabelHoverMask("ui.button.label.hover.mask"),
 	// MASK color of the ui entries (text,radio,..) bg 
 	uiEntryMask("ui.entry.mask"),
 	// COLOR fg font color for ui entry widgets (text) 

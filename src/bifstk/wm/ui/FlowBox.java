@@ -3,6 +3,7 @@ package bifstk.wm.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import bifstk.config.Theme;
 import bifstk.gl.Color;
 import bifstk.gl.Rasterizer;
 import bifstk.gl.Util;
@@ -197,7 +198,7 @@ public class FlowBox extends Container {
 		int h = this.getHeight();
 
 		if (this.boundButton != null && this.mouseHover) {
-			uiBg = uiBg.highlight();
+			uiBg = uiBg.add(Theme.get().uiButtonLabelHoverMask);
 		}
 
 		if (!hasChildren()) {

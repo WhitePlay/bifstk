@@ -33,9 +33,9 @@ window.shadow.unfocused.color = black
 
 area.border.width = 4
 area.unfocused.mask = -15 -15 -15
-area.focused.color = 130 130 130
-area.border.focused.color = 150 150 150
-area.focused.alpha = 0.8
+area.color = 130 130 130
+area.border.color = 150 150 150
+area.alpha = 0.8
 area.unfocused.alpha = 0.5
 
 ui.font.mask = 130 130 130

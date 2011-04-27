@@ -73,11 +73,11 @@ public enum ThemeProperty {
 	// STRING 3 strings in [-255,255] separated by spaces
 	areaUnfocusedMask("area.unfocused.mask"),
 	// COLOR focused color of the area 
-	areaFocusedColor("area.focused.color"),
+	areaColor("area.color"),
 	// COLOR focused color of the outer border 
-	areaBorderFocusedColor("area.border.focused.color"),
+	areaBorderColor("area.border.color"),
 	// FLOAT opacity of the area ui 
-	areaFocusedAlpha("area.focused.alpha"),
+	areaAlpha("area.alpha"),
 	// FLOAT opacity if of the area when not focused 
 	areaUnfocusedAlpha("area.unfocused.alpha"),
 

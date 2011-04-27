@@ -63,9 +63,9 @@ public class Theme {
 	public int areaBorderWidth;
 	public float[] areaUnfocusedMask;
 	private final int areaBorderMin = 1, areaBorderMax = 20;
-	public Color areaFocusedColor;
-	public Color areaBorderFocusedColor;
-	public float areaFocusedAlpha;
+	public Color areaColor;
+	public Color areaBorderColor;
+	public float areaAlpha;
 	public float areaUnfocusedAlpha;
 
 	public float[] uiButtonMask;
@@ -238,17 +238,17 @@ public class Theme {
 					this.areaUnfocusedMask = parseMask(sval);
 					break;
 				}
-				case areaFocusedColor: {
-					this.areaFocusedColor = Color.parse(sval);
+				case areaColor: {
+					this.areaColor = Color.parse(sval);
 					break;
 				}
-				case areaBorderFocusedColor: {
-					this.areaBorderFocusedColor = Color.parse(sval);
+				case areaBorderColor: {
+					this.areaBorderColor = Color.parse(sval);
 					break;
 				}
-				case areaFocusedAlpha: {
-					this.areaFocusedAlpha = Util.clampf(Float.parseFloat(sval),
-							0.0f, 1.0f);
+				case areaAlpha: {
+					this.areaAlpha = Util.clampf(Float.parseFloat(sval), 0.0f,
+							1.0f);
 					break;
 				}
 				case areaUnfocusedAlpha: {

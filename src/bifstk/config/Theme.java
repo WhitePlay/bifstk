@@ -83,6 +83,9 @@ public class Theme {
 	public float[] uiTabUnfocusedFontMask;
 	public float[] uiTabUnfocusedBackgroundMask;
 	public float[] uiTabUnfocusedHighlightMask;
+	public float[] uiCheckMask;
+	public float[] uiCheckHoverMask;
+	public float[] uiCheckClickMask;
 
 	/** singleton instance */
 	private static Theme instance = null;
@@ -400,6 +403,18 @@ public class Theme {
 				}
 				case uiTabUnfocusedHighlightMask: {
 					this.uiTabUnfocusedHighlightMask = parseMask(sval);
+					break;
+				}
+				case uiCheckMask: {
+					this.uiCheckMask = parseMask(sval);
+					break;
+				}
+				case uiCheckHoverMask: {
+					this.uiCheckHoverMask = parseMask(sval);
+					break;
+				}
+				case uiCheckClickMask: {
+					this.uiCheckClickMask = parseMask(sval);
 					break;
 				}
 				}

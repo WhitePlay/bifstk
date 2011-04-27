@@ -195,41 +195,16 @@ public class Color {
 				+ rgb[2], this.alpha);
 	}
 
-	private static final float highlight_off = 0.1f;
-
 	/**
-	 * @return a slightly darker Color with identical alpha
+	 * A Color can be represented as a String in 3 forms:
+	 * <ul><li>common color names, ie 'white', 'red'
+	 * <li>3 ints in range [0,255], ie '255 0 127'
+	 * <li>3 floats in range [0.0,1.0], ie '1.0 0 0.5'
+	 * </ul>
+	 * 
+	 * @param str a textual color representation
+	 * @return the color represented by the string argument, or white if parsing failed
 	 */
-	public Color darker() {
-		return new Color(this.red - highlight_off, //
-				this.green - highlight_off, //
-				this.blue - highlight_off, this.alpha);
-	}
-
-	/**
-	 * @return a slightly lighter Color with identical alpha
-	 */
-	public Color lighter() {
-		return new Color(this.red + highlight_off, //
-				this.green + highlight_off, //
-				this.blue + highlight_off, this.alpha);
-	}
-
-	/**
-	 * @return a slightly lighter or darker Color, depending if this Color is
-	 *         dark or light
-	 * @see #lighter()
-	 * @see #darker()
-	 */
-	public Color highlight() {
-		float mean = (this.red + this.green + this.blue) / 3.0f;
-		if (mean > 0.5f) {
-			return this.darker();
-		} else {
-			return this.lighter();
-		}
-	}
-
 	public static Color parse(String str) {
 		if (str.equalsIgnoreCase("white")) {
 			return WHITE;

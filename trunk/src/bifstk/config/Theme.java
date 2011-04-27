@@ -70,6 +70,7 @@ public class Theme {
 
 	public float[] uiButtonMask;
 	public float[] uiButtonHoverMask;
+	public float[] uiButtonLabelHoverMask;
 	public float[] uiButtonClickMask;
 	public float[] uiBorderMask;
 	public float[] uiEntryMask;
@@ -345,6 +346,10 @@ public class Theme {
 				}
 				case uiButtonHoverMask: {
 					this.uiButtonHoverMask = parseMask(sval);
+					break;
+				}
+				case uiButtonLabelHoverMask: {
+					this.uiButtonLabelHoverMask = parseMask(sval);
 					break;
 				}
 				case uiButtonClickMask: {

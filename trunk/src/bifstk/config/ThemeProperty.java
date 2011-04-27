@@ -99,6 +99,10 @@ public enum ThemeProperty {
 	uiEntryFontMask("ui.entry.font.mask"),
 	// MASK color mask of the gradient on top of the focused tab 
 	uiTabFocusedHighlightMask("ui.tab.focused.highlight.mask"),
+	// MASK bg color mask for the whole tabs group widget
+	uiTabsMask("ui.tabs.mask"),
+	// MASK border color mask for tabs group widget
+	uiTabsBorderMask("ui.tabs.border.mask"),
 	// MASK border color mask of unfocused tabs 
 	uiTabUnfocusedBorderMask("ui.tab.unfocused.border.mask"),
 	// MASK font color mask of unfocused tabs 

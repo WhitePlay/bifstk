@@ -368,6 +368,7 @@ public class Theme {
 				}
 				case uiEntryFontMask: {
 					this.uiEntryFontMask = parseMask(sval);
+					break;
 				}
 				case uiFontMask: {
 					this.uiFontMask = parseMask(sval);

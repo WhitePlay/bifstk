@@ -110,7 +110,13 @@ public enum ThemeProperty {
 	// MASK bg color mask of unfocused tabs 
 	uiTabUnfocusedBackgroundMask("ui.tab.unfocused.background.mask"),
 	// MASK color mask of the gradient on top of unfocused tabs 
-	uiTabUnfocusedHighlightMask("ui.tab.unfocused.highlight.mask");
+	uiTabUnfocusedHighlightMask("ui.tab.unfocused.highlight.mask"),
+	// MASK color mask of the checked checkbox image
+	uiCheckMask("ui.check.mask"),
+	// MASK color mask of the checked checkbox image when hovered
+	uiCheckHoverMask("ui.check.hover.mask"),
+	// MASK color mask of the checked checkbox image when clicked
+	uiCheckClickMask("ui.check.click.mask");
 
 	private String name = "";
 

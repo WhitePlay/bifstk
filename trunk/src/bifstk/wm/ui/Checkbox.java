@@ -1,8 +1,10 @@
 package bifstk.wm.ui;
 
 import bifstk.config.Fonts;
+import bifstk.config.TextureLoader;
 import bifstk.config.Theme;
 import bifstk.gl.Color;
+import bifstk.gl.Image;
 import bifstk.gl.Util;
 
 /**
@@ -43,18 +45,18 @@ public class Checkbox extends AbstractButton {
 		Util.raster().fillQuad(0, 0, pw, pw, entryFill, a);
 		Util.raster().drawQuad(0, 0, pw, pw, entryBorder, a);
 
-		Color fillCol = uiBg.add(Theme.get().uiButtonMask);
+		Color fillCol = uiBg.add(Theme.get().uiCheckMask);
 		if (this.isMouseClicked()) {
-			fillCol = uiBg.add(Theme.get().uiButtonClickMask);
+			fillCol = uiBg.add(Theme.get().uiCheckClickMask);
 		} else if (this.isMouseHover()) {
-			fillCol = uiBg.add(Theme.get().uiButtonHoverMask);
+			fillCol = uiBg.add(Theme.get().uiCheckHoverMask);
 		}
 
-		if (this.checked) {
-			int b = (int) (0.2f * pw);
-			Util.raster().fillQuad(b, b, pw - b * 2, pw - b * 2, fillCol, a);
-			Util.raster().drawQuad(b, b, pw - b * 2, pw - b * 2,
-					uiBg.add(Theme.get().uiBorderMask), a);
+		if (this.checked || this.isMouseClicked()) {
+			Image img = TextureLoader.getCheckbox();
+			int cx = Math.max(0, (pw - img.getWidth()) / 2);
+
+			Util.raster().fillQuad(cx, cx, img, fillCol, a);
 		}
 	}
 

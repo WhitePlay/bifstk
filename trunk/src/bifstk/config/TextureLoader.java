@@ -35,6 +35,8 @@ public class TextureLoader {
 	private Image windowMaximize;
 	private Image windowClose;
 
+	private Image checkbox;
+
 	private TextureLoader(String path) throws BifstkException {
 		File f = new File(path);
 		BufferedImage img = null;
@@ -60,6 +62,8 @@ public class TextureLoader {
 
 		this.windowMaximize = new Image(357, 130, 12, 12);
 		this.windowClose = new Image(370, 130, 12, 12);
+
+		this.checkbox = new Image(323, 164, 10, 10);
 	}
 
 	/**
@@ -130,6 +134,13 @@ public class TextureLoader {
 	 */
 	public static Image getWindowClose() {
 		return instance.windowClose;
+	}
+
+	/**
+	 * @return the checked image overlay of a checkbox
+	 */
+	public static Image getCheckbox() {
+		return instance.checkbox;
 	}
 
 	/**

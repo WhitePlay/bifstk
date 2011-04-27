@@ -53,3 +53,6 @@ ui.tab.unfocused.background.mask = -20 -20 -20
 ui.tab.unfocused.border.mask = 15 15 15
 ui.tab.unfocused.font.mask = 30 30 30
 ui.tab.unfocused.highlight.mask = -20 -20 -20
+ui.check.mask = 60 60 60
+ui.check.hover.mask = 80 80 130
+ui.check.click.mask = 5 5 5

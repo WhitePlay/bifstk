@@ -575,7 +575,7 @@ public class FlowBox extends Container {
 	@Override
 	public void mouseHover(int x, int y) {
 		this.mouseHover = true;
-		if (this.boundButton == null) {
+		//if (this.boundButton == null) {
 			int acc = 0;
 			for (Widget wid : this.leftChildren) {
 				acc = _mouseHover(wid, acc, x, y);
@@ -603,7 +603,7 @@ public class FlowBox extends Container {
 				this.widgetHover.mouseOut();
 				widgetHover = null;
 			}
-		}
+	//	}
 	}
 
 	/**

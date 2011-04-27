@@ -38,7 +38,7 @@ area.border.color = 150 150 150
 area.alpha = 0.8
 area.unfocused.alpha = 0.5
 
-ui.font.mask = 130 130 130
+ui.font.mask = 150 150 150
 ui.button.mask = 15 15 15
 ui.button.hover.mask = 30 30 30
 ui.button.label.hover.mask = 15 15 20

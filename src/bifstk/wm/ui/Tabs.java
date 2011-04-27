@@ -69,12 +69,15 @@ public class Tabs extends Container {
 
 		int acc = border, activeAccL = 0, activeAccR = 0;
 
+		Color uiBg2 = uiBg.add(Theme.get().uiTabsMask);
+
 		/* border */
-		Util.raster().fillQuad(0, 0, border, h, uiBg, a);
-		Util.raster().fillQuad(border, bh, w - 2 * border, border, uiBg, a);
-		Util.raster().fillQuad(w - border, bh, border, h - bh, uiBg, a);
+		Util.raster().fillQuad(0, bh, border, h - bh, uiBg2, a);
+		Util.raster().fillQuad(border, bh, w - 2 * border, border, uiBg2, a);
+		Util.raster().fillQuad(w - border, bh, border, h - bh, uiBg2, a);
 		Util.raster().fillQuad(border, h - border, w - 2 * border, border,
-				uiBg, a);
+				uiBg2, a);
+		Util.raster().fillQuad(0, 0, border, bh, uiBg, a);
 
 		for (Tab tab : this.tabs) {
 			int tw = getTabWidth(tab.title);
@@ -83,7 +86,7 @@ public class Tabs extends Container {
 			if (tab.equals(this.activeTab)) {
 				Rasterizer.pushTranslate(border, bh + border);
 				Rasterizer.pushScissor(w - 2 * border, h - bh - 2 * border);
-				tab.content.render(alpha, uiBg, uiBgAlpha);
+				tab.content.render(alpha, uiBg2, uiBgAlpha);
 				Rasterizer.popScissor();
 				Rasterizer.popTranslate();
 				activeAccL = acc;
@@ -97,7 +100,7 @@ public class Tabs extends Container {
 			Color fontCol = uiBg.add(Theme.get().uiFontMask);
 			if (tab.equals(this.activeTab)) {
 				Util.raster().fillQuad(acc + 1, 0, tw - 2, bh,
-						uiBg.add(Theme.get().uiTabFocusedHighlightMask), uiBg,
+						uiBg.add(Theme.get().uiTabFocusedHighlightMask), uiBg2,
 						a, a);
 			} else {
 				Util.raster()
@@ -132,7 +135,7 @@ public class Tabs extends Container {
 		}
 
 		/* content and active tab hightlight */
-		Color hl = uiBg.add(Theme.get().uiBorderMask);
+		Color hl = uiBg.add(Theme.get().uiTabsBorderMask);
 		Util.raster().fillQuad(0, bh, 1, h - bh, hl, a);
 		Util.raster().fillQuad(w - 1, bh, 1, h - bh, hl, a);
 		Util.raster().fillQuad(1, h - 1, w - 2, 1, hl, a);

@@ -76,6 +76,8 @@ public class Theme {
 	public float[] uiEntryMask;
 	public float[] uiEntryFontMask;
 	public float[] uiFontMask;
+	public float[] uiTabsMask;
+	public float[] uiTabsBorderMask;
 	public float[] uiTabFocusedHighlightMask;
 	public float[] uiTabUnfocusedBorderMask;
 	public float[] uiTabUnfocusedFontMask;
@@ -369,6 +371,14 @@ public class Theme {
 				}
 				case uiFontMask: {
 					this.uiFontMask = parseMask(sval);
+					break;
+				}
+				case uiTabsMask: {
+					this.uiTabsMask = parseMask(sval);
+					break;
+				}
+				case uiTabsBorderMask: {
+					this.uiTabsBorderMask = parseMask(sval);
 					break;
 				}
 				case uiTabFocusedHighlightMask: {
